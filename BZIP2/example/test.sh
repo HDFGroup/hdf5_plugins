@@ -14,7 +14,7 @@
 # access to either file, you may request a copy from help@hdfgroup.org.
 
 
-ENVCMD="env HDF5_PLUGIN_PATH=`pwd`../src/.libs"
+ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
 case $CC in
 */*)    H5DUMP=`echo $CC | sed -e 's/\/[^/]*$/\/h5dump/'`;
@@ -70,9 +70,9 @@ do
         then
             echo "  FAILED!"
         else
-          dumpout $fname.h5 >tmp.test
-          rm -f $fname.h5
-          cmp -s tmp.test $srcdir/testfiles/$fname.ddl
+        dumpout $fname.h5 >tmp.out
+        # rm -f $fname.h5
+        cmp -s tmp.out $srcdir/testfiles/$fname.ddl
           status=$?
           if test $status -ne 0
           then
@@ -86,6 +86,6 @@ do
 done
 
 
-rm -f tmp.test
+rm -f tmp.test tmp.out *.h5
 echo "$return_val tests failed in example/"
 exit $return_val
