@@ -10,6 +10,11 @@
 #
 # HDF5 BZIP2 Library Plugin makefile(.in)
 #
+
+# Shell commands used in Makefiles
+RM=rm -f
+CP=cp
+
 MAJOR = 0
 MINOR = 1
 VERSION = $(MAJOR).$(MINOR)
@@ -21,9 +26,8 @@ INCLUDES=-I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
 lib_LTLIBRARIES=libh5bz2.la
 libh5bz2_la_SOURCES=H5Zbzip2.c
 
-# Name libh5tools.la so that dependencies work out. Automake knows how
-# to build 'libh5tools.la', but not '../../tools/lib/libh5tools.la'.
-LDADD=libh5bz2.la $(BZ2_ROOT)/lib/libbz2.so.1.0.6
+LDFLAGS=-L$(BZ2_ROOT)/lib
+LIBS=-lbz2
 
 install-data-local:
 	$(RM) $(DESTDIR)$(libdir)/*h5bz2*

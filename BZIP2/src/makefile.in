@@ -14,6 +14,15 @@
 
 @SET_MAKE@
 
+#
+# Copyright by The HDF Group.
+# Copyright by the Board of Trustees of the University of Illinois.
+# All rights reserved.
+#
+#
+# HDF5 BZIP2 Library Plugin makefile(.in)
+#
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -149,10 +158,10 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
-LDFLAGS = @LDFLAGS@
+LDFLAGS = -L$(BZ2_ROOT)/lib
 LD_LIBRARY_PATH = @LD_LIBRARY_PATH@
 LIBOBJS = @LIBOBJS@
-LIBS = @LIBS@
+LIBS = -lbz2
 LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
@@ -235,14 +244,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
-#
-# Copyright by The HDF Group.
-# Copyright by the Board of Trustees of the University of Illinois.
-# All rights reserved.
-#
-#
-# HDF5 BZIP2 Library Plugin makefile(.in)
-#
+# Shell commands used in Makefiles
+RM = rm -f
+CP = cp
 MAJOR = 0
 MINOR = 1
 INCLUDES = -I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
@@ -251,10 +255,6 @@ INCLUDES = -I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
 # Build it as shared library.
 lib_LTLIBRARIES = libh5bz2.la
 libh5bz2_la_SOURCES = H5Zbzip2.c
-
-# Name libh5tools.la so that dependencies work out. Automake knows how
-# to build 'libh5tools.la', but not '../../tools/lib/libh5tools.la'.
-LDADD = libh5bz2.la $(BZ2_ROOT)/lib/libbz2.so.1.0.6
 all: all-am
 
 .SUFFIXES:
