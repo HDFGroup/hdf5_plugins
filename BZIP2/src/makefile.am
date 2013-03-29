@@ -1,0 +1,35 @@
+#
+# Copyright by The HDF Group.
+# Copyright by the Board of Trustees of the University of Illinois.
+# All rights reserved.
+#
+##
+## Makefile.am
+## Run automake to generate a Makefile.in from this file.
+##
+#
+# HDF5 BZIP2 Library Plugin makefile(.in)
+#
+MAJOR = 0
+MINOR = 1
+VERSION = $(MAJOR).$(MINOR)
+
+INCLUDES=-I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
+
+# The libh5bz2 library for plugin module.
+# Build it as shared library.
+lib_LTLIBRARIES=libh5bz2.la
+libh5bz2_la_SOURCES=H5Zbzip2.c
+
+# Name libh5tools.la so that dependencies work out. Automake knows how
+# to build 'libh5tools.la', but not '../../tools/lib/libh5tools.la'.
+LDADD=libh5bz2.la $(BZ2_ROOT)/lib/libbz2.so.1.0.6
+
+install-data-local:
+	$(RM) $(DESTDIR)$(libdir)/*h5bz2*
+
+clean:
+	$(RM) *.o *.so* 
+
+distclean:
+	$(RM) *.o *.so* 
