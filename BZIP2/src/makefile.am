@@ -29,9 +29,6 @@ libh5bz2_la_SOURCES=H5Zbzip2.c
 LDFLAGS=-L$(BZ2_ROOT)/lib
 LIBS=-lbz2
 
-install-data-local:
-	$(RM) $(DESTDIR)$(libdir)/*h5bz2*
-
 clean:
 	$(RM) *.o *.so* 
 

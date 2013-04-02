@@ -30,6 +30,7 @@ AM_MAINTAINER_MODE
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_RANLIB
+AC_PROG_INSTALL
 
 AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([`pwd`/plugins])
@@ -239,7 +240,6 @@ esac
 
 H5CC=${HDF5PATH}/h5cc
 H5FC=${HDF5PATH}/h5fc
-dnl H5CCFLAGS="-shlib"
 
 ## ----------------------------------------------------------------------
 ## Is the bzip2 library present? It has a header file `bzlib.h' and a library
