@@ -258,6 +258,8 @@ INCLUDES = -I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
 # Build it as shared library.
 lib_LTLIBRARIES = libh5bz2.la
 libh5bz2_la_SOURCES = H5Zbzip2.c
+CHECK_CLEANFILES = *.o *.so* 
+DISTCLEANFILES = *.o *.so* 
 all: all-am
 
 .SUFFIXES:
@@ -493,13 +495,19 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+clean: clean-am
+
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
+distclean: distclean-am
+	-rm -rf ./$(DEPDIR)
+	-rm -f makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
 
@@ -579,12 +587,6 @@ uninstall-am: uninstall-libLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
-
-clean:
-	$(RM) *.o *.so* 
-
-distclean:
-	$(RM) *.o *.so* 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

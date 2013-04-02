@@ -29,8 +29,5 @@ libh5bz2_la_SOURCES=H5Zbzip2.c
 LDFLAGS=-L$(BZ2_ROOT)/lib
 LIBS=-lbz2
 
-clean:
-	$(RM) *.o *.so* 
-
-distclean:
-	$(RM) *.o *.so* 
+CHECK_CLEANFILES=*.o *.so* 
+DISTCLEANFILES=*.o *.so* 

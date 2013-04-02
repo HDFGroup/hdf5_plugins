@@ -93,6 +93,5 @@ do
 done
 
 
-#rm -f tmp.test tmp.out *.h5
 echo "$return_val tests failed in example/"
 exit $return_val

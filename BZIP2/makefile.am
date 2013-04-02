@@ -17,3 +17,4 @@
 ##
 
 SUBDIRS = src example
+DIST_SUBDIRS = src example
