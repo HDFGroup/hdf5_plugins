@@ -68,14 +68,15 @@ noinst_PROGRAMS = h5ex_d_bzip2$(EXEEXT)
 TESTS = $(TEST_SCRIPT)
 subdir = example
 DIST_COMMON = $(srcdir)/makefile.am $(srcdir)/makefile.in \
-	$(top_srcdir)/bin/depcomp $(top_srcdir)/bin/mkinstalldirs
+	$(srcdir)/test.sh.in $(top_srcdir)/bin/depcomp \
+	$(top_srcdir)/bin/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/bin/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = test.sh
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 h5ex_d_bzip2_SOURCES = h5ex_d_bzip2.c
@@ -131,10 +132,16 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-FC = @FC@
-FCFLAGS = @FCFLAGS@
 FGREP = @FGREP@
 GREP = @GREP@
+
+# HDF5 compile commands, assuming they are in your $PATH.
+H5CC = @H5CC@
+H5CC_PP = @H5CC_PP@
+H5CPP = @H5CPP@
+H5FC = @H5FC@
+H5FC_PP = @H5FC_PP@
+HDF5PATH = @HDF5PATH@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -142,7 +149,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
-LD_LIBRARY_PATH = @LD_LIBRARY_PATH@
+LIBHDF5 = @LIBHDF5@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
@@ -180,7 +187,6 @@ abs_top_srcdir = @abs_top_srcdir@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
-ac_ct_FC = @ac_ct_FC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -231,6 +237,7 @@ top_srcdir = @top_srcdir@
 RM = rm -f
 CP = cp
 EXTRA_DIST = testfiles/h5ex_d_bzip2.tst testfiles/h5ex_d_bzip2.ddl test.sh
+EXTRA_PROG = $(noinst_PROGRAMS)
 TESTS_ENVIRONMENT = sh
 TEST_SCRIPT = test.sh
 SCRIPT_DEPEND = h5ex_d_bzip2$(EXEEXT)
@@ -276,6 +283,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+test.sh: $(top_builddir)/config.status $(srcdir)/test.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -636,6 +645,9 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am
 
+
+$(EXTRA_PROG): $(H5CC)
+	$(H5CC) $(H5CCFLAGS) $(CFLAGS) -o $@ $(srcdir)/$@.c;
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -13,11 +13,18 @@
 # http://hdfgroup.org/HDF5/doc/Copyright.html.  If you do not have
 # access to either file, you may request a copy from help@hdfgroup.org.
 
+srcdir=@srcdir@
+
+# HDF5 compile commands, assuming they are in your $PATH.
+H5CC=@H5CC@
+
+# Shell commands used in Makefiles
+CP=cp
 
 ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
-case $CC in
-*/*)    H5DUMP=`echo $CC | sed -e 's/\/[^/]*$/\/h5dump/'`;
+case $H5CC in
+*/*)    H5DUMP=`echo $H5CC | sed -e 's/\/[^/]*$/\/h5dump/'`;
         test -x $H5DUMP || H5DUMP=h5dump;;
 *)      H5DUMP=h5dump;;
 esac
@@ -45,7 +52,7 @@ dumpout() {
     echo '*  Output of h5dump  *'
     echo '**********************'
     echo
-    $H5DUMP $*
+    $ENVCMD $H5DUMP $*
 }
 
 
@@ -86,6 +93,6 @@ do
 done
 
 
-rm -f tmp.test tmp.out *.h5
+#rm -f tmp.test tmp.out *.h5
 echo "$return_val tests failed in example/"
 exit $return_val

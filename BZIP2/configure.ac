@@ -27,6 +27,10 @@ AM_CONFIG_HEADER(config.h)
 ## (which probably won't work).
 AM_MAINTAINER_MODE
 
+# Checks for programs.
+AC_PROG_CC
+AC_PROG_RANLIB
+
 AC_CANONICAL_HOST
 AC_PREFIX_DEFAULT([`pwd`/plugins])
 
@@ -85,23 +89,6 @@ if test "X$host_config" != "Xnone"; then
   . $host_config
 fi
 
-## Argument for static linking
-AC_ARG_ENABLE(shared,
-    [AS_HELP_STRING([--disable-shared],
-        [force static linking])],
-    [if test "$enableval" = "no"; then
-        shared_suffix=""
-        echo lo!
-    else
-        shared_suffix=" -shlib"
-    fi],
-    [shared_suffix=" -shlib"])
-
-## Sets compiler.
-AC_PROG_CC([h5cc])
-AC_PROG_FC([h5fc])
-AC_PROG_INSTALL
-
 ## Fix up the INSTALL macro if its a relative path. We want the
 ## full-path to the binary instead.
 case "$INSTALL" in
@@ -146,9 +133,199 @@ EOF
     ;;
 esac
 
+## HDF5 compile commands.
+AC_SUBST([H5CC])
+AC_SUBST([H5CC_PP])
+AC_SUBST([H5FC])
+AC_SUBST([H5FC_PP])
+AC_SUBST([H5CPP])
 
-AC_SUBST([LD_LIBRARY_PATH]) LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+## Make sure they are set to something.
+H5CC="${H5CC:-h5cc}"
+H5CC_PP="${H5CC_PP:-h5pcc}"
+H5FC="${H5FC:-h5fc}"
+H5FC_PP="${H5FC_PP:-h5pfc}"
+H5CPP="${H5CPP:-h5c++}"
 
+## ----------------------------------------------------------------------
+## Fake --with-xxx option to allow us to create a help message for the
+## following --with-xxx options which can take either a =DIR or =INC,LIB
+## specifier.
+##
+AC_ARG_WITH([fnord],
+  [
+ For the following --with-xxx options, you can specify where the header
+ files and libraries are in two different ways:
+
+    --with-xxx=INC,LIB - Specify individually the include directory and
+                         library directory separated by a comma
+    --with-xxx=DIR     - Specify only the directory which contains the
+                         include/ and lib/ subdirectories
+  ],,)
+
+
+## ----------------------------------------------------------------------
+## Where's HDF5? We need to find out where the HDF5 library
+## and header files are if they aren't in system library/include places.
+##
+AC_SUBST(LIBHDF5) LIBHDF5=""
+AC_SUBST(HDF5PATH) HDF5PATH=""
+AC_ARG_WITH([hdf5],
+            [AC_HELP_STRING([--with-hdf5=DIR],
+                            [Where to find the HDF5 library])],,)
+
+case "$withval" in
+  yes)
+    AC_CHECK_HEADERS(hdf5.h,,
+                     AC_MSG_ERROR(cannot find HDF5 header files.))
+    AC_CHECK_LIB(hdf5, H5open,,
+                 AC_MSG_ERROR(cannot find the HDF5 library.))
+    ;;
+  no)
+    AC_MSG_ERROR(HDF5 library needed for compilation.)
+    ;;
+  *)
+    case "$withval" in
+      *,*)
+        hdf5_inc="`echo $withval | cut -f1 -d,`"
+        hdf5_lib="`echo $withval | cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          hdf5_inc="$withval/include"
+          hdf5_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+    if test -n "$hdf5_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
+    fi
+
+    AC_CHECK_HEADERS(hdf5.h,,
+                     AC_MSG_ERROR(cannot find HDF5 header files!))
+
+    HDF5PATH="$hdf5_lib,"
+    HDF5PATH="`echo $HDF5PATH | sed -e "s/lib,/bin/"`"
+
+    if test -n "$hdf5_lib"; then
+      LDFLAGS="$LDFLAGS -L$hdf5_lib"
+
+      ## We want to use the ``.la'' version of the HDF5 library which
+      ## is the thing libtool creates and has in it all of the neat
+      ## stuff like where to find the libraries libhdf5 depends upon.
+      if test -f "$hdf5_lib/libhdf5.la"; then
+        libdir_saved=$libdir
+        . $hdf5_lib/libhdf5.la
+        libdir=$libdir_saved
+        for lib in X $dependency_libs; do
+          case "$lib" in
+            *libhdf5.la*)
+              ;;
+            *)
+              if test "$lib" != "X"; then
+                LIBHDF5="$LIBHDF5 $lib"
+              fi
+              ;;
+          esac
+        done
+      fi
+    fi
+
+    AC_CHECK_LIB(hdf5, H5open,,
+                 AC_MSG_ERROR(cannot find HDF5 library.))
+    ;;
+esac
+
+H5CC=${HDF5PATH}/h5cc
+H5FC=${HDF5PATH}/h5fc
+dnl H5CCFLAGS="-shlib"
+
+## ----------------------------------------------------------------------
+## Is the bzip2 library present? It has a header file `bzlib.h' and a library
+## `-lbz2' and their locations might be specified with the `--with-bz2lib'
+## command-line switch. The value is an include path and/or a library path.
+## If the library path is specified then it must be preceded by a comma.
+##
+AC_ARG_WITH([bz2lib],
+            [AS_HELP_STRING([--with-bz2lib=DIR],
+                            [Use bz2lib library for compressed I/O
+                             filter [default=yes]])],,
+            [withval=yes])
+
+case $withval in
+  yes)
+    HAVE_BZ2LIB="yes"
+    AC_CHECK_HEADERS([bzlib.h], [HAVE_BZ2LIB_H="yes"], [unset HAVE_BZ2LIB])
+    if test "x$HAVE_BZ2LIB" = "xyes" -a "x$HAVE_BZ2LIB_H" = "xyes"; then
+      AC_CHECK_LIB([bz2], [compress],, [unset HAVE_BZ2LIB])
+    fi
+    if test -z "$HAVE_BZ2LIB"; then
+      AC_MSG_ERROR([couldn't find bz2lib library])
+    else
+      AC_CHECK_FUNC([BZ2_bzCompress], [HAVE_BZ2_COMPRESS="yes"])
+    fi
+    ;;
+  no)
+    HAVE_BZ2LIB="no"
+    AC_MSG_CHECKING([for bz2lib])
+    AC_MSG_RESULT([suppressed])
+    ;;
+  *)
+    HAVE_BZ2LIB="yes"
+    case "$withval" in
+      *,*)
+        bz2lib_inc="`echo $withval | cut -f1 -d,`"
+        bz2lib_lib="`echo $withval | cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          bz2zlib_inc="$withval/include"
+          bz2lib_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+    ## Trying to include -I/usr/include and -L/usr/lib is redundant and
+    ## can mess some compilers up.
+    if test "X$bz2lib_inc" = "X/usr/include"; then
+      bz2lib_inc=""
+    fi
+    if test "X$bz2lib_lib" = "X/usr/lib"; then
+      bz2lib_lib=""
+    fi
+
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_AM_CPPFLAGS="$AM_CPPFLAGS"
+    saved_LDFLAGS="$LDFLAGS"
+    saved_AM_LDFLAGS="$AM_LDFLAGS"
+
+    if test -n "$bz2lib_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$bz2lib_inc"
+      AM_CPPFLAGS="$AM_CPPFLAGS -I$bz2lib_inc"
+    fi
+
+    AC_CHECK_HEADERS([bzlib.h],
+                     [HAVE_BZ2LIB_H="yes"],
+                     [CPPFLAGS="$saved_CPPFLAGS"; AM_CPPFLAGS="$saved_AM_CPPFLAGS"] [unset HAVE_BZ2LIB])
+
+    if test -n "$bz2lib_lib"; then
+      LDFLAGS="$LDFLAGS -L$bz2lib_lib"
+      AM_LDFLAGS="$AM_LDFLAGS -L$bz2lib_lib"
+    fi
+
+    if test "x$HAVE_BZ2LIB" = "xyes" -a "x$HAVE_BZ2LIB_H" = "xyes"; then
+      AC_CHECK_LIB([bz2], [BZ2_bzCompress],,
+                   [LDFLAGS="$saved_LDFLAGS"; AM_LDFLAGS="$saved_AM_LDFLAGS"; unset HAVE_BZ2LIB])
+    fi
+
+    if test -z "$HAVE_BZ2LIB"; then
+      AC_MSG_ERROR([couldn't find bz2lib library])
+    else
+      AC_CHECK_FUNC([BZ2_bzCompress], [HAVE_BZ2_COMPRESS="yes"])
+    fi
+    ;;
+esac
 
 ## Add the suffix to CC for shared linking.  Cannot just set as an option
 ## because it must be first.
@@ -206,7 +383,7 @@ echo $HAVE_FORTRAN_2003
 if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
   HAVE_FORTRAN_2003_NOTINTEL="yes"
   AC_MSG_CHECKING([if h5fc is an Intel Fortran compiler])
-  if (${FC} -showconfig 2>&1 | grep 'Intel(R) Fortran ') > /dev/null; then
+  if (${H5FC} -showconfig 2>&1 | grep 'Intel(R) Fortran ') > /dev/null; then
     HAVE_FORTRAN_2003_NOTINTEL="no"
   fi
   if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
@@ -223,7 +400,7 @@ AM_CONDITIONAL([FORTRAN_2003_NOTINTEL_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003
 LT_OUTPUT
 
 ## Set subdirectories
-AC_CONFIG_FILES([makefile src/makefile example/makefile ])
+AC_CONFIG_FILES([makefile src/makefile example/makefile example/test.sh])
 
 ## Configure
 AC_OUTPUT
