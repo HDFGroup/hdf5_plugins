@@ -1,3 +1,48 @@
+ /*
+ * This file is an example of an HDF5 filter plugin. 
+ * The filter function  H5Z_filter_bzip2 was adopted from 
+ * PyTables http://www.pytables.org.  
+ * The plugin can be used with the HDF5 library vesrion 1.8.11 to read
+ * HDF5 datasets compressed with bzip2 created by PyTables. 
+ */
+
+/*
+ *
+Copyright Notice and Statement for PyTables Software Library and Utilities:
+
+Copyright (c) 2002-2004 by Francesc Alted
+Copyright (c) 2005-2007 by Carabos Coop. V.
+Copyright (c) 2008-2010 by Francesc Alted
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+a. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+b. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the
+   distribution.
+
+c. Neither the name of Francesc Alted nor the names of its
+   contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +56,13 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
                      const unsigned int cd_values[], size_t nbytes,
                      size_t *buf_size, void **buf);
 
-/* use an integer greater than 256 to be id of the registered filter. */
+/* 
+ * BZIP2 compression was the first iexternak filter registered by PyTbales developers with The HDF Group
+ * See http://www.hdfgroup.org/services/contributions.html for more information.
+ *
+ * If you intend your plugin to be used by others, please register your filter
+ * with The HDF Group. 
+ */
 #define H5Z_FILTER_BZIP2 307
 
 const H5Z_class2_t H5Z_BZIP2[1] = {{
@@ -19,7 +70,8 @@ const H5Z_class2_t H5Z_BZIP2[1] = {{
     (H5Z_filter_t)H5Z_FILTER_BZIP2,         /* Filter id number             */
     1,              /* encoder_present flag (set to true) */
     1,              /* decoder_present flag (set to true) */
-    "bzip2",                  /* Filter name for debugging    */
+    "HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html", 
+                                /* Filter name for debugging    */
     NULL,                       /* The "can apply" callback     */
     NULL,                       /* The "set local" callback     */
     (H5Z_func_t)H5Z_filter_bzip2,         /* The actual filter function   */
