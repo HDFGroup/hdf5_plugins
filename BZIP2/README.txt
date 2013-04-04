@@ -17,3 +17,8 @@ Example:
     set(ENV{LD_LIBRARY_PATH} "/temp/bz2/lib:/temp/hdf5/lib")
     set(ADD_BUILD_OPTIONS "-DBUILD_EXAMPLES:BOOL=ON -DBUILD_TESTING:BOOL=ON")
     
+    For non-cmake built hdf5 or bzip2, use the location of the include/lib
+    folders:
+    set(ENV{HDF5_ROOT} "/temp/hdf5")
+    set(ENV{BZ2_ROOT} "/temp/bz2")
+    
