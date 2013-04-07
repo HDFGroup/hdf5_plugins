@@ -57,7 +57,8 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
                      size_t *buf_size, void **buf);
 
 /* 
- * BZIP2 compression was the first iexternak filter registered by PyTbales developers with The HDF Group
+ * BZIP2 compression was the first external filter registered by PyTbales developers 
+ * with The HDF Group
  * See http://www.hdfgroup.org/services/contributions.html for more information.
  *
  * If you intend your plugin to be used by others, please register your filter
