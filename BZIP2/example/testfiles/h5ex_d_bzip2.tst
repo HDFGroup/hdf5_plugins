@@ -1,7 +1,3 @@
-*******************************
-*  Output of example program  *
-*******************************
-
 bzip2 filter is available for encoding and decoding.
 ....Writing bzip2 compressed data ................
 ....Close the file and reopen for reading ........
