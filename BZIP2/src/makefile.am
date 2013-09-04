@@ -18,7 +18,7 @@ MAJOR = 0
 MINOR = 1
 VERSION = $(MAJOR).$(MINOR)
 
-INCLUDES=-I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
+AM_CPPFLAGS=-I$(HDF5_ROOT)/include -I$(BZ2_ROOT)/include
 
 # The libh5bz2 library for plugin module.
 # Build it as shared library.

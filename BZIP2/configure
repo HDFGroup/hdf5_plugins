@@ -699,6 +699,10 @@ CC
 MAINT
 MAINTAINER_MODE_FALSE
 MAINTAINER_MODE_TRUE
+AM_BACKSLASH
+AM_DEFAULT_VERBOSITY
+AM_DEFAULT_V
+AM_V
 am__untar
 am__tar
 AMTAR
@@ -763,6 +767,7 @@ SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
+enable_silent_rules
 enable_maintainer_mode
 enable_dependency_tracking
 enable_shared
@@ -773,8 +778,8 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 with_fnord
-with_hdf5
 with_bz2lib
+with_hdf5
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1403,6 +1408,8 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-silent-rules   less verbose build output (undo: "make V=1")
+  --disable-silent-rules  verbose build output (undo: "make V=0")
   --enable-maintainer-mode
                           enable make rules and dependencies not useful (and
                           sometimes confusing) to the casual installer
@@ -1433,9 +1440,9 @@ Optional Packages:
     --with-xxx=DIR     - Specify only the directory which contains the
                          include/ and lib/ subdirectories
 
-  --with-hdf5=DIR         Where to find the HDF5 library
   --with-bz2lib=DIR       Use bz2lib library for compressed I/O filter
                           [default=yes]
+  --with-hdf5=DIR         Where to find the HDF5 library
 
 Some influential environment variables:
   CC          C compiler command
@@ -2316,7 +2323,7 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 ## AM_INIT_AUTOMAKE takes a list of options that should be applied to
 ## every Makefile.am when automake is run.
-am__api_version='1.12'
+am__api_version='1.13'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -2500,8 +2507,8 @@ if test x"${MISSING+set}" != xset; then
   esac
 fi
 # Use eval to expand $SHELL
-if eval "$MISSING --run true"; then
-  am_missing_run="$MISSING --run "
+if eval "$MISSING --is-lightweight"; then
+  am_missing_run="$MISSING "
 else
   am_missing_run=
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: 'missing' script is too old or missing" >&5
@@ -2741,6 +2748,45 @@ else
 fi
 rmdir .tst 2>/dev/null
 
+# Check whether --enable-silent-rules was given.
+if test "${enable_silent_rules+set}" = set; then :
+  enableval=$enable_silent_rules;
+fi
+
+case $enable_silent_rules in # (((
+  yes) AM_DEFAULT_VERBOSITY=0;;
+   no) AM_DEFAULT_VERBOSITY=1;;
+    *) AM_DEFAULT_VERBOSITY=1;;
+esac
+am_make=${MAKE-make}
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $am_make supports nested variables" >&5
+$as_echo_n "checking whether $am_make supports nested variables... " >&6; }
+if ${am_cv_make_support_nested_variables+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if $as_echo 'TRUE=$(BAR$(V))
+BAR0=false
+BAR1=true
+V=1
+am__doit:
+	@$(TRUE)
+.PHONY: am__doit' | $am_make -f - >/dev/null 2>&1; then
+  am_cv_make_support_nested_variables=yes
+else
+  am_cv_make_support_nested_variables=no
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_make_support_nested_variables" >&5
+$as_echo "$am_cv_make_support_nested_variables" >&6; }
+if test $am_cv_make_support_nested_variables = yes; then
+    AM_V='$(V)'
+  AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
+else
+  AM_V=$AM_DEFAULT_VERBOSITY
+  AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
+fi
+AM_BACKSLASH='\'
+
 if test "`cd $srcdir && pwd`" != "`pwd`"; then
   # Use -I$(srcdir) only when $(srcdir) != ., so that make's output
   # is not polluted with repeated "-I."
@@ -2803,7 +2849,12 @@ mkdir_p='$(MKDIR_P)'
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
 
+
+# We'll loop over all known methods to create a tar archive until one works.
+_am_tools='gnutar  pax cpio none'
+
 am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
+
 
 
 
@@ -7954,6 +8005,10 @@ _lt_linker_boilerplate=`cat conftest.err`
 $RM -r conftest*
 
 
+## CAVEAT EMPTOR:
+## There is no encapsulation within the following macros, do not change
+## the running order or otherwise move them around unless you know exactly
+## what you are doing...
 if test -n "$compiler"; then
 
 lt_prog_compiler_no_builtin_flag=
@@ -10508,10 +10563,14 @@ fi
   # before this can be enabled.
   hardcode_into_libs=yes
 
+  # Add ABI-specific directories to the system library path.
+  sys_lib_dlsearch_path_spec="/lib64 /usr/lib64 /lib /usr/lib"
+
   # Append ld.so.conf contents to the search path
   if test -f /etc/ld.so.conf; then
     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;/^[	 ]*hwcap[	 ]/d;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;s/"//g;/^$/d' | tr '\n' ' '`
-    sys_lib_dlsearch_path_spec="/lib /usr/lib $lt_ld_extra"
+    sys_lib_dlsearch_path_spec="$sys_lib_dlsearch_path_spec $lt_ld_extra"
+
   fi
 
   # We used to test for /lib/ld.so.1 and disable shared libraries on
@@ -11697,6 +11756,203 @@ fi
 
 
 ## ----------------------------------------------------------------------
+## Is the bzip2 library present? It has a header file `bzlib.h' and a library
+## `-lbz2' and their locations might be specified with the `--with-bz2lib'
+## command-line switch. The value is an include path and/or a library path.
+## If the library path is specified then it must be preceded by a comma.
+##
+
+# Check whether --with-bz2lib was given.
+if test "${with_bz2lib+set}" = set; then :
+  withval=$with_bz2lib;
+fi
+
+
+case $withval in
+  yes)
+    HAVE_BZ2LIB="yes"
+    ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
+if test "x$ac_cv_header_bzlib_h" = xyes; then :
+  HAVE_BZ2LIB_H="yes"
+else
+  unset HAVE_BZ2LIB
+fi
+
+
+    if test "x$HAVE_BZ2LIB" = "xyes" -a "x$HAVE_BZ2LIB_H" = "xyes"; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzCompress in -lbz2" >&5
+$as_echo_n "checking for BZ2_bzCompress in -lbz2... " >&6; }
+if ${ac_cv_lib_bz2_BZ2_bzCompress+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lbz2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char BZ2_bzCompress ();
+int
+main ()
+{
+return BZ2_bzCompress ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_bz2_BZ2_bzCompress=yes
+else
+  ac_cv_lib_bz2_BZ2_bzCompress=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_BZ2_bzCompress" >&5
+$as_echo "$ac_cv_lib_bz2_BZ2_bzCompress" >&6; }
+if test "x$ac_cv_lib_bz2_BZ2_bzCompress" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBBZ2 1
+_ACEOF
+
+  LIBS="-lbz2 $LIBS"
+
+else
+  unset HAVE_BZ2LIB
+fi
+
+    fi
+    if test -z "$HAVE_BZ2LIB"; then
+      as_fn_error $? "couldn't find bz2lib library" "$LINENO" 5
+    else
+      ac_fn_c_check_func "$LINENO" "BZ2_bzCompress" "ac_cv_func_BZ2_bzCompress"
+if test "x$ac_cv_func_BZ2_bzCompress" = xyes; then :
+  HAVE_BZ2_COMPRESS="yes"
+fi
+
+    fi
+    ;;
+  no)
+    HAVE_BZ2LIB="no"
+    as_fn_error $? "bz2 library needed for compilation." "$LINENO" 5
+    ;;
+  *)
+    HAVE_BZ2LIB="yes"
+    case "$withval" in
+      *,*)
+        bz2lib_inc="`echo $withval | cut -f1 -d,`"
+        bz2lib_lib="`echo $withval | cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          bz2lib_inc="$withval/include"
+          bz2lib_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+    ## Trying to include -I/usr/include and -L/usr/lib is redundant and
+    ## can mess some compilers up.
+    if test "X$bz2lib_inc" = "X/usr/include"; then
+      bz2lib_inc=""
+    fi
+    if test "X$bz2lib_lib" = "X/usr/lib"; then
+      bz2lib_lib=""
+    fi
+
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_AM_CPPFLAGS="$AM_CPPFLAGS"
+    saved_LDFLAGS="$LDFLAGS"
+    saved_AM_LDFLAGS="$AM_LDFLAGS"
+
+    if test -n "$bz2lib_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$bz2lib_inc"
+      AM_CPPFLAGS="$AM_CPPFLAGS -I$bz2lib_inc"
+    fi
+
+    ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
+if test "x$ac_cv_header_bzlib_h" = xyes; then :
+  HAVE_BZ2LIB_H="yes"
+else
+  CPPFLAGS="$saved_CPPFLAGS"; AM_CPPFLAGS="$saved_AM_CPPFLAGS" unset HAVE_BZ2LIB
+fi
+
+
+
+    if test -n "$bz2lib_lib"; then
+      LDFLAGS="$LDFLAGS -L$bz2lib_lib"
+      AM_LDFLAGS="$AM_LDFLAGS -L$bz2lib_lib"
+    fi
+
+    if test "x$HAVE_BZ2LIB" = "xyes" -a "x$HAVE_BZ2LIB_H" = "xyes"; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzCompress in -lbz2" >&5
+$as_echo_n "checking for BZ2_bzCompress in -lbz2... " >&6; }
+if ${ac_cv_lib_bz2_BZ2_bzCompress+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lbz2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char BZ2_bzCompress ();
+int
+main ()
+{
+return BZ2_bzCompress ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_bz2_BZ2_bzCompress=yes
+else
+  ac_cv_lib_bz2_BZ2_bzCompress=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_BZ2_bzCompress" >&5
+$as_echo "$ac_cv_lib_bz2_BZ2_bzCompress" >&6; }
+if test "x$ac_cv_lib_bz2_BZ2_bzCompress" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBBZ2 1
+_ACEOF
+
+  LIBS="-lbz2 $LIBS"
+
+else
+  LDFLAGS="$saved_LDFLAGS"; AM_LDFLAGS="$saved_AM_LDFLAGS"; unset HAVE_BZ2LIB
+fi
+
+    fi
+
+    if test -z "$HAVE_BZ2LIB"; then
+      as_fn_error $? "couldn't find bz2lib library" "$LINENO" 5
+    else
+      ac_fn_c_check_func "$LINENO" "BZ2_bzCompress" "ac_cv_func_BZ2_bzCompress"
+if test "x$ac_cv_func_BZ2_bzCompress" = xyes; then :
+  HAVE_BZ2_COMPRESS="yes"
+fi
+
+    fi
+    ;;
+esac
+
+## ----------------------------------------------------------------------
 ## Where's HDF5? We need to find out where the HDF5 library
 ## and header files are if they aren't in system library/include places.
 ##
@@ -11711,19 +11967,13 @@ fi
 
 case "$withval" in
   yes)
-    for ac_header in hdf5.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
+    ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
 if test "x$ac_cv_header_hdf5_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_HDF5_H 1
-_ACEOF
 
 else
   as_fn_error $? "cannot find HDF5 header files." "$LINENO" 5
 fi
 
-done
 
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for H5open in -lhdf5" >&5
 $as_echo_n "checking for H5open in -lhdf5... " >&6; }
@@ -11794,19 +12044,13 @@ fi
       CPPFLAGS="$CPPFLAGS -I$hdf5_inc"
     fi
 
-    for ac_header in hdf5.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
+    ac_fn_c_check_header_mongrel "$LINENO" "hdf5.h" "ac_cv_header_hdf5_h" "$ac_includes_default"
 if test "x$ac_cv_header_hdf5_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_HDF5_H 1
-_ACEOF
 
 else
   as_fn_error $? "cannot find HDF5 header files!" "$LINENO" 5
 fi
 
-done
 
 
     HDF5PATH="$hdf5_lib,"
@@ -11888,220 +12132,6 @@ esac
 
 H5CC=${HDF5PATH}/h5cc
 H5FC=${HDF5PATH}/h5fc
-
-## ----------------------------------------------------------------------
-## Is the bzip2 library present? It has a header file `bzlib.h' and a library
-## `-lbz2' and their locations might be specified with the `--with-bz2lib'
-## command-line switch. The value is an include path and/or a library path.
-## If the library path is specified then it must be preceded by a comma.
-##
-
-# Check whether --with-bz2lib was given.
-if test "${with_bz2lib+set}" = set; then :
-  withval=$with_bz2lib;
-else
-  withval=yes
-fi
-
-
-case $withval in
-  yes)
-    HAVE_BZ2LIB="yes"
-    for ac_header in bzlib.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_bzlib_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_BZLIB_H 1
-_ACEOF
- HAVE_BZ2LIB_H="yes"
-else
-  unset HAVE_BZ2LIB
-fi
-
-done
-
-    if test "x$HAVE_BZ2LIB" = "xyes" -a "x$HAVE_BZ2LIB_H" = "xyes"; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for compress in -lbz2" >&5
-$as_echo_n "checking for compress in -lbz2... " >&6; }
-if ${ac_cv_lib_bz2_compress+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbz2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char compress ();
-int
-main ()
-{
-return compress ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_bz2_compress=yes
-else
-  ac_cv_lib_bz2_compress=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_compress" >&5
-$as_echo "$ac_cv_lib_bz2_compress" >&6; }
-if test "x$ac_cv_lib_bz2_compress" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBBZ2 1
-_ACEOF
-
-  LIBS="-lbz2 $LIBS"
-
-else
-  unset HAVE_BZ2LIB
-fi
-
-    fi
-    if test -z "$HAVE_BZ2LIB"; then
-      as_fn_error $? "couldn't find bz2lib library" "$LINENO" 5
-    else
-      ac_fn_c_check_func "$LINENO" "BZ2_bzCompress" "ac_cv_func_BZ2_bzCompress"
-if test "x$ac_cv_func_BZ2_bzCompress" = xyes; then :
-  HAVE_BZ2_COMPRESS="yes"
-fi
-
-    fi
-    ;;
-  no)
-    HAVE_BZ2LIB="no"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for bz2lib" >&5
-$as_echo_n "checking for bz2lib... " >&6; }
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: suppressed" >&5
-$as_echo "suppressed" >&6; }
-    ;;
-  *)
-    HAVE_BZ2LIB="yes"
-    case "$withval" in
-      *,*)
-        bz2lib_inc="`echo $withval | cut -f1 -d,`"
-        bz2lib_lib="`echo $withval | cut -f2 -d, -s`"
-        ;;
-      *)
-        if test -n "$withval"; then
-          bz2zlib_inc="$withval/include"
-          bz2lib_lib="$withval/lib"
-        fi
-        ;;
-    esac
-
-    ## Trying to include -I/usr/include and -L/usr/lib is redundant and
-    ## can mess some compilers up.
-    if test "X$bz2lib_inc" = "X/usr/include"; then
-      bz2lib_inc=""
-    fi
-    if test "X$bz2lib_lib" = "X/usr/lib"; then
-      bz2lib_lib=""
-    fi
-
-    saved_CPPFLAGS="$CPPFLAGS"
-    saved_AM_CPPFLAGS="$AM_CPPFLAGS"
-    saved_LDFLAGS="$LDFLAGS"
-    saved_AM_LDFLAGS="$AM_LDFLAGS"
-
-    if test -n "$bz2lib_inc"; then
-      CPPFLAGS="$CPPFLAGS -I$bz2lib_inc"
-      AM_CPPFLAGS="$AM_CPPFLAGS -I$bz2lib_inc"
-    fi
-
-    for ac_header in bzlib.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "bzlib.h" "ac_cv_header_bzlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_bzlib_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_BZLIB_H 1
-_ACEOF
- HAVE_BZ2LIB_H="yes"
-else
-  CPPFLAGS="$saved_CPPFLAGS"; AM_CPPFLAGS="$saved_AM_CPPFLAGS" unset HAVE_BZ2LIB
-fi
-
-done
-
-
-    if test -n "$bz2lib_lib"; then
-      LDFLAGS="$LDFLAGS -L$bz2lib_lib"
-      AM_LDFLAGS="$AM_LDFLAGS -L$bz2lib_lib"
-    fi
-
-    if test "x$HAVE_BZ2LIB" = "xyes" -a "x$HAVE_BZ2LIB_H" = "xyes"; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for BZ2_bzCompress in -lbz2" >&5
-$as_echo_n "checking for BZ2_bzCompress in -lbz2... " >&6; }
-if ${ac_cv_lib_bz2_BZ2_bzCompress+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lbz2  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char BZ2_bzCompress ();
-int
-main ()
-{
-return BZ2_bzCompress ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_bz2_BZ2_bzCompress=yes
-else
-  ac_cv_lib_bz2_BZ2_bzCompress=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_BZ2_bzCompress" >&5
-$as_echo "$ac_cv_lib_bz2_BZ2_bzCompress" >&6; }
-if test "x$ac_cv_lib_bz2_BZ2_bzCompress" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBBZ2 1
-_ACEOF
-
-  LIBS="-lbz2 $LIBS"
-
-else
-  LDFLAGS="$saved_LDFLAGS"; AM_LDFLAGS="$saved_AM_LDFLAGS"; unset HAVE_BZ2LIB
-fi
-
-    fi
-
-    if test -z "$HAVE_BZ2LIB"; then
-      as_fn_error $? "couldn't find bz2lib library" "$LINENO" 5
-    else
-      ac_fn_c_check_func "$LINENO" "BZ2_bzCompress" "ac_cv_func_BZ2_bzCompress"
-if test "x$ac_cv_func_BZ2_bzCompress" = xyes; then :
-  HAVE_BZ2_COMPRESS="yes"
-fi
-
-    fi
-    ;;
-esac
 
 ## Add the suffix to CC for shared linking.  Cannot just set as an option
 ## because it must be first.
@@ -14018,7 +14048,6 @@ DEFS=-DHAVE_CONFIG_H
 
 ac_libobjs=
 ac_ltlibobjs=
-U=
 for ac_i in : $LIBOBJS; do test "x$ac_i" = x: && continue
   # 1. Remove the extension, and $U if already installed.
   ac_script='s/\$U\././;s/\.o$//;s/\.obj$//'
@@ -15546,7 +15575,7 @@ $as_echo "$as_me: executing $ac_file commands" >&6;}
 
   case $ac_file$ac_mode in
     "depfiles":C) test x"$AMDEP_TRUE" != x"" || {
-  # Autoconf 2.62 quotes --file arguments for eval, but not when files
+  # Older Autoconf quotes --file arguments for eval, but not when files
   # are listed without --file.  Let's play safe and only enable the eval
   # if we detect the quoting.
   case $CONFIG_FILES in
@@ -15597,7 +15626,7 @@ $as_echo X"$mf" |
     DEPDIR=`sed -n 's/^DEPDIR = //p' < "$mf"`
     test -z "$DEPDIR" && continue
     am__include=`sed -n 's/^am__include = //p' < "$mf"`
-    test -z "am__include" && continue
+    test -z "$am__include" && continue
     am__quote=`sed -n 's/^am__quote = //p' < "$mf"`
     # Find all dependency output files, they are included files with
     # $(DEPDIR) in their names.  We invoke sed twice because it is the
