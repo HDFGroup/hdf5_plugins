@@ -203,14 +203,6 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
 ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
 #-----------------------------------------------------------------------------
-# Build utility to copy and strip X lines of file
-#-----------------------------------------------------------------------------
-IF (BUILD_TESTING)
-  SET (XLATE_UTILITY "xlatefile")
-  ADD_EXECUTABLE(${XLATE_UTILITY} ${H5BZ2_RESOURCES_DIR}/xlatefile.c)
-ENDIF (BUILD_TESTING)
-
-#-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
 #-----------------------------------------------------------------------------
 OPTION (BUILD_TESTING "Build h5bz2 Unit Testing" OFF)
