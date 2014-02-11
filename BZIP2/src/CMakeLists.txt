@@ -45,4 +45,19 @@ IF (BUILD_TESTING)
         "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5BZ2_LIB_TARGET}>"
   )
 ENDIF (BUILD_TESTING)
+
+#-----------------------------------------------------------------------------
+# Add Target(s) to CMake Install for import into other projects
+#-----------------------------------------------------------------------------
+IF (H5BZ2_EXPORTED_TARGETS)
+  INSTALL (
+      TARGETS
+          ${H5BZ2_LIB_TARGET}
+      EXPORT
+          ${H5BZ2_EXPORTED_TARGETS}
+      LIBRARY DESTINATION ${H5BZ2_INSTALL_LIB_DIR} COMPONENT libraries
+      ARCHIVE DESTINATION ${H5BZ2_INSTALL_LIB_DIR} COMPONENT libraries
+      RUNTIME DESTINATION ${H5BZ2_INSTALL_BIN_DIR} COMPONENT libraries
+  )
+ENDIF (H5BZ2_EXPORTED_TARGETS)
   

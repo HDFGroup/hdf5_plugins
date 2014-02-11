@@ -1,0 +1,27 @@
+#-----------------------------------------------------------------------------
+# h5bzip2 Version file for install directory
+#-----------------------------------------------------------------------------
+
+SET (PACKAGE_VERSION @H5BZ2_VERSION_STRING@)
+
+IF ("${PACKAGE_FIND_VERSION_MAJOR}" EQUAL @H5BZ2_VERSION_MAJOR@)
+
+  # exact match for version @H5BZ2_VERSION_MAJOR@.@H5BZ2_VERSION_MINOR@
+  IF ("${PACKAGE_FIND_VERSION_MINOR}" EQUAL @H5BZ2_VERSION_MINOR@)
+
+    # compatible with any version @H5BZ2_VERSION_MAJOR@.@H5BZ2_VERSION_MINOR@.x
+    SET (PACKAGE_VERSION_COMPATIBLE 1) 
+    
+    IF ("${PACKAGE_FIND_VERSION_PATCH}" EQUAL @H5BZ2_VERSION_RELEASE@)
+      SET (PACKAGE_VERSION_EXACT 1)    
+
+      IF ("${PACKAGE_FIND_VERSION_TWEAK}" EQUAL @H5BZ2_VERSION_SUBRELEASE@)
+        # not using this yet
+      ENDIF ("${PACKAGE_FIND_VERSION_TWEAK}" EQUAL @H5BZ2_VERSION_SUBRELEASE@)
+      
+    ENDIF ("${PACKAGE_FIND_VERSION_PATCH}" EQUAL @H5BZ2_VERSION_RELEASE@)
+    
+  ENDIF ("${PACKAGE_FIND_VERSION_MINOR}" EQUAL @H5BZ2_VERSION_MINOR@)
+ENDIF ("${PACKAGE_FIND_VERSION_MAJOR}" EQUAL @H5BZ2_VERSION_MAJOR@)
+
+

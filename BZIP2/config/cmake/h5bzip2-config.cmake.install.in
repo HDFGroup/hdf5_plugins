@@ -1,0 +1,28 @@
+#-----------------------------------------------------------------------------
+# h5bzip2 Config file for compiling against h5bzip2 install directory
+#-----------------------------------------------------------------------------
+
+GET_FILENAME_COMPONENT (SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${SELF_DIR}" PATH)
+GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
+IF (NOT WIN32)
+  GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
+ENDIF (NOT WIN32)
+
+SET (H5BZ2_INCLUDE_DIR "${_IMPORT_PREFIX}/include")
+
+#-----------------------------------------------------------------------------
+# Version Strings
+#-----------------------------------------------------------------------------
+SET (H5BZ2_VERSION_STRING @H5BZ2_VERSION_STRING@)
+SET (H5BZ2_VERSION_MAJOR  @H5BZ2_VERSION_MAJOR@)
+SET (H5BZ2_VERSION_MINOR  @H5BZ2_VERSION_MINOR@)
+
+#-----------------------------------------------------------------------------
+# Don't include targets if this file is being picked up by another
+# project which has already build h5bzip2 as a subproject
+#-----------------------------------------------------------------------------
+IF (NOT TARGET "@H5BZ2_PACKAGE@")
+  INCLUDE (${SELF_DIR}/@H5BZ2_PACKAGE@@H5BZ2_PACKAGE_EXT@-targets.cmake)
+  SET (BZ2_LIBRARIES "@H5BZ2_LIBRARIES_TO_EXPORT@")
+ENDIF (NOT TARGET "@H5BZ2_PACKAGE@")
