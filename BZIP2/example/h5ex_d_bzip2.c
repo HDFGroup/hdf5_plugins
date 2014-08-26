@@ -25,20 +25,20 @@ main (void)
 {
     hid_t           file, space, dset, dcpl;    /* Handles */
     herr_t          status;
+    htri_t          avail;
     H5Z_filter_t    filter_id = 0;
     char            filter_name[80];
     hsize_t         dims[2] = {DIM0, DIM1},
                     chunk[2] = {CHUNK0, CHUNK1};
     size_t          nelmts = 1;                /* number of elements in cd_values */
+    unsigned int    flags;
+    unsigned        filter_config;
     const unsigned int cd_values[1] = {2};     /* bzip2 default level is 2 */
     unsigned int       values_out[1] = {99};          
-    unsigned int    flags;
-    htri_t          avail;
-    unsigned        filter_config;
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
-                    max,
-                    i, j;
+                    max;
+    hsize_t         i, j;
 
     /*
      * Initialize data.
@@ -69,7 +69,7 @@ main (void)
      * Check that filter is registered with the library now.
      * If it is registered, retrieve filter's configuration. 
      */
-     avail = H5Zfilter_avail(H5Z_FILTER_BZIP2);
+    avail = H5Zfilter_avail(H5Z_FILTER_BZIP2);
     if (avail) {
         status = H5Zget_filter_info (H5Z_FILTER_BZIP2, &filter_config);
         if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) && 

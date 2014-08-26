@@ -48,9 +48,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
-#include <H5PLextern.h>
+#include "H5PLextern.h"
 
-#include <bzlib.h>
+#include "bzlib.h"
 
 static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
                      const unsigned int cd_values[], size_t nbytes,

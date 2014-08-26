@@ -6,19 +6,19 @@ SET (dyn_examples
 )
 
 #run-time loadable bzip library examples
-FOREACH (example ${dyn_examples})
-  ADD_EXECUTABLE (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
+foreach (example ${dyn_examples})
+  add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
   TARGET_C_PROPERTIES (${example} " " " ")
   TARGET_LINK_LIBRARIES (${example} ${HDF5_LIBRARIES})
-  IF (NOT WIN32)
+  if (NOT WIN32)
     TARGET_LINK_LIBRARIES (${example} dl)
-  ENDIF (NOT WIN32)
-ENDFOREACH (example ${dyn_examples})
+  endif (NOT WIN32)
+endforeach (example ${dyn_examples})
 
-IF (BUILD_TESTING)
+if (BUILD_TESTING)
   MACRO (ADD_H5_TEST testname)
-    ADD_TEST (
+    add_test (
         NAME ${testname}-clearall
         COMMAND    ${CMAKE_COMMAND}
             -E remove 
@@ -28,7 +28,7 @@ IF (BUILD_TESTING)
             ${testname}.ddl.out.err
             ${testname}.h5
     )
-    ADD_TEST (
+    add_test (
         NAME ${testname}
         COMMAND "${CMAKE_COMMAND}"
             -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
@@ -41,9 +41,9 @@ IF (BUILD_TESTING)
             -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
             -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
     )
-    SET_TESTS_PROPERTIES(${testname} PROPERTIES DEPENDS ${testname}-clearall)
-    IF (HDF5_BUILD_TOOLS)
-      ADD_TEST (
+    set_tests_properties(${testname} PROPERTIES DEPENDS ${testname}-clearall)
+    if (HDF5_BUILD_TOOLS)
+      add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:h5dump>"
@@ -56,13 +56,13 @@ IF (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
       )
-      SET_TESTS_PROPERTIES(H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
-    ENDIF (HDF5_BUILD_TOOLS)
+      set_tests_properties(H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+    endif (HDF5_BUILD_TOOLS)
   ENDMACRO (ADD_H5_TEST)
 
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
-    ADD_TEST (
+    add_test (
         NAME H5BZ2_UD-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove 
@@ -72,8 +72,8 @@ IF (BUILD_TESTING)
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
     )
-    IF (HDF5_BUILD_TOOLS)
-      ADD_TEST (
+    if (HDF5_BUILD_TOOLS)
+      add_test (
           NAME H5BZ2_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:h5repack>"
@@ -87,8 +87,8 @@ IF (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
       )
-      SET_TESTS_PROPERTIES (H5BZ2_UD-${testname} PROPERTIES DEPENDS H5BZ2_UD-clearall-objects)
-      ADD_TEST (
+      set_tests_properties (H5BZ2_UD-${testname} PROPERTIES DEPENDS H5BZ2_UD-clearall-objects)
+      add_test (
           NAME H5BZ2_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:h5dump>"
@@ -101,34 +101,34 @@ IF (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
       )
-      SET_TESTS_PROPERTIES (H5BZ2_UD-h5dump-${testname} PROPERTIES DEPENDS "H5BZ2_UD-${testname}")
-    ENDIF (HDF5_BUILD_TOOLS)
-  ENDMACRO (ADD_H5_UD_TEST)
+      set_tests_properties (H5BZ2_UD-h5dump-${testname} PROPERTIES DEPENDS "H5BZ2_UD-${testname}")
+    endif (HDF5_BUILD_TOOLS)
+  endmacro (ADD_H5_UD_TEST)
 
   # --------------------------------------------------------------------
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
-  SET (LIST_HDF5_TEST_FILES
+  set (LIST_HDF5_TEST_FILES
       ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5
   )
-  SET (LIST_OTHER_TEST_FILES
+  set (LIST_OTHER_TEST_FILES
       ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_bzip2.ddl
       ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_bzip2.tst
       ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
       ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
   )
 
-  FOREACH (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-    GET_FILENAME_COMPONENT(fname "${h5_file}" NAME)
-    SET (dest "${PROJECT_BINARY_DIR}/${fname}")
-    #MESSAGE (STATUS " Copying ${h5_file}")
-    ADD_CUSTOM_COMMAND (
+  foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
+    get_filename_component(fname "${h5_file}" NAME)
+    set (dest "${PROJECT_BINARY_DIR}/${fname}")
+    #message (STATUS " Copying ${h5_file}")
+    add_custom_command (
         TARGET     h5ex_d_bzip2
         POST_BUILD
         COMMAND    ${CMAKE_COMMAND}
         ARGS       -E copy_if_different ${h5_file} ${dest}
     )
-  ENDFOREACH (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
+  endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
 
 
   ADD_H5_TEST (h5ex_d_bzip2)
@@ -136,5 +136,5 @@ IF (BUILD_TESTING)
 #UD BZIP2
   ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,1,9)
     
-ENDIF (BUILD_TESTING)
+endif (BUILD_TESTING)
   
