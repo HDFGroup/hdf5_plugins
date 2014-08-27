@@ -8,6 +8,8 @@ set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
 set (BUILD_TESTING ON CACHE BOOL "Build h5bz2 Unit Testing" FORCE)
 
+set (BUILD_EXAMPLES ON CACHE BOOL "Build h5bz2 Examples" FORCE)
+
 set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
 
 set (H5BZ2_PACKAGE_NAME "h5bz2" CACHE STRING "Name of h5bz2 package" FORCE)
