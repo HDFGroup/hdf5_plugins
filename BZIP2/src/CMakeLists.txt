@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.10)
-PROJECT (H5BZ2_SRC C)
+project (H5BZ2_SRC C)
 
 #-----------------------------------------------------------------------------
 # Setup include Directories
@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES (${CMAKE_BINARY_DIR})
 #-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below
 #-----------------------------------------------------------------------------
-ADD_DEFINITIONS (${HDF5_EXTRA_C_FLAGS})
+add_definitions (${HDF5_EXTRA_C_FLAGS})
 
 #-----------------------------------------------------------------------------
 # Setup include Directories

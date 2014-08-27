@@ -4,13 +4,13 @@
 # EXTERNAL cache entries
 ########################
 
-SET (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
+set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
-SET (BUILD_TESTING OFF CACHE BOOL "Build h5bz2 Unit Testing" FORCE)
+set (BUILD_TESTING OFF CACHE BOOL "Build h5bz2 Unit Testing" FORCE)
 
-SET (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
+set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
 
-SET (H5BZ2_PACKAGE_NAME "h5bz2" CACHE STRING "Name of h5bz2 package" FORCE)
+set (H5BZ2_PACKAGE_NAME "h5bz2" CACHE STRING "Name of h5bz2 package" FORCE)
 
 set (H5BZ2_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO SVN TGZ)" FORCE)
 set_property (CACHE H5BZ2_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO SVN TGZ)

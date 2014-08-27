@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.10)
-PROJECT (H5BZ2 C)
+project (H5BZ2 C)
 
 #-----------------------------------------------------------------------------
 # Basic H5BZIP stuff here
@@ -53,7 +53,7 @@ set (H5BZ2_SOVERS_MAJOR 1)
 set (H5BZ2_SOVERS_MINOR 0)
 set (H5BZ2_SOVERS_INTERFACE 1)
 set (H5BZ2_SOVERS_RELEASE 0)
-MATH (EXPR H5BZ2_SOVERS_MAJOR ${H5BZ2_SOVERS_INTERFACE}-${H5BZ2_SOVERS_RELEASE})
+math (EXPR H5BZ2_SOVERS_MAJOR ${H5BZ2_SOVERS_INTERFACE}-${H5BZ2_SOVERS_RELEASE})
 
 #-----------------------------------------------------------------------------
 set (H5BZ2_PACKAGE "h5bz2")
@@ -108,7 +108,7 @@ endif (NOT H5BZ2_EXPORTED_TARGETS)
 # add it to this variable. This is NOT used by Make Install, but for projects
 # which include h5bzip2 as a sub-project within their build tree
 #-----------------------------------------------------------------------------
-SET_GLOBAL_VARIABLE(H5BZ2_LIBRARIES_TO_EXPORT "")
+SET_GLOBAL_VARIABLE (H5BZ2_LIBRARIES_TO_EXPORT "")
 
 #-----------------------------------------------------------------------------
 # Run all the CMake configuration tests for our build environment

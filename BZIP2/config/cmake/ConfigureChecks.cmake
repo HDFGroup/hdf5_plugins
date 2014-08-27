@@ -151,7 +151,7 @@ MACRO (HDF_FUNCTION_TEST OTHER_TEST)
     endif (LARGEFILE)
 
     #MESSAGE (STATUS "Performing ${OTHER_TEST}")
-    TRY_COMPILE (${OTHER_TEST}
+    try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5BZ2_RESOURCES_DIR}/HDFTests.c
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
@@ -238,7 +238,7 @@ if (NOT WINDOWS)
   option (HDF_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
   if (HDF_ENABLE_LARGE_FILE)
     set (msg "Performing TEST_LFS_WORKS")
-    TRY_RUN (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
+    try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
         ${H5BZ2_RESOURCES_DIR}/HDFTests.c
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
@@ -268,7 +268,7 @@ if (NOT WINDOWS)
   set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${HDF_EXTRA_FLAGS})
 endif (NOT WINDOWS)
 
-ADD_DEFINITIONS (${HDF_EXTRA_FLAGS})
+add_definitions (${HDF_EXTRA_FLAGS})
 #-----------------------------------------------------------------------------
 # Check for some functions that are used
 #
