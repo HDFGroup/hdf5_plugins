@@ -128,15 +128,6 @@ else (BUILD_SHARED_LIBS)
 endif (BUILD_SHARED_LIBS)
 
 #-----------------------------------------------------------------------------
-# blosc requires pthreads
-# CMAKE_THREAD_LIBS_INIT        - the thread library to link into an application (-lpthread )
-# CMAKE_USE_SPROC_INIT          - are we using sproc?
-# CMAKE_USE_WIN32_THREADS_INIT  - are we using WIN32 threads
-# CMAKE_USE_PTHREADS_INIT       - are we using pthreads
-# CMAKE_HP_PTHREADS_INIT        - are we using hp pthreads
-#-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
 # HDF5 support
 #-----------------------------------------------------------------------------
 set (CMAKE_MODULE_PATH ${HDF_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
