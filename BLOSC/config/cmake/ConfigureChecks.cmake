@@ -150,7 +150,7 @@ MACRO (HDF_FUNCTION_TEST OTHER_TEST)
       )
     endif (LARGEFILE)
 
-    #MESSAGE (STATUS "Performing ${OTHER_TEST}")
+    #message (STATUS "Performing ${OTHER_TEST}")
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5BLOSC_RESOURCES_DIR}/HDFTests.c

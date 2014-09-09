@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.10)
-PROJECT (HDF5BLOSC_EX)
+project (HDF5BLOSC_EX)
 
 set (dyn_examples
     h5ex_d_blosc

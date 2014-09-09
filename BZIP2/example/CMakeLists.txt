@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.10)
-PROJECT (HDF5BZ2_EX)
+project (HDF5BZ2_EX)
 
 set (dyn_examples
     h5ex_d_bzip2
