@@ -1,0 +1,26 @@
+#-----------------------------------------------------------------------------
+# h5blosc Config file for compiling against h5blosc build directory
+#-----------------------------------------------------------------------------
+get_filename_component (SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+#-----------------------------------------------------------------------------
+# Directories
+#-----------------------------------------------------------------------------
+
+set (H5BLOSC_INCLUDE_DIRS "@H5BLOSC_INCLUDES_BUILD_TIME@")
+
+#-----------------------------------------------------------------------------
+# Version Strings
+#-----------------------------------------------------------------------------
+set (H5BLOSC_VERSION_STRING @H5BLOSC_VERSION_STRING@)
+set (H5BLOSC_VERSION_MAJOR  @H5BLOSC_VERSION_MAJOR@)
+set (H5BLOSC_VERSION_MINOR  @H5BLOSC_VERSION_MINOR@)
+
+#-----------------------------------------------------------------------------
+# Don't include targets if this file is being picked up by another
+# project which has already build h5blosc as a subproject
+#-----------------------------------------------------------------------------
+if (NOT TARGET "@H5BLOSC_PACKAGE@")
+  include (${SELF_DIR}/@H5BLOSC_PACKAGE@@H5BLOSC_PACKAGE_EXT@-targets.cmake)
+  set (H5BLOSC_LIBRARIES "@H5BLOSC_LIBRARIES_TO_EXPORT@")
+endif (NOT TARGET "@H5BLOSC_PACKAGE@")

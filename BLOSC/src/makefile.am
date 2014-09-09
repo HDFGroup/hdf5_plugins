@@ -1,0 +1,33 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+##
+## Makefile.am
+## Run automake to generate a Makefile.in from this file.
+##
+#
+# HDF5 BLOSC Library Plugin makefile(.in)
+#
+
+# Shell commands used in Makefiles
+RM=rm -f
+CP=cp
+
+MAJOR = 0
+MINOR = 1
+VERSION = $(MAJOR).$(MINOR)
+
+AM_CPPFLAGS=-I$(HDF5_ROOT)/include -I./
+
+# The libh5blosc library for plugin module.
+# Build it as shared library.
+lib_LTLIBRARIES=libh5blosc.la
+libh5blosc_la_SOURCES=H5Zblosc.c blosc.c blosclz.c shuffle.c
+
+# Currenlty we winclude all blosc library files into the filter library itself
+#LDFLAGS=-L$(BLOSC_ROOT)/lib
+#LIBS=-lblosc
+
+CHECK_CLEANFILES=*.o *.so* 
+DISTCLEANFILES=*.o *.so* 
