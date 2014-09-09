@@ -8,7 +8,7 @@ This directory contains the binary (release) distribution of
 It was built with the following options: 
     -- @LIB_TYPE@ C libraries
     -- @LIB_TYPE@ H5BLOSC tools
-    -- @LIB_TYPE@ BZIP2 @BLOSC_VERSION_STRING@
+    -- @LIB_TYPE@ BLOSC @BLOSC_VERSION_STRING@
     -- @LIB_TYPE@ HDF5 @HDF5_VERSION_STRING@
 
 The contents of this directory are:

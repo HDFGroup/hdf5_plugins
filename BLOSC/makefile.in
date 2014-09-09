@@ -537,7 +537,7 @@ dist-gzip: distdir
 	$(am__post_remove_distdir)
 
 dist-blosc: distdir
-	tardir=$(distdir) && $(am__tar) | BZIP2=$${BZIP2--9} blosc -c >$(distdir).tar.blosc
+	tardir=$(distdir) && $(am__tar) | BLOSC=$${BLOSC--9} blosc -c >$(distdir).tar.blosc
 	$(am__post_remove_distdir)
 
 dist-lzip: distdir

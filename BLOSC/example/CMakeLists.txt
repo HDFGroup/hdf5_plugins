@@ -134,8 +134,8 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_blosc)
 
-#UD BZIP2
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,1,9)
+#UD BLOSC
+#  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,1,...,n)
     
 endif (BUILD_TESTING)
   
