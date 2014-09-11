@@ -23,7 +23,10 @@
 int
 main (void)
 {
-    hid_t           file, space, dset, dcpl;    /* Handles */
+    hid_t           file_id = -1;    /* Handles */
+    hid_t           space_id = -1;    /* Handles */
+    hid_t           dset_id = -1;    /* Handles */
+    hid_t           dcpl_id = -1;    /* Handles */
     herr_t          status;
     htri_t          avail;
     H5Z_filter_t    filter_id = 0;
@@ -39,6 +42,7 @@ main (void)
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
     hsize_t         i, j;
+    int             ret_value = 1;
 
     /*
      * Initialize data.
@@ -50,20 +54,25 @@ main (void)
     /*
      * Create a new file using the default properties.
      */
-    file = H5Fcreate (FILE, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    file_id = H5Fcreate (FILE, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    if (file_id < 0) goto done;
 
     /*
      * Create dataspace.  Setting maximum size to NULL sets the maximum
      * size to be the current size.
      */
-    space = H5Screate_simple (2, dims, NULL);
+    space_id = H5Screate_simple (2, dims, NULL);
+    if (space_id < 0) goto done;
 
     /*
      * Create the dataset creation property list, add the gzip
      * compression filter and set the chunk size.
      */
-    dcpl = H5Pcreate (H5P_DATASET_CREATE);
-    status = H5Pset_filter (dcpl, H5Z_FILTER_BZIP2, H5Z_FLAG_MANDATORY, (size_t)1, cd_values);
+    dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
+    if (dcpl_id < 0) goto done;
+
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BZIP2, H5Z_FLAG_MANDATORY, (size_t)1, cd_values);
+    if (status < 0) goto done;
 
     /* 
      * Check that filter is registered with the library now.
@@ -76,29 +85,38 @@ main (void)
                 (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) ) 
             printf ("bzip2 filter is available for encoding and decoding.\n");
     }     
-    status = H5Pset_chunk (dcpl, 2, chunk);
+    status = H5Pset_chunk (dcpl_id, 2, chunk);
+    if (status < 0) printf ("failed to set chunk.\n");
 
     /*
      * Create the dataset.
      */
     printf ("....Writing bzip2 compressed data ................\n");
-    dset = H5Dcreate (file, DATASET, H5T_STD_I32LE, space, H5P_DEFAULT, dcpl,
-                H5P_DEFAULT);
+    dset_id = H5Dcreate (file_id, DATASET, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
+    if (dset_id < 0) goto done;
 
     /*
      * Write the data to the dataset.
      */
-    status = H5Dwrite (dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-                wdata[0]);
+    status = H5Dwrite (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
+    if (status < 0) printf ("failed to write data.\n");
 
     /*
      * Close and release resources.
      */
-    status = H5Pclose (dcpl);
-    status = H5Dclose (dset);
-    status = H5Sclose (space);
-    status = H5Fclose (file);
+    H5Dclose (dset_id);
+    dset_id = -1;
+    H5Pclose (dcpl_id);
+    dcpl_id = -1;
+    H5Sclose (space_id);
+    space_id = -1;
+    H5Fclose (file_id);
+    file_id = -1;
     status = H5close();
+    if (status < 0) {
+        printf ("/nFAILED to close library/n");
+        goto done;
+    }
 
 
     printf ("....Close the file and reopen for reading ........\n");
@@ -109,18 +127,22 @@ main (void)
     /*
      * Open file and dataset using the default properties.
      */
-    file = H5Fopen (FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
-    dset = H5Dopen (file, DATASET, H5P_DEFAULT);
+    file_id = H5Fopen (FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
+    if (file_id < 0) goto done;
+
+    dset_id = H5Dopen (file_id, DATASET, H5P_DEFAULT);
+    if (dset_id < 0) goto done;
 
     /*
      * Retrieve dataset creation property list.
      */
-    dcpl = H5Dget_create_plist (dset);
+    dcpl_id = H5Dget_create_plist (dset_id);
+    if (dcpl_id < 0) goto done;
 
     /*
      * Retrieve and print the filter id, compression level and filter's name for bzip2.
      */
-    filter_id = H5Pget_filter2 (dcpl, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
+    filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
     printf ("Filter info is available from the dataset creation property \n ");
     printf ("  Filter identifier is ");
     switch (filter_id) {
@@ -133,22 +155,13 @@ main (void)
             printf ("Not expected filter\n");
             break;
     }
-    /* 
-     * Check that filter is not registered with the library yet.
-     */
-     avail = H5Zfilter_avail(H5Z_FILTER_BZIP2);
-    if (!avail) 
-        printf ("bzip2 filter is not yet available after the H5Pget_filter call.\n");
-    else
-        return 1;
-    
     
     /*
      * Read the data using the default properties.
      */
     printf ("....Reading bzip2 compressed data ................\n");
-    status = H5Dread (dset, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-                rdata[0]);
+    status = H5Dread (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
+    if (status < 0) printf ("failed to read data.\n");
 
     /*
      * Find the maximum value in the dataset, to verify that it was
@@ -172,13 +185,16 @@ main (void)
     if (avail)  
         printf ("bzip2 filter is available now since H5Dread triggered loading of the filter.\n");
          
+    ret_value = 0;
 
+done:
     /*
      * Close and release resources.
      */
-    status = H5Pclose (dcpl);
-    status = H5Dclose (dset);
-    status = H5Fclose (file);
+    if (dcpl_id >= 0) H5Pclose (dcpl_id);
+    if (dset_id >= 0) H5Dclose (dset_id);
+    if (space_id >= 0) H5Sclose (space_id);
+    if (file_id >= 0) H5Fclose (file_id);
 
-    return 0;
+    return ret_value;
 }
