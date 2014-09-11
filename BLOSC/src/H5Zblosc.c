@@ -152,7 +152,6 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space){
     H5T_class_t class;
 
     r = H5Pget_filter_by_id(dcpl, H5Z_FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
-    printf ("from set local %d\n", r);
     if(r<0) return -1;
 
     if(nelements < 4) nelements = 4;  /* First 4 slots reserved. */
