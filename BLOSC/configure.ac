@@ -15,7 +15,7 @@
 ## access to either file, you may request a copy from help@hdfgroup.org.
 
 AC_PREREQ(2.59)
-AC_INIT(H5BLOSC, 0.1, help@hdfgroup.org)
+AC_INIT(H5BZ2, 0.1, help@hdfgroup.org)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([bin])
 ## AM_INIT_AUTOMAKE takes a list of options that should be applied to
@@ -166,6 +166,90 @@ AC_ARG_WITH([fnord],
 
 
 ## ----------------------------------------------------------------------
+## Is the blosc library present? It has a header file `blosc.h' and a library
+## `-lblosc' and their locations might be specified with the `--with-blosclib' 
+## command-line switch. The value is an include path and/or a library path.
+## If the library path is specified then it must be preceded by a comma.
+##
+AC_ARG_WITH([blosclib],
+            [AS_HELP_STRING([--with-blosclib=DIR],
+                            [Use blosclib library for compressed I/O
+                             filter [default=yes]])],,)
+
+case $withval in
+  yes)
+    HAVE_BZ2LIB="yes"
+    AC_CHECK_HEADER([blosc.h], [HAVE_BLOSCLIB_H="yes"], [unset HAVE_BLOSCLIB])
+    if test "x$HAVE_BLOSCLIB" = "xyes" -a "x$HAVE_BLOSCLIB_H" = "xyes"; then
+      AC_CHECK_LIB([blosc], [blosc_compress],, [unset HAVE_BLOSCLIB])
+    fi
+    if test -z "$HAVE_BLOSCLIB"; then
+      AC_MSG_ERROR([couldn't find blosc library])
+    else
+      AC_CHECK_FUNC([blosc_compress], [HAVE_BLOSC_COMPRESS="yes"])
+    fi
+    ;;
+  no)
+    HAVE_BLOSCLIB="no"
+    AC_MSG_ERROR([blosc library needed for compilation.])
+    ;;
+  *)
+    HAVE_BLOSCLIB="yes"
+    case "$withval" in
+      *,*)
+        blosclib_inc="`echo $withval | cut -f1 -d,`"
+        blosclib_lib="`echo $withval | cut -f2 -d, -s`"
+        ;;
+      *)
+        if test -n "$withval"; then
+          blosclib_inc="$withval/include"
+          blosclib_lib="$withval/lib"
+        fi
+        ;;
+    esac
+
+    ## Trying to include -I/usr/include and -L/usr/lib is redundant and
+    ## can mess some compilers up.
+    if test "X$blosclib_inc" = "X/usr/include"; then
+      blosclib_inc=""
+    fi
+    if test "X$blosclib_lib" = "X/usr/lib"; then
+      blosclib_lib=""
+    fi
+
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_AM_CPPFLAGS="$AM_CPPFLAGS"
+    saved_LDFLAGS="$LDFLAGS"
+    saved_AM_LDFLAGS="$AM_LDFLAGS"
+
+    if test -n "$blosclib_inc"; then
+      CPPFLAGS="$CPPFLAGS -I$blosclib_inc"
+      AM_CPPFLAGS="$AM_CPPFLAGS -I$blosclib_inc"
+    fi
+
+    AC_CHECK_HEADER([blosc.h],
+                     [HAVE_BLOSCLIB_H="yes"],
+                     [CPPFLAGS="$saved_CPPFLAGS"; AM_CPPFLAGS="$saved_AM_CPPFLAGS"] [unset HAVE_BLOSCLIB])
+
+    if test -n "$blosclib_lib"; then
+      LDFLAGS="$LDFLAGS -L$blosclib_lib"
+      AM_LDFLAGS="$AM_LDFLAGS -L$blosclib_lib"
+    fi
+
+    if test "x$HAVE_BLOSCLIB" = "xyes" -a "x$HAVE_BLOSCLIB_H" = "xyes"; then
+      AC_CHECK_LIB([blosc], [blosc_compress],,
+                   [LDFLAGS="$saved_LDFLAGS"; AM_LDFLAGS="$saved_AM_LDFLAGS"; unset HAVE_BLOSCLIB])
+    fi
+
+    if test -z "$HAVE_BLOSCLIB"; then
+      AC_MSG_ERROR([couldn't find blosclib library])
+    else
+      AC_CHECK_FUNC([blosc_compress], [HAVE_BLOSC_COMPRESS="yes"])
+    fi
+    ;;
+esac
+
+## ----------------------------------------------------------------------
 ## Where's HDF5? We need to find out where the HDF5 library
 ## and header files are if they aren't in system library/include places.
 ##
@@ -281,7 +365,6 @@ then
   PLUGIN_H5BLOSC=1
 fi
 AM_CONDITIONAL(H5BLOSC, test "$PLUGIN_H5BLOSC")
-
 
 LT_OUTPUT
 

@@ -536,8 +536,8 @@ dist-gzip: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
 	$(am__post_remove_distdir)
 
-dist-blosc: distdir
-	tardir=$(distdir) && $(am__tar) | BLOSC=$${BLOSC--9} blosc -c >$(distdir).tar.blosc
+dist-bzip2: distdir
+	tardir=$(distdir) && $(am__tar) | BZIP2=$${BZIP2--9} bzip2 -c >$(distdir).tar.bz2
 	$(am__post_remove_distdir)
 
 dist-lzip: distdir
@@ -572,8 +572,8 @@ distcheck: dist
 	case '$(DIST_ARCHIVES)' in \
 	*.tar.gz*) \
 	  GZIP=$(GZIP_ENV) gzip -dc $(distdir).tar.gz | $(am__untar) ;;\
-	*.tar.blosc*) \
-	  blosc -dc $(distdir).tar.blosc | $(am__untar) ;;\
+	*.tar.bz2*) \
+	  bzip2 -dc $(distdir).tar.bz2 | $(am__untar) ;;\
 	*.tar.lz*) \
 	  lzip -dc $(distdir).tar.lz | $(am__untar) ;;\
 	*.tar.xz*) \
@@ -762,7 +762,7 @@ uninstall-am:
 	all all-am am--refresh check check-am clean clean-cscope \
 	clean-generic clean-libtool cscope cscopelist \
 	cscopelist-recursive ctags ctags-recursive dist dist-all \
-	dist-blosc dist-gzip dist-lzip dist-shar dist-tarZ dist-xz \
+	dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ dist-xz \
 	dist-zip distcheck distclean distclean-generic distclean-hdr \
 	distclean-libtool distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
