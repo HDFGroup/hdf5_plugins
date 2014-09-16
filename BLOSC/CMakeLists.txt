@@ -9,6 +9,7 @@ project (H5BLOSC C)
 # Define some CMake variables for use later in the project
 #-----------------------------------------------------------------------------
 set (H5BLOSC_RESOURCES_DIR           ${H5BLOSC_SOURCE_DIR}/config/cmake)
+set (HDF_RESOURCES_DIR               ${H5BLOSC_SOURCE_DIR}/config/cmake)
 set (H5BLOSC_SRC_DIR                 ${H5BLOSC_SOURCE_DIR}/src)
 
 #-----------------------------------------------------------------------------
@@ -152,8 +153,10 @@ if (NOT HDF5_HDF5_HEADER)
     endif ((NOT USE_SHARED_LIBS AND HDF5_BUILD_SHARED_LIBS) OR (USE_SHARED_LIBS AND NOT HDF5_BUILD_SHARED_LIBS))
     if (HDF5_BUILD_SHARED_LIBS)
       add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
+      set (H5_LIB_TYPE SHARED)
     else (HDF5_BUILD_SHARED_LIBS)
       add_definitions (-DH5_BUILT_AS_STATIC_LIB)
+      set (H5_LIB_TYPE STATIC)
     endif (HDF5_BUILD_SHARED_LIBS)
   else (HDF5_FOUND)
     message (FATAL_ERROR " HDF5 is Required for ${H5BLOSC_PACKAGE_NAME} library")
@@ -209,7 +212,7 @@ if (BLOSC_FOUND)
   set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIR})
 else (BLOSC_FOUND)
   if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_BLOSC_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT} ${LIB_TYPE})
+    EXTERNAL_BLOSC_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT} ${H5_LIB_TYPE})
     set (H5BLOSC_HAVE_BLOSC_H 1)
     set (H5BLOSC_HAVE_BLOSC 1)
     message (STATUS "Filter BLOSC is built")
@@ -360,48 +363,7 @@ endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 #-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
 #-----------------------------------------------------------------------------
-set (BINARY_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
-set (BINARY_PLATFORM "${CMAKE_SYSTEM_NAME}")
-if (WIN32)
-  set (BINARY_EXAMPLE_ENDING "zip")
-  set (BINARY_INSTALL_ENDING "exe")
-  if (CMAKE_CL_64)
-    set (BINARY_SYSTEM_NAME "win64")
-  else (CMAKE_CL_64)
-    set (BINARY_SYSTEM_NAME "win32")
-  endif (CMAKE_CL_64)
-  if (${CMAKE_SYSTEM_VERSION} MATCHES "6.1")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM} 7")
-  elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.2")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM} 8")
-  endif (${CMAKE_SYSTEM_VERSION} MATCHES "6.1")
-  set (BINARY_PLATFORM "${BINARY_PLATFORM} ${MSVC_C_ARCHITECTURE_ID}")
-  if (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2010")
-  elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "15.*")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2008")
-  elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "17.*")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2012")
-  else (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
-  endif (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
-elseif (APPLE)
-  set (BINARY_EXAMPLE_ENDING "tar.gz")
-  set (BINARY_INSTALL_ENDING "dmg")
-  set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
-  set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
-else (WIN32)
-  set (BINARY_EXAMPLE_ENDING "tar.gz")
-  set (BINARY_INSTALL_ENDING "sh")
-  set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
-  set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
-endif (WIN32)
-
-configure_file (
-    ${H5BLOSC_RESOURCES_DIR}/README.txt.cmake.in 
-    ${H5BLOSC_BINARY_DIR}/README.txt @ONLY
-)
-
+HDF_README_PROPERTIES("")
 
 #-----------------------------------------------------------------------------
 # Set the cpack variables
