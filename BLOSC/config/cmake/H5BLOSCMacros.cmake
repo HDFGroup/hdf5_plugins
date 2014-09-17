@@ -105,12 +105,14 @@ ENDMACRO (EXTERNAL_BLOSC_LIBRARY)
 
 #-------------------------------------------------------------------------------
 MACRO (PACKAGE_BLOSC_LIBRARY compress_type)
-  add_custom_target (BLOSC-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BLOSC_INCLUDE_DIR}/blosc.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${BLOSC_INCLUDE_DIR}/blosc.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc.h)
-  if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (BLOSC-GenHeader-Copy blosc)
-  endif (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+  if (WIN32)
+    add_custom_target (BLOSC-GenHeader-Copy ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BLOSC_INCLUDE_DIR}/blosc.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+        COMMENT "Copying ${BLOSC_INCLUDE_DIR}/blosc.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+    )
+    set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc.h)
+    if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+      add_dependencies (BLOSC-GenHeader-Copy blosc)
+    endif (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+  endif (WIN32)
 ENDMACRO (PACKAGE_BLOSC_LIBRARY)

@@ -101,8 +101,7 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS
-"H5BLOSC_UD-${testname}")
+      set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS "H5BLOSC_UD-${testname}")
     endif (HDF5_BUILD_TOOLS)
   endmacro (ADD_H5_UD_TEST)
 
@@ -130,29 +129,21 @@ if (BUILD_TESTING)
         ARGS       -E copy_if_different ${h5_file} ${dest}
     )
   endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-  if (${H5_LIB_TYPE} MATCHES "SHARED")
+  if (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
     set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-    if (WIN32)
-      if (MINGW)
-        set (outname "${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-      else (MINGW)
-        set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
-        set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-      endif (MINGW)
-    else (WIN32)
-      if (CYGWIN)
-        set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-      else (CYGWIN)
-        set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}.${libversion}")
-       endif (CYGWIN)
-    endif (WIN32)
+    if (MINGW)
+      set (outname "${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    else (MINGW)
+      set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
+      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    endif (MINGW)
     add_custom_command (
         TARGET     h5ex_d_blosc
         POST_BUILD
         COMMAND    ${CMAKE_COMMAND}
         ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
     )
-  endif (${H5_LIB_TYPE} MATCHES "SHARED")
+  endif (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
 
 
   ADD_H5_TEST (h5ex_d_blosc)
