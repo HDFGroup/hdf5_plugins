@@ -105,12 +105,14 @@ ENDMACRO (EXTERNAL_BZ2_LIBRARY)
 
 #-------------------------------------------------------------------------------
 MACRO (PACKAGE_BZ2_LIBRARY compress_type)
-  add_custom_target (BZ2-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZ2_INCLUDE_DIR}/bzlib.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${BZ2_INCLUDE_DIR}/bzlib.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bzlib.h)
-  if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (BZ2-GenHeader-Copy bz2)
-  endif (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+  if (WIN32)
+    add_custom_target (BZ2-GenHeader-Copy ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZ2_INCLUDE_DIR}/bzlib.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+        COMMENT "Copying ${BZ2_INCLUDE_DIR}/bzlib.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+    )
+    set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bzlib.h)
+    if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+      add_dependencies (BZ2-GenHeader-Copy bz2)
+    endif (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+  endif (WIN32)
 ENDMACRO (PACKAGE_BZ2_LIBRARY)
