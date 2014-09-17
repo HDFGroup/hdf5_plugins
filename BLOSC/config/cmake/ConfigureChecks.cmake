@@ -291,7 +291,7 @@ endif (NOT WINDOWS)
 if (WINDOWS)
   if (NOT HDF_NO_IOEO_TEST)
   message (STATUS "Checking for InitOnceExecuteOnce:")
-  if ("${${HDF_PREFIX}_HAVE_IOEO}" MATCHES "^${${HDF_PREFIX}_HAVE_IOEO}$")
+  if ("${HDF_HAVE_IOEO}" MATCHES "^${HDF_HAVE_IOEO}$")
     if (LARGEFILE)
       set (CMAKE_REQUIRED_DEFINITIONS
           "${CURRENT_TEST_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
@@ -346,6 +346,6 @@ if (WINDOWS)
         "${OUTPUT}\n"
         "Return value: ${HAVE_IOEO_EXITCODE}\n")
     endif ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
-  endif ("${${HDF_PREFIX}_HAVE_IOEO}" MATCHES "^${${HDF_PREFIX}_HAVE_IOEO}$")
+  endif ("${HDF_HAVE_IOEO}" MATCHES "^${HDF_HAVE_IOEO}$")
   endif (NOT HDF_NO_IOEO_TEST)
 endif (WINDOWS)
