@@ -314,7 +314,7 @@ if (WINDOWS)
 
     TRY_RUN(HAVE_IOEO_EXITCODE HAVE_IOEO_COMPILED
       ${CMAKE_BINARY_DIR}
-      ${HDF_RESOURCES_EXT_DIR}/HDFTests.c
+      ${HDF_RESOURCES_DIR}/HDFTests.c
       COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
       CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
       -DCMAKE_SKIP_RPATH:BOOL=${CMAKE_SKIP_RPATH}
@@ -327,7 +327,7 @@ if (WINDOWS)
     endif (NOT HAVE_IOEO_COMPILED)
     # if the return value was 0 then it worked
     if ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
-      set (${HDF_PREFIX}_HAVE_IOEO 1 CACHE INTERNAL "Test InitOnceExecuteOnce")
+      set (HDF_HAVE_IOEO 1 CACHE INTERNAL "Test InitOnceExecuteOnce")
       message (STATUS "Performing Test InitOnceExecuteOnce - Success")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log 
         "Performing C SOURCE FILE Test InitOnceExecuteOnce succeded with the following output:\n"
@@ -335,9 +335,9 @@ if (WINDOWS)
         "Return value: ${HAVE_IOEO}\n")
     else ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
       if (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
-        set (${HDF_PREFIX}_HAVE_IOEO "${HAVE_IOEO_EXITCODE}")
+        set (HDF_HAVE_IOEO "${HAVE_IOEO_EXITCODE}")
       else (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
-        set (${HDF_PREFIX}_HAVE_IOEO "" CACHE INTERNAL "Test InitOnceExecuteOnce")
+        set (HDF_HAVE_IOEO "" CACHE INTERNAL "Test InitOnceExecuteOnce")
       endif (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
 
       message (STATUS "Performing Test InitOnceExecuteOnce - Failed")
