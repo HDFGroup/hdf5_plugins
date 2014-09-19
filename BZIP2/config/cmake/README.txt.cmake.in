@@ -8,8 +8,8 @@ This directory contains the binary (release) distribution of
 It was built with the following options: 
     -- @LIB_TYPE@ C libraries
     -- @LIB_TYPE@ H5BZ2 tools
-    -- @LIB_TYPE@ BZIP2 @BZ2_VERSION_STRING@
-    -- @LIB_TYPE@ HDF5 @HDF5_VERSION_STRING@
+    -- @H5_LIB_TYPE@ BZIP2 @BZ2_VERSION_STRING@
+    -- HDF5 @HDF5_VERSION_STRING@
 
 The contents of this directory are:
 
@@ -17,26 +17,18 @@ The contents of this directory are:
     README.txt              - This file
     @H5BZ2_PACKAGE_NAME@-@H5BZ2_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@    - H5BZ2 Install Utility
 
-We provide the JPEG, ZLIB, SZIP libraries within the install for convenience.  
-  
 Installation
 ===========================================================================
+On linux, the installer should be executed in the location to install the plugin. 
 1. Execute @H5BZ2_PACKAGE_NAME@-@H5BZ2_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
 2. Follow prompts
 ===========================================================================
 
 After Installation
 ===========================================================================
-You must supply the location of the cmake configuration files 
-    in environment variables. Also, h5dump will need the location of the
-    hdf5 and bzip2 libraries.
-    In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
-    be set "ON" in order to build the example and run the tests.
-Example:
-    set(ENV{HDF5_DIR} "/temp/hdf5/share/cmake/hdf5")
-    set(ENV{BZ2_DIR} "/temp/bz2/share/cmake/bz2")
-    set(ENV{LD_LIBRARY_PATH} "/temp/bz2/lib:/temp/hdf5/lib")
-    set(ADD_BUILD_OPTIONS "-DBUILD_EXAMPLES:BOOL=ON -DBUILD_TESTING:BOOL=ON")
+You must supply the location of the plugins by setting the HDF5_PLUGIN_PATH
+    environment variable. Also, if shared BZIP2 was used, tools will need 
+    the location of the hdf5 and bzip2 libraries in the search path.
 ===========================================================================
 
 Documentation for this release can be found at the following URL:

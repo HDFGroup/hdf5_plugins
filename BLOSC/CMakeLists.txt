@@ -405,7 +405,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_VERSION_MAJOR "${H5BLOSC_PACKAGE_VERSION_MAJOR}")
   set (CPACK_PACKAGE_VERSION_MINOR "${H5BLOSC_PACKAGE_VERSION_MINOR}")
   set (CPACK_PACKAGE_VERSION_PATCH "")
-  set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
+  set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/plugins")
   #set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
   set (CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
   set (CPACK_PACKAGE_RELOCATABLE TRUE)
@@ -417,17 +417,16 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
     #  - Registry key used to store info about the installation
+    set (CPACK_NSIS_INSTALL_ROOT "${CPACK_PACKAGE_VENDOR}")
     if (CMAKE_CL_64)
-      set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
       set (CPACK_NSIS_PACKAGE_NAME "${H5BLOSC_PACKAGE_STRING} (Win64)")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
     else (CMAKE_CL_64)
-      set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
       set (CPACK_NSIS_PACKAGE_NAME "${H5BLOSC_PACKAGE_STRING}")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
     endif (CMAKE_CL_64)
     set (CPACK_NSIS_DISPLAY_NAME "@CPACK_NSIS_PACKAGE_NAME@, is a dynamic filter for HDF5")
-    set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}\\\\${CPACK_PACKAGE_NAME}\\\\${CPACK_PACKAGE_VERSION}")
+    set (CPACK_PACKAGE_INSTALL_DIRECTORY "plugins")
     set (CPACK_MONOLITHIC_INSTALL ON)
     set (CPACK_NSIS_CONTACT "${H5BLOSC_PACKAGE_BUGREPORT}")
     set (CPACK_NSIS_MODIFY_PATH ON)
@@ -457,27 +456,13 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   endif (NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
   include (InstallRequiredSystemLibraries)
 
-  set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BLOSC_BINARY_DIR};h5blosc;ALL;/")
+  set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BLOSC_BINARY_DIR};h5blosc;libraries;/")
   
   include (CPack)
 
   cpack_add_component (libraries 
       DISPLAY_NAME "h5blosc Libraries"
       GROUP Runtime
-  )
-  cpack_add_component (headers 
-      DISPLAY_NAME "h5blosc Headers" 
-      DEPENDS libraries
-      GROUP Development
-  )
-  cpack_add_component (hdfdocuments 
-      DISPLAY_NAME "h5blosc Documents"
-      GROUP Documents
-  )
-  cpack_add_component (configinstall 
-      DISPLAY_NAME "h5blosc CMake files" 
-      DEPENDS libraries
-      GROUP Development
   )
   
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
