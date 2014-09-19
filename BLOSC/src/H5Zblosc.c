@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include "hdf5.h"
 #include "H5PLextern.h"
 
 #include "blosc.h"
@@ -60,72 +59,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* Filter ID registered with the HDF Group */
 #define H5Z_FILTER_BLOSC 32001
 
-
-#if H5Epush_vers == 2
-/* 1.8.x */
 #define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
-#else
-/* 1.6.x */
-#define PUSH_ERR(func, minor, str) H5Epush(__FILE__, func, __LINE__, H5E_PLINE, minor, str)
-#endif
 
-#if H5Pget_filter_by_id_vers == 2
-/* 1.8.x */
 #define GET_FILTER(a,b,c,d,e,f,g) H5Pget_filter_by_id(a,b,c,d,e,f,g,NULL)
-#else
-/* 1.6.x */
-#define GET_FILTER H5Pget_filter_by_id
-#endif
-
-#if H5Z_class_t_vers == 2
-/* 1.8.x where x >= 3 */
-#define H5Z_16API 0
-#else
-/* 1.6.x and 1.8.x with x < 3*/
-#define H5Z_16API 1
-#endif
 
 static size_t H5Z_filter_blosc(unsigned flags, size_t cd_nelmts,
                     const unsigned cd_values[], size_t nbytes,
                     size_t *buf_size, void **buf);
 herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space);
-
-
-#ifdef EIP  /*HDF5 will register the dynamic filter automatically*/
-/* Register the filter, passing on the HDF5 return value */
-int register_blosc(char **version, char **date){
-
-    int retval;
-
-#if H5Z_16API
-    H5Z_class_t filter_class = {
-        (H5Z_filter_t)(H5Z_FILTER_BLOSC),
-        "blosc",
-        NULL,
-        (H5Z_set_local_func_t)(blosc_set_local),
-        (H5Z_func_t)(blosc_filter)
-    };
-#else
-    H5Z_class_t filter_class = {
-        H5Z_CLASS_T_VERS,
-        (H5Z_filter_t)(H5Z_FILTER_BLOSC),
-        1, 1,
-        "blosc",
-        NULL,
-        (H5Z_set_local_func_t)(blosc_set_local),
-        (H5Z_func_t)(blosc_filter)
-    };
-#endif
-
-    retval = H5Zregister(&filter_class);
-    if(retval<0){
-        PUSH_ERR("register_blosc", H5E_CANTREGISTER, "Can't register Blosc filter");
-    }
-    *version = strdup(BLOSC_VERSION_STRING);
-    *date = strdup(BLOSC_VERSION_DATE);
-    return 1; /* lib is available */
-}
-#endif /*EIP*/
 
 /*  Filter setup.  Records the following inside the DCPL:
 

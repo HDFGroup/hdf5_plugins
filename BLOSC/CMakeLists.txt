@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8.10)
-project (H5BLOSC C)
+project (H5BLOSC C CXX)
 
 #-----------------------------------------------------------------------------
 # Basic H5BLOSC stuff here
@@ -120,7 +120,6 @@ include (${H5BLOSC_RESOURCES_DIR}/ConfigureChecks.cmake)
 # Option to Build Shared/Static libs, only shared is allowed
 #-----------------------------------------------------------------------------
 option (BUILD_SHARED_LIBS "Build Shared Libraries" ON)
-set (LIB_TYPE SHARED)
 if (BUILD_SHARED_LIBS)
   set (LIB_TYPE SHARED)
   add_definitions (-DH5BLOSC_BUILT_AS_DYNAMIC_LIB)
@@ -179,54 +178,68 @@ set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5dump>)
 #set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
-include (ExternalProject)
-set (H5BLOSC_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO SVN TGZ)")
-set_property (CACHE H5BLOSC_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO SVN TGZ)
-if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  option (BLOSC_USE_EXTERNAL "Use External Library Building for BLOSC" 1)
-  if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN")
-    set (BLOSC_URL ${BLOSC_SVN_URL})
-  elseif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    if (NOT TGZPATH)
-      set (TGZPATH ${H5BLOSC_SOURCE_DIR})
-    endif (NOT TGZPATH)
-    set (BLOSC_URL ${TGZPATH}/${BLOSC_TGZ_NAME})
-  else (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN")
-    set (BLOSC_USE_EXTERNAL 0)
-  endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN")
-endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-#-----------------------------------------------------------------------------
-# blosc Library Settings
-#-----------------------------------------------------------------------------
-if (NOT BLOSC_USE_EXTERNAL)
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+if(WIN32)
+    # try to use the system library
+    find_package(Threads)
+    if(Threads_FOUND)
+        set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
+    endif(Threads_FOUND)
+else(WIN32)
+    find_package(Threads REQUIRED)
+    set(LINK_LIBS ${LINK_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+endif(WIN32)
+
+option(PREFER_EXTERNAL_COMPLIBS
+    "When found, use the installed compression libs instead of included sources." ON)
+if(NOT PREFER_EXTERNAL_COMPLIBS)
+    message(STATUS "Finding external libraries disabled.  Using internal sources.")
+endif(NOT PREFER_EXTERNAL_COMPLIBS)
+
+option(DEACTIVATE_LZ4
+    "Do not include support for the LZ4 library." OFF)
+if(NOT DEACTIVATE_LZ4)
+    if(PREFER_EXTERNAL_COMPLIBS)
+        find_package(LZ4)
+    endif(PREFER_EXTERNAL_COMPLIBS)
+    # HAVE_LZ4 will be set to true because even if the library is
+    # not found, we will use the included sources for it
+    set(HAVE_LZ4 TRUE)
+endif(NOT DEACTIVATE_LZ4)
+
+option(DEACTIVATE_SNAPPY
+    "Do not include support for the SNAPPY library." OFF)
+if(NOT DEACTIVATE_SNAPPY)
+    if(PREFER_EXTERNAL_COMPLIBS)
+        find_package(Snappy)
+    endif(PREFER_EXTERNAL_COMPLIBS)
+    # HAVE_SNAPPY will be set to true because even if the library is not found,
+    # we will use the included sources for it
+    set(HAVE_SNAPPY TRUE)
+endif(NOT DEACTIVATE_SNAPPY)
+
+option(DEACTIVATE_ZLIB
+    "Do not include support for the ZLIB library." OFF)
+if(NOT DEACTIVATE_ZLIB)
+    # import the ZLIB_ROOT environment variable to help finding the zlib library
+    if(PREFER_EXTERNAL_COMPLIBS)
+        set(ZLIB_ROOT $ENV{ZLIB_ROOT})
+        find_package( ZLIB )
+        if (NOT ZLIB_FOUND )
+            message(STATUS "No zlib found.  Using internal sources.")
+        endif (NOT ZLIB_FOUND )
+    endif(PREFER_EXTERNAL_COMPLIBS)
+    # HAVE_ZLIB will be set to true because even if the library is not found,
+    # we will use the included sources for it
+    set(HAVE_ZLIB TRUE)
+endif(NOT DEACTIVATE_ZLIB)
+
+if(PREFER_EXTERNAL_COMPLIBS)
   find_package (BLOSC NAMES ${BLOSC_PACKAGE_NAME})
   if (NOT BLOSC_FOUND)
-    find_package (BLOSC) # Legacy find
+      message(STATUS "No blosc found.  Using internal sources.")
   endif (NOT BLOSC_FOUND)
-endif (NOT BLOSC_USE_EXTERNAL)
-if (BLOSC_FOUND)
-  set (H5BLOSC_HAVE_BLOSC_H 1)
-  set (H5BLOSC_HAVE_BLOSC 1)
-  set (H5BLOSC_BLOSC_HEADER "blosc.h")
-  set (BLOSC_INCLUDE_DIR_GEN ${BLOSC_INCLUDE_DIR})
-  set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIR})
-else (BLOSC_FOUND)
-  if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_BLOSC_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT} ${H5_LIB_TYPE})
-    set (H5BLOSC_HAVE_BLOSC_H 1)
-    set (H5BLOSC_HAVE_BLOSC 1)
-    message (STATUS "Filter BLOSC is built")
-  else (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    message (FATAL_ERROR " blosc is Required for ${H5BLOSC_PACKAGE_NAME} library")
-  endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-endif (BLOSC_FOUND)
-message (STATUS "blosc found: INC=${BLOSC_INCLUDE_DIR} LIBS=${BLOSC_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${BLOSC_LIBRARIES})
-INCLUDE_DIRECTORIES (${BLOSC_INCLUDE_DIRS})
-
-if (BLOSC_FOUND)
-  PACKAGE_BLOSC_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT})
-endif (BLOSC_FOUND)
+endif(PREFER_EXTERNAL_COMPLIBS)
 
 if (MSVC)
   set (CMAKE_MFC_FLAG 0)
@@ -241,6 +254,22 @@ set (CFG_INIT "/${CMAKE_CFG_INTDIR}")
 if (MAKE_SYSTEM)
   set (CFG_INIT "")
 endif (MAKE_SYSTEM)
+
+# Set the "-msse2" build flag only if the CMAKE_C_FLAGS is not already set.
+# Probably "-msse2" should be appended to CMAKE_C_FLAGS_RELEASE.
+find_package(SSE)
+if(CMAKE_C_COMPILER_ID STREQUAL GNU OR CMAKE_C_COMPILER_ID STREQUAL Clang)
+     if(NOT CMAKE_C_FLAGS AND SSE2_TRUE)
+         message(STATUS "SSE2 is here.  Adding support for it.")
+         set(CMAKE_C_FLAGS -msse2 CACHE STRING "C flags." FORCE)
+     endif(NOT CMAKE_C_FLAGS AND SSE2_TRUE)
+endif(CMAKE_C_COMPILER_ID STREQUAL GNU OR CMAKE_C_COMPILER_ID STREQUAL Clang)
+
+if(MSVC)
+    if(NOT CMAKE_C_FLAGS)
+        set(CMAKE_C_FLAGS "/Ox" CACHE STRING "C flags." FORCE)
+    endif(NOT CMAKE_C_FLAGS)
+endif(MSVC)
 
 #-----------------------------------------------------------------------------
 # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -280,14 +309,6 @@ if (BUILD_TESTING)
 endif (BUILD_TESTING)
 
 add_subdirectory (${H5BLOSC_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
-if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
-    ADD_DEPENDENCIES (${H5BLOSC_LIB_TARGET} BLOSC)
-  endif (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
-  if (HDF5_FOUND AND HDF5_USE_EXTERNAL)
-    ADD_DEPENDENCIES (${H5BLOSC_LIB_TARGET} HDF5)
-  endif (HDF5_FOUND AND HDF5_USE_EXTERNAL)
-endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
 
 if (BUILD_EXAMPLES)
   add_subdirectory (${H5BLOSC_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)
@@ -435,16 +456,6 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   include (InstallRequiredSystemLibraries)
 
   set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BLOSC_BINARY_DIR};h5blosc;ALL;/")
-  
-  if (H5BLOSC_PACKAGE_EXTLIBS)
-    if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      if (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
-        set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${BLOSC_INCLUDE_DIR_GEN};BLOSC;libraries;/")
-        set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${BLOSC_INCLUDE_DIR_GEN};BLOSC;headers;/")
-        set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${BLOSC_INCLUDE_DIR_GEN};BLOSC;configinstall;/")
-      endif (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
-    endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  endif (H5BLOSC_PACKAGE_EXTLIBS)
   
   include (CPack)
 

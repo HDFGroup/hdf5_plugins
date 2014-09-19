@@ -1,5 +1,9 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+#undef HAVE_LZ4
+#undef HAVE_SNAPPY
+#undef HAVE_ZLIB
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 

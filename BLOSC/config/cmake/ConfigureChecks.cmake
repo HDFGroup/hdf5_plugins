@@ -9,6 +9,7 @@ include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
 include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
+include (${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -234,7 +235,8 @@ set (LINUX_LFS 0)
 set (HDF_EXTRA_FLAGS)
 if (NOT WINDOWS)
   # Linux Specific flags
-  set (HDF_EXTRA_FLAGS -D_POSIX_SOURCE -D_BSD_SOURCE)
+  #set (HDF_EXTRA_FLAGS -D_POSIX_SOURCE -D_BSD_SOURCE)
+  set (HDF_EXTRA_FLAGS -D_BSD_SOURCE)
   option (HDF_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
   if (HDF_ENABLE_LARGE_FILE)
     set (msg "Performing TEST_LFS_WORKS")
@@ -288,64 +290,64 @@ endif (NOT WINDOWS)
 #-----------------------------------------------------------------------------
 # Check if InitOnceExecuteOnce is available
 #-----------------------------------------------------------------------------
-if (WINDOWS)
-  if (NOT HDF_NO_IOEO_TEST)
-  message (STATUS "Checking for InitOnceExecuteOnce:")
-  if ("${HDF_HAVE_IOEO}" MATCHES "^${HDF_HAVE_IOEO}$")
-    if (LARGEFILE)
-      set (CMAKE_REQUIRED_DEFINITIONS
-          "${CURRENT_TEST_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
-      )
-    endif (LARGEFILE)
-    set (MACRO_CHECK_FUNCTION_DEFINITIONS 
-      "-DHAVE_IOEO ${CMAKE_REQUIRED_FLAGS}")
-    if (CMAKE_REQUIRED_LIBRARIES)
-      set (CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES
-        "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
-    else (CMAKE_REQUIRED_LIBRARIES)
-      set (CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES)
-    endif (CMAKE_REQUIRED_LIBRARIES)
-    if (CMAKE_REQUIRED_INCLUDES)
-      set (CHECK_C_SOURCE_COMPILES_ADD_INCLUDES
-        "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}")
-    else (CMAKE_REQUIRED_INCLUDES)
-      set (CHECK_C_SOURCE_COMPILES_ADD_INCLUDES)
-    endif (CMAKE_REQUIRED_INCLUDES)
-
-    TRY_RUN(HAVE_IOEO_EXITCODE HAVE_IOEO_COMPILED
-      ${CMAKE_BINARY_DIR}
-      ${HDF_RESOURCES_DIR}/HDFTests.c
-      COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-      CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-      -DCMAKE_SKIP_RPATH:BOOL=${CMAKE_SKIP_RPATH}
-      "${CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES}"
-      "${CHECK_C_SOURCE_COMPILES_ADD_INCLUDES}"
-      COMPILE_OUTPUT_VARIABLE OUTPUT)
+#if (WINDOWS)
+#  if (NOT HDF_NO_IOEO_TEST)
+#  message (STATUS "Checking for InitOnceExecuteOnce:")
+#  if ("${HDF_HAVE_IOEO}" MATCHES "^${HDF_HAVE_IOEO}$")
+#    if (LARGEFILE)
+#      set (CMAKE_REQUIRED_DEFINITIONS
+#          "${CURRENT_TEST_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
+#      )
+#    endif (LARGEFILE)
+#    set (MACRO_CHECK_FUNCTION_DEFINITIONS 
+#      "-DHAVE_IOEO ${CMAKE_REQUIRED_FLAGS}")
+#    if (CMAKE_REQUIRED_LIBRARIES)
+#      set (CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES
+#        "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
+#    else (CMAKE_REQUIRED_LIBRARIES)
+#      set (CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES)
+#    endif (CMAKE_REQUIRED_LIBRARIES)
+#    if (CMAKE_REQUIRED_INCLUDES)
+#      set (CHECK_C_SOURCE_COMPILES_ADD_INCLUDES
+#        "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}")
+#    else (CMAKE_REQUIRED_INCLUDES)
+#      set (CHECK_C_SOURCE_COMPILES_ADD_INCLUDES)
+#    endif (CMAKE_REQUIRED_INCLUDES)
+#
+#    TRY_RUN(HAVE_IOEO_EXITCODE HAVE_IOEO_COMPILED
+#      ${CMAKE_BINARY_DIR}
+#      ${HDF_RESOURCES_DIR}/HDFTests.c
+#      COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
+#      CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
+#      -DCMAKE_SKIP_RPATH:BOOL=${CMAKE_SKIP_RPATH}
+#      "${CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES}"
+#      "${CHECK_C_SOURCE_COMPILES_ADD_INCLUDES}"
+#      COMPILE_OUTPUT_VARIABLE OUTPUT)
     # if it did not compile make the return value fail code of 1
-    if (NOT HAVE_IOEO_COMPILED)
-      set (HAVE_IOEO_EXITCODE 1)
-    endif (NOT HAVE_IOEO_COMPILED)
+#    if (NOT HAVE_IOEO_COMPILED)
+#      set (HAVE_IOEO_EXITCODE 1)
+#    endif (NOT HAVE_IOEO_COMPILED)
     # if the return value was 0 then it worked
-    if ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
-      set (HDF_HAVE_IOEO 1 CACHE INTERNAL "Test InitOnceExecuteOnce")
-      message (STATUS "Performing Test InitOnceExecuteOnce - Success")
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log 
-        "Performing C SOURCE FILE Test InitOnceExecuteOnce succeded with the following output:\n"
-        "${OUTPUT}\n"
-        "Return value: ${HAVE_IOEO}\n")
-    else ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
-      if (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
-        set (HDF_HAVE_IOEO "${HAVE_IOEO_EXITCODE}")
-      else (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
-        set (HDF_HAVE_IOEO "" CACHE INTERNAL "Test InitOnceExecuteOnce")
-      endif (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
-
-      message (STATUS "Performing Test InitOnceExecuteOnce - Failed")
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log 
-        "Performing InitOnceExecuteOnce Test  failed with the following output:\n"
-        "${OUTPUT}\n"
-        "Return value: ${HAVE_IOEO_EXITCODE}\n")
-    endif ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
-  endif ("${HDF_HAVE_IOEO}" MATCHES "^${HDF_HAVE_IOEO}$")
-  endif (NOT HDF_NO_IOEO_TEST)
-endif (WINDOWS)
+#    if ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
+#      set (HDF_HAVE_IOEO 1 CACHE INTERNAL "Test InitOnceExecuteOnce")
+#      message (STATUS "Performing Test InitOnceExecuteOnce - Success")
+#      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log 
+#        "Performing C SOURCE FILE Test InitOnceExecuteOnce succeded with the following output:\n"
+#        "${OUTPUT}\n"
+#        "Return value: ${HAVE_IOEO}\n")
+#    else ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
+#      if (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
+#        set (HDF_HAVE_IOEO "${HAVE_IOEO_EXITCODE}")
+#      else (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
+#        set (HDF_HAVE_IOEO "" CACHE INTERNAL "Test InitOnceExecuteOnce")
+#      endif (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
+#
+#      message (STATUS "Performing Test InitOnceExecuteOnce - Failed")
+#      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log 
+#        "Performing InitOnceExecuteOnce Test  failed with the following output:\n"
+#        "${OUTPUT}\n"
+#        "Return value: ${HAVE_IOEO_EXITCODE}\n")
+#    endif ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
+#  endif ("${HDF_HAVE_IOEO}" MATCHES "^${HDF_HAVE_IOEO}$")
+#  endif (NOT HDF_NO_IOEO_TEST)
+#endif (WINDOWS)
