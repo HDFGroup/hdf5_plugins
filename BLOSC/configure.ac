@@ -178,7 +178,7 @@ AC_ARG_WITH([blosclib],
 
 case $withval in
   yes)
-    HAVE_BZ2LIB="yes"
+    HAVE_BLOSCLIB="yes"
     AC_CHECK_HEADER([blosc.h], [HAVE_BLOSCLIB_H="yes"], [unset HAVE_BLOSCLIB])
     if test "x$HAVE_BLOSCLIB" = "xyes" -a "x$HAVE_BLOSCLIB_H" = "xyes"; then
       AC_CHECK_LIB([blosc], [blosc_compress],, [unset HAVE_BLOSCLIB])
