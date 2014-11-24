@@ -313,6 +313,7 @@ endif (BUILD_TESTING)
 
 add_subdirectory (${H5BLOSC_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
+option (BUILD_EXAMPLES "Build h5blosc Examples" OFF)
 if (BUILD_EXAMPLES)
   add_subdirectory (${H5BLOSC_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)
 endif (BUILD_EXAMPLES)
