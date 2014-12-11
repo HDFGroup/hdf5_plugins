@@ -118,6 +118,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
         size_t blockSize;
         size_t nBlocks;
         size_t outSize; /* size of the output buffer. Header size (12 bytes) is included */
+        size_t block;
         uint64_t *i64Buf;
         uint32_t *i32Buf;
         char *rpos;      /* pointer to current read position */
@@ -161,7 +162,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
 
         outSize = 12; /* size of the output buffer. Header size (12 bytes) is included */
 
-        for(size_t block = 0; block < nBlocks; ++block)
+        for(block = 0; block < nBlocks; ++block)
         {
             uint32_t compBlockSize; /// reserve space for compBlockSize
             size_t origWritten = block*blockSize;
