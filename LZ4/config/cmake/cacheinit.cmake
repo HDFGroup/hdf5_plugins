@@ -6,6 +6,8 @@
 
 set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
+set (BUILD_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the plugin" FORCE)
+
 set (BUILD_TESTING ON CACHE BOOL "Build h5lz4 Unit Testing" FORCE)
 
 set (BUILD_EXAMPLES ON CACHE BOOL "Build h5lz4 Examples" FORCE)
