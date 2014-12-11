@@ -35,14 +35,34 @@ RM="rm -rf"
 DIFF="diff -c"
 CMP="cmp -s"
 GREP='grep'
-CP='cp'
+CP="cp -p"  # Use -p to preserve mode,ownership,timestamps
 DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
-ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
 TESTDIR=$builddir
+PLUGIN_LIBDIR=plugins
+FROM_DIR=`pwd`/../src/.libs
+PLUGIN_LIB="$FROM_DIR/libh5blosc.so.*"
+
+# Create test directories if not exists yet.
+test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
+if [ $? != 0 ]; then
+    echo "Failed to create test directory($PLUGIN_LIBDIR)"
+    exit $EXIT_FAILURE
+fi
+
+# copy plugin library for test
+$CP $PLUGIN_LIB $PLUGIN_LIBDIR
+if [ $? != 0 ]; then
+    echo "Failed to copy plugin library ($PLUGIN_LIB) for test."
+    exit $EXIT_FAILURE
+fi
+
+# setup plugin path
+ENVCMD="env HDF5_PLUGIN_PATH=${PLUGIN_LIBDIR}"
+
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
@@ -215,7 +235,7 @@ EXETEST() {
     # Run test.
     TESTING $fname 
     (
-      $ENVCMD ./$fname
+      $ENVCMD `pwd`/$fname
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
@@ -227,15 +247,17 @@ EXETEST() {
 #########  THE TESTS   #########
 ################################
 
+echo $ENVCMD
+
 COPY_TESTFILES_TO_TESTDIR
 
 EXETEST h5ex_d_blosc h5ex_d_blosc.tst
 
 DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
 
-REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
+#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
 
-DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
+#DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 
 #rm -f ud_convert.h5repack_layout.h5
 
