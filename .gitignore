@@ -2,5 +2,7 @@ BLOSC/build*
 BZIP2/autom4te.cache
 BZIP2/build*
 BZIP2/buildat
+LZ4/autom4te.cache
 LZ4/bin/reconfigure.local
 LZ4/bin/reconfigure.system
+LZ4/build

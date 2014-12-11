@@ -19,7 +19,7 @@
 # All rights reserved.
 #
 #
-# HDF5 BZIP2 Library Plugin makefile(.in)
+# HDF5 LZ4 Library Plugin makefile(.in)
 #
 
 VPATH = @srcdir@

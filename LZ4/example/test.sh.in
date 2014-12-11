@@ -46,8 +46,8 @@ TESTDIR=$builddir
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
-$SRC_TESTFILES/h5ex_d_bzip2.ddl
-$SRC_TESTFILES/h5ex_d_bzip2.tst
+$SRC_TESTFILES/h5ex_d_lz4.ddl
+$SRC_TESTFILES/h5ex_d_lz4.tst
 $SRC_TESTFILES/h5repack_layout.h5-ud_convert.ddl
 $SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
 "
@@ -229,9 +229,9 @@ EXETEST() {
 
 COPY_TESTFILES_TO_TESTDIR
 
-EXETEST h5ex_d_bzip2 h5ex_d_bzip2.tst
+EXETEST h5ex_d_lz4 h5ex_d_lz4.tst
 
-DUMPTEST h5ex_d_bzip2.ddl h5ex_d_bzip2.h5
+DUMPTEST h5ex_d_lz4.ddl h5ex_d_lz4.h5
 
 REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
 

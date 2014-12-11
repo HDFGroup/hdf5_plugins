@@ -7,7 +7,7 @@
 ## Run automake to generate a Makefile.in from this file.
 ##
 #
-# HDF5 BZIP2 Library Plugin makefile(.in)
+# HDF5 LZ4 Library Plugin makefile(.in)
 #
 
 # Shell commands used in Makefiles

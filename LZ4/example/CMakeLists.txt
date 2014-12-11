@@ -5,7 +5,7 @@ set (dyn_examples
     h5ex_d_lz4
 )
 
-#run-time loadable bzip library examples
+#run-time loadable lz4 library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})

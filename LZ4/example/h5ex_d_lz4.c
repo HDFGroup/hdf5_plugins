@@ -1,8 +1,8 @@
 /************************************************************
 
   This example shows how to write data and read it from a dataset
-  using bzip2 compression.
-  bzip2 filter is not available in HDF5.
+  using lz4 compression.
+  lz4 filter is not available in HDF5.
   The example uses a new feature available in HDF5 version 1.8.11 
   to discover, load and register filters at run time.  
 
@@ -140,7 +140,7 @@ main (void)
     if (dcpl_id < 0) goto done;
 
     /*
-     * Retrieve and print the filter id, compression level and filter's name for bzip2.
+     * Retrieve and print the filter id, compression level and filter's name for lz4.
      */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
     printf ("Filter info is available from the dataset creation property \n ");
