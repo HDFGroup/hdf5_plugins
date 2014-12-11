@@ -1,0 +1,44 @@
+@H5LZ4_PACKAGE_NAME@ version @H5LZ4_PACKAGE_VERSION_STRING@
+------------------------------------------------------------------------------
+
+This directory contains the binary (release) distribution of 
+@H5LZ4_PACKAGE_NAME@-@H5LZ4_PACKAGE_VERSION_MAJOR@ that was compiled on; 
+    @BINARY_PLATFORM@. 
+ 
+It was built with the following options: 
+    -- @LIB_TYPE@ C libraries
+    -- @LIB_TYPE@ H5LZ4 tools
+    -- @LIB_TYPE@ LZ4 @LZ4_VERSION_STRING@
+    -- @LIB_TYPE@ HDF5 @HDF5_VERSION_STRING@
+
+The contents of this directory are:
+
+    COPYING                 - Copyright notice
+    README.txt              - This file
+    @H5LZ4_PACKAGE_NAME@-@H5LZ4_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@    - H5LZ4 Install Utility
+
+Installation
+===========================================================================
+On linux, the installer should be executed in the location to install the plugin. 
+1. Execute @H5LZ4_PACKAGE_NAME@-@H5LZ4_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
+2. Follow prompts
+===========================================================================
+
+After Installation
+===========================================================================
+You must supply the location of the plugins by setting the HDF5_PLUGIN_PATH
+    environment variable. Also, h5dump will need the location of the
+    hdf5 and lz4 libraries.
+    In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
+    be set "ON" in order to build the example and run the tests.
+Example:
+    set(ENV{HDF5_DIR} "/temp/hdf5/share/cmake/hdf5")
+    set(ENV{LZ4_DIR} "/temp/lz4/share/cmake/LZ4")
+    set(ENV{LD_LIBRARY_PATH} "/temp/lz4/lib:/temp/hdf5/lib")
+    set(ADD_BUILD_OPTIONS "-DBUILD_EXAMPLES:BOOL=ON -DBUILD_TESTING:BOOL=ON")
+===========================================================================
+
+Documentation for this release can be found at the following URL:
+    http://www.hdfgroup.org/doc.html
+
+Bugs should be reported to help@hdfgroup.org.
