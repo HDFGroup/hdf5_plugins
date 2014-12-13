@@ -1,0 +1,128 @@
+\documentclass{scrartcl}
+\usepackage{todonotes}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{url}
+
+\hypersetup{ colorlinks=true,
+             pdftitle={HDF5 external filters - technical issues},
+             citecolor=blue,
+             urlcolor=blue,
+             pagebackref=true
+}
+
+\title{
+       {\huge HDF5 external filters}\\
+       technical issues}
+       
+       \author{Eugen Wintersberger}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    This document tries to address all the technical issues concerning 
+    the development and maintenance of external filter modules for HDF5. 
+\end{abstract}
+
+%%%===========================================================================
+\section{Supported platforms and architectures}
+
+The current release of HDF5\footnote{At the time of writting this was 1.8.13} 
+supports the following platforms and architectures
+\begin{center}
+\begin{tabular}{l|c|c|c|c|c}
+    & i386 & x86\_64 & SPARC 32-bit & SPARC 64-bit & PPC64 \\
+    \hline\hline
+    Linux & X  &  X & -- & -- & X \\
+    \hline
+    Windows 7 & X  & X & -- & -- & -- \\
+    \hline
+    Windows 8.1 & X & X & -- & -- & -- \\
+    \hline
+    OS X Lion 10.7.3 & -- & X & -- & -- & -- \\
+    \hline
+    OS X Mt. Lion 10.8.5 & -- & X & -- & -- & -- \\
+    \hline
+    OS X Mavericks 10.9.2 & -- & X & -- & -- & -- \\
+    \hline
+    SunOS 5.11 & -- & -- & X & X & -- \\
+    \hline
+    FreeBSD 8.2 & X & X & -- & -- & -- \\
+    \hline
+\end{tabular}
+\end{center}
+All external filter modules (EFMs) have to support the same set of platforms and 
+architectures as the actual HDF5 release. This should ensure that no user 
+experiences problems whenever he or she uses HDF5 on an officially supported
+platform-architecture setup.
+
+%%%===========================================================================
+\section{Source code management}
+
+Reasonable maintenance of software is only possible by using a source code
+management (SCM) tool. The HDF5 library is currently using SVN\cite{SVN}
+( as SCM system. However, for EF module
+development SVN, being a centralized SCM tool, might not be the best choice. 
+Due to its central nature it has some natural drawbacks
+\begin{itemize}
+    \item working offline is rather difficult 
+    \item branching is as hard 
+    \item it is hard to move repositories between different servers. 
+\end{itemize}
+In order to make things easy I suggest git~\cite{GIT} as the preferred SCM for EFM 
+development. One of the big advantages of git is that repositories can be 
+moved easily. This makes changing the hosting platform for an EFM project
+simple. Such a process may becomes necessary if the original platform ceases 
+to exist or if an abandoned module is taken over by a new developer who 
+wants to use a different platform. 
+
+
+%%%===========================================================================
+\section{Compilers and code}
+
+The choice of the programming language is rather simple: as the HDF5 core
+library is written in C, C should also be used for the EFM. 
+The language standard used is C99.
+
+\subsection{Supported compilers and language standards}
+
+All modules must comply to the C99 standard and build the code with the
+following compilers 
+\begin{center}
+\begin{tabular}{l|| c | c}
+    \hline
+    \multirow{3}{*}{Windows} & intel cc & ?? \\
+                             & mingw gcc  & ?? \\
+     & MS Studio & ?? \\
+    \hline
+    \multirow{3}{*}{Linux} & gcc & ?? \\
+     & intel & ??  \\
+     & clang & ?? \\
+    \hline
+    OSX     & clang & ?? \\
+    \hline
+\end{tabular}
+\todo{Check compilers and required versions}
+\todo{is there a good reason why HDF5
+does not support the MinGW compiler suite?}
+\end{center}
+
+\subsection{Code organization and coding style}
+
+The code should be organized according to the GNU standards
+\cite{GNU_STYLE,GNU_MAINTENANCE}.
+
+\subsection{Build systems}
+
+Due to the large number of platforms every EF module has to support at least two
+build systems
+\begin{description}
+    \item[cmake] \cite{CMAKE} for builds on Windows and OSX
+    \item[autotools] \cite{AUTOTOOLS} for builds on Linux and Unix systems.
+\end{description}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+
+\end{document}
