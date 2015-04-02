@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.1.0)
 project (HDF5BZ2_EX)
 
 set (dyn_examples
@@ -9,7 +9,7 @@ set (dyn_examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
-  TARGET_C_PROPERTIES (${example} " " " ")
+  TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
   target_link_libraries (${example} ${HDF5_LIBRARIES})
   if (NOT WIN32)
     target_link_libraries (${example} dl)

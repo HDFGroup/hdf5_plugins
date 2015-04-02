@@ -17,22 +17,22 @@ if (APPLE)
   list (LENGTH CMAKE_OSX_ARCHITECTURES ARCH_LENGTH)
   if (ARCH_LENGTH GREATER 1)
     set (CMAKE_OSX_ARCHITECTURES "" CACHE STRING "" FORCE)
-    message(FATAL_ERROR "Building Universal Binaries on OS X is NOT supported by the HDF5 project. This is"
+    message(FATAL_ERROR "Building Universal Binaries on OS X is NOT supported by the H5BZ2 project. This is"
     "due to technical reasons. The best approach would be build each architecture in separate directories"
     "and use the 'lipo' tool to combine them into a single executable or library. The 'CMAKE_OSX_ARCHITECTURES'"
     "variable has been set to a blank value which will build the default architecture for this system.")
   endif ()
-  set (${HDF_PREFIX}_AC_APPLE_UNIVERSAL_BUILD 0)
+  set (${H5BZ2_PREFIX}_AC_APPLE_UNIVERSAL_BUILD 0)
 endif (APPLE)
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
-    set (${HDF_PREFIX}_HAVE_DARWIN 1) 
+    set (${H5BZ2_PREFIX}_HAVE_DARWIN 1) 
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Check for Solaris
 if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS") 
-    set (${HDF_PREFIX}_HAVE_SOLARIS 1) 
+    set (${H5BZ2_PREFIX}_HAVE_SOLARIS 1) 
 endif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
 
 #-----------------------------------------------------------------------------
@@ -54,19 +54,19 @@ ENDMACRO (CHECK_LIBRARY_EXISTS_CONCAT)
 set (WINDOWS)
 if (WIN32)
   if (MINGW)
-    set (${HDF_PREFIX}_HAVE_MINGW 1)
+    set (${H5BZ2_PREFIX}_HAVE_MINGW 1)
     set (WINDOWS 1) # MinGW tries to imitate Windows
     set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
   endif (MINGW)
-  set (${HDF_PREFIX}_HAVE_WIN32_API 1)
+  set (${H5BZ2_PREFIX}_HAVE_WIN32_API 1)
   set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
-  if (NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+  if (NOT UNIX AND NOT MINGW)
     set (WINDOWS 1)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
     if (MSVC)
-      set (${HDF_PREFIX}_HAVE_VISUAL_STUDIO 1)
+      set (${H5BZ2_PREFIX}_HAVE_VISUAL_STUDIO 1)
     endif (MSVC)
-  endif (NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+  endif (NOT UNIX AND NOT MINGW)
 endif (WIN32)
 
 if (WINDOWS)
@@ -121,7 +121,7 @@ if (WINDOWS)
 endif (WINDOWS)
 
 # For other other specific tests, use this MACRO.
-MACRO (HDF_FUNCTION_TEST OTHER_TEST)
+MACRO (H5BZ2_FUNCTION_TEST OTHER_TEST)
   if ("${OTHER_TEST}" MATCHES "^${OTHER_TEST}$")
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
     set (OTHER_TEST_ADD_LIBRARIES)
@@ -129,7 +129,7 @@ MACRO (HDF_FUNCTION_TEST OTHER_TEST)
       set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
     endif (CMAKE_REQUIRED_LIBRARIES)
 
-    foreach (def ${HDF_EXTRA_TEST_DEFINITIONS})
+    foreach (def ${H5BZ2_EXTRA_TEST_DEFINITIONS})
       set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
     endforeach (def)
 
@@ -139,9 +139,9 @@ MACRO (HDF_FUNCTION_TEST OTHER_TEST)
         HAVE_SYS_TYPES_H
         HAVE_SYS_SOCKET_H
     )
-      if ("${def}")
+      if (${def})
         set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif ("${def}")
+      endif (${def})
     endforeach (def)
 
     if (LARGEFILE)
@@ -153,7 +153,7 @@ MACRO (HDF_FUNCTION_TEST OTHER_TEST)
     #message (STATUS "Performing ${OTHER_TEST}")
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
-        ${H5BZ2_RESOURCES_DIR}/HDFTests.c
+        ${H5BZ2_RESOURCES_DIR}/H5BZ2Tests.c
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
         "${OTHER_TEST_ADD_LIBRARIES}"
         OUTPUT_VARIABLE OUTPUT
@@ -164,17 +164,15 @@ MACRO (HDF_FUNCTION_TEST OTHER_TEST)
     else (${OTHER_TEST})
       message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
       set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
-      file (APPEND ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
           "${OUTPUT}\n"
       )
     endif (${OTHER_TEST})
   endif ("${OTHER_TEST}" MATCHES "^${OTHER_TEST}$")
-ENDMACRO (HDF_FUNCTION_TEST)
+ENDMACRO (H5BZ2_FUNCTION_TEST)
 
-if (NOT WINDOWS)
-  HDF_FUNCTION_TEST (STDC_HEADERS)
-endif (NOT WINDOWS)
+H5BZ2_FUNCTION_TEST (STDC_HEADERS)
 
 #-----------------------------------------------------------------------------
 
@@ -231,16 +229,16 @@ CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 # The linux-lfs option is deprecated.
 set (LINUX_LFS 0)
 
-set (HDF_EXTRA_FLAGS)
+set (H5BZ2_EXTRA_FLAGS)
 if (NOT WINDOWS)
   # Linux Specific flags
-  set (HDF_EXTRA_FLAGS -D_POSIX_SOURCE -D_BSD_SOURCE)
-  option (HDF_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (HDF_ENABLE_LARGE_FILE)
+  set (H5BZ2_EXTRA_FLAGS -D_POSIX_SOURCE -D_BSD_SOURCE)
+  option (H5BZ2_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
+  if (H5BZ2_ENABLE_LARGE_FILE)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
-        ${H5BZ2_RESOURCES_DIR}/HDFTests.c
+        ${H5BZ2_RESOURCES_DIR}/H5BZ2Tests.c
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
         OUTPUT_VARIABLE OUTPUT
     )
@@ -248,27 +246,27 @@ if (NOT WINDOWS)
       if (TEST_LFS_WORKS_RUN  MATCHES 0)
         set (TEST_LFS_WORKS 1 CACHE INTERNAL ${msg})
         set (LARGEFILE 1)
-        set (HDF_EXTRA_FLAGS ${HDF_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
+        set (H5BZ2_EXTRA_FLAGS ${H5BZ2_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
         message (STATUS "${msg}... yes")
       else (TEST_LFS_WORKS_RUN  MATCHES 0)
         set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
         message (STATUS "${msg}... no")
-        file (APPEND ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+        file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
               "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
         )
       endif (TEST_LFS_WORKS_RUN  MATCHES 0)
     else (TEST_LFS_WORKS_COMPILE )
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
-      file (APPEND ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeError.log
+      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Test TEST_LFS_WORKS Compile failed with the following output:\n ${OUTPUT}\n"
       )
     endif (TEST_LFS_WORKS_COMPILE)
-  endif (HDF_ENABLE_LARGE_FILE)
-  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${HDF_EXTRA_FLAGS})
+  endif (H5BZ2_ENABLE_LARGE_FILE)
+  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${H5BZ2_EXTRA_FLAGS})
 endif (NOT WINDOWS)
 
-add_definitions (${HDF_EXTRA_FLAGS})
+add_definitions (${H5BZ2_EXTRA_FLAGS})
 #-----------------------------------------------------------------------------
 # Check for some functions that are used
 #
@@ -281,6 +279,6 @@ if (NOT WINDOWS)
       SYSTEM_SCOPE_THREADS
       CXX_HAVE_OFFSETOF
   )
-    HDF_FUNCTION_TEST (${test})
+    H5BZ2_FUNCTION_TEST (${test})
   endforeach (test)
 endif (NOT WINDOWS)

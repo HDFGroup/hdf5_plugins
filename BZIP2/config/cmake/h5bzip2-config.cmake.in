@@ -1,0 +1,37 @@
+#-----------------------------------------------------------------------------
+# h5bzip2 Config file for compiling against bzip2 install directory
+#-----------------------------------------------------------------------------
+@PACKAGE_INIT@
+
+string(TOUPPER @H5BZ2_PACKAGE@ H5BZ2_PACKAGE_NAME)
+
+#-----------------------------------------------------------------------------
+# User Options
+#-----------------------------------------------------------------------------
+set (${H5BZ2_PACKAGE_NAME}_EXPORT_LIBRARIES     @H5BZ2_LIBRARIES_TO_EXPORT@)
+
+#-----------------------------------------------------------------------------
+# Directories
+#-----------------------------------------------------------------------------
+set (${H5BZ2_PACKAGE_NAME}_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+set (${H5BZ2_PACKAGE_NAME}_SHARE_DIR "@PACKAGE_SHARE_INSTALL_DIR@")
+set_and_check (${H5BZ2_PACKAGE_NAME}_BUILD_DIR "@PACKAGE_CURRENT_BUILD_DIR@")
+
+#-----------------------------------------------------------------------------
+# Version Strings
+#-----------------------------------------------------------------------------
+set (${H5BZ2_PACKAGE_NAME}_VERSION_STRING @H5BZ2_VERSION_STRING@)
+set (${H5BZ2_PACKAGE_NAME}_VERSION_MAJOR  @H5BZ2_VERSION_MAJOR@)
+set (${H5BZ2_PACKAGE_NAME}_VERSION_MINOR  @H5BZ2_VERSION_MINOR@)
+
+#-----------------------------------------------------------------------------
+# Don't include targets if this file is being picked up by another
+# project which has already build h5bzip2 as a subproject
+#-----------------------------------------------------------------------------
+if (NOT TARGET "@H5BZ2_PACKAGE@")
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BZ2_PACKAGE@@H5BZ2_PACKAGE_EXT@-targets.cmake)
+  set (H5BZ2_LIBRARIES "@H5BZ2_LIBRARIES_TO_EXPORT@")
+endif ()
+
+check_required_components (${H5BZ2_PACKAGE_NAME})
