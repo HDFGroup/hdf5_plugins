@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.1.0)
 project (H5BLOSC C CXX)
 
 #-----------------------------------------------------------------------------
@@ -72,7 +72,6 @@ set (H5BLOSC_PACKAGE_SOVERSION "${H5BLOSC_SOVERS_MAJOR}.${H5BLOSC_SOVERS_RELEASE
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
 #-----------------------------------------------------------------------------
-include (${H5BLOSC_RESOURCES_DIR}/HDFMacros.cmake)
 include (${H5BLOSC_RESOURCES_DIR}/H5BLOSCMacros.cmake)
 
 #-----------------------------------------------------------------------------
@@ -109,7 +108,7 @@ endif (NOT H5BLOSC_EXPORTED_TARGETS)
 # add it to this variable. This is NOT used by Make Install, but for projects
 # which include h5blosc as a sub-project within their build tree
 #-----------------------------------------------------------------------------
-SET_GLOBAL_VARIABLE (H5BLOSC_LIBRARIES_TO_EXPORT "")
+set_global_variable (H5BLOSC_LIBRARIES_TO_EXPORT "")
 
 #-----------------------------------------------------------------------------
 # Run all the CMake configuration tests for our build environment
@@ -319,24 +318,18 @@ if (BUILD_EXAMPLES)
 endif (BUILD_EXAMPLES)
 
 #-----------------------------------------------------------------------------
-# Check for Installation Utilities
+# Add file(s) to CMake Install
 #-----------------------------------------------------------------------------
-if (WIN32)
-  set (PF_ENV_EXT "(x86)")
-  find_program (NSIS_EXECUTABLE NSIS.exe PATHS "$ENV{ProgramFiles}\\NSIS" "$ENV{ProgramFiles${PF_ENV_EXT}}\\NSIS")
-  if(NOT CPACK_WIX_ROOT)
-    file(TO_CMAKE_PATH "$ENV{WIX}" CPACK_WIX_ROOT)
-  endif()
-  find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
-endif (WIN32)
- 
+
+include (CMakePackageConfigHelpers)
+
 #-----------------------------------------------------------------------------
 # Add Target(s) to CMake Install for import into other projects
 #-----------------------------------------------------------------------------
 if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   install (
       EXPORT ${H5BLOSC_EXPORTED_TARGETS}
-      DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}/${H5BLOSC_PACKAGE}
+      DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}
       FILE ${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-targets.cmake
       COMPONENT configinstall
   )
@@ -353,31 +346,48 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 
 #-----------------------------------------------------------------------------
-# Configure the blosc-config.cmake file for the build directory
+# Set includes needed for build
 #-----------------------------------------------------------------------------
 set (H5BLOSC_INCLUDES_BUILD_TIME
     ${H5BLOSC_SRC_DIR} ${H5BLOSC_BINARY_DIR}
 )
-set (H5BLOSC_VERSION_STRING @H5BLOSC_PACKAGE_VERSION@)
-set (H5BLOSC_VERSION_MAJOR  @H5BLOSC_PACKAGE_VERSION_MAJOR@)
-set (H5BLOSC_VERSION_MINOR  @H5BLOSC_PACKAGE_VERSION_MINOR@)
+#-----------------------------------------------------------------------------
+# Set variables needed for installation
+#-----------------------------------------------------------------------------
+set (H5BLOSC_VERSION_STRING ${H5BLOSC_PACKAGE_VERSION})
+set (H5BLOSC_VERSION_MAJOR  ${H5BLOSC_PACKAGE_VERSION_MAJOR})
+set (H5BLOSC_VERSION_MINOR  ${H5BLOSC_PACKAGE_VERSION_MINOR})
 
-configure_file (
-    ${H5BLOSC_RESOURCES_DIR}/h5blosc-config.cmake.build.in 
-    ${H5BLOSC_BINARY_DIR}/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config.cmake @ONLY
+#-----------------------------------------------------------------------------
+# Configure the h5bzip2-config.cmake file for the build directory
+#-----------------------------------------------------------------------------
+set(INCLUDE_INSTALL_DIR ${H5BLOSC_INSTALL_INCLUDE_DIR} )
+set(SHARE_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/${H5BLOSC_INSTALL_CMAKE_DIR}" )
+set(CURRENT_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}" )
+configure_package_config_file (
+    ${H5BLOSC_RESOURCES_DIR}/h5blosc-config.cmake.in
+    "${H5BLOSC_BINARY_DIR}/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config.cmake"
+    INSTALL_DESTINATION "${H5BLOSC_INSTALL_CMAKE_DIR}"
+    PATH_VARS INCLUDE_INSTALL_DIR SHARE_INSTALL_DIR CURRENT_BUILD_DIR
+    INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
 #-----------------------------------------------------------------------------
 # Configure the blosc-config.cmake file for the install directory
 #-----------------------------------------------------------------------------
+set(INCLUDE_INSTALL_DIR ${H5BLOSC_INSTALL_INCLUDE_DIR} )
+set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${H5BLOSC_INSTALL_CMAKE_DIR}" )
+set(CURRENT_BUILD_DIR "${CMAKE_INSTALL_PREFIX}" )
+configure_package_config_file (
+    ${H5BLOSC_RESOURCES_DIR}/h5blosc-config.cmake.in
+    "${H5BLOSC_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config.cmake"
+    INSTALL_DESTINATION "${H5BLOSC_INSTALL_CMAKE_DIR}"
+    PATH_VARS INCLUDE_INSTALL_DIR SHARE_INSTALL_DIR CURRENT_BUILD_DIR
+)
 if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
-  configure_file (
-      ${H5BLOSC_RESOURCES_DIR}/h5blosc-config.cmake.install.in
-      ${H5BLOSC_BINARY_DIR}/CMakeFiles/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config.cmake @ONLY
-  )
   install (
-      FILES ${H5BLOSC_BINARY_DIR}/CMakeFiles/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config.cmake
-      DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}/${H5BLOSC_PACKAGE}
+      FILES ${H5BLOSC_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config.cmake
+      DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
@@ -388,11 +398,11 @@ endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   configure_file (
       ${H5BLOSC_RESOURCES_DIR}/h5blosc-config-version.cmake.in
-      ${H5BLOSC_BINARY_DIR}/CMakeFiles/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config-version.cmake @ONLY
+      ${H5BLOSC_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config-version.cmake @ONLY
   )
   install (
-      FILES ${H5BLOSC_BINARY_DIR}/CMakeFiles/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config-version.cmake
-      DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}/${H5BLOSC_PACKAGE}
+      FILES ${H5BLOSC_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-config-version.cmake
+      DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
@@ -400,32 +410,45 @@ endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 #-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
 #-----------------------------------------------------------------------------
-HDF_README_PROPERTIES("")
+H5BLOSC_README_PROPERTIES()
+
+#-----------------------------------------------------------------------------
+# Check for Installation Utilities
+#-----------------------------------------------------------------------------
+if (WIN32)
+  set (PF_ENV_EXT "(x86)")
+  find_program (NSIS_EXECUTABLE NSIS.exe PATHS "$ENV{ProgramFiles}\\NSIS" "$ENV{ProgramFiles${PF_ENV_EXT}}\\NSIS")
+  if(NOT CPACK_WIX_ROOT)
+    file(TO_CMAKE_PATH "$ENV{WIX}" CPACK_WIX_ROOT)
+  endif()
+  find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
+endif (WIN32)
 
 #-----------------------------------------------------------------------------
 # Set the cpack variables
 #-----------------------------------------------------------------------------
 if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_VENDOR "HDF_Group")
-  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "h5blosc Installation")
-  set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
   set (CPACK_PACKAGE_NAME "${H5BLOSC_PACKAGE_NAME}")
   if (CDASH_LOCAL)
     set (CPACK_PACKAGE_VERSION "${H5BLOSC_PACKAGE_VERSION}")
   else (CDASH_LOCAL)
     set (CPACK_PACKAGE_VERSION "${H5BLOSC_PACKAGE_VERSION_STRING}")
   endif (CDASH_LOCAL)
-  set (CPACK_PACKAGE_VERSION "${H5BLOSC_PACKAGE_VERSION}")
   set (CPACK_PACKAGE_VERSION_MAJOR "${H5BLOSC_PACKAGE_VERSION_MAJOR}")
   set (CPACK_PACKAGE_VERSION_MINOR "${H5BLOSC_PACKAGE_VERSION_MINOR}")
   set (CPACK_PACKAGE_VERSION_PATCH "")
-  set (CPACK_PACKAGE_INSTALL_DIRECTORY "hdf5")
   #set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+  set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
   set (CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
   set (CPACK_PACKAGE_RELOCATABLE TRUE)
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "h5blosc Installation")
+  set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
 
   set (CPACK_GENERATOR "TGZ") 
   if (WIN32)
+    set (CPACK_GENERATOR "ZIP") 
+
     if (NSIS_EXECUTABLE)    
       list (APPEND CPACK_GENERATOR "NSIS") 
     endif (NSIS_EXECUTABLE)    
@@ -433,19 +456,25 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
     #  - Registry key used to store info about the installation
-    set (CPACK_NSIS_INSTALL_ROOT "${CPACK_PACKAGE_VENDOR}")
+    set (CPACK_NSIS_PACKAGE_NAME "${H5BLOSC_PACKAGE_STRING}")
     if (CMAKE_CL_64)
-      set (CPACK_NSIS_PACKAGE_NAME "${H5BLOSC_PACKAGE_STRING} (Win64)")
+      set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
     else (CMAKE_CL_64)
-      set (CPACK_NSIS_PACKAGE_NAME "${H5BLOSC_PACKAGE_STRING}")
+      set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
     endif (CMAKE_CL_64)
-    set (CPACK_NSIS_DISPLAY_NAME "@CPACK_NSIS_PACKAGE_NAME@, is a dynamic filter for HDF5")
+    # set the install/unistall icon used for the installer itself
+    # There is a bug in NSI that does not handle full unix paths properly.
+    #set (CPACK_NSIS_MUI_ICON "${H5BLOSC_RESOURCES_DIR}\\\\H5BLOSC.ico")
+    #set (CPACK_NSIS_MUI_UNIICON "${H5BLOSC_RESOURCES_DIR}\\\\H5BLOSC.ico")
+    # set the package header icon for MUI
+    #set (CPACK_PACKAGE_ICON "${H5BLOSC_RESOURCES_DIR}\\\\H5BLOSC.bmp")
+    set (CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_PACKAGE_NAME}, is a dynamic filter for HDF5")
     #set (CPACK_PACKAGE_INSTALL_DIRECTORY "plugins")
-    set (CPACK_MONOLITHIC_INSTALL ON)
     set (CPACK_NSIS_CONTACT "${H5BLOSC_PACKAGE_BUGREPORT}")
     set (CPACK_NSIS_MODIFY_PATH ON)
+
     if (WIX_EXECUTABLE)    
       list (APPEND CPACK_GENERATOR "WIX") 
     endif (WIX_EXECUTABLE)    
@@ -466,7 +495,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
 # .. variable:: CPACK_WIX_PRODUCT_ICON
 #  The Icon shown next to the program name in Add/Remove programs.
-#    set(CPACK_WIX_PRODUCT_ICON "${HDF_RESOURCES_EXT_DIR}\\\\hdf.ico")
+#    set(CPACK_WIX_PRODUCT_ICON "${H5BLOSC_RESOURCES_DIR}\\\\H5BLOSC.ico")
 #
 # .. variable:: CPACK_WIX_UI_BANNER
 #
@@ -491,6 +520,42 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 #    set (CPACK_PACKAGE_ICON "${H5BLOSC_RESOURCES_DIR}/h5blosc.gif")
+
+    option (H5BLOSC_PACK_MACOSX_BUNDLE  "Package the H5BLOSC Library in a Bundle" OFF)
+    if (H5BLOSC_PACK_MACOSX_BUNDLE)
+      list (APPEND CPACK_GENERATOR "Bundle")
+      set (CPACK_BUNDLE_NAME "${H5BLOSC_PACKAGE_STRING}")
+      set (CPACK_BUNDLE_LOCATION "/")    # make sure CMAKE_INSTALL_PREFIX ends in /
+      set (CMAKE_INSTALL_PREFIX "/${CPACK_BUNDLE_NAME}.framework/Versions/${CPACK_PACKAGE_VERSION}/${CPACK_PACKAGE_NAME}/")
+#      set (CPACK_BUNDLE_ICON "${H5BLOSC_RESOURCES_DIR}/H5BZ2.icns")
+#      set (CPACK_BUNDLE_PLIST "${H5BLOSC_BINARY_DIR}/CMakeFiles/Info.plist")
+      set (CPACK_APPLE_GUI_INFO_STRING "H5BLOSC Plugin Library")
+      set (CPACK_APPLE_GUI_COPYRIGHT "Copyright © ???. All rights reserved.")
+      set (CPACK_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+      set (CPACK_APPLE_GUI_BUNDLE_NAME "${H5BLOSC_PACKAGE_STRING}")
+      set (CPACK_APPLE_GUI_VERSION_STRING "${CPACK_PACKAGE_VERSION_STRING}")
+      set (CPACK_APPLE_GUI_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+      #-----------------------------------------------------------------------------
+      # Configure the Info.plist file for the install bundle
+      #-----------------------------------------------------------------------------
+#      configure_file (
+#          ${H5BLOSC_RESOURCES_DIR}/CPack.Info.plist.in
+#          ${H5BLOSC_BINARY_DIR}/CMakeFiles/Info.plist @ONLY
+#      )
+#      configure_file (
+#          ${H5BLOSC_RESOURCES_DIR}/PkgInfo.in
+#          ${H5BLOSC_BINARY_DIR}/CMakeFiles/PkgInfo @ONLY
+#      )
+#      configure_file (
+#          ${H5BLOSC_RESOURCES_DIR}/version.plist.in
+#          ${H5BLOSC_BINARY_DIR}/CMakeFiles/version.plist @ONLY
+#      )
+#      install (
+#          FILES ${H5BLOSC_BINARY_DIR}/CMakeFiles/PkgInfo
+#                ${H5BLOSC_BINARY_DIR}/CMakeFiles/version.plist
+#          DESTINATION ..
+#      )
+    endif (H5BLOSC_PACK_MACOSX_BUNDLE)
   else (WIN32)
     list (APPEND CPACK_GENERATOR "STGZ") 
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
@@ -504,17 +569,17 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     set (CPACK_RPM_COMPONENT_INSTALL ON)
     set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
   endif (WIN32)
-  
-
-  # By default, do not warn when built on machines using only VS Express:
-  if (NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
-    set (CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
-  endif (NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
-  include (InstallRequiredSystemLibraries)
 
   set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BLOSC_BINARY_DIR};h5blosc;libraries;/")
+
+  set (CPACK_ALL_INSTALL_TYPES Full User)
+  set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
+
+  set(CPACK_COMPONENTS_ALL libraries)
   
   include (CPack)
+
+  cpack_add_component_group(Runtime)
 
   cpack_add_component (libraries 
       DISPLAY_NAME "h5blosc Libraries"
