@@ -16,7 +16,6 @@ MACRO (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
         set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5BLOSC_PACKAGE_SOVERSION})
     endif (WIN32)
   endif (${libtype} MATCHES "SHARED")
-  HDF_SET_LIB_OPTIONS (${libtarget} ${LIB_OUT_NAME} ${libtype})
 
   #-- Apple Specific install_name for libraries
   if (APPLE)
@@ -31,6 +30,7 @@ MACRO (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   endif (APPLE)
 
 ENDMACRO (H5BLOSC_SET_LIB_OPTIONS)
+
 #-------------------------------------------------------------------------------
 MACRO (SET_GLOBAL_VARIABLE name value)
   set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)

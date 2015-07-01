@@ -30,9 +30,6 @@ MACRO (H5LZ4_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   endif (APPLE)
 
 ENDMACRO (H5LZ4_SET_LIB_OPTIONS)
-MACRO (SET_GLOBAL_VARIABLE name value)
-  set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)
-ENDMACRO (SET_GLOBAL_VARIABLE)
 
 #-------------------------------------------------------------------------------
 MACRO (SET_GLOBAL_VARIABLE name value)
@@ -115,7 +112,6 @@ ENDMACRO (INSTALL_PROGRAM_PDB)
 
 #-------------------------------------------------------------------------------
 MACRO (H5LZ4_SET_BASE_OPTIONS libtarget libname libtype)
-  # message (STATUS "${libname} libtype: ${libtype}")
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
       set (LIB_RELEASE_NAME "${libname}")

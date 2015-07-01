@@ -37,11 +37,6 @@ MACRO (SET_GLOBAL_VARIABLE name value)
 ENDMACRO (SET_GLOBAL_VARIABLE)
 
 #-------------------------------------------------------------------------------
-MACRO (SET_GLOBAL_VARIABLE name value)
-  set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)
-ENDMACRO (SET_GLOBAL_VARIABLE)
-
-#-------------------------------------------------------------------------------
 MACRO (IDE_GENERATED_PROPERTIES SOURCE_PATH HEADERS SOURCES)
   #set(source_group_path "Source/AIM/${NAME}")
   string (REPLACE "/" "\\\\" source_group_path ${SOURCE_PATH})
@@ -117,7 +112,6 @@ ENDMACRO (INSTALL_PROGRAM_PDB)
 
 #-------------------------------------------------------------------------------
 MACRO (H5BZ2_SET_BASE_OPTIONS libtarget libname libtype)
-  # message (STATUS "${libname} libtype: ${libtype}")
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
       set (LIB_RELEASE_NAME "${libname}")
