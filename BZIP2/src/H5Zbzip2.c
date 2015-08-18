@@ -1,9 +1,9 @@
  /*
- * This file is an example of an HDF5 filter plugin. 
- * The filter function  H5Z_filter_bzip2 was adopted from 
- * PyTables http://www.pytables.org.  
- * The plugin can be used with the HDF5 library vesrion 1.8.11 to read
- * HDF5 datasets compressed with bzip2 created by PyTables. 
+ * This file is an example of an HDF5 filter plugin.
+ * The filter function  H5Z_filter_bzip2 was adopted from
+ * PyTables http://www.pytables.org.
+ * The plugin can be used with the HDF5 library vesrion 1.8.11+ to read
+ * HDF5 datasets compressed with bzip2 created by PyTables.
  */
 
 /*
@@ -56,13 +56,13 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
                      const unsigned int cd_values[], size_t nbytes,
                      size_t *buf_size, void **buf);
 
-/* 
- * BZIP2 compression was the first external filter registered by PyTbales developers 
+/*
+ * BZIP2 compression was the first external filter registered by PyTables developers
  * with The HDF Group
  * See http://www.hdfgroup.org/services/contributions.html for more information.
  *
  * If you intend your plugin to be used by others, please register your filter
- * with The HDF Group. 
+ * with The HDF Group.
  */
 #define H5Z_FILTER_BZIP2 307
 
@@ -71,7 +71,7 @@ const H5Z_class2_t H5Z_BZIP2[1] = {{
     (H5Z_filter_t)H5Z_FILTER_BZIP2,         /* Filter id number             */
     1,              /* encoder_present flag (set to true) */
     1,              /* decoder_present flag (set to true) */
-    "HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html", 
+    "HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html",
                                 /* Filter name for debugging    */
     NULL,                       /* The "can apply" callback     */
     NULL,                       /* The "set local" callback     */
@@ -133,8 +133,8 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
     do {
       ret = BZ2_bzDecompress(&stream);
       if (ret < 0) {
-	fprintf(stderr, "BUG: bzip2 decompression failed with error %d\n", ret);
-	goto cleanupAndFail;
+  fprintf(stderr, "BUG: bzip2 decompression failed with error %d\n", ret);
+  goto cleanupAndFail;
       }
 
       if (ret != BZ_STREAM_END && stream.avail_out == 0) {
@@ -177,8 +177,8 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
     if (cd_nelmts > 0) {
       blockSize100k = cd_values[0];
       if (blockSize100k < 1 || blockSize100k > 9) {
-	fprintf(stderr, "invalid compression block size: %d\n", blockSize100k);
-	goto cleanupAndFail;
+  fprintf(stderr, "invalid compression block size: %d\n", blockSize100k);
+  goto cleanupAndFail;
       }
     }
 

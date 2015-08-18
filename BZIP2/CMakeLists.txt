@@ -97,7 +97,7 @@ endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
 
 #-----------------------------------------------------------------------------
 # Targets built within this project are exported at Install time for use
-# by other projects using FindH5BZ2. 
+# by other projects using FindH5BZ2.
 #-----------------------------------------------------------------------------
 if (NOT H5BZ2_EXPORTED_TARGETS)
   set (H5BZ2_EXPORTED_TARGETS "H5bz2-targets")
@@ -136,27 +136,48 @@ set (HDF5_USE_SHARED_LIBRARIES 1)
 add_definitions (-DH5_USE_18_API)
 
 if (NOT HDF5_HDF5_HEADER)
-  find_package (HDF5 NAMES ${HDF5_PACKAGE_NAME})
-  if (NOT HDF5_FOUND)
+  if (BUILD_SHARED_LIBS)
+    set (FIND_HDF_COMPONENTS C shared)
+  else (BUILD_SHARED_LIBS)
+    set (FIND_HDF_COMPONENTS C static)
+  endif (BUILD_SHARED_LIBS)
+  message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
+
+  find_package (HDF5 NAMES ${HDF5_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
+  message (STATUS "HDF5 C libs: static:${HDF5_static_C_FOUND} and shared:${HDF5_shared_C_FOUND}")
+  if (HDF5_FOUND)
+    if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      set (FIND_HDF_COMPONENTS C)
+      message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
+
+      find_package (HDF5 NAMES ${HDF5_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
+      message (STATUS "HDF5 libs: ${HDF5_LIBRARIES}")
+      set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+    else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      if (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)
+        set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+      else (HDF5_static_C_FOUND)
+        set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
+       endif (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)
+    endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+  else (HDF5_FOUND)
     find_package (HDF5) # Legacy find
+#Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
+    set(HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
+#Legacy find_package does not set HDF5_BUILD_SHARED_LIBS, so we set it here
+    if (USE_SHARED_LIBS AND EXISTS "${HDF5_LIBRARY_DIRS}/libhdf5.so")
+      add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
+    endif ()
+    set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
     set (HDF5_BUILD_SHARED_LIBS 1)
-  endif (NOT HDF5_FOUND)
+  endif (HDF5_FOUND)
+
   if (HDF5_FOUND)
     set (HDF5_HAVE_H5PUBCONF_H 1)
     set (HDF5_HAVE_HDF5 1)
     set (HDF5_HDF5_HEADER "h5pubconf.h")
     set (HDF5_INCLUDE_DIR_GEN ${HDF5_INCLUDE_DIR})
     message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
-    if ((NOT USE_SHARED_LIBS AND HDF5_BUILD_SHARED_LIBS) OR (USE_SHARED_LIBS AND NOT HDF5_BUILD_SHARED_LIBS))
-      message (STATUS "HDF5 build type does match requested type")
-    endif ((NOT USE_SHARED_LIBS AND HDF5_BUILD_SHARED_LIBS) OR (USE_SHARED_LIBS AND NOT HDF5_BUILD_SHARED_LIBS))
-    if (HDF5_BUILD_SHARED_LIBS)
-      add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-      set (H5_LIB_TYPE SHARED)
-    else (HDF5_BUILD_SHARED_LIBS)
-      add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-      set (H5_LIB_TYPE STATIC)
-    endif (HDF5_BUILD_SHARED_LIBS)
   else (HDF5_FOUND)
     message (FATAL_ERROR " HDF5 is Required for ${H5BZ2_PACKAGE_NAME} library")
   endif (HDF5_FOUND)
@@ -165,17 +186,29 @@ else (NOT HDF5_HDF5_HEADER)
   set (HDF5_HAVE_H5PUBCONF_H 1)
   set (HDF5_HAVE_HDF5 1)
 endif (NOT HDF5_HDF5_HEADER)
+
+if (USE_SHARED_LIBS)
+  set (H5_LIB_TYPE SHARED)
+else (USE_SHARED_LIBS)
+  set (H5_LIB_TYPE STATIC)
+endif (USE_SHARED_LIBS)
+
 add_executable (h5repack IMPORTED)
 add_executable (h5dump IMPORTED)
-if (USE_SHARED_LIBS AND WIN32)
-  set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
-  set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
-else (USE_SHARED_LIBS AND WIN32)
+if (HDF5_static_C_FOUND OR HDF5_shared_C_FOUND)
   set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
   set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
-endif (USE_SHARED_LIBS AND WIN32)
+else (HDF5_static_C_FOUND OR HDF5_shared_C_FOUND)
+  if (USE_SHARED_LIBS AND WIN32)
+    set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
+    set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
+  else (USE_SHARED_LIBS AND WIN32)
+    set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
+    set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+  endif (USE_SHARED_LIBS AND WIN32)
+endif (HDF5_static_C_FOUND OR HDF5_shared_C_FOUND)
 set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5dump>)
-#set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
+set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:h5repack>)
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
 include (ExternalProject)
@@ -198,7 +231,13 @@ endif (H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BZ2_ALLOW_EXTERNAL_SUPPOR
 # bzip2 Library Settings
 #-----------------------------------------------------------------------------
 if (NOT BZ2_USE_EXTERNAL)
-  find_package (BZ2 NAMES ${BZ2_PACKAGE_NAME})
+  if (BUILD_SHARED_LIBS)
+    set (FIND_BZ2_COMPONENTS shared)
+  else (BUILD_SHARED_LIBS)
+    set (FIND_BZ2_COMPONENTS static)
+  endif (BUILD_SHARED_LIBS)
+  find_package (BZ2 NAMES ${BZ2_PACKAGE_NAME} COMPONENTS ${FIND_BZ2_COMPONENTS})
+  message (STATUS "BZ2 C libs: static:${BZ2_static_FOUND} and shared:${BZ2_shared_FOUND}")
   if (NOT BZ2_FOUND)
     find_package (BZ2) # Legacy find
   endif (NOT BZ2_FOUND)
@@ -416,13 +455,13 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "h5bzip2 Installation")
   set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
 
-  set (CPACK_GENERATOR "TGZ") 
+  set (CPACK_GENERATOR "TGZ")
   if (WIN32)
-    set (CPACK_GENERATOR "ZIP") 
+    set (CPACK_GENERATOR "ZIP")
 
-    if (NSIS_EXECUTABLE)    
-      list (APPEND CPACK_GENERATOR "NSIS") 
-    endif (NSIS_EXECUTABLE)    
+    if (NSIS_EXECUTABLE)
+      list (APPEND CPACK_GENERATOR "NSIS")
+    endif (NSIS_EXECUTABLE)
     # Installers for 32- vs. 64-bit CMake:
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
@@ -446,9 +485,9 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
     set (CPACK_NSIS_CONTACT "${H5BZ2_PACKAGE_BUGREPORT}")
     set (CPACK_NSIS_MODIFY_PATH ON)
 
-    if (WIX_EXECUTABLE)    
-      list (APPEND CPACK_GENERATOR "WIX") 
-    endif (WIX_EXECUTABLE)    
+    if (WIX_EXECUTABLE)
+      list (APPEND CPACK_GENERATOR "WIX")
+    endif (WIX_EXECUTABLE)
 #WiX variables
     set (CPACK_WIX_UNINSTALL "1")
 # .. variable:: CPACK_WIX_LICENSE_RTF
@@ -487,7 +526,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
 #  This image must be 493 by 312 pixels.
 #
   elseif (APPLE)
-    list (APPEND CPACK_GENERATOR "DragNDrop") 
+    list (APPEND CPACK_GENERATOR "DragNDrop")
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 #    set (CPACK_PACKAGE_ICON "${H5BZ2_RESOURCES_DIR}/h5bz2.gif")
@@ -528,21 +567,21 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
 #      )
     endif (H5BZ2_PACK_MACOSX_BUNDLE)
   else (WIN32)
-    list (APPEND CPACK_GENERATOR "STGZ") 
+    list (APPEND CPACK_GENERATOR "STGZ")
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
 
     set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${H5BZ2_PACKAGE_BUGREPORT}")
-    
-#      list (APPEND CPACK_GENERATOR "RPM") 
+
+#      list (APPEND CPACK_GENERATOR "RPM")
     set (CPACK_RPM_PACKAGE_RELEASE "1")
     set (CPACK_RPM_COMPONENT_INSTALL ON)
     set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
   endif (WIN32)
 
   set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BZ2_BINARY_DIR};h5bz2;libraries;/")
-  
+
   if (H5BZ2_PACKAGE_EXTLIBS)
     if (H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
       if (BZ2_FOUND AND BZ2_USE_EXTERNAL)
@@ -555,16 +594,15 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
   set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
 
   set(CPACK_COMPONENTS_ALL libraries)
-  
+
   include (CPack)
 
   cpack_add_component_group(Runtime)
 
-  cpack_add_component (libraries 
+  cpack_add_component (libraries
       DISPLAY_NAME "h5bzip2 Libraries"
       GROUP Runtime
       INSTALL_TYPES Full User
   )
-  
+
 endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
-  

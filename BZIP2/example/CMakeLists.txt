@@ -10,7 +10,7 @@ foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
-  target_link_libraries (${example} ${HDF5_LIBRARIES})
+  target_link_libraries (${example} ${HDF5_LINK_LIBS})
   if (NOT WIN32)
     target_link_libraries (${example} dl)
   endif (NOT WIN32)
@@ -21,7 +21,7 @@ if (BUILD_TESTING)
     add_test (
         NAME ${testname}-clearall
         COMMAND    ${CMAKE_COMMAND}
-            -E remove 
+            -E remove
             ${testname}.out
             ${testname}.out.err
             ${testname}.ddl.out
@@ -65,7 +65,7 @@ if (BUILD_TESTING)
     add_test (
         NAME H5BZ2_UD-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
-            -E remove 
+            -E remove
             out-${testname}.${resultfile}
             ${testname}.${resultfile}.out
             ${testname}.${resultfile}.out.err
@@ -150,6 +150,5 @@ if (BUILD_TESTING)
 
 #UD BZIP2
   ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,1,9)
-    
+
 endif (BUILD_TESTING)
-  
