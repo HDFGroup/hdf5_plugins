@@ -97,7 +97,7 @@ endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 
 #-----------------------------------------------------------------------------
 # Targets built within this project are exported at Install time for use
-# by other projects using FindH5BLOSC. 
+# by other projects using FindH5BLOSC.
 #-----------------------------------------------------------------------------
 if (NOT H5BLOSC_EXPORTED_TARGETS)
   set (H5BLOSC_EXPORTED_TARGETS "H5blosc-targets")
@@ -132,31 +132,74 @@ endif (BUILD_SHARED_LIBS)
 #-----------------------------------------------------------------------------
 set (CMAKE_MODULE_PATH ${HDF_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
 
-set (HDF5_USE_SHARED_LIBRARIES 1)
 add_definitions (-DH5_USE_18_API)
 
 if (NOT HDF5_HDF5_HEADER)
-  find_package (HDF5 NAMES ${HDF5_PACKAGE_NAME})
-  if (NOT HDF5_FOUND)
+  if (BUILD_SHARED_LIBS)
+    set (FIND_HDF_COMPONENTS C shared)
+  else (BUILD_SHARED_LIBS)
+    set (FIND_HDF_COMPONENTS C static)
+  endif (BUILD_SHARED_LIBS)
+  message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
+  set (SEARCH_PACKAGE_NAME ${HDF5_PACKAGE_NAME})
+
+  find_package (HDF5 NAMES ${SEARCH_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
+  message (STATUS "HDF5 C libs:${HDF5_FOUND} static:${HDF5_static_C_FOUND} and shared:${HDF5_shared_C_FOUND}")
+  if (HDF5_FOUND)
+    add_executable (h5repack IMPORTED)
+    add_executable (h5dump IMPORTED)
+    if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      set (FIND_HDF_COMPONENTS C)
+      message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
+
+      find_package (HDF5 NAMES ${SEARCH_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
+      message (STATUS "HDF5 libs:${HDF5_FOUND} C:${HDF5_C_FOUND}")
+      set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+      if (USE_SHARED_LIBS AND WIN32)
+        set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
+        set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
+      else (USE_SHARED_LIBS AND WIN32)
+        set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
+        set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+      endif (USE_SHARED_LIBS AND WIN32)
+    else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
+        set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+      else (HDF5_static_C_FOUND)
+        set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
+      endif (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
+      set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
+      set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+    endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5dump>)
+    set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:h5repack>)
+  else (HDF5_FOUND)
     find_package (HDF5) # Legacy find
-    set (HDF5_BUILD_SHARED_LIBS 1)
-  endif (NOT HDF5_FOUND)
+#Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
+    set(HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
+#Legacy find_package does not set HDF5_BUILD_SHARED_LIBS, so we set it here
+    if (USE_SHARED_LIBS AND EXISTS "${HDF5_LIBRARY_DIRS}/libhdf5.so")
+      set (HDF5_BUILD_SHARED_LIBS 1)
+    else ()
+      set (HDF5_BUILD_SHARED_LIBS 0)
+    endif ()
+    set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+
+    add_executable (h5repack IMPORTED)
+    add_executable (h5dump IMPORTED)
+    set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
+    set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5repack>)
+    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5dump>)
+  endif (HDF5_FOUND)
+  set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
+
   if (HDF5_FOUND)
     set (HDF5_HAVE_H5PUBCONF_H 1)
     set (HDF5_HAVE_HDF5 1)
     set (HDF5_HDF5_HEADER "h5pubconf.h")
     set (HDF5_INCLUDE_DIR_GEN ${HDF5_INCLUDE_DIR})
     message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
-    if ((NOT USE_SHARED_LIBS AND HDF5_BUILD_SHARED_LIBS) OR (USE_SHARED_LIBS AND NOT HDF5_BUILD_SHARED_LIBS))
-      message (STATUS "HDF5 build type does match requested type")
-    endif ((NOT USE_SHARED_LIBS AND HDF5_BUILD_SHARED_LIBS) OR (USE_SHARED_LIBS AND NOT HDF5_BUILD_SHARED_LIBS))
-    if (HDF5_BUILD_SHARED_LIBS)
-      add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-      set (H5_LIB_TYPE SHARED)
-    else (HDF5_BUILD_SHARED_LIBS)
-      add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-      set (H5_LIB_TYPE STATIC)
-    endif (HDF5_BUILD_SHARED_LIBS)
   else (HDF5_FOUND)
     message (FATAL_ERROR " HDF5 is Required for ${H5BLOSC_PACKAGE_NAME} library")
   endif (HDF5_FOUND)
@@ -165,20 +208,7 @@ else (NOT HDF5_HDF5_HEADER)
   set (HDF5_HAVE_H5PUBCONF_H 1)
   set (HDF5_HAVE_HDF5 1)
 endif (NOT HDF5_HDF5_HEADER)
-add_executable (h5repack IMPORTED)
-add_executable (h5dump IMPORTED)
-if (USE_SHARED_LIBS AND WIN32)
-  set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
-  set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
-else (USE_SHARED_LIBS AND WIN32)
-  set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
-  set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
-endif (USE_SHARED_LIBS AND WIN32)
-set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5dump>)
-if (NOT USE_SHARED_LIBS)
-  set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
-endif (NOT USE_SHARED_LIBS)
-INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
+message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if(WIN32)
@@ -445,13 +475,13 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "h5blosc Installation")
   set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
 
-  set (CPACK_GENERATOR "TGZ") 
+  set (CPACK_GENERATOR "TGZ")
   if (WIN32)
-    set (CPACK_GENERATOR "ZIP") 
+    set (CPACK_GENERATOR "ZIP")
 
-    if (NSIS_EXECUTABLE)    
-      list (APPEND CPACK_GENERATOR "NSIS") 
-    endif (NSIS_EXECUTABLE)    
+    if (NSIS_EXECUTABLE)
+      list (APPEND CPACK_GENERATOR "NSIS")
+    endif (NSIS_EXECUTABLE)
     # Installers for 32- vs. 64-bit CMake:
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
@@ -475,9 +505,9 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     set (CPACK_NSIS_CONTACT "${H5BLOSC_PACKAGE_BUGREPORT}")
     set (CPACK_NSIS_MODIFY_PATH ON)
 
-    if (WIX_EXECUTABLE)    
-      list (APPEND CPACK_GENERATOR "WIX") 
-    endif (WIX_EXECUTABLE)    
+    if (WIX_EXECUTABLE)
+      list (APPEND CPACK_GENERATOR "WIX")
+    endif (WIX_EXECUTABLE)
 #WiX variables
     set (CPACK_WIX_UNINSTALL "1")
 # .. variable:: CPACK_WIX_LICENSE_RTF
@@ -516,7 +546,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 #  This image must be 493 by 312 pixels.
 #
   elseif (APPLE)
-    list (APPEND CPACK_GENERATOR "DragNDrop") 
+    list (APPEND CPACK_GENERATOR "DragNDrop")
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 #    set (CPACK_PACKAGE_ICON "${H5BLOSC_RESOURCES_DIR}/h5blosc.gif")
@@ -557,14 +587,14 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 #      )
     endif (H5BLOSC_PACK_MACOSX_BUNDLE)
   else (WIN32)
-    list (APPEND CPACK_GENERATOR "STGZ") 
+    list (APPEND CPACK_GENERATOR "STGZ")
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
 
     set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${H5BLOSC_PACKAGE_BUGREPORT}")
-    
-#      list (APPEND CPACK_GENERATOR "RPM") 
+
+#      list (APPEND CPACK_GENERATOR "RPM")
     set (CPACK_RPM_PACKAGE_RELEASE "1")
     set (CPACK_RPM_COMPONENT_INSTALL ON)
     set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
@@ -576,15 +606,14 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
 
   set(CPACK_COMPONENTS_ALL libraries)
-  
+
   include (CPack)
 
   cpack_add_component_group(Runtime)
 
-  cpack_add_component (libraries 
+  cpack_add_component (libraries
       DISPLAY_NAME "h5blosc Libraries"
       GROUP Runtime
   )
-  
+
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
-  

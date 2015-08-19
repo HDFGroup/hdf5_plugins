@@ -5,12 +5,18 @@ set (dyn_examples
     h5ex_d_lz4
 )
 
+if (HDF5_BUILD_SHARED_LIBS)
+  add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
+else (HDF5_BUILD_SHARED_LIBS)
+  add_definitions (-DH5_BUILT_AS_STATIC_LIB)
+endif (HDF5_BUILD_SHARED_LIBS)
+
 #run-time loadable lz4 library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
-  target_link_libraries (${example} ${HDF5_LIBRARIES})
+  target_link_libraries (${example} ${HDF5_LINK_LIBS})
   if (NOT WIN32)
     target_link_libraries (${example} dl)
   endif (NOT WIN32)

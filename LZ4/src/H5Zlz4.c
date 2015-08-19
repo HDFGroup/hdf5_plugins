@@ -1,6 +1,6 @@
 /*
- * This file is an example of an HDF5 filter plugin. 
- * The plugin can be used with the HDF5 library vesrion 1.8.x1 to read
+ * This file is an example of an HDF5 filter plugin.
+ * The plugin can be used with the HDF5 library vesrion 1.8.11+ to read
  * HDF5 datasets compressed with lz4.
  */
 
