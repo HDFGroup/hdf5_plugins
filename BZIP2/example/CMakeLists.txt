@@ -5,6 +5,12 @@ set (dyn_examples
     h5ex_d_bzip2
 )
 
+if (HDF5_BUILD_SHARED_LIBS)
+  add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
+else (HDF5_BUILD_SHARED_LIBS)
+  add_definitions (-DH5_BUILT_AS_STATIC_LIB)
+endif (HDF5_BUILD_SHARED_LIBS)
+
 #run-time loadable bzip library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
