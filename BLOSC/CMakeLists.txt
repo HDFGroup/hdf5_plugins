@@ -210,6 +210,12 @@ else (NOT HDF5_HDF5_HEADER)
 endif (NOT HDF5_HDF5_HEADER)
 message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
+if (USE_SHARED_LIBS)
+  set (H5_LIB_TYPE SHARED)
+else (USE_SHARED_LIBS)
+  set (H5_LIB_TYPE STATIC)
+endif (USE_SHARED_LIBS)
+
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if(WIN32)
     # try to use the system library
