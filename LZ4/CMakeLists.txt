@@ -132,15 +132,14 @@ endif (BUILD_SHARED_LIBS)
 #-----------------------------------------------------------------------------
 set (CMAKE_MODULE_PATH ${HDF_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
 
-set (HDF5_USE_SHARED_LIBRARIES 1)
 add_definitions (-DH5_USE_18_API)
 
 if (NOT HDF5_HDF5_HEADER)
-  if (BUILD_SHARED_LIBS)
+  if (USE_SHARED_LIBS)
     set (FIND_HDF_COMPONENTS C shared)
-  else (BUILD_SHARED_LIBS)
+  else (USE_SHARED_LIBS)
     set (FIND_HDF_COMPONENTS C static)
-  endif (BUILD_SHARED_LIBS)
+  endif (USE_SHARED_LIBS)
   message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
   set (SEARCH_PACKAGE_NAME ${HDF5_PACKAGE_NAME})
 
@@ -150,6 +149,7 @@ if (NOT HDF5_HDF5_HEADER)
     add_executable (h5repack IMPORTED)
     add_executable (h5dump IMPORTED)
     if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      #find library from non-dual-binary package
       set (FIND_HDF_COMPONENTS C)
       message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
 
