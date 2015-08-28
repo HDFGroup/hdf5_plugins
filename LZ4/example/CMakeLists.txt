@@ -5,11 +5,11 @@ set (dyn_examples
     h5ex_d_lz4
 )
 
-if (HDF5_BUILD_SHARED_LIBS)
+if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-else (HDF5_BUILD_SHARED_LIBS)
+else (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-endif (HDF5_BUILD_SHARED_LIBS)
+endif (USE_SHARED_LIBS)
 
 #run-time loadable lz4 library examples
 foreach (example ${dyn_examples})
@@ -27,7 +27,7 @@ if (BUILD_TESTING)
     add_test (
         NAME ${testname}-clearall
         COMMAND    ${CMAKE_COMMAND}
-            -E remove 
+            -E remove
             ${testname}.out
             ${testname}.out.err
             ${testname}.ddl.out
@@ -71,7 +71,7 @@ if (BUILD_TESTING)
     add_test (
         NAME H5LZ4_UD-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
-            -E remove 
+            -E remove
             out-${testname}.${resultfile}
             ${testname}.${resultfile}.out
             ${testname}.${resultfile}.out.err
@@ -156,6 +156,5 @@ if (BUILD_TESTING)
 
 #UD LZ$
   ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,2,32,0)
-    
+
 endif (BUILD_TESTING)
-  

@@ -5,11 +5,11 @@ set (dyn_examples
     h5ex_d_blosc
 )
 
-if (HDF5_BUILD_SHARED_LIBS)
+if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-else (HDF5_BUILD_SHARED_LIBS)
+else (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-endif (HDF5_BUILD_SHARED_LIBS)
+endif (USE_SHARED_LIBS)
 
 #run-time loadable blosc library examples
 foreach (example ${dyn_examples})
