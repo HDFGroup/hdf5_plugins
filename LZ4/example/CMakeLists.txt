@@ -135,23 +135,22 @@ if (BUILD_TESTING)
         ARGS       -E copy_if_different ${h5_file} ${dest}
     )
   endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-  if (NOT BUILD_LZ4_LIBRARY_SOURCE)
-    if (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
-      set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-      if (MINGW)
-        set (outname "${LZ4_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-      else (MINGW)
-        set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
-        set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${LZ4_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-      endif (MINGW)
-      add_custom_command (
-          TARGET     h5ex_d_lz4
-          POST_BUILD
-          COMMAND    ${CMAKE_COMMAND}
-          ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
-      )
-    endif (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
-  endif (NOT BUILD_LZ4_LIBRARY_SOURCE)
+  if (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
+    set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+    if (MINGW)
+      set (outname "${LZ4_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    else (MINGW)
+      set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
+      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${LZ4_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    endif (MINGW)
+    add_custom_command (
+        TARGET     h5ex_d_lz4
+        POST_BUILD
+        COMMAND    ${CMAKE_COMMAND}
+        ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
+    )
+  endif (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
+
   ADD_H5_TEST (h5ex_d_lz4)
 
 #UD LZ$

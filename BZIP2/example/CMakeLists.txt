@@ -151,7 +151,6 @@ if (BUILD_TESTING)
     )
   endif (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
 
-
   ADD_H5_TEST (h5ex_d_bzip2)
 
 #UD BZIP2
