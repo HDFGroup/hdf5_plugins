@@ -9,6 +9,9 @@ include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
 include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
+if(CMAKE_CXX_COMPILER)
+  include (${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
+endif(CMAKE_CXX_COMPILER)
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -70,23 +73,25 @@ if (WIN32)
 endif (WIN32)
 
 if (WINDOWS)
-  set (HAVE_STDDEF_H 1)
-  set (HAVE_SYS_STAT_H 1)
-  set (HAVE_SYS_TYPES_H 1)
-  set (HAVE_LIBM 1)
-  set (HAVE_STRDUP 1)
-  set (HAVE_SYSTEM 1)
-  set (HAVE_LONGJMP 1)
+  set (${H5LZ4_PREFIX}_HAVE_STDDEF_H 1)
+  set (${H5LZ4_PREFIX}_HAVE_SYS_STAT_H 1)
+  set (${H5LZ4_PREFIX}_HAVE_SYS_TYPES_H 1)
+  set (${H5LZ4_PREFIX}_HAVE_LIBM 1)
+  set (${H5LZ4_PREFIX}_HAVE_STRDUP 1)
+  set (${H5LZ4_PREFIX}_HAVE_SYSTEM 1)
+  set (${H5LZ4_PREFIX}_HAVE_LONGJMP 1)
   if (NOT MINGW)
-    set (HAVE_GETHOSTNAME 1)
+    set (${H5LZ4_PREFIX}_HAVE_GETHOSTNAME 1)
   endif (NOT MINGW)
-  set (HAVE_FUNCTION 1)
-  set (HAVE_TIMEZONE 1)
+  set (${H5BLOSC_PREFIX}_HAVE_FUNCTION 1)
+  set (${H5LZ4_PREFIX}_GETTIMEOFDAY_GIVES_TZ 1)
+  set (${H5LZ4_PREFIX}_HAVE_TIMEZONE 1)
+  set (${H5LZ4_PREFIX}_HAVE_GETTIMEOFDAY 1)
   if (MINGW)
-    set (HAVE_WINSOCK2_H 1)
+    set (${H5LZ4_PREFIX}_HAVE_WINSOCK2_H 1)
   endif (MINGW)
-  set (HAVE_LIBWS2_32 1)
-  set (HAVE_LIBWSOCK32 1)
+  set (${H5LZ4_PREFIX}_HAVE_LIBWS2_32 1)
+  set (${H5LZ4_PREFIX}_HAVE_LIBWSOCK32 1)
 endif (WINDOWS)
 
 # ----------------------------------------------------------------------
@@ -97,17 +102,13 @@ endif (WINDOWS)
 #  Check for the math library "m"
 #-----------------------------------------------------------------------------
 if (NOT WINDOWS)
-  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
-  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
-  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
+  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     ${H5LZ4_PREFIX}_HAVE_LIBM)
+  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  ${H5LZ4_PREFIX}_HAVE_LIBWS2_32)
+  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname ${H5LZ4_PREFIX}_HAVE_LIBWSOCK32)
 endif (NOT WINDOWS)
-CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
-CHECK_LIBRARY_EXISTS_CONCAT ("socket" connect      HAVE_LIBSOCKET)
-CHECK_LIBRARY_EXISTS ("c" gethostbyname "" NOT_NEED_LIBNSL)
 
-if (NOT NOT_NEED_LIBNSL)
-  CHECK_LIBRARY_EXISTS_CONCAT ("nsl"    gethostbyname  HAVE_LIBNSL)
-endif (NOT NOT_NEED_LIBNSL)
+# UCB (BSD) compatibility library
+CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  ${H5LZ4_PREFIX}_HAVE_LIBUCB)
 
 # For other tests to use the same libraries
 set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
@@ -119,7 +120,7 @@ endif (WINDOWS)
 
 # For other other specific tests, use this MACRO.
 MACRO (H5LZ4_FUNCTION_TEST OTHER_TEST)
-  if ("${OTHER_TEST}" MATCHES "^${OTHER_TEST}$")
+  if ("${H5LZ4_PREFIX}_${OTHER_TEST}" MATCHES "^${H5LZ4_PREFIX}_${OTHER_TEST}$")
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
     set (OTHER_TEST_ADD_LIBRARIES)
     if (CMAKE_REQUIRED_LIBRARIES)
@@ -136,9 +137,9 @@ MACRO (H5LZ4_FUNCTION_TEST OTHER_TEST)
         HAVE_SYS_TYPES_H
         HAVE_SYS_SOCKET_H
     )
-      if (${def})
+      if ("${${H5LZ4_PREFIX}_${def}}")
         set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif (${def})
+      endif ("${${H5LZ4_PREFIX}_${def}}")
     endforeach (def)
 
     if (LARGEFILE)
@@ -156,17 +157,17 @@ MACRO (H5LZ4_FUNCTION_TEST OTHER_TEST)
         OUTPUT_VARIABLE OUTPUT
     )
     if (${OTHER_TEST})
-      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
+      set (${H5LZ4_PREFIX}_${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
       message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
     else (${OTHER_TEST})
       message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
-      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
+      set (${H5LZ4_PREFIX}_${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
           "${OUTPUT}\n"
       )
     endif (${OTHER_TEST})
-  endif ("${OTHER_TEST}" MATCHES "^${OTHER_TEST}$")
+  endif ("${H5LZ4_PREFIX}_${OTHER_TEST}" MATCHES "^${H5LZ4_PREFIX}_${OTHER_TEST}$")
 ENDMACRO (H5LZ4_FUNCTION_TEST)
 
 H5LZ4_FUNCTION_TEST (STDC_HEADERS)
@@ -186,38 +187,38 @@ ENDMACRO (CHECK_INCLUDE_FILE_CONCAT)
 #-----------------------------------------------------------------------------
 #  Check for the existence of certain header files
 #-----------------------------------------------------------------------------
-CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
-CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      HAVE_SYS_STAT_H)
-CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
-CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
+CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        ${H5LZ4_PREFIX}_HAVE_UNISTD_H)
+CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      ${H5LZ4_PREFIX}_HAVE_SYS_STAT_H)
+CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     ${H5LZ4_PREFIX}_HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        ${H5LZ4_PREFIX}_HAVE_STDDEF_H)
+CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        ${H5LZ4_PREFIX}_HAVE_STDINT_H)
 
 # IF the c compiler found stdint, check the C++ as well. On some systems this
 # file will be found by C but not C++, only do this test IF the C++ compiler
 # has been initialized (e.g. the project also includes some c++)
-if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
-  CHECK_INCLUDE_FILE_CXX ("stdint.h" HAVE_STDINT_H_CXX)
-  if (NOT HAVE_STDINT_H_CXX)
-    set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
+if (${H5LZ4_PREFIX}_HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
+  CHECK_INCLUDE_FILE_CXX ("stdint.h" ${H5LZ4_PREFIX}_HAVE_STDINT_H_CXX)
+  if (NOT ${H5LZ4_PREFIX}_HAVE_STDINT_H_CXX)
+    set (${H5LZ4_PREFIX}_HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
     set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
-  endif (NOT HAVE_STDINT_H_CXX)
-endif (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
+  endif (NOT ${H5LZ4_PREFIX}_HAVE_STDINT_H_CXX)
+endif (${H5LZ4_PREFIX}_HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
 
 # Windows
-CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
+CHECK_INCLUDE_FILE_CONCAT ("io.h"            ${H5LZ4_PREFIX}_HAVE_IO_H)
 if (NOT CYGWIN)
-  CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      HAVE_WINSOCK_H)
+  CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      ${H5LZ4_PREFIX}_HAVE_WINSOCK_H)
 endif (NOT CYGWIN)
 
-CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
-CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
-CHECK_INCLUDE_FILE_CONCAT ("strings.h"       HAVE_STRINGS_H)
-CHECK_INCLUDE_FILE_CONCAT ("time.h"          HAVE_TIME_H)
-CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        HAVE_STDLIB_H)
-CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
-CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
-CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
-CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
+CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       ${H5LZ4_PREFIX}_HAVE_PTHREAD_H)
+CHECK_INCLUDE_FILE_CONCAT ("string.h"        ${H5LZ4_PREFIX}_HAVE_STRING_H)
+CHECK_INCLUDE_FILE_CONCAT ("strings.h"       ${H5LZ4_PREFIX}_HAVE_STRINGS_H)
+CHECK_INCLUDE_FILE_CONCAT ("time.h"          ${H5LZ4_PREFIX}_HAVE_TIME_H)
+CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        ${H5LZ4_PREFIX}_HAVE_STDLIB_H)
+CHECK_INCLUDE_FILE_CONCAT ("memory.h"        ${H5LZ4_PREFIX}_HAVE_MEMORY_H)
+CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         ${H5LZ4_PREFIX}_HAVE_DLFCN_H)
+CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         ${H5LZ4_PREFIX}_HAVE_FCNTL_H)
+CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      ${H5LZ4_PREFIX}_HAVE_INTTYPES_H)
 
 #-----------------------------------------------------------------------------
 #  Check for large file support
@@ -226,10 +227,31 @@ CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 # The linux-lfs option is deprecated.
 set (LINUX_LFS 0)
 
+set (H5LZ4_EXTRA_C_FLAGS)
 set (H5LZ4_EXTRA_FLAGS)
 if (NOT WINDOWS)
+  if (NOT ${H5LZ4_PREFIX}_HAVE_SOLARIS)
   # Linux Specific flags
-  set (H5LZ4_EXTRA_FLAGS -D_POSIX_SOURCE -D_BSD_SOURCE)
+  # This was originally defined as _POSIX_SOURCE which was updated to
+  # _POSIX_C_SOURCE=199506L to expose a greater amount of POSIX
+  # functionality so clock_gettime and CLOCK_MONOTONIC are defined
+  # correctly.
+  # POSIX feature information can be found in the gcc manual at:
+  # http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
+  set (H5LZ4_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=199506L)
+  # _BSD_SOURCE deprecated in GLIBC >= 2.20
+  try_run (HAVE_DEFAULT_SOURCE_RUN HAVE_DEFAULT_SOURCE_COMPILE
+        ${CMAKE_BINARY_DIR}
+        ${H5LZ4_RESOURCES_DIR}/H5LZ4Tests.c
+        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DHAVE_DEFAULT_SOURCE
+        OUTPUT_VARIABLE OUTPUT
+    )
+  if (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+    set (H5LZ4_EXTRA_FLAGS -D_DEFAULT_SOURCE)
+  else (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+    set (H5LZ4_EXTRA_FLAGS -D_BSD_SOURCE)
+  endif (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+
   option (H5LZ4_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
   if (H5LZ4_ENABLE_LARGE_FILE)
     set (msg "Performing TEST_LFS_WORKS")
