@@ -9,6 +9,9 @@ include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
 include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
+if(CMAKE_CXX_COMPILER)
+  include (${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
+endif(CMAKE_CXX_COMPILER)
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -103,13 +106,9 @@ if (NOT WINDOWS)
   CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
   CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
 endif (NOT WINDOWS)
-CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
-CHECK_LIBRARY_EXISTS_CONCAT ("socket" connect      HAVE_LIBSOCKET)
-CHECK_LIBRARY_EXISTS ("c" gethostbyname "" NOT_NEED_LIBNSL)
 
-if (NOT NOT_NEED_LIBNSL)
-  CHECK_LIBRARY_EXISTS_CONCAT ("nsl"    gethostbyname  HAVE_LIBNSL)
-endif (NOT NOT_NEED_LIBNSL)
+# UCB (BSD) compatibility library
+CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
 
 # For other tests to use the same libraries
 set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
@@ -138,9 +137,9 @@ MACRO (H5BZ2_FUNCTION_TEST OTHER_TEST)
         HAVE_SYS_TYPES_H
         HAVE_SYS_SOCKET_H
     )
-      if (${def})
+      if ("${def}")
         set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif (${def})
+      endif ("${def}")
     endforeach (def)
 
     if (LARGEFILE)
@@ -228,12 +227,33 @@ CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 # The linux-lfs option is deprecated.
 set (LINUX_LFS 0)
 
+set (H5BZ2_EXTRA_C_FLAGS)
 set (H5BZ2_EXTRA_FLAGS)
 if (NOT WINDOWS)
+  if (NOT ${H5BZ2_PREFIX}_HAVE_SOLARIS)
   # Linux Specific flags
-  set (H5BZ2_EXTRA_FLAGS -D_POSIX_SOURCE -D_BSD_SOURCE)
-  option (H5BZ2_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (H5BZ2_ENABLE_LARGE_FILE)
+  # This was originally defined as _POSIX_SOURCE which was updated to
+  # _POSIX_C_SOURCE=199506L to expose a greater amount of POSIX
+  # functionality so clock_gettime and CLOCK_MONOTONIC are defined
+  # correctly.
+  # POSIX feature information can be found in the gcc manual at:
+  # http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
+  set (H5BZ2_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=199506L)
+  # _BSD_SOURCE deprecated in GLIBC >= 2.20
+  try_run (HAVE_DEFAULT_SOURCE_RUN HAVE_DEFAULT_SOURCE_COMPILE
+        ${CMAKE_BINARY_DIR}
+        ${H5BZ2_RESOURCES_DIR}/H5BZ2Tests.c
+        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DHAVE_DEFAULT_SOURCE
+        OUTPUT_VARIABLE OUTPUT
+    )
+  if (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+    set (H5BZ2_EXTRA_FLAGS -D_DEFAULT_SOURCE)
+  else (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+    set (H5LZ4_EXTRA_FLAGS -D_BSD_SOURCE)
+  endif (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+
+  option (H5LZ4_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
+  if (H5LZ4_ENABLE_LARGE_FILE)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}

@@ -5,9 +5,12 @@
 
 string(TOUPPER @H5BLOSC_PACKAGE@ H5BLOSC_PACKAGE_NAME)
 
+set (${H5BLOSC_PACKAGE_NAME}_VALID_COMPONENTS static shared)
+
 #-----------------------------------------------------------------------------
 # User Options
 #-----------------------------------------------------------------------------
+set (${H5BLOSC_PACKAGE_NAME}_BUILD_SHARED_LIBS    @BUILD_SHARED_LIBS@)
 set (${H5BLOSC_PACKAGE_NAME}_EXPORT_LIBRARIES     @HH5BLOSC_LIBRARIES_TO_EXPORT@)
 
 #-----------------------------------------------------------------------------
@@ -27,11 +30,31 @@ set (${H5BLOSC_PACKAGE_NAME}_VERSION_MINOR  @H5BLOSC_VERSION_MINOR@)
 
 #-----------------------------------------------------------------------------
 # Don't include targets if this file is being picked up by another
-# project which has already build h5blosc as a subproject
+# project which has already built h5blosc as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5BLOSC_PACKAGE@")
   include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BLOSC_PACKAGE@@H5BLOSC_PACKAGE_EXT@-targets.cmake)
   set (H5BLOSC_LIBRARIES "@H5BLOSC_LIBRARIES_TO_EXPORT@")
 endif ()
+
+# Handle default component(static) :
+if (NOT ${H5BLOSC_PACKAGE_NAME}_FIND_COMPONENTS)
+    set (${H5BLOSC_PACKAGE_NAME}_FIND_COMPONENTS static)
+    set (${H5BLOSC_PACKAGE_NAME}_FIND_REQUIRED_static true)
+endif ()
+
+# Handle requested components:
+list (REMOVE_DUPLICATES ${H5BLOSC_PACKAGE_NAME}_FIND_COMPONENTS)
+foreach (comp IN LISTS ${H5BLOSC_PACKAGE_NAME}_FIND_COMPONENTS)
+    list (FIND ${H5BLOSC_PACKAGE_NAME}_EXPORT_LIBRARIES "@H5BLOSC_LIB_CORENAME@-${comp}" HAVE_COMP) 
+    if (${HAVE_COMP} LESS 0) 
+      set (${H5BLOSC_PACKAGE_NAME}_${comp}_FOUND 0)
+    else ()
+      set (${H5BLOSC_PACKAGE_NAME}_${comp}_FOUND 1)
+      string(TOUPPER ${H5LZ4_PACKAGE_NAME}_${comp}_LIBRARY COMP_LIBRARY)
+      set (${COMP_LIBRARY} ${${COMP_LIBRARY}} @H5BLOSC_LIB_CORENAME@-${comp})
+    endif ()
+endforeach ()
+
 
 check_required_components (${H5BLOSC_PACKAGE_NAME})

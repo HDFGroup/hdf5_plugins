@@ -32,29 +32,43 @@ endif (NOT TEST_ERRREF)
 message (STATUS "COMMAND: ${TEST_PROGRAM} ${TEST_ARGS}")
 
 if (TEST_ENV_VAR)
-  set (ENV{${TEST_ENV_VAR}} "${TEST_ENV_VALUE}") 
+  set (ENV{${TEST_ENV_VAR}} "${TEST_ENV_VALUE}")
 endif (TEST_ENV_VAR)
 
-# run the test program, capture the stdout/stderr and the result var
-execute_process (
-    COMMAND ${TEST_PROGRAM} ${TEST_ARGS}
-    WORKING_DIRECTORY ${TEST_FOLDER}
-    RESULT_VARIABLE TEST_RESULT
-    OUTPUT_FILE ${TEST_OUTPUT}
-    ERROR_FILE ${TEST_OUTPUT}.err
-    OUTPUT_VARIABLE TEST_OUT
-    ERROR_VARIABLE TEST_ERROR
-)
+if (NOT TEST_INPUT)
+  # run the test program, capture the stdout/stderr and the result var
+  execute_process (
+      COMMAND ${TEST_PROGRAM} ${TEST_ARGS}
+      WORKING_DIRECTORY ${TEST_FOLDER}
+      RESULT_VARIABLE TEST_RESULT
+      OUTPUT_FILE ${TEST_OUTPUT}
+      ERROR_FILE ${TEST_OUTPUT}.err
+      OUTPUT_VARIABLE TEST_OUT
+      ERROR_VARIABLE TEST_ERROR
+  )
+else (NOT TEST_INPUT)
+  # run the test program with stdin, capture the stdout/stderr and the result var
+  execute_process (
+      COMMAND ${TEST_PROGRAM} ${TEST_ARGS}
+      WORKING_DIRECTORY ${TEST_FOLDER}
+      RESULT_VARIABLE TEST_RESULT
+      INPUT_FILE ${TEST_INPUT}
+      OUTPUT_FILE ${TEST_OUTPUT}
+      ERROR_FILE ${TEST_OUTPUT}.err
+      OUTPUT_VARIABLE TEST_OUT
+      ERROR_VARIABLE TEST_ERROR
+  )
+endif (NOT TEST_INPUT)
 
 message (STATUS "COMMAND Result: ${TEST_RESULT}")
 
 if (ERROR_APPEND)
   file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_STREAM)
-  file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}") 
+  file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
 endif (ERROR_APPEND)
 
 if (TEST_APPEND)
-  file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_APPEND} ${TEST_RESULT}\n") 
+  file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_APPEND} ${TEST_RESULT}\n")
 endif (TEST_APPEND)
 
 # if the return value is !=${TEST_EXPECT} bail out
@@ -66,13 +80,13 @@ message (STATUS "COMMAND Error: ${TEST_ERROR}")
 
 if (TEST_MASK)
   file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-  string (REGEX REPLACE "Storage:[^\n]+\n" "Storage:   <details removed for portability>\n" TEST_STREAM "${TEST_STREAM}") 
+   string (REGEX REPLACE "Storage:[^\n]+\n" "Storage:   <details removed for portability>\n" TEST_STREAM "${TEST_STREAM}")
   file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
 endif (TEST_MASK)
 
 if (TEST_MASK_MOD)
   file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-  string (REGEX REPLACE "Modified:[^\n]+\n" "Modified:  XXXX-XX-XX XX:XX:XX XXX\n" TEST_STREAM "${TEST_STREAM}") 
+   string (REGEX REPLACE "Modified:[^\n]+\n" "Modified:  XXXX-XX-XX XX:XX:XX XXX\n" TEST_STREAM "${TEST_STREAM}")
   file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
 endif (TEST_MASK_MOD)
 
@@ -82,13 +96,13 @@ if (TEST_MASK_ERROR)
   else (NOT TEST_ERRREF)
     file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_STREAM)
   endif (NOT TEST_ERRREF)
-  string (REGEX REPLACE "thread [0-9]*:" "thread (IDs):" TEST_STREAM "${TEST_STREAM}") 
-  string (REGEX REPLACE ": ([^\n]*)[.]c " ": (file name) " TEST_STREAM "${TEST_STREAM}") 
-  string (REGEX REPLACE " line [0-9]*" " line (number)" TEST_STREAM "${TEST_STREAM}") 
-  string (REGEX REPLACE "v[1-9]*[.][0-9]*[.]" "version (number)." TEST_STREAM "${TEST_STREAM}") 
-  string (REGEX REPLACE "[1-9]*[.][0-9]*[.][0-9]*[^)]*" "version (number)" TEST_STREAM "${TEST_STREAM}") 
-  string (REGEX REPLACE "H5Eget_auto[1-2]*" "H5Eget_auto(1 or 2)" TEST_STREAM "${TEST_STREAM}") 
-  string (REGEX REPLACE "H5Eset_auto[1-2]*" "H5Eset_auto(1 or 2)" TEST_STREAM "${TEST_STREAM}") 
+   string (REGEX REPLACE "thread [0-9]*:" "thread (IDs):" TEST_STREAM "${TEST_STREAM}")
+   string (REGEX REPLACE ": ([^\n]*)[.]c " ": (file name) " TEST_STREAM "${TEST_STREAM}")
+   string (REGEX REPLACE " line [0-9]*" " line (number)" TEST_STREAM "${TEST_STREAM}")
+   string (REGEX REPLACE "v[1-9]*[.][0-9]*[.]" "version (number)." TEST_STREAM "${TEST_STREAM}")
+   string (REGEX REPLACE "[1-9]*[.][0-9]*[.][0-9]*[^)]*" "version (number)" TEST_STREAM "${TEST_STREAM}")
+   string (REGEX REPLACE "H5Eget_auto[1-2]*" "H5Eget_auto(1 or 2)" TEST_STREAM "${TEST_STREAM}")
+   string (REGEX REPLACE "H5Eset_auto[1-2]*" "H5Eset_auto(1 or 2)" TEST_STREAM "${TEST_STREAM}")
   if (NOT TEST_ERRREF)
     file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
   else (NOT TEST_ERRREF)
@@ -98,7 +112,7 @@ endif (TEST_MASK_ERROR)
 
 if (TEST_FILTER)
   file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-  string (REGEX REPLACE "${TEST_FILTER}" "" TEST_STREAM "${TEST_STREAM}") 
+   string (REGEX REPLACE "${TEST_FILTER}" "" TEST_STREAM "${TEST_STREAM}")
   file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
 endif (TEST_FILTER)
 
@@ -143,7 +157,7 @@ if (NOT TEST_SKIP_COMPARE)
   if (NOT ${TEST_RESULT} STREQUAL 0)
     message (FATAL_ERROR "Failed: The output of ${TEST_OUTPUT} did not match ${TEST_REFERENCE}")
   endif (NOT ${TEST_RESULT} STREQUAL 0)
-  
+
   if (TEST_ERRREF)
     if (WIN32 AND NOT MINGW)
       file (READ ${TEST_FOLDER}/${TEST_ERRREF} TEST_STREAM)

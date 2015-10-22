@@ -43,5 +43,4 @@ CLEANFILES=*.h5 tmp.test tmp.out
 DISTCLEANFILES=test.sh
 
 $(EXTRA_PROG): $(H5CC)
-	$(H5CC) $(H5CCFLAGS) $(CFLAGS) -o $@ $(srcdir)/$@.c;
-	
+  $(H5CC) $(H5CCFLAGS) $(CFLAGS) -o $@ $(srcdir)/$@.c;

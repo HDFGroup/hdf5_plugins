@@ -5,9 +5,12 @@
 
 string(TOUPPER @H5BZ2_PACKAGE@ H5BZ2_PACKAGE_NAME)
 
+set (${H5BZ2_PACKAGE_NAME}_VALID_COMPONENTS static shared)
+
 #-----------------------------------------------------------------------------
 # User Options
 #-----------------------------------------------------------------------------
+set (${H5BZ2_PACKAGE_NAME}_BUILD_SHARED_LIBS    @BUILD_SHARED_LIBS@)
 set (${H5BZ2_PACKAGE_NAME}_EXPORT_LIBRARIES     @H5BZ2_LIBRARIES_TO_EXPORT@)
 
 #-----------------------------------------------------------------------------
@@ -31,7 +34,25 @@ set (${H5BZ2_PACKAGE_NAME}_VERSION_MINOR  @H5BZ2_VERSION_MINOR@)
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5BZ2_PACKAGE@")
   include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BZ2_PACKAGE@@H5BZ2_PACKAGE_EXT@-targets.cmake)
-  set (H5BZ2_LIBRARIES "@H5BZ2_LIBRARIES_TO_EXPORT@")
 endif ()
+
+# Handle default component(static) :
+if (NOT ${H5BZ2_PACKAGE_NAME}_FIND_COMPONENTS)
+    set (${H5BZ2_PACKAGE_NAME}_FIND_COMPONENTS static)
+    set (${H5BZ2_PACKAGE_NAME}_FIND_REQUIRED_static true)
+endif ()
+
+# Handle requested components:
+list (REMOVE_DUPLICATES ${H5BZ2_PACKAGE_NAME}_FIND_COMPONENTS)
+foreach (comp IN LISTS ${H5BZ2_PACKAGE_NAME}_FIND_COMPONENTS)
+    list (FIND ${H5BZ2_PACKAGE_NAME}_EXPORT_LIBRARIES "@H5BZ2_LIB_CORENAME@-${comp}" HAVE_COMP) 
+    if (${HAVE_COMP} LESS 0) 
+      set (${H5BZ2_PACKAGE_NAME}_${comp}_FOUND 0)
+    else ()
+      set (${H5BZ2_PACKAGE_NAME}_${comp}_FOUND 1)
+      string(TOUPPER ${H5BZ2_PACKAGE_NAME}_${comp}_LIBRARY COMP_LIBRARY)
+      set (${COMP_LIBRARY} ${${COMP_LIBRARY}} @H5BZ2_LIB_CORENAME@-${comp})
+    endif ()
+endforeach ()
 
 check_required_components (${H5BZ2_PACKAGE_NAME})
