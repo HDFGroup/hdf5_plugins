@@ -29,13 +29,13 @@ if (APPLE)
 endif (APPLE)
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
-    set (${H5LZ4_PREFIX}_HAVE_DARWIN 1) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (${H5LZ4_PREFIX}_HAVE_DARWIN 1)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Check for Solaris
-if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS") 
-    set (${H5LZ4_PREFIX}_HAVE_SOLARIS 1) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
+    set (${H5LZ4_PREFIX}_HAVE_SOLARIS 1)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
 
 #-----------------------------------------------------------------------------
@@ -283,6 +283,7 @@ if (NOT WINDOWS)
     endif (TEST_LFS_WORKS_COMPILE)
   endif (H5LZ4_ENABLE_LARGE_FILE)
   set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${H5LZ4_EXTRA_FLAGS})
+  endif (NOT ${H5LZ4_PREFIX}_HAVE_SOLARIS)
 endif (NOT WINDOWS)
 
 add_definitions (${H5LZ4_EXTRA_FLAGS})
