@@ -4,8 +4,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 9612 (0.333:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -17,7 +17,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -27,8 +27,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 9612 (0.333:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -40,7 +40,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -50,8 +50,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 9612 (0.333:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -63,7 +63,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -73,8 +73,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 9612 (0.333:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -86,7 +86,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -96,8 +96,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 20, 10 )
-         SIZE 9648 (0.332:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -109,7 +109,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -119,8 +119,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 9612 (0.333:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -132,7 +132,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -142,8 +142,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 9612 (0.333:1 COMPRESSION)
+         CHUNKED ( 4, 5 )
+         SIZE 10080 (0.317:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -155,7 +155,7 @@ GROUP "/" {
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
