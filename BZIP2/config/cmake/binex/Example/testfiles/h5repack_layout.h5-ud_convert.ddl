@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
@@ -33,7 +33,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
@@ -56,7 +56,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
@@ -79,7 +79,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
@@ -102,7 +102,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
@@ -125,7 +125,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
@@ -148,7 +148,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }

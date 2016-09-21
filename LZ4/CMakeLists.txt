@@ -426,6 +426,28 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
 endif (NOT H5LZ4_EXTERNALLY_CONFIGURED)
 
 #-----------------------------------------------------------------------------
+# Configure the HDF5PL_Examples.cmake file and the examples
+#-----------------------------------------------------------------------------
+configure_file (
+    ${HDF_RESOURCES_DIR}/HDF5PL_Examples.cmake.in
+    ${H5LZ4_BINARY_DIR}/HDF5PL_Examples.cmake @ONLY
+)
+install (
+    FILES ${H5LZ4_BINARY_DIR}/HDF5PL_Examples.cmake
+    DESTINATION ${H5LZ4_INSTALL_DATA_DIR}
+    COMPONENT hdfdocuments
+)
+execute_process(
+     COMMAND ${CMAKE_COMMAND} -E copy ${HDF_RESOURCES_DIR}/binex ${H5LZ4_BINARY_DIR}/HDFPLExamples
+)
+install (
+  DIRECTORY ${H5LZ4_BINARY_DIR}/HDFPLExamples
+  DESTINATION ${H5LZ4_INSTALL_DATA_DIR}
+  USE_SOURCE_PERMISSIONS
+  COMPONENT hdfdocuments
+)
+
+#-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
 #-----------------------------------------------------------------------------
 H5LZ4_README_PROPERTIES("")

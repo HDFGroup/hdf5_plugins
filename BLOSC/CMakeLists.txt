@@ -136,7 +136,7 @@ add_definitions (-DH5_USE_18_API)
 
 if (NOT HDF5_HDF5_HEADER)
   if (USE_SHARED_LIBS)
-    set (FIND_HDF_COMPONENTS C shared static)
+    set (FIND_HDF_COMPONENTS C shared)
   else (USE_SHARED_LIBS)
     set (FIND_HDF_COMPONENTS C static)
   endif (USE_SHARED_LIBS)
@@ -449,6 +449,28 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       COMPONENT configinstall
   )
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
+
+#-----------------------------------------------------------------------------
+# Configure the HDF5PL_Examples.cmake file and the examples
+#-----------------------------------------------------------------------------
+configure_file (
+    ${HDF_RESOURCES_DIR}/HDF5PL_Examples.cmake.in
+    ${H5BLOSC_BINARY_DIR}/HDF5PL_Examples.cmake @ONLY
+)
+install (
+    FILES ${H5BLOSC_BINARY_DIR}/HDF5PL_Examples.cmake
+    DESTINATION ${H5BLOSC_INSTALL_DATA_DIR}
+    COMPONENT hdfdocuments
+)
+execute_process(
+     COMMAND ${CMAKE_COMMAND} -E copy ${HDF_RESOURCES_DIR}/binex ${H5BLOSC_BINARY_DIR}/HDFPLExamples
+)
+install (
+  DIRECTORY ${H5BLOSC_BINARY_DIR}/HDFPLExamples
+  DESTINATION ${H5BLOSC_INSTALL_DATA_DIR}
+  USE_SOURCE_PERMISSIONS
+  COMPONENT hdfdocuments
+)
 
 #-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
