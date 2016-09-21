@@ -44,7 +44,7 @@ if (BUILD_TESTING)
             -D "TEST_OUTPUT=${testname}.out"
             -D "TEST_REFERENCE=${testname}.tst"
             -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-            -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+            -D "TEST_ENV_VALUE=${HDF5_PLUGIN_ROOT}/plugins"
             -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
     )
     set_tests_properties(${testname} PROPERTIES DEPENDS ${testname}-clearall)
@@ -59,7 +59,7 @@ if (BUILD_TESTING)
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -D "TEST_ENV_VALUE=${HDF5_PLUGIN_ROOT}/plugins"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties(H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
@@ -90,7 +90,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -D "TEST_ENV_VALUE=${HDF5_PLUGIN_ROOT}/plugins"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (H5BZ2_UD-${testname} PROPERTIES DEPENDS H5BZ2_UD-clearall-objects)
@@ -104,7 +104,7 @@ if (BUILD_TESTING)
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -D "TEST_ENV_VALUE=${HDF5_PLUGIN_ROOT}/plugins"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (H5BZ2_UD-h5dump-${testname} PROPERTIES DEPENDS "H5BZ2_UD-${testname}")
