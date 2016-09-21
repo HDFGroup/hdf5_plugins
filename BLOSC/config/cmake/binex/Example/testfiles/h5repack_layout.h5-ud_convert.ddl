@@ -10,14 +10,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -33,14 +33,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -56,14 +56,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -79,14 +79,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -102,14 +102,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -125,14 +125,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
@@ -148,14 +148,14 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            
+
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 9 }
          }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
-         VALUE  0
+         VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
          H5D_ALLOC_TIME_INCR
