@@ -169,6 +169,7 @@ fi
 # Defaults
 DEST=releases
 VERS=$REPONAME
+IN_VERS=hdfsrc
 VERS_OLD=
 test "$VERS" || exit 1
 verbose=yes
@@ -240,13 +241,13 @@ fi
 
 
 # Prepare the source tree for a release.
-ln -s `pwd` $tmpdir/$VERS || exit 1
+ln -s `pwd` $tmpdir/$IN_VERS || exit 1
 
 # Create the tar file
 test "$verbose" && echo "   Running tar..." 1>&2
 ( \
     cd $tmpdir; \
-    tar cf $VERS.tar $VERS/* || exit 1 \
+    tar cf $VERS.tar $IN_VERS/* || exit 1 \
 )
 
 # Compress
