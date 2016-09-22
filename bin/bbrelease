@@ -169,6 +169,7 @@ fi
 # Defaults
 DEST=releases
 VERS=$REPONAME
+IN_VERS=hdfsrc
 VERS_OLD=
 test "$VERS" || exit 1
 verbose=yes
@@ -224,7 +225,7 @@ fi
 if [ X$revmode = Xyes ]; then
     branch=`git branch | grep '*' | awk '{print $NF}'`
     revision=`git rev-parse --short HEAD`
-    VERS=`echo $VERS | sed -e s/-.*//`-$revision
+    VERS=`echo $VERS | sed -e s/-.*//`-$branch-$revision
     echo Create tarballs for $VERS
 
 else
@@ -240,13 +241,13 @@ fi
 
 
 # Prepare the source tree for a release.
-ln -s `pwd` $tmpdir/$VERS || exit 1
+ln -s `pwd` $tmpdir/$IN_VERS || exit 1
 
 # Create the tar file
 test "$verbose" && echo "   Running tar..." 1>&2
 ( \
     cd $tmpdir; \
-    tar cf $VERS.tar $VERS/* || exit 1 \
+    tar cf $VERS.tar $IN_VERS/* || exit 1 \
 )
 
 # Compress
