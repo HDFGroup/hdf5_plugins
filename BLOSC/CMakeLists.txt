@@ -464,7 +464,7 @@ install (
     COMPONENT hdfdocuments
 )
 execute_process(
-     COMMAND ${CMAKE_COMMAND} -E copy ${HDF_RESOURCES_DIR}/binex ${H5BLOSC_BINARY_DIR}/HDFPLExamples
+     COMMAND ${CMAKE_COMMAND} -E copy_directory ${HDF_RESOURCES_DIR}/binex ${H5BLOSC_BINARY_DIR}/HDFPLExamples
 )
 install (
   DIRECTORY ${H5BLOSC_BINARY_DIR}/HDFPLExamples
