@@ -1,0 +1,287 @@
+#!/bin/sh
+#
+# Copyright by The HDF Group.
+# Copyright by the Board of Trustees of the University of Illinois.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the files COPYING and Copyright.html.  COPYING can be found at the root
+# of the source code distribution tree; Copyright.html can be found at the
+# root level of an installed copy of the electronic HDF5 document set and
+# is linked from the top-level documents page.  It can also be found at
+# http://hdfgroup.org/HDF5/doc/Copyright.html.  If you do not have
+# access to either file, you may request a copy from help@hdfgroup.org.
+#
+
+# Make a release of hdf5.
+#
+# Programmer: Robb Matzke
+# Creation date: on or before 1998-01-29.
+#
+# Modifications
+#   Robb Matzke, 1999-07-16
+#   The SunOS 5.6 sed *must* have slashes as delimiters. I changed things like
+#   `sed s+/CVS++' to `sed 's/\/CVS//'
+#
+#   Albert Cheng, 1999-10-26
+#   Moved the MANIFEST checking to a separate command file so that
+#   it can be invoked individually.
+#
+#   Albert Cheng, 2004-08-14
+#   Added the --private option.
+#
+#   James Laird, 2005-09-07
+#   Added the md5 method.
+#
+#   Larry Knox, 2016-08-30
+#   Added the --revision option to create private releases with the 
+#   code revision hash in the version strings. Currently the version
+#   of this script with the --revision option is named bbrelease. It 
+#   can probably be merged into the original release script in the
+#   future.
+#   Commands to get the revision hash have now been converted to git
+#   to match the source repository change.
+
+REPONAME=hdf5_plugins
+
+# Function definitions
+#
+# Print Usage page
+USAGE()
+{
+cat << EOF
+Usage: $0 -d <dir> [--docver BRANCHNAME] [-h] [--revision] <methods> ...
+   -d DIR	The name of the directory where the releas(es) should be
+                placed.
+   -h           print the help page.
+   --revision	Make a private release with the code revision number in version information.
+         
+This must be run at the top level of the source directory.
+The other command-line options are the names of the programs to use
+for compressing the resulting tar archive (if none are given then
+"tar" is assumed):
+
+    tar		-- use tar and don't do any compressing.
+    gzip	-- use gzip with "-9" and append ".gz" to the output name.
+    bzip2       -- use bzip2 with "-9" and append ".bz2" to the output name.
+    zip		-- convert all text files to DOS style and form a zip file for Windows use.
+
+An md5 checksum is produced for each archive created and stored in the md5 file.
+
+Examples:
+
+    $ bin/release -d /tmp
+    /tmp/hdf5-1.8.13-RELEASE.txt
+    /tmp/hdf5-1.8.13.md5
+    /tmp/hdf5-1.8.13.tar
+
+    $ bin/release -d /tmp gzip
+    /tmp/hdf5-1.8.13-RELEASE.txt
+    /tmp/hdf5-1.8.13.md5
+    /tmp/hdf5-1.8.13.tar.gz
+
+    $ bin/release -d /tmp tar gzip zip
+    /tmp/hdf5-1.8.13-RELEASE.txt
+    /tmp/hdf5-1.8.13.md5
+    /tmp/hdf5-1.8.13.tar
+    /tmp/hdf5-1.8.13.tar.gz
+    /tmp/hdf5-1.8.13.tar.zip
+
+EOF
+
+}
+
+# Function name: tar2zip
+# Convert the release tarball to a Windows zipball.
+#
+# Programmer: Albert Cheng
+# Creation date: 2014-04-23
+#
+# Modifications
+#
+# Steps:
+# 1. untar the tarball in a temporay directory;
+#    Note: do this in a temporary directory to avoid changing
+#    the original source directory which maybe around.
+# 2. convert all its text files to DOS (LF-CR) style;
+# 3. form a zip file which is usable by Windows users.
+#
+# Parameters:
+# $1 version
+# $2 release tarball
+# $3 output zipball file name
+#
+# Returns 0 if successful; 1 otherwise
+#
+tar2zip()
+{
+    if [ $# -ne 3 ]; then
+	echo "usage: tar2zip <tarfilename> <zipfilename>"
+	return 1
+    fi
+    ztmpdir=/tmp/tmpdir$$
+    mkdir -p $ztmpdir
+    version=$1
+    tarfile=$2
+    zipfile=$3
+
+    # step 1: untar tarball in ztmpdir
+    (cd $ztmpdir; tar xf -) < $tarfile
+    # sanity check
+    if [ ! -d $ztmpdir/$version ]; then
+	echo "untar did not create $ztmpdir/$version source dir"
+	# cleanup
+	rm -rf $ztmpdir
+	return 1
+    fi
+    # step 2: convert text files
+    # There maybe a simpler way to do this.
+    # options used in unix2dos:
+    # -k   Keep the date stamp 
+    # -q   quiet mode
+    # grep redirect output to /dev/null because -q or -s are not portable.
+    find $ztmpdir/$version | \
+	while read inf; do \
+	    if file $inf | grep "$inf\: .*text" > /dev/null 2>&1 ; then \
+		unix2dos -q -k $inf; \
+	    fi\
+	done
+    # step 3: make zipball
+    # -9 maximum compression
+    # -y Store symbolic links as such in the zip archive
+    # -r recursive
+    # -q quiet
+    (cd $ztmpdir; zip -9 -y -r -q $version.zip $version)
+    mv $ztmpdir/$version.zip $zipfile
+
+    # cleanup
+    rm -rf $ztmpdir
+}
+
+# This command must be run at the top level of the hdf5_plugins source directory.
+# Verify this requirement - check for several files known to exist.
+if [ ! \( -f docs/proposal.pdf -a -f docs/techrequirements.tex -a -f bin/bbrelease \) ]; then
+    echo "$0 must be run at the top level of the $REPONAME source directory"
+    exit 1
+fi
+
+# Defaults
+DEST=releases
+VERS=$REPONAME
+VERS_OLD=
+test "$VERS" || exit 1
+verbose=yes
+release_date=`date +%F`
+today=`date +%Y%m%d`
+pmode='no'
+revmode='no'
+tmpdir="../#release_tmp.$$"	# tmp work directory
+
+
+# Command-line arguments
+while [ -n "$1" ]; do
+    arg=$1
+    shift
+    case "$arg" in
+	-d)
+	    DEST=$1
+	    shift
+	    ;;
+	-h)
+	    USAGE
+	    exit 0
+	    ;;
+        --revision)
+            revmode=yes
+            ;;
+	-*)
+	    echo "Unknown switch: $arg" 1>&2
+	    USAGE
+	    exit 1
+	    ;;
+	*)
+	    methods="$methods $arg"
+	    ;;
+    esac
+done
+
+# Default method is tar
+if [ "X$methods" = "X" ]; then
+    methods="tar"
+fi
+
+# Create the temporay work directory.
+if mkdir $tmpdir; then
+    echo "temporary work directory for release.  "\
+         "Can be deleted after release completes." > $tmpdir/README
+else
+    echo "Failed to mkdir tmpdir($tmpdir)"
+    exit 1
+fi
+
+
+if [ X$revmode = Xyes ]; then
+    branch=`git branch | grep '*' | awk '{print $NF}'`
+    revision=`git rev-parse --short HEAD`
+    VERS=`echo $VERS | sed -e s/-.*//`-$revision
+    echo Create tarballs for $VERS
+
+else
+    echo "Currently this script has no use without --revision"
+    exit 1
+fi
+
+test "$verbose" && echo "Releasing $VERS to $DEST" 1>&2
+if [ ! -d $DEST ]; then
+    echo "   Destination directory $DEST does not exist" 1>&2
+    exit 1
+fi
+
+
+# Prepare the source tree for a release.
+ln -s `pwd` $tmpdir/$VERS || exit 1
+
+# Create the tar file
+test "$verbose" && echo "   Running tar..." 1>&2
+( \
+    cd $tmpdir; \
+    tar cf $VERS.tar $VERS/* || exit 1 \
+)
+
+# Compress
+MD5file=$VERS.md5
+cp /dev/null $DEST/$MD5file
+for comp in $methods; do
+    case $comp in
+	tar)
+	    cp -p $tmpdir/$VERS.tar $DEST/$VERS.tar
+	    (cd $DEST; md5sum $VERS.tar >> $MD5file) 
+	    ;;
+	gzip)
+	    test "$verbose" && echo "   Running gzip..." 1>&2
+	    gzip -9 <$tmpdir/$VERS.tar >$DEST/$VERS.tar.gz
+	    (cd $DEST; md5sum $VERS.tar.gz >> $MD5file) 
+	    ;;
+	bzip2)
+	    test "$verbose" && echo "   Running bzip2..." 1>&2
+	    bzip2 -9 <$tmpdir/$VERS.tar >$DEST/$VERS.tar.bz2
+	    (cd $DEST; md5sum $VERS.tar.bz2 >> $MD5file) 
+	    ;;
+	zip)
+	    test "$verbose" && echo "   Creating zip ball..." 1>&2
+	    tar2zip $VERS $tmpdir/$VERS.tar $DEST/$VERS.zip 1>&2
+	    (cd $DEST; md5sum $VERS.zip >> $MD5file) 
+	    ;;
+	*)
+	    echo "***Error*** Unknown method $comp"
+	    exit 1
+	    ;;
+    esac
+done
+
+
+# Remove temporary things
+rm -rf $tmpdir
+
+exit 0
