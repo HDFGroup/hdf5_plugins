@@ -611,7 +611,7 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
     set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
   endif (WIN32)
 
-  set (CPACK_INSTALL_CMAKE_PROJECTS "${H5LZ4_BINARY_DIR};h5lz4;libraries;/")
+  set (CPACK_INSTALL_CMAKE_PROJECTS "${H5LZ4_BINARY_DIR};h5lz4;ALL;/")
 
   if (H5LZ4_PACKAGE_EXTLIBS)
     if (H5LZ4_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5LZ4_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
@@ -624,8 +624,6 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
   set (CPACK_ALL_INSTALL_TYPES Full User)
   set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
 
-  set(CPACK_COMPONENTS_ALL libraries)
-
   include (CPack)
 
   cpack_add_component_group(Runtime)
@@ -635,6 +633,10 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
       GROUP Runtime
       INSTALL_TYPES Full User
   )
-  cpack_add_component_group(hdfdocuments)
+  cpack_add_component_group(hdfdocuments
+      DISPLAY_NAME "h5lz4 Documents"
+      GROUP Documents
+      INSTALL_TYPES Full User
+  )
 
 endif (NOT H5LZ4_EXTERNALLY_CONFIGURED)
