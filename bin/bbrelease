@@ -224,7 +224,7 @@ fi
 if [ X$revmode = Xyes ]; then
     branch=`git branch | grep '*' | awk '{print $NF}'`
     revision=`git rev-parse --short HEAD`
-    VERS=`echo $VERS | sed -e s/-.*//`-$revision
+    VERS=`echo $VERS | sed -e s/-.*//`-$branch-$revision
     echo Create tarballs for $VERS
 
 else
