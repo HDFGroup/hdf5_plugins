@@ -400,6 +400,7 @@ set (H5BLOSC_INCLUDES_BUILD_TIME
 set (H5BLOSC_VERSION_STRING ${H5BLOSC_PACKAGE_VERSION})
 set (H5BLOSC_VERSION_MAJOR  ${H5BLOSC_PACKAGE_VERSION_MAJOR})
 set (H5BLOSC_VERSION_MINOR  ${H5BLOSC_PACKAGE_VERSION_MINOR})
+set (HDF5_LOCATION_STRING $ENV{HDF5_DIR})
 
 #-----------------------------------------------------------------------------
 # Configure the h5bzip2-config.cmake file for the build directory
@@ -650,5 +651,6 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       DISPLAY_NAME "h5blosc Libraries"
       GROUP Runtime
   )
+  cpack_add_component_group(hdfdocuments)
 
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)

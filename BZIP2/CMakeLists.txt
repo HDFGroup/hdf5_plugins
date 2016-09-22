@@ -375,6 +375,7 @@ set (H5BZ2_INCLUDES_BUILD_TIME
 set (H5BZ2_VERSION_STRING ${H5BZ2_PACKAGE_VERSION})
 set (H5BZ2_VERSION_MAJOR  ${H5BZ2_PACKAGE_VERSION_MAJOR})
 set (H5BZ2_VERSION_MINOR  ${H5BZ2_PACKAGE_VERSION_MINOR})
+set (HDF5_LOCATION_STRING $ENV{HDF5_DIR})
 
 #-----------------------------------------------------------------------------
 # Configure the h5bzip2-config.cmake file for the build directory
@@ -634,5 +635,6 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
       GROUP Runtime
       INSTALL_TYPES Full User
   )
+  cpack_add_component_group(hdfdocuments)
 
 endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
