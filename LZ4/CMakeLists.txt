@@ -97,7 +97,7 @@ endif (NOT H5LZ4_EXTERNALLY_CONFIGURED)
 
 #-----------------------------------------------------------------------------
 # Targets built within this project are exported at Install time for use
-# by other projects using FindH5LZ4. 
+# by other projects using FindH5LZ4.
 #-----------------------------------------------------------------------------
 if (NOT H5LZ4_EXPORTED_TARGETS)
   set (H5LZ4_EXPORTED_TARGETS "H5lz4-targets")
@@ -375,6 +375,7 @@ set (H5LZ4_INCLUDES_BUILD_TIME
 set (H5LZ4_VERSION_STRING ${H5LZ4_PACKAGE_VERSION})
 set (H5LZ4_VERSION_MAJOR  ${H5LZ4_PACKAGE_VERSION_MAJOR})
 set (H5LZ4_VERSION_MINOR  ${H5LZ4_PACKAGE_VERSION_MINOR})
+set (HDF5_LOCATION_STRING $ENV{HDF5_DIR})
 
 #-----------------------------------------------------------------------------
 # Configure the h5lz4-config.cmake file for the build directory
@@ -485,13 +486,13 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "h5lz4 Installation")
   set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
 
-  set (CPACK_GENERATOR "TGZ") 
+  set (CPACK_GENERATOR "TGZ")
   if (WIN32)
-    set (CPACK_GENERATOR "ZIP") 
+    set (CPACK_GENERATOR "ZIP")
 
-    if (NSIS_EXECUTABLE)    
-      list (APPEND CPACK_GENERATOR "NSIS") 
-    endif (NSIS_EXECUTABLE)    
+    if (NSIS_EXECUTABLE)
+      list (APPEND CPACK_GENERATOR "NSIS")
+    endif (NSIS_EXECUTABLE)
     # Installers for 32- vs. 64-bit CMake:
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
@@ -515,9 +516,9 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
     set (CPACK_NSIS_CONTACT "${H5LZ4_PACKAGE_BUGREPORT}")
     set (CPACK_NSIS_MODIFY_PATH ON)
 
-    if (WIX_EXECUTABLE)    
-      list (APPEND CPACK_GENERATOR "WIX") 
-    endif (WIX_EXECUTABLE)    
+    if (WIX_EXECUTABLE)
+      list (APPEND CPACK_GENERATOR "WIX")
+    endif (WIX_EXECUTABLE)
 #WiX variables
     set (CPACK_WIX_UNINSTALL "1")
 # .. variable:: CPACK_WIX_LICENSE_RTF
@@ -556,7 +557,7 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
 #  This image must be 493 by 312 pixels.
 #
   elseif (APPLE)
-    list (APPEND CPACK_GENERATOR "DragNDrop") 
+    list (APPEND CPACK_GENERATOR "DragNDrop")
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 #    set (CPACK_PACKAGE_ICON "${H5LZ4_RESOURCES_DIR}/h5lz4.gif")
@@ -597,21 +598,21 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
 #      )
     endif (H5LZ4_PACK_MACOSX_BUNDLE)
   else (WIN32)
-    list (APPEND CPACK_GENERATOR "STGZ") 
+    list (APPEND CPACK_GENERATOR "STGZ")
     set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
     set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
 
     set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${H5LZ4_PACKAGE_BUGREPORT}")
-    
-#      list (APPEND CPACK_GENERATOR "RPM") 
+
+#      list (APPEND CPACK_GENERATOR "RPM")
     set (CPACK_RPM_PACKAGE_RELEASE "1")
     set (CPACK_RPM_COMPONENT_INSTALL ON)
     set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
   endif (WIN32)
 
   set (CPACK_INSTALL_CMAKE_PROJECTS "${H5LZ4_BINARY_DIR};h5lz4;libraries;/")
-  
+
   if (H5LZ4_PACKAGE_EXTLIBS)
     if (H5LZ4_ALLOW_EXTERNAL_SUPPORT MATCHES "SVN" OR H5LZ4_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
       if (LZ4_FOUND AND LZ4_USE_EXTERNAL)
@@ -624,16 +625,16 @@ if (NOT H5LZ4_EXTERNALLY_CONFIGURED)
   set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
 
   set(CPACK_COMPONENTS_ALL libraries)
-  
+
   include (CPack)
 
   cpack_add_component_group(Runtime)
 
-  cpack_add_component (libraries 
+  cpack_add_component (libraries
       DISPLAY_NAME "h5lz4 Libraries"
       GROUP Runtime
       INSTALL_TYPES Full User
   )
-  
+  cpack_add_component_group(hdfdocuments)
+
 endif (NOT H5LZ4_EXTERNALLY_CONFIGURED)
-  
