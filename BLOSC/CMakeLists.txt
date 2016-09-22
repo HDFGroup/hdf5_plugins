@@ -636,12 +636,10 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
   endif (WIN32)
 
-  set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BLOSC_BINARY_DIR};h5blosc;libraries;/")
+  set (CPACK_INSTALL_CMAKE_PROJECTS "${H5BLOSC_BINARY_DIR};h5blosc;ALL;/")
 
   set (CPACK_ALL_INSTALL_TYPES Full User)
   set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
-
-  set(CPACK_COMPONENTS_ALL libraries)
 
   include (CPack)
 
@@ -651,6 +649,10 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       DISPLAY_NAME "h5blosc Libraries"
       GROUP Runtime
   )
-  cpack_add_component_group(hdfdocuments)
+  cpack_add_component_group(hdfdocuments
+      DISPLAY_NAME "h5blosc Documents"
+      GROUP Documents
+      INSTALL_TYPES Full User
+  )
 
 endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
