@@ -271,7 +271,8 @@ for comp in $methods; do
 	    ;;
 	zip)
 	    test "$verbose" && echo "   Creating zip ball..." 1>&2
-	    tar2zip $VERS $tmpdir/$VERS.tar $DEST/$VERS.zip 1>&2
+            echo "Create zip ball $VERS.zip from $IN_VERS in $VERS.tar"
+	    tar2zip $IN_VERS $tmpdir/$VERS.tar $DEST/$VERS.zip 1>&2
 	    (cd $DEST; md5sum $VERS.zip >> $MD5file) 
 	    ;;
 	*)
