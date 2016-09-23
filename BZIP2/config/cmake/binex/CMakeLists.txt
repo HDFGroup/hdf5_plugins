@@ -24,7 +24,7 @@ endif (HDFPL_USE_FOLDERS)
 #-----------------------------------------------------------------------------
 # Define some CMake variables for use later in the project
 #-----------------------------------------------------------------------------
-set (HDFPL_RESOURCES_DIR       ${PROJECT_SOURCE_DIR}/config/cmake)
+set (H5PL_RESOURCES_DIR        ${PROJECT_SOURCE_DIR}/config/cmake)
 set (HDF5PL_SRC_DIR            ${PROJECT_SOURCE_DIR}/Example)
 
 #-----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 #-----------------------------------------------------------------------------
 # HDF5 support
 #-----------------------------------------------------------------------------
-set (CMAKE_MODULE_PATH ${HDFPLEX_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
+set (CMAKE_MODULE_PATH ${H5PL_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
 
 if (NOT HDF5_HDF5_HEADER)
   if (BUILD_SHARED_LIBS)
