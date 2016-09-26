@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.1.0)
 project (H5LZ4_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ if (BUILD_TESTING)
       TARGET     ${H5LZ4_LIB_TARGET}
       POST_BUILD
       COMMAND    ${CMAKE_COMMAND}
-      ARGS       -E copy_if_different 
+      ARGS       -E copy_if_different
         "$<TARGET_FILE:${H5LZ4_LIB_TARGET}>"
         "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5LZ4_LIB_TARGET}>"
   )

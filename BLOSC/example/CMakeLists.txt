@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.1.0)
 project (HDF5BLOSC_EX)
 
 set (dyn_examples
