@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.10)
+cmake_minimum_required (VERSION 3.1.0)
 project (H5BLOSC_SRC C CXX)
 
 set(INTERNAL_LIBS ${H5BLOSC_SRC_SOURCE_DIR}/internal-complibs)
@@ -68,9 +68,9 @@ if(WIN32)
 endif(WIN32)
 
 if(NOT BLOSC_FOUND)
-    set(BLOSC_FILES 
-        ${BLOSC_LOCAL_DIR}/blosc.c 
-        ${BLOSC_LOCAL_DIR}/blosclz.c 
+    set(BLOSC_FILES
+        ${BLOSC_LOCAL_DIR}/blosc.c
+        ${BLOSC_LOCAL_DIR}/blosclz.c
         ${BLOSC_LOCAL_DIR}/shuffle.c
     )
     set(H5BLOSC_SRCS ${H5BLOSC_SRCS} ${BLOSC_FILES})
@@ -139,7 +139,7 @@ if (BUILD_TESTING)
       TARGET     ${H5BLOSC_LIB_TARGET}
       POST_BUILD
       COMMAND    ${CMAKE_COMMAND}
-      ARGS       -E copy_if_different 
+      ARGS       -E copy_if_different
         "$<TARGET_FILE:${H5BLOSC_LIB_TARGET}>"
         "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5BLOSC_LIB_TARGET}>"
   )
@@ -159,4 +159,3 @@ if (H5BLOSC_EXPORTED_TARGETS)
       RUNTIME DESTINATION ${H5BLOSC_INSTALL_BIN_DIR} COMPONENT libraries
   )
 endif (H5BLOSC_EXPORTED_TARGETS)
- 
