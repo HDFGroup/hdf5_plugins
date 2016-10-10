@@ -72,6 +72,8 @@ if(NOT BLOSC_FOUND)
         ${BLOSC_LOCAL_DIR}/blosc.c
         ${BLOSC_LOCAL_DIR}/blosclz.c
         ${BLOSC_LOCAL_DIR}/shuffle.c
+        ${BLOSC_LOCAL_DIR}/bitshuffle-generic.c
+        ${BLOSC_LOCAL_DIR}/shuffle-generic.c
     )
     set(H5BLOSC_SRCS ${H5BLOSC_SRCS} ${BLOSC_FILES})
 endif(NOT BLOSC_FOUND)
