@@ -46,9 +46,17 @@ if (NOT H5BLOSC_INSTALL_DATA_DIR)
   endif (NOT WIN32)
 endif (NOT H5BLOSC_INSTALL_DATA_DIR)
 
-set (H5BLOSC_VERS_MAJOR 3)
-set (H5BLOSC_VERS_MINOR 1)
-set (H5BLOSC_VERS_RELEASE 3)
+# parse the full version numbers from blosc_version.h
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/blosc_version.h _vers_h_contents)
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_MAJOR[ \t]+([0-9]+).*"
+        "\\1" H5BLOSC_VERS_MAJOR ${_vers_h_contents})
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_MINOR[ \t]+([0-9]+).*"
+        "\\1" BH5BLOSC_VERS_MINOR ${_vers_h_contents})
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_RELEASE[ \t]+([0-9]+).*"
+        "\\1" H5BLOSC_VERS_PATCH ${_vers_h_contents})
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_STRING[ \t]+\"([-0-9A-Za-z.]+)\".*"
+        "\\1" H5BLOSC_VERSION_STRING ${_vers_h_contents})
+message("Configuring for Blosc HDF5 Plugin version: " ${H5BLOSC_VERSION_STRING})
 
 set (H5BLOSC_SOVERS_MAJOR 3)
 set (H5BLOSC_SOVERS_MINOR 1)
