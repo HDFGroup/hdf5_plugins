@@ -176,11 +176,13 @@ if (NOT HDF5_HDF5_HEADER)
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+        #Blosc source needs to be linked with HDF5
+        set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
       else (HDF5_static_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
+        #Blosc source needs to be linked with HDF5
+        set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
-      #Blosc source needs to be linked with HDF5
-      set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
       set_property (TARGET h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
     endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
