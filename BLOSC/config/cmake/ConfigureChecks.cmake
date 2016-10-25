@@ -1,3 +1,5 @@
+set (H5BLOSC_PREFIX "H5")
+
 #-----------------------------------------------------------------------------
 # Include all the necessary files for macros
 #-----------------------------------------------------------------------------
@@ -29,13 +31,13 @@ if (APPLE)
 endif (APPLE)
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
-    set (${H5BLOSC_PREFIX}_HAVE_DARWIN 1) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (${H5BLOSC_PREFIX}_HAVE_DARWIN 1)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 # Check for Solaris
-if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS") 
-    set (${H5BLOSC_PREFIX}_HAVE_SOLARIS 1) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
+    set (${H5BLOSC_PREFIX}_HAVE_SOLARIS 1)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
 
 #-----------------------------------------------------------------------------

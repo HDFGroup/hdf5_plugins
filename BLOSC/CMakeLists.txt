@@ -51,18 +51,20 @@ file(READ ${CMAKE_CURRENT_SOURCE_DIR}/blosc_version.h _vers_h_contents)
 string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_MAJOR[ \t]+([0-9]+).*"
         "\\1" H5BLOSC_VERS_MAJOR ${_vers_h_contents})
 string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_MINOR[ \t]+([0-9]+).*"
-        "\\1" BH5BLOSC_VERS_MINOR ${_vers_h_contents})
+        "\\1" H5BLOSC_VERS_MINOR ${_vers_h_contents})
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_INTERFACE[ \t]+([0-9]+).*"
+        "\\1" H5BLOSC_VERS_INTERFACE ${_vers_h_contents})
 string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_RELEASE[ \t]+([0-9]+).*"
         "\\1" H5BLOSC_VERS_PATCH ${_vers_h_contents})
-string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_STRING[ \t]+\"([-0-9A-Za-z.]+)\".*"
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_STRING[ \t]+\"([0-9A-Za-z.]+)\".*"
         "\\1" H5BLOSC_VERSION_STRING ${_vers_h_contents})
 message("Configuring for Blosc HDF5 Plugin version: " ${H5BLOSC_VERSION_STRING})
 
-set (H5BLOSC_SOVERS_MAJOR 3)
-set (H5BLOSC_SOVERS_MINOR 1)
-set (H5BLOSC_SOVERS_INTERFACE 3)
-set (H5BLOSC_SOVERS_RELEASE 0)
-math (EXPR H5BLOSC_SOVERS_MAJOR ${H5BLOSC_SOVERS_INTERFACE}-${H5BLOSC_SOVERS_RELEASE})
+set (H5BLOSC_SOVERS_MAJOR ${H5BLOSC_VERS_MAJOR})
+set (H5BLOSC_SOVERS_MINOR ${H5BLOSC_VERS_MINOR})
+set (H5BLOSC_SOVERS_INTERFACE ${H5BLOSC_VERS_INTERFACE})
+set (H5BLOSC_SOVERS_RELEASE ${H5BLOSC_VERS_RELEASE})
+MATH (EXPR H5BLOSC_SOVERS_MAJOR ${H5BLOSC_SOVERS_INTERFACE}-${H5BLOSC_SOVERS_RELEASE})
 
 #-----------------------------------------------------------------------------
 set (H5BLOSC_PACKAGE "h5blosc")
@@ -139,8 +141,9 @@ endif (BUILD_SHARED_LIBS)
 # HDF5 support
 #-----------------------------------------------------------------------------
 set (CMAKE_MODULE_PATH ${HDF_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
+set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_definitions (-DH5_USE_18_API)
+#add_definitions (-DH5_USE_18_API)
 
 if (NOT HDF5_HDF5_HEADER)
   if (USE_SHARED_LIBS)
@@ -245,57 +248,6 @@ else(WIN32)
     set(LINK_LIBS ${LINK_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif(WIN32)
 
-option(PREFER_EXTERNAL_COMPLIBS
-    "When found, use the installed compression libs instead of included sources." ON)
-if(NOT PREFER_EXTERNAL_COMPLIBS)
-    message(STATUS "Finding external libraries disabled.  Using internal sources.")
-endif(NOT PREFER_EXTERNAL_COMPLIBS)
-
-option(DEACTIVATE_LZ4
-    "Do not include support for the LZ4 library." OFF)
-if(NOT DEACTIVATE_LZ4)
-    if(PREFER_EXTERNAL_COMPLIBS)
-        find_package(LZ4)
-    endif(PREFER_EXTERNAL_COMPLIBS)
-    # HAVE_LZ4 will be set to true because even if the library is
-    # not found, we will use the included sources for it
-    set(HAVE_LZ4 TRUE)
-endif(NOT DEACTIVATE_LZ4)
-
-option(DEACTIVATE_SNAPPY
-    "Do not include support for the SNAPPY library." OFF)
-if(NOT DEACTIVATE_SNAPPY)
-    if(PREFER_EXTERNAL_COMPLIBS)
-        find_package(Snappy)
-    endif(PREFER_EXTERNAL_COMPLIBS)
-    # HAVE_SNAPPY will be set to true because even if the library is not found,
-    # we will use the included sources for it
-    set(HAVE_SNAPPY TRUE)
-endif(NOT DEACTIVATE_SNAPPY)
-
-option(DEACTIVATE_ZLIB
-    "Do not include support for the ZLIB library." OFF)
-if(NOT DEACTIVATE_ZLIB)
-    # import the ZLIB_ROOT environment variable to help finding the zlib library
-    if(PREFER_EXTERNAL_COMPLIBS)
-        set(ZLIB_ROOT $ENV{ZLIB_ROOT})
-        find_package( ZLIB )
-        if (NOT ZLIB_FOUND )
-            message(STATUS "No zlib found.  Using internal sources.")
-        endif (NOT ZLIB_FOUND )
-    endif(PREFER_EXTERNAL_COMPLIBS)
-    # HAVE_ZLIB will be set to true because even if the library is not found,
-    # we will use the included sources for it
-    set(HAVE_ZLIB TRUE)
-endif(NOT DEACTIVATE_ZLIB)
-
-if(PREFER_EXTERNAL_COMPLIBS)
-  find_package (BLOSC NAMES ${BLOSC_PACKAGE_NAME})
-  if (NOT BLOSC_FOUND)
-      message(STATUS "No blosc found.  Using internal sources.")
-  endif (NOT BLOSC_FOUND)
-endif(PREFER_EXTERNAL_COMPLIBS)
-
 if (MSVC)
   set (CMAKE_MFC_FLAG 0)
 endif (MSVC)
@@ -309,22 +261,6 @@ set (CFG_INIT "/${CMAKE_CFG_INTDIR}")
 if (MAKE_SYSTEM)
   set (CFG_INIT "")
 endif (MAKE_SYSTEM)
-
-# Set the "-msse2" build flag only if the CMAKE_C_FLAGS is not already set.
-# Probably "-msse2" should be appended to CMAKE_C_FLAGS_RELEASE.
-find_package(SSE)
-if(CMAKE_C_COMPILER_ID STREQUAL GNU OR CMAKE_C_COMPILER_ID STREQUAL Clang)
-     if(NOT CMAKE_C_FLAGS AND SSE2_TRUE)
-         message(STATUS "SSE2 is here.  Adding support for it.")
-         set(CMAKE_C_FLAGS -msse2 CACHE STRING "C flags." FORCE)
-     endif(NOT CMAKE_C_FLAGS AND SSE2_TRUE)
-endif(CMAKE_C_COMPILER_ID STREQUAL GNU OR CMAKE_C_COMPILER_ID STREQUAL Clang)
-
-if(MSVC)
-    if(NOT CMAKE_C_FLAGS)
-        set(CMAKE_C_FLAGS "/Ox" CACHE STRING "C flags." FORCE)
-    endif(NOT CMAKE_C_FLAGS)
-endif(MSVC)
 
 #-----------------------------------------------------------------------------
 # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -347,10 +283,147 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
+include (ExternalProject)
+option (HDF_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
+set (HDF_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
+set_property (CACHE HDF_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
+if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  option (ZLIB_USE_EXTERNAL "Use External Library Building for ZLIB" 1)
+  option (BLOSC_USE_EXTERNAL "Use External Library Building for BLOSC" 1)
+  if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    set (ZLIB_URL ${ZLIB_GIT_URL} CACHE STRING "Path to zlib git repository")
+    set (ZLIB_BRANCH ${ZLIB_GIT_BRANCH})
+    set (BLOSC_URL ${BLOSC_GIT_URL} CACHE STRING "Path to blosc git repository")
+    set (BLOSC_BRANCH ${BLOSC_GIT_BRANCH})
+  elseif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    if (NOT TGZPATH)
+      set (TGZPATH ${HDF_SOURCE_DIR})
+    endif (NOT TGZPATH)
+    set (ZLIB_URL ${TGZPATH}/${ZLIB_TGZ_NAME})
+    set (BLOSC_URL ${TGZPATH}/${BLOSC_TGZ_NAME})
+  else (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    set (ZLIB_USE_EXTERNAL 0)
+    set (BLOSC_USE_EXTERNAL 0)
+  endif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+endif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+
+#-----------------------------------------------------------------------------
+# Option for ZLib support
+#-----------------------------------------------------------------------------
+option (HDF_ENABLE_Z_LIB_SUPPORT "Enable Zlib Filters" OFF)
+if (HDF_ENABLE_Z_LIB_SUPPORT)
+  if (NOT H5_ZLIB_HEADER)
+    if (NOT ZLIB_USE_EXTERNAL)
+      find_package (ZLIB NAMES ${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT} COMPONENTS static shared)
+      if (NOT ZLIB_FOUND)
+        find_package (ZLIB) # Legacy find
+        if (ZLIB_FOUND)
+          set (LINK_LIBS ${LINK_LIBS} ${ZLIB_LIBRARIES})
+          set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${ZLIB_LIBRARIES})
+        endif (ZLIB_FOUND)
+      endif (NOT ZLIB_FOUND)
+    endif (NOT ZLIB_USE_EXTERNAL)
+    if (ZLIB_FOUND)
+      set (H5_HAVE_FILTER_DEFLATE 1)
+      set (H5_HAVE_ZLIB_H 1)
+      set (H5_HAVE_LIBZ 1)
+      set (H5_ZLIB_HEADER "zlib.h")
+      set (ZLIB_INCLUDE_DIR_GEN ${ZLIB_INCLUDE_DIR})
+      set (ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIR})
+    else (ZLIB_FOUND)
+      if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+        EXTERNAL_ZLIB_LIBRARY (${HDF_ALLOW_EXTERNAL_SUPPORT})
+        set (H5_HAVE_FILTER_DEFLATE 1)
+        set (H5_HAVE_ZLIB_H 1)
+        set (H5_HAVE_LIBZ 1)
+        message (STATUS "Filter ZLIB is built")
+      else (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF5ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+        message (FATAL_ERROR " ZLib is Required for ZLib support in HDF5")
+      endif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    endif (ZLIB_FOUND)
+  else (NOT H5_ZLIB_HEADER)
+    # This project is being called from within another and ZLib is already configured
+    set (H5_HAVE_FILTER_DEFLATE 1)
+    set (H5_HAVE_ZLIB_H 1)
+    set (H5_HAVE_LIBZ 1)
+  endif (NOT H5_ZLIB_HEADER)
+  if (H5_HAVE_FILTER_DEFLATE)
+    set (EXTERNAL_FILTERS "${EXTERNAL_FILTERS} DEFLATE")
+  endif (H5_HAVE_FILTER_DEFLATE)
+  if (BUILD_SHARED_LIBS)
+    set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${ZLIB_SHARED_LIBRARY})
+  endif (BUILD_SHARED_LIBS)
+  set (LINK_LIBS ${LINK_LIBS} ${ZLIB_STATIC_LIBRARY})
+  INCLUDE_DIRECTORIES (${ZLIB_INCLUDE_DIRS})
+  message (STATUS "Filter ZLIB is ON")
+endif (HDF_ENABLE_Z_LIB_SUPPORT)
+
+#-----------------------------------------------------------------------------
+# Option for Blosc support
+#-----------------------------------------------------------------------------
+option (HDF_ENABLE_BLOSC_SUPPORT "Enable blosc" ON)
+if (HDF_ENABLE_BLOSC_SUPPORT)
+  if (NOT H5_BLOSC_HEADER)
+    if (NOT BLOSC_USE_EXTERNAL)
+      find_package (BLOSC NAMES ${BLOSC_PACKAGE_NAME}${HDF_PACKAGE_EXT} COMPONENTS static shared)
+      if (NOT BLOSC_FOUND)
+        find_package (BLOSC) # Legacy find
+        if (BLOSC_FOUND)
+          set (LINK_LIBS ${LINK_LIBS} ${BLOSC_LIBRARIES})
+          set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${BLOSC_LIBRARIES})
+        endif (BLOSC_FOUND)
+      endif (NOT BLOSC_FOUND)
+    endif (NOT BLOSC_USE_EXTERNAL)
+    if (BLOSC_FOUND)
+      set (H5_HAVE_BLOSC_H 1)
+      set (H5_HAVE_BLOSC 1)
+      set (H5_BLOSC_HEADER "blosc.h")
+      set (BLOSC_INCLUDE_DIR ${BLOSC_INCLUDE_DIR})
+      set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIRS} ${BLOSC_INCLUDE_DIR})
+    else (BLOSC_FOUND)
+      if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+        EXTERNAL_BLOSC_LIBRARY (${HDF_ALLOW_EXTERNAL_SUPPORT})
+        set (H5_HAVE_BLOSC_H 1)
+        set (H5_HAVE_BLOSC 1)
+        set (H5_BLOSC_HEADER "blosc.h")
+        message (STATUS "BLOSC is built")
+      else (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+        message (FATAL_ERROR " BLOSC is Required for BLOSC support in plugin")
+      endif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    endif (BLOSC_FOUND)
+  else (NOT H5_BLOSC_HEADER)
+    # This project is being called from within another and BLOSC is already configured
+    set (H5_HAVE_BLOSC_H 1)
+  endif (NOT H5_BLOSC_HEADER)
+  if (BUILD_SHARED_LIBS)
+    set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${BLOSC_SHARED_LIBRARY})
+  endif (BUILD_SHARED_LIBS)
+  set (LINK_LIBS ${LINK_LIBS} ${BLOSC_STATIC_LIBRARY})
+  INCLUDE_DIRECTORIES (${BLOSC_INCLUDE_DIRS})
+  message (STATUS "BLOSC is ON")
+endif (HDF_ENABLE_BLOSC_SUPPORT)
+
 #-----------------------------------------------------------------------------
 # Generate the config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
 configure_file (${H5BLOSC_RESOURCES_DIR}/config.h.in ${H5BLOSC_BINARY_DIR}/config.h @ONLY)
+
+#-----------------------------------------------------------------------------
+# Option for external libraries on windows
+#-----------------------------------------------------------------------------
+option (HDF_PACKAGE_EXTLIBS "CPACK - include external libraries" OFF)
+if (NOT HDF_EXTERNALLY_CONFIGURED)
+  if (HDF_PACKAGE_EXTLIBS)
+    set (HDF_NO_PACKAGES OFF CACHE BOOL "CPACK - Disable packaging" FORCE)
+    if (HDF_ENABLE_Z_LIB_SUPPORT AND ZLIB_FOUND)
+      PACKAGE_ZLIB_LIBRARY (${HDF5_ALLOW_EXTERNAL_SUPPORT})
+    endif (HDF_ENABLE_Z_LIB_SUPPORT AND ZLIB_FOUND)
+
+    if (HDF_ENABLE_BLOSC_SUPPORT AND BLOSC_FOUND)
+      PACKAGE_BLOSC_LIBRARY (${HDF_ALLOW_EXTERNAL_SUPPORT})
+    endif (HDF_ENABLE_BLOSC_SUPPORT AND BLOSC_FOUND)
+  endif (HDF_PACKAGE_EXTLIBS)
+endif (NOT HDF_EXTERNALLY_CONFIGURED)
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -363,7 +436,23 @@ if (BUILD_TESTING)
   include (CTest)
 endif (BUILD_TESTING)
 
+# subdirectories
 add_subdirectory (${H5BLOSC_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+
+if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  if (ZLIB_FOUND AND ZLIB_USE_EXTERNAL)
+    ADD_DEPENDENCIES (${HDF5_LIB_TARGET} ZLIB)
+    if (BUILD_SHARED_LIBS)
+      add_dependencies (${HDF5_LIBSH_TARGET} ZLIB)
+    endif (BUILD_SHARED_LIBS)
+  endif (ZLIB_FOUND AND ZLIB_USE_EXTERNAL)
+  if (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
+    ADD_DEPENDENCIES (${H5BLOSC_LIB_TARGET} BLOSC)
+    if (BUILD_SHARED_LIBS)
+      add_dependencies (${H5BLOSC_LIB_TARGET} BLOSC)
+    endif (BUILD_SHARED_LIBS)
+  endif (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
+endif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
 
 option (BUILD_EXAMPLES "Build h5blosc Examples" OFF)
 if (BUILD_EXAMPLES)
