@@ -66,12 +66,6 @@ const void* H5PLget_plugin_info(void) { return blosc_H5Filter; }
 #define PUSH_ERR(func, minor, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
 #endif    /* defined(__GNUC__) */
 
-#if 0
-#define GET_FILTER(a, b, c, d, e, f, g) H5Pget_filter_by_id(a,b,c,d,e,f,g,NULL)
-#else
-#define GET_FILTER(a, b, c, d, e, f, g) H5Pget_filter_by_id(a,b,c,d,e,f,g,NULL,NULL)
-#endif
-
 /*  Filter setup.  Records the following inside the DCPL:
 
     1. If version information is not present, set slots 0 and 1 to the filter
@@ -96,7 +90,7 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
   hid_t super_type;
   H5T_class_t classt;
 
-  r = GET_FILTER(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL);
+  r = H5Pget_filter_by_id2(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
   if (r < 0) return -1;
 
   if (nelements < 4) nelements = 4;  /* First 4 slots reserved. */
