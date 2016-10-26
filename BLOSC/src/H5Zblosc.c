@@ -123,7 +123,7 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
     fprintf(stderr, "Blosc: Computed buffer size %d\n", bufsize);
 #endif
 
-    r = H5Pmodify_filter(dcpl, H5Z_FILTER_BLOSC, flags, nelements, values);
+    r = H5Pmodify_filter(dcpl, FILTER_BLOSC, flags, nelements, values);
     if (r < 0) return -1;
 
     return 1;
@@ -174,16 +174,16 @@ size_t blosc_filter(unsigned flags, size_t cd_nelmts,
     }
     if (cd_nelmts >= 7) {
         compcode = cd_values[6];     /* The Blosc compressor used */
-		/* Check that we actually have support for the compressor code */
+        /* Check that we actually have support for the compressor code */
         complist = blosc_list_compressors();
-		code = blosc_compcode_to_compname(compcode, &compname);
-		if (code == -1) {
-	    	sprintf(errmsg, "this Blosc library does not have support for "
+        code = blosc_compcode_to_compname(compcode, &compname);
+        if (code == -1) {
+            sprintf(errmsg, "this Blosc library does not have support for "
                     "the '%s' compressor, but only for: %s",
-		    		compname, complist);
+                    compname, complist);
             PUSH_ERR("blosc_filter", H5E_CALLBACK, errmsg);
             goto failed;
-		}
+        }
     }
 
     /* We're compressing */
@@ -209,15 +209,15 @@ size_t blosc_filter(unsigned flags, size_t cd_nelmts,
             goto failed;
         }
 
-	  	blosc_set_compressor(compname);
+        blosc_set_compressor(compname);
         status = blosc_compress(clevel, doshuffle, typesize, nbytes, *buf, outbuf, nbytes);
         if (status < 0) {
-          	PUSH_ERR("blosc_filter", H5E_CALLBACK, "Blosc compression error");
-          	goto failed;
+            PUSH_ERR("blosc_filter", H5E_CALLBACK, "Blosc compression error");
+            goto failed;
         }
 
     /* We're decompressing */
-    } 
+    }
     else {
         /* declare dummy variables */
         size_t cbytes, blocksize;
@@ -240,14 +240,14 @@ size_t blosc_filter(unsigned flags, size_t cd_nelmts,
         outbuf = malloc(outbuf_size);
 
         if (outbuf == NULL) {
-          	PUSH_ERR("blosc_filter", H5E_CALLBACK, "Can't allocate decompression buffer");
-          	goto failed;
+            PUSH_ERR("blosc_filter", H5E_CALLBACK, "Can't allocate decompression buffer");
+            goto failed;
         }
 
         status = blosc_decompress(*buf, outbuf, outbuf_size);
         if (status <= 0) {    /* decompression failed */
-          	PUSH_ERR("blosc_filter", H5E_CALLBACK, "Blosc decompression error");
-          	goto failed;
+            PUSH_ERR("blosc_filter", H5E_CALLBACK, "Blosc decompression error");
+            goto failed;
         } /* if !status */
 
     } /* compressing vs decompressing */
