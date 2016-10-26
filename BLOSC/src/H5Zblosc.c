@@ -66,32 +66,11 @@ const void* H5PLget_plugin_info(void) { return blosc_H5Filter; }
 #define PUSH_ERR(func, minor, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
 #endif    /* defined(__GNUC__) */
 
+#if 0
 #define GET_FILTER(a, b, c, d, e, f, g) H5Pget_filter_by_id(a,b,c,d,e,f,g,NULL)
-
-
-/* Register the filter, passing on the HDF5 return value */
-int register_blosc(char** version, char** date) {
-
-  int retval;
-
-  H5Z_class_t filter_class = {
-      H5Z_CLASS_T_VERS,
-      (H5Z_filter_t)(FILTER_BLOSC),
-      1, 1,
-      "blosc",
-      NULL,
-      (H5Z_set_local_func_t)(blosc_set_local),
-      (H5Z_func_t)(blosc_filter)
-  };
-
-  retval = H5Zregister(&filter_class);
-  if (retval < 0) {
-    PUSH_ERR("register_blosc", H5E_CANTREGISTER, "Can't register Blosc filter");
-  }
-  *version = strdup(BLOSC_VERSION_STRING);
-  *date = strdup(BLOSC_VERSION_DATE);
-  return 1; /* lib is available */
-}
+#else
+#define GET_FILTER(a, b, c, d, e, f, g) H5Pget_filter_by_id(a,b,c,d,e,f,g,NULL,NULL)
+#endif
 
 /*  Filter setup.  Records the following inside the DCPL:
 
