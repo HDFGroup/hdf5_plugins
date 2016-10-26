@@ -56,7 +56,7 @@ string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_INTERFACE[ \t]+([0-9]+
         "\\1" H5BLOSC_VERS_INTERFACE ${_vers_h_contents})
 string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_RELEASE[ \t]+([0-9]+).*"
         "\\1" H5BLOSC_VERS_RELEASE ${_vers_h_contents})
-string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_STRING[ \t]+\"([0-9A-Za-z.]+)\".*"
+string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_STRING[ \t]+\"([-0-9A-Za-z.]+)\".*"
         "\\1" H5BLOSC_VERSION_STRING ${_vers_h_contents})
 message("Configuring for Blosc HDF5 Plugin version: " ${H5BLOSC_VERSION_STRING})
 
