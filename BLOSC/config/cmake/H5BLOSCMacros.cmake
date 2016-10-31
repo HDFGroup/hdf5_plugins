@@ -1,4 +1,155 @@
 #-------------------------------------------------------------------------------
+macro (EXTERNAL_BLOSC_LIBRARY compress_type)
+  # May need to build BLOSC with PIC on x64 machines with gcc
+  # Need to use CMAKE_ANSI_CFLAGS define so that compiler test works
+
+  if (${compress_type} MATCHES "GIT")
+    EXTERNALPROJECT_ADD (BLOSC
+        GIT_REPOSITORY ${BLOSC_URL}
+        GIT_TAG ${BLOSC_BRANCH}
+        INSTALL_COMMAND ""
+        CMAKE_ARGS
+            -DBUILD_SHARED:BOOL=${BUILD_SHARED_LIBS}
+            -DBUILD_TESTS:BOOL=OFF
+            -DBUILD_BENCHMARKS:BOOL=OFF
+            -DDEACTIVATE_SNAPPY:BOOL=ON
+            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+    )
+  elseif (${compress_type} MATCHES "TGZ")
+    EXTERNALPROJECT_ADD (BLOSC
+        URL ${BLOSC_URL}
+        URL_MD5 ""
+        INSTALL_COMMAND ""
+        CMAKE_ARGS
+            -DBUILD_SHARED:BOOL=${BUILD_SHARED_LIBS}
+            -DBUILD_TESTS:BOOL=OFF
+            -DBUILD_BENCHMARKS:BOOL=OFF
+            -DDEACTIVATE_SNAPPY:BOOL=ON
+            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+    )
+  endif (${compress_type} MATCHES "GIT")
+  externalproject_get_property (BLOSC BINARY_DIR SOURCE_DIR)
+
+##include (${BINARY_DIR}/${BLOSC_PACKAGE_NAME}${HDF_PACKAGE_EXT}-targets.cmake)
+# Create imported target blosc_static
+  add_library(blosc_static STATIC IMPORTED)
+  H5BLOSC_IMPORT_SET_LIB_OPTIONS (blosc_static "blosc" STATIC "")
+  add_dependencies (BLOSC blosc_static)
+  set (BLOSC_STATIC_LIBRARY "blosc_static")
+  set (BLOSC_LIBRARIES ${BLOSC_static_LIBRARY})
+  if (BUILD_SHARED_LIBS)
+    # Create imported target blosc-shared
+    add_library(blosc_shared SHARED IMPORTED)
+    H5BLOSC_IMPORT_SET_LIB_OPTIONS (blosc_shared "blosc" SHARED "")
+    add_dependencies (BLOSC blosc_shared)
+    set (BLOSC_SHARED_LIBRARY "blosc_shared")
+    set (BLOSC_LIBRARIES ${BLOSC_LIBRARIES} ${BLOSC_shared_LIBRARY})
+  endif (BUILD_SHARED_LIBS)
+
+  set (BLOSC_INCLUDE_DIR "${SOURCE_DIR}/blosc")
+  set (BLOSC_FOUND 1)
+  set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIR})
+endmacro (EXTERNAL_BLOSC_LIBRARY)
+
+#-------------------------------------------------------------------------------
+macro (PACKAGE_BLOSC_LIBRARY compress_type)
+  add_custom_target (BLOSC-GenHeader-Copy ALL
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BLOSC_INCLUDE_DIR}/blosc.h ${BLOSC_INCLUDE_DIR}/blosc-export.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+      COMMENT "Copying ${BLOSC_INCLUDE_DIR_}/blosc.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+  )
+  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc-export.h)
+  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
+    add_dependencies (BLOSC-GenHeader-Copy BLOSC)
+  endif (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
+endmacro (PACKAGE_BLOSC_LIBRARY)
+
+#-------------------------------------------------------------------------------
+macro (EXTERNAL_ZLIB_LIBRARY compress_type)
+  if (${compress_type} MATCHES "GIT")
+    EXTERNALPROJECT_ADD (ZLIB
+        GIT_REPOSITORY ${ZLIB_URL}
+        GIT_TAG ${ZLIB_BRANCH}
+        INSTALL_COMMAND ""
+        CMAKE_ARGS
+            -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
+            -DZLIB_PACKAGE_EXT:STRING=${HDF_PACKAGE_EXT}
+            -DZLIB_EXTERNALLY_CONFIGURED:BOOL=OFF
+            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
+    )
+  elseif (${compress_type} MATCHES "TGZ")
+    EXTERNALPROJECT_ADD (ZLIB
+        URL ${ZLIB_URL}
+        URL_MD5 ""
+        INSTALL_COMMAND ""
+        CMAKE_ARGS
+            -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
+            -DZLIB_PACKAGE_EXT:STRING=${HDF_PACKAGE_EXT}
+            -DZLIB_EXTERNALLY_CONFIGURED:BOOL=OFF
+            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
+    )
+  endif (${compress_type} MATCHES "GIT")
+  externalproject_get_property (ZLIB BINARY_DIR SOURCE_DIR)
+
+  if (WIN32)
+    set (ZLIB_LIB_NAME "zlib")
+  else (WIN32)
+    set (ZLIB_LIB_NAME "z")
+  endif (WIN32)
+##include (${BINARY_DIR}/${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT}-targets.cmake)
+# Create imported target zlib-static
+  add_library(zlib-static STATIC IMPORTED)
+  H5BLOSC_IMPORT_SET_LIB_OPTIONS (zlib-static ${ZLIB_LIB_NAME} STATIC "")
+  add_dependencies (ZLIB zlib-static)
+  set (ZLIB_STATIC_LIBRARY "zlib-static")
+  set (ZLIB_LIBRARIES ${ZLIB_static_LIBRARY})
+  if (BUILD_SHARED_LIBS)
+    # Create imported target zlib-shared
+    add_library(zlib-shared SHARED IMPORTED)
+    H5BLOSC_IMPORT_SET_LIB_OPTIONS (zlib-shared ${ZLIB_LIB_NAME} SHARED "")
+    add_dependencies (ZLIB zlib-shared)
+    set (ZLIB_SHARED_LIBRARY "zlib-shared")
+    set (ZLIB_LIBRARIES ${ZLIB_LIBRARIES} ${ZLIB_SHARED_LIBRARY})
+  endif (BUILD_SHARED_LIBS)
+
+  set (ZLIB_INCLUDE_DIR_GEN "${BINARY_DIR}")
+  set (ZLIB_INCLUDE_DIR "${SOURCE_DIR}")
+  set (ZLIB_FOUND 1)
+  set (ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR_GEN} ${ZLIB_INCLUDE_DIR})
+endmacro (EXTERNAL_ZLIB_LIBRARY)
+
+#-------------------------------------------------------------------------------
+macro (PACKAGE_ZLIB_LIBRARY compress_type)
+  add_custom_target (ZLIB-GenHeader-Copy ALL
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZLIB_INCLUDE_DIR_GEN}/zconf.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+      COMMENT "Copying ${ZLIB_INCLUDE_DIR_GEN}/zconf.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+  )
+  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zconf.h)
+  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+    add_dependencies (ZLIB-GenHeader-Copy ZLIB)
+  endif (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+endmacro (PACKAGE_ZLIB_LIBRARY)
+
+#-------------------------------------------------------------------------------
 macro (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   set (libname "${defaultlibname}")
   H5BLOSC_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
@@ -276,93 +427,9 @@ macro (H5BLOSC_README_PROPERTIES)
   else (BUILD_SHARED_LIBS)
     set (LIB_TYPE "Static")
   endif (BUILD_SHARED_LIBS)
-    
+
   configure_file (
-      ${H5BLOSC_RESOURCES_DIR}/README.txt.cmake.in 
+      ${H5BLOSC_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
 endmacro (H5BLOSC_README_PROPERTIES)
-
-#-------------------------------------------------------------------------------
-macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_STATIC_LIBS "OFF")
-  else (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_STATIC_LIBS "ON")
-  endif (${libtype} MATCHES "SHARED")
-  if (${compress_type} MATCHES "SVN")
-    EXTERNALPROJECT_ADD (BLOSC
-        SVN_REPOSITORY ${BLOSC_URL}
-        # [SVN_REVISION rev] 
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_STATIC:BOOL=${BUILD_EXT_STATIC_LIBS}
-            -DBUILD_TESTS:BOOL=OFF
-            -DBUILD_BENCHMARKS:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-    ) 
-  elseif (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (BLOSC
-        GIT_REPOSITORY ${BLOSC_URL}
-        # [SVN_REVISION rev] 
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_STATIC:BOOL=${BUILD_EXT_STATIC_LIBS}
-            -DBUILD_TESTS:BOOL=OFF
-            -DBUILD_BENCHMARKS:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-    ) 
-  elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (BLOSC
-        URL ${BLOSC_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_STATIC:BOOL=${BUILD_EXT_STATIC_LIBS}
-            -DBUILD_TESTS:BOOL=OFF
-            -DBUILD_BENCHMARKS:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-    ) 
-  endif (${compress_type} MATCHES "SVN")
-  externalproject_get_property (BLOSC BINARY_DIR SOURCE_DIR) 
-
-  # Create imported target BLOSC
-  add_library (blosc ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (blosc "blosc" ${libtype} "")
-  add_dependencies (BLOSC blosc)
-
-#  include (${BINARY_DIR}/BLOSC-targets.cmake)  
-  set (BLOSC_LIBRARY "blosc")
-
-  set (BLOSC_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (BLOSC_INCLUDE_DIR "${SOURCE_DIR}/blosc")
-  set (BLOSC_FOUND 1)
-  set (BLOSC_LIBRARIES ${BLOSC_LIBRARY})
-  set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIR_GEN} ${BLOSC_INCLUDE_DIR})
-endmacro (EXTERNAL_BLOSC_LIBRARY)
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_BLOSC_LIBRARY compress_type)
-  if (WIN32)
-    add_custom_target (BLOSC-GenHeader-Copy ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BLOSC_INCLUDE_DIR}/blosc.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-        COMMENT "Copying ${BLOSC_INCLUDE_DIR}/blosc.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-    )
-    set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc.h)
-    if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-      add_dependencies (BLOSC-GenHeader-Copy blosc)
-    endif (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-  endif (WIN32)
-endmacro (PACKAGE_BLOSC_LIBRARY)
