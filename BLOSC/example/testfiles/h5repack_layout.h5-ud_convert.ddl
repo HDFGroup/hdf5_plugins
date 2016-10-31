@@ -5,14 +5,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         SIZE 319 (10.031:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 3200 }
          }
       }
       FILLVALUE {
@@ -28,14 +28,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         SIZE 319 (10.031:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 3200 }
          }
       }
       FILLVALUE {
@@ -51,14 +51,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         SIZE 319 (10.031:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 3200 }
          }
       }
       FILLVALUE {
@@ -74,14 +74,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         SIZE 319 (10.031:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 3200 }
          }
       }
       FILLVALUE {
@@ -97,14 +97,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 20, 10 )
-         SIZE 1473 (2.172:1 COMPRESSION)
+         SIZE 898 (3.563:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 800 }
          }
       }
       FILLVALUE {
@@ -120,14 +120,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         SIZE 319 (10.031:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 3200 }
          }
       }
       FILLVALUE {
@@ -143,14 +143,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         SIZE 319 (10.031:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 307
-
+            FILTER_ID 32001
+            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { 2 2 4 3200 }
          }
       }
       FILLVALUE {
