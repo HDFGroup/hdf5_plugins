@@ -69,7 +69,7 @@ if (BUILD_TESTING)
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
-        NAME H5BLOSC_UD-clearall-objects
+        NAME H5BLOSC_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
             out-${testname}.${resultfile}
@@ -78,6 +78,10 @@ if (BUILD_TESTING)
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
     )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5BLOSC_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "H5BLOSC_UD-${testname}-clearall-objects")
     if (HDF5_BUILD_TOOLS)
       add_test (
           NAME H5BLOSC_UD-${testname}
@@ -93,7 +97,10 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BLOSC_UD-${testname} PROPERTIES DEPENDS H5BLOSC_UD-clearall-objects)
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5BLOSC_UD-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5BLOSC_UD-${testname}")
       add_test (
           NAME H5BLOSC_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -107,7 +114,10 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS "H5BLOSC_UD-${testname}")
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5BLOSC_UD-h5dump-${testname}")
     endif (HDF5_BUILD_TOOLS)
   endmacro (ADD_H5_UD_TEST)
 
@@ -122,6 +132,16 @@ if (BUILD_TESTING)
       ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_blosc.tst
       ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
       ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
+      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_lz.ddl
+      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_lz.h5repack_layout.h5.tst
+      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_lz4.ddl
+      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_lz4.h5repack_layout.h5.tst
+      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_lz4hc.ddl
+      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_lz4hc.h5repack_layout.h5.tst
+      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_zlib.ddl
+      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_zlib.h5repack_layout.h5.tst
+      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_zstd.ddl
+      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_zstd.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
@@ -155,5 +175,17 @@ if (BUILD_TESTING)
 
 #UD BLOSC
   ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0)
+# ...BLOSC_BLOSCLZ
+  ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,0)
+# ...BLOSC_LZ4
+  ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,1)
+# ...BLOSC_LZ4HC
+  ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,2)
+# ...BLOSC_SNAPPY
+#  ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,0,0,3)
+# ...BLOSC_ZLIB
+  ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,4)
+# ...BLOSC_ZSTD
+  ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,5)
 
 endif (BUILD_TESTING)
