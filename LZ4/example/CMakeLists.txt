@@ -78,6 +78,10 @@ if (BUILD_TESTING)
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
     )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5LZ4_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "H5LZ4_UD-${testname}-clearall-objects")
     if (HDF5_BUILD_TOOLS)
       add_test (
           NAME H5LZ4_UD-${testname}
@@ -93,7 +97,10 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5LZ4_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5LZ4_UD-${testname} PROPERTIES DEPENDS H5LZ4_UD-clearall-objects)
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5LZ4_UD-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5LZ4_UD-${testname}")
       add_test (
           NAME H5LZ4_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -107,7 +114,10 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5LZ4_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5LZ4_UD-h5dump-${testname} PROPERTIES DEPENDS "H5LZ4_UD-${testname}")
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5LZ4_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5LZ4_UD-h5dump-${testname}")
     endif (HDF5_BUILD_TOOLS)
   endmacro (ADD_H5_UD_TEST)
 
