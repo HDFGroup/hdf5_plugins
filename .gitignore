@@ -4,7 +4,7 @@ BZIP2/bin/reconfigure.local
 BZIP2/bin/reconfigure.system
 BZIP2/build*
 BZIP2/buildat
-LZ4/autom4te.cache
-LZ4/bin/reconfigure.local
-LZ4/bin/reconfigure.system
-LZ4/build
+MAFISC/autom4te.cache
+MAFISC/bin/reconfigure.local
+MAFISC/bin/reconfigure.system
+MAFISC/build
