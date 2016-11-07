@@ -24,7 +24,7 @@ endif (HDFPL_USE_FOLDERS)
 #-----------------------------------------------------------------------------
 # Define some CMake variables for use later in the project
 #-----------------------------------------------------------------------------
-set (H5PL_RESOURCES_DIR       ${PROJECT_SOURCE_DIR}/config/cmake)
+set (H5PL_RESOURCES_DIR        ${PROJECT_SOURCE_DIR}/config/cmake)
 set (HDF5PL_SRC_DIR            ${PROJECT_SOURCE_DIR}/Example)
 
 #-----------------------------------------------------------------------------
@@ -88,6 +88,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 # HDF5 support
 #-----------------------------------------------------------------------------
 set (CMAKE_MODULE_PATH ${H5PL_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
+set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if (NOT HDF5_HDF5_HEADER)
   if (BUILD_SHARED_LIBS)
@@ -116,16 +117,16 @@ if (NOT HDF5_HDF5_HEADER)
       set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
       if (HDF5_BUILD_SHARED_LIBS)
         add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-      else (HDF5_BUILD_SHARED_LIBS)
+      else ()
         add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-      endif (HDF5_BUILD_SHARED_LIBS)
+      endif ()
       if (BUILD_SHARED_LIBS AND WIN32)
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
         set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
-      else (BUILD_SHARED_LIBS AND WIN32)
+      else ()
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
         set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
-      endif (BUILD_SHARED_LIBS AND WIN32)
+      endif ()
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
@@ -136,6 +137,7 @@ if (NOT HDF5_HDF5_HEADER)
       set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
     endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
+    set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
 
     set (HDF5_HAVE_H5PUBCONF_H 1)
     set (HDF5_HAVE_HDF5 1)

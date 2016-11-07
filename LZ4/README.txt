@@ -7,8 +7,7 @@ Example (in the build folder):
     ../configure --with-hdf5=/temp/hdf5 --with-lz4lib=/temp/lz4
 
 For CMake, you must supply the location of the cmake configuration files 
-    in environment variables. Also, h5dump will need the location of the
-    hdf5 and lz4 libraries.
+    in environment variables.
     In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
     be set "ON" in order to build the example and run the tests.
 Example:
