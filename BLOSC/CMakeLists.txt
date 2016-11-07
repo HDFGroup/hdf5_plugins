@@ -215,12 +215,12 @@ if (NOT HDF5_HDF5_HEADER)
     #Blosc source needs to be linked with HDF5
     set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
 
-    add_executable (h5repack IMPORTED)
-    add_executable (h5dump IMPORTED)
-    set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
-    set_property (TARGET h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
-    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5repack>)
-    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:h5dump>)
+    add_executable (hdf5::h5repack IMPORTED)
+    add_executable (hdf5::h5dump IMPORTED)
+    set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
+    set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
+    set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
   endif (HDF5_FOUND)
   set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
 
