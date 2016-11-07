@@ -12,6 +12,8 @@ set (BUILD_EXAMPLES ON CACHE BOOL "Build h5blosc Examples" FORCE)
 
 set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
 
+set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
+
 set (H5BLOSC_PACKAGE_NAME "h5blosc" CACHE STRING "Name of h5blosc package" FORCE)
 
 set (H5BLOSC_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)" FORCE)

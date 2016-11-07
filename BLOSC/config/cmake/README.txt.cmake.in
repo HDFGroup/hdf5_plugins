@@ -1,11 +1,11 @@
 @H5BLOSC_PACKAGE_NAME@ version @H5BLOSC_PACKAGE_VERSION_STRING@
 ------------------------------------------------------------------------------
 
-This directory contains the binary (release) distribution of 
-@H5BLOSC_PACKAGE_NAME@-@H5BLOSC_PACKAGE_VERSION_MAJOR@ that was compiled on; 
-    @BINARY_PLATFORM@. 
- 
-It was built with the following options: 
+This directory contains the binary (release) distribution of
+@H5BLOSC_PACKAGE_NAME@-@H5BLOSC_PACKAGE_VERSION_MAJOR@ that was compiled on;
+    @BINARY_PLATFORM@.
+
+It was built with the following options:
     -- @LIB_TYPE@ C libraries
     -- @LIB_TYPE@ H5BLOSC tools
     -- BLOSC @BLOSC_VERSION_STRING@
@@ -19,7 +19,7 @@ The contents of this directory are:
 
 Installation
 ===========================================================================
-On linux, the installer should be executed in the location to install the plugin. 
+On linux, the installer should be executed in the location to install the plugin.
 1. Execute @H5BLOSC_PACKAGE_NAME@-@H5BLOSC_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
 2. Follow prompts
 ===========================================================================
@@ -27,8 +27,7 @@ On linux, the installer should be executed in the location to install the plugin
 After Installation
 ===========================================================================
 You must supply the location of the plugins by setting the HDF5_PLUGIN_PATH
-    environment variable. Also, h5dump will need the location of the 
-    hdf5 libraries.
+    environment variable.
     In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
     be set "ON" in order to build the example and run the tests.
 Example:
