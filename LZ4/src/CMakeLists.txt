@@ -36,7 +36,7 @@ add_library (${H5LZ4_LIB_TARGET} ${LIB_TYPE} ${H5LZ4_SRCS})
 target_link_libraries (${H5LZ4_LIB_TARGET} ${LINK_LIBS})
   if (WIN32)
     target_link_libraries (${H5LZ4_LIB_TARGET} "ws2_32.lib")
-  endif (WIN32)
+  endif ()
 SET_GLOBAL_VARIABLE (H5LZ4_LIBRARIES_TO_EXPORT ${H5LZ4_LIB_TARGET})
 H5LZ4_SET_LIB_OPTIONS (${H5LZ4_LIB_TARGET} ${H5LZ4_LIB_NAME} ${LIB_TYPE})
 

@@ -7,8 +7,7 @@ Example (in the build folder):
     ../configure --with-hdf5=/temp/hdf5 --with-bz2lib=/temp/bz2
 
 For CMake, you must supply the location of the cmake configuration files 
-    in environment variables. Also, h5dump will need the location of the
-    hdf5 and bzip2 libraries.
+    in environment variables.
     In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
     be set "ON" in order to build the example and run the tests.
 Example:

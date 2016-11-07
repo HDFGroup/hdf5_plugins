@@ -27,8 +27,7 @@ On linux, the installer should be executed in the location to install the plugin
 After Installation
 ===========================================================================
 You must supply the location of the plugins by setting the HDF5_PLUGIN_PATH
-    environment variable. Also, h5dump will need the location of the
-    hdf5 and lz4 libraries.
+    environment variable.
     In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
     be set "ON" in order to build the example and run the tests.
 Example:
