@@ -66,7 +66,6 @@ set (LZMA_COMMON_SRCS ${LZMA_COMMON_SRCS}
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/common/vli_size.c
 )
 set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_COMMON_SRCS})
-option (COND_MAIN_ENCODER "Enable encoding" ON)
 if (COND_MAIN_ENCODER)
   set (LZMA_COMMON_ENCODER_SRCS ${LZMA_COMMON_ENCODER_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/common/alone_encoder.c
@@ -91,7 +90,6 @@ if (COND_MAIN_ENCODER)
   )
   set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_COMMON_ENCODER_SRCS})
 endif ()
-option (COND_MAIN_DECODER "Enable decoding" ON)
 if (COND_MAIN_DECODER)
   set (LZMA_COMMON_DECODER_SRCS ${LZMA_COMMON_DECODER_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/common/alone_decoder.c
@@ -122,7 +120,6 @@ set (LZMA_CHECK_SRCS ${LZMA_CHECK_SRCS}
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/check.h
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/crc_macros.h
 )
-option (COND_CHECK_CRC32 "Enable check crc32" ON)
 if (COND_CHECK_CRC32)
   set (LZMA_CHECK_SRCS ${LZMA_CHECK_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/crc32_table.c
@@ -131,7 +128,6 @@ if (COND_CHECK_CRC32)
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/crc32_fast.c
   )
 endif ()
-option (COND_FILTER_LZMA1 "Enable check crc64" ON)
 if (COND_CHECK_CRC64)
   set (LZMA_CHECK_SRCS ${LZMA_CHECK_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/crc64_table.c
@@ -140,7 +136,6 @@ if (COND_CHECK_CRC64)
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/crc64_fast.c
   )
 endif ()
-option (COND_FILTER_LZMA1 "Enable check sha256" ON)
 if (COND_CHECK_SHA256)
   set (LZMA_CHECK_SRCS ${LZMA_CHECK_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check/sha256.c
@@ -148,9 +143,7 @@ if (COND_CHECK_SHA256)
 endif ()
 set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_CHECK_SRCS})
 
-option (COND_FILTER_LZ "Enable lz filter" ON)
 if (COND_FILTER_LZ)
-  option (COND_ENCODER_LZ "Enable lz encoder" ON)
   if (COND_ENCODER_LZ)
     set (LZMA_ENCODER_LZ_SRCS ${LZMA_ENCODER_LZ_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lz/lz_encoder.c
@@ -161,7 +154,6 @@ if (COND_FILTER_LZ)
     )
     set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_ENCODER_LZ_SRCS})
   endif ()
-  option (COND_DECODER_LZ "Enable lz decoder" ON)
   if (COND_DECODER_LZ)
     set (LZMA_DECODER_LZ_SRCS ${LZMA_DECODER_LZ_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lz/lz_decoder.c
@@ -171,13 +163,11 @@ if (COND_FILTER_LZ)
   endif ()
 endif ()
 
-option (COND_FILTER_LZMA1 "Enable lzma1 filter" ON)
 if (COND_FILTER_LZMA1)
   set (LZMA_SRCS ${LZMA_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lzma/lzma_common.h
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/rangecoder/range_common.h
   )
-  option (COND_ENCODER_LZMA1 "Enable lzma1 encoder" ON)
   if (COND_ENCODER_LZMA1)
     set (LZMA_ENCODER_LZMA1_SRCS ${LZMA_ENCODER_LZMA1_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lzma/fastpos.h
@@ -194,7 +184,6 @@ if (COND_FILTER_LZMA1)
     )
     set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_ENCODER_LZMA1_SRCS})
   endif ()
-  option (COND_DECODER_LZMA1 "Enable lzma1 decoder" ON)
   if (COND_DECODER_LZMA1)
     set (LZMA_DECODER_LZMA1_SRCS ${LZMA_DECODER_LZMA1_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lzma/lzma_decoder.c
@@ -203,7 +192,6 @@ if (COND_FILTER_LZMA1)
     )
     set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_DECODER_LZMA1_SRCS})
   endif ()
-  option (COND_ENCODER_LZMA2 "Enable lzma2 encoder" ON)
   if (COND_ENCODER_LZMA2)
     set (LZMA_ENCODER_LZMA2_SRCS ${LZMA_ENCODER_LZMA2_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lzma/lzma2_encoder.c
@@ -211,7 +199,6 @@ if (COND_FILTER_LZMA1)
     )
     set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_ENCODER_LZMA2_SRCS})
   endif ()
-  option (COND_DECODER_LZMA2 "Enable lzma2 decoder" ON)
   if (COND_DECODER_LZMA2)
     set (LZMA_DECODER_LZMA2_SRCS ${LZMA_DECODER_LZMA2_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/lzma/lzma2_decoder.c
@@ -221,14 +208,12 @@ if (COND_FILTER_LZMA1)
   endif ()
 endif ()
 
-option (COND_FILTER_DELTA "Enable delta filter" ON)
 if (COND_FILTER_DELTA)
   set (LZMA_SRCS ${LZMA_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/delta/delta_common.c
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/delta/delta_common.h
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/delta/delta_private.h
   )
-  option (COND_ENCODER_SIMPLE "Enable delta encoder" ON)
   if (COND_ENCODER_DELTA)
     set (LZMA_ENCODER_DELTA_SRCS ${LZMA_ENCODER_DELTA_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/delta/delta_encoder.c
@@ -236,7 +221,6 @@ if (COND_FILTER_DELTA)
     )
     set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_ENCODER_DELTA_SRCS})
   endif ()
-  option (COND_DECODER_DELTA "Enable delta decoder" ON)
   if (COND_DECODER_DELTA)
     set (LZMA_DECODER_DELTA_SRCS ${LZMA_DECODER_DELTA_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/delta/delta_decoder.c
@@ -246,7 +230,6 @@ if (COND_FILTER_DELTA)
   endif ()
 endif ()
 
-option (COND_FILTER_SIMPLE "Enable simple filter" ON)
 if (COND_FILTER_SIMPLE)
   set (LZMA_SRCS ${LZMA_SRCS}
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/simple/simple_coder.c
@@ -254,7 +237,6 @@ if (COND_FILTER_SIMPLE)
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/simple/simple_private.h
       ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/simple/x86.c
   )
-  option (COND_ENCODER_SIMPLE "Enable simple encoder" ON)
   if (COND_ENCODER_SIMPLE)
     set (LZMA_ENCODER_SIMPLE_SRCS ${LZMA_ENCODER_SIMPLE_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/simple/simple_encoder.c
@@ -262,7 +244,6 @@ if (COND_FILTER_SIMPLE)
     )
     set (LZMA_SRCS ${LZMA_SRCS} ${LZMA_ENCODER_SIMPLE_SRCS})
   endif ()
-  option (COND_DECODER_SIMPLE "Enable simple decoder" ON)
   if (COND_DECODER_SIMPLE)
     set (LZMA_DECODER_SIMPLE_SRCS ${LZMA_DECODER_SIMPLE_SRCS}
         ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/simple/simple_decoder.c
