@@ -32,6 +32,8 @@
 /* Filter ID registered with the HDF Group */
 #define FILTER_BLOSC 32001
 
+#define BLOSC_DEBUG
+
 #if 0
 #if defined(__GNUC__)
 #define PUSH_ERR(func, minor, str, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, ##__VA_ARGS__)
@@ -77,6 +79,9 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     r = H5Pget_filter_by_id(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
     if (r < 0) return -1;
+#ifdef BLOSC_DEBUG
+    fprintf(stderr, "Blosc: H5Pget_filter_by_id\n");
+#endif
 
     if (nelements < 4) nelements = 4;  /* First 4 slots reserved. */
 
@@ -93,6 +98,9 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     typesize = H5Tget_size(type);
     if (typesize==0) return -1;
+#ifdef BLOSC_DEBUG
+    fprintf(stderr, "Blosc: H5Tget_size\n");
+#endif
     /* Get the size of the base type, even for ARRAY types */
     classt = H5Tget_class(type);
     if (classt == H5T_ARRAY) {
