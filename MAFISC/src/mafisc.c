@@ -31,7 +31,6 @@
 #include <string.h>
 #include <time.h>
 #include <assert.h>
-#include <mcheck.h>
 
 #include "H5PLextern.h"
 
@@ -600,13 +599,17 @@ static herr_t compressorSetLocal(hid_t pList, hid_t type, hid_t space) {
     int rank = H5Sget_simple_extent_ndims(space), i;
     if(rank <= 0) return -4;
     {
-        hsize_t chunkSize[rank];    //Once again an unfounded compiler complaint.
-        int chunkRank = H5Pget_chunk(pList, rank, chunkSize);
+        int chunkRank;
+        hsize_t *chunkSize;
+        chunkSize = (hsize_t*)malloc(rank * sizeof(hsize_t));
+        chunkRank = H5Pget_chunk(pList, rank, chunkSize);
         if(chunkRank <= 0) return -1;
         if(chunkRank > rank) return -2;
         {
-            unsigned int cd_values[sizeof(CompressorPrivate)/sizeof(unsigned int) + (size_t)chunkRank];    //yaucc = Yet Another Unfounded Compiler Complaint.
-            CompressorPrivate* privates = (CompressorPrivate*)cd_values;
+            unsigned int *cd_values;
+            CompressorPrivate* privates;
+            cd_values = (unsigned int *)malloc((sizeof(CompressorPrivate)/sizeof(unsigned int) + (size_t)chunkRank) * sizeof(unsigned int));
+            privates = (CompressorPrivate*)cd_values;
             privates->version = 0;
             privates->datasetId = (unsigned int)((rand() << 16) ^ rand());    //Two calls to make sure all bits are random, otherwise the msb would be zero...
             if(!(privates->dataTypeSize = (unsigned int)H5Tget_size(type))) return -5;
@@ -658,11 +661,13 @@ static size_t decompress(size_t nBytes, size_t* bufferSize, void** buffer) {
     if(nBytes < sizeof(CompressorPrivate) + privates->rank*sizeof(unsigned int)) return 0;    //Fail, if metadata is incomplete.
     {
         unsigned long chunkSize = 1;
-        size_t sizeTDims[privates->rank], dataSize;    //yaucc
+        size_t *sizeTDims;
+        size_t dataSize;
         const char* methodString;
         size_t methodStringLength;
         VariableFilter* filter;
         void* lzmaData, *buffer1, *buffer2;
+        sizeTDims = (size_t *)malloc(privates->rank * sizeof(size_t));
         for(i = 0; i < privates->rank; i++) {
             chunkSize *= privates->dimSizes[i];
             sizeTDims[i] = privates->dimSizes[i];
@@ -780,9 +785,11 @@ static size_t compressorFilter(unsigned int flags, size_t cd_nelmts, const unsig
     if(cd_nelmts != sizeof(CompressorPrivate)/sizeof(unsigned int) + privates->rank) return 0;    //Fail, if the dimension count is wrong.
     {
         unsigned long chunkSize = 1;
-        size_t sizeTDims[privates->rank], curDataSize, bestDataSize, cd_valuesSize = cd_nelmts*sizeof(unsigned int), result, bestMethodStringSize;    //yaucc
+        size_t *sizeTDims;
+        size_t curDataSize, bestDataSize, cd_valuesSize = cd_nelmts*sizeof(unsigned int), result, bestMethodStringSize;
         void* buffer1, *buffer2, *curBuffer, *bestBuffer;
         char* bestMethodString;
+        sizeTDims = (size_t *)malloc(privates->rank * sizeof(size_t));
         for(i = 0; i < privates->rank; i++) {
             chunkSize *= privates->dimSizes[i];
             sizeTDims[i] = privates->dimSizes[i];
