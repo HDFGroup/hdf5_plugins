@@ -607,7 +607,7 @@ static herr_t compressorSetLocal(hid_t pList, hid_t type, hid_t space) {
         if(chunkRank > rank) return -2;
         {
             unsigned int *cd_values;
-            CompressorPrivate* private;
+            CompressorPrivate* privates;
             cd_values = (unsigned int *)malloc((sizeof(CompressorPrivate)/sizeof(unsigned int) + (size_t)chunkRank) * sizeof(unsigned int));
             privates = (CompressorPrivate*)cd_values;
             privates->version = 0;
