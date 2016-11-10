@@ -77,7 +77,7 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
     hid_t super_type;
     H5T_class_t classt;
 
-    r = H5Pget_filter_by_id(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
+    r = H5Pget_filter_by_id2(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
     if (r < 0) return -1;
 #ifdef BLOSC_DEBUG
     fprintf(stderr, "Blosc: H5Pget_filter_by_id\n");
