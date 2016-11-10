@@ -31,7 +31,6 @@
 #include <string.h>
 #include <time.h>
 #include <assert.h>
-#include <mcheck.h>
 
 #include "H5PLextern.h"
 
