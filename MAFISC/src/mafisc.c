@@ -785,7 +785,7 @@ static size_t compressorFilter(unsigned int flags, size_t cd_nelmts, const unsig
     if(cd_nelmts != sizeof(CompressorPrivate)/sizeof(unsigned int) + privates->rank) return 0;    //Fail, if the dimension count is wrong.
     {
         unsigned long chunkSize = 1;
-        size_t sizeTDims;
+        size_t *sizeTDims;
         size_t curDataSize, bestDataSize, cd_valuesSize = cd_nelmts*sizeof(unsigned int), result, bestMethodStringSize;
         void* buffer1, *buffer2, *curBuffer, *bestBuffer;
         char* bestMethodString;
