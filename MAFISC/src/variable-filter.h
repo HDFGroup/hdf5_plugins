@@ -86,7 +86,10 @@ void vf_delete(VariableFilter* me);
 //protected:
 void vf_init(VariableFilter* me, vf_type aType);
 void vf_destroy(VariableFilter* me);
-char* asprintf(char* format, ...);
+
+#if defined(_WIN32) && defined(_MSC_VER)
+int asprintf(char **strp, const char *fmt, ...);
+#endif
 
 #endif    //VARIABLE_FILTER_INCLUDE_GUARD
 

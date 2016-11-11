@@ -216,23 +216,34 @@ void vf_delete(VariableFilter* me) {
 }
 
 #if defined(_WIN32) && defined(_MSC_VER)
-char* asprintf(char* format, ...){
+int vasprintf(char **strp, const char *fmt, va_list ap)
+{
+  int r = -1, size = _vscprintf(fmt, ap);
 
-    char *ret = 0;
-
-    if(!format) return 0;
-
-    va_list args;
-    va_start(args,format);
-    int size = _vscprintf(format, args);
-
-    if(size > 0){
-        size++; //for null
-        ret = (char*)malloc(size+2);
-        if(ret) _vsnprintf(ret, size, format, args);
+  if ((size >= 0) && (size < INT_MAX))
+  {
+    *strp = (char *)malloc(size+1); //+1 for null
+    if (*strp)
+    {
+      r = vsnprintf(*strp, size+1, fmt, ap);  //+1 for null
+      if ((r < 0) || (r > size))
+      {
+        free(*strp); strp = 0;
+        r = -1;
+      }
     }
+  }
+  else { *strp = 0; }
 
-    va_end(args);
-    return ret;
+  return(r);
+}
+int asprintf(char **strp, const char *fmt, ...)
+{
+  int r;
+  va_list ap;
+  va_start(ap, fmt);
+  r = vasprintf(strp, fmt, ap);
+  va_end(ap);
+  return(r);
 }
 #endif
