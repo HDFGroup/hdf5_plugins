@@ -167,6 +167,13 @@ if (NOT HDF5_HDF5_HEADER)
       find_package (HDF5 NAMES ${SEARCH_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
       message (STATUS "HDF5 libs:${HDF5_FOUND} C:${HDF5_C_FOUND}")
       set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+      #mafisc source needs to be linked with HDF5
+      set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
+      if (HDF5_BUILD_SHARED_LIBS)
+        add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
+      else ()
+        add_definitions (-DH5_BUILT_AS_STATIC_LIB)
+      endif ()
       if (USE_SHARED_LIBS AND WIN32)
         set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
@@ -177,15 +184,19 @@ if (NOT HDF5_HDF5_HEADER)
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+        #mafisc source needs to be linked with HDF5
+        set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
       else (HDF5_static_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
+        #mafisc source needs to be linked with HDF5
+        set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
       set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
     endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
     set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
-  else (HDF5_FOUND)
+  else ()
     find_package (HDF5) # Legacy find
 #Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
     set(HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
@@ -196,6 +207,8 @@ if (NOT HDF5_HDF5_HEADER)
       set (HDF5_BUILD_SHARED_LIBS 0)
     endif ()
     set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+    #mafisc source needs to be linked with HDF5
+    set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
 
     add_executable (hdf5::h5repack IMPORTED)
     add_executable (hdf5::h5dump IMPORTED)
@@ -203,7 +216,7 @@ if (NOT HDF5_HDF5_HEADER)
     set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
-  endif (HDF5_FOUND)
+  endif ()
   set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
 
   if (HDF5_FOUND)
@@ -212,21 +225,21 @@ if (NOT HDF5_HDF5_HEADER)
     set (HDF5_HDF5_HEADER "h5pubconf.h")
     set (HDF5_INCLUDE_DIR_GEN ${HDF5_INCLUDE_DIR})
     message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
-  else (HDF5_FOUND)
+  else ()
     message (FATAL_ERROR " HDF5 is Required for ${H5MAFISC_PACKAGE_NAME} library")
-  endif (HDF5_FOUND)
-else (NOT HDF5_HDF5_HEADER)
+  endif ()
+else ()
   # This project is being called from within another and HDF5 is already configured
   set (HDF5_HAVE_H5PUBCONF_H 1)
   set (HDF5_HAVE_HDF5 1)
-endif (NOT HDF5_HDF5_HEADER)
+endif ()
 message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
 if (USE_SHARED_LIBS)
   set (H5_LIB_TYPE SHARED)
-else (USE_SHARED_LIBS)
+else ()
   set (H5_LIB_TYPE STATIC)
-endif (USE_SHARED_LIBS)
+endif ()
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
@@ -320,10 +333,10 @@ endif ()
 #-----------------------------------------------------------------------------
 if (CMAKE_COMPILER_IS_GNUCC)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -369,7 +382,7 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
       FILE ${H5MAFISC_PACKAGE}${H5MAFISC_PACKAGE_EXT}-targets.cmake
       COMPONENT configinstall
   )
-endif (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Export all exported targets to the build tree for use by parent project
@@ -379,7 +392,7 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
       TARGETS ${H5MAFISC_LIBRARIES_TO_EXPORT} ${H5MAFISC_LIB_DEPENDENCIES}
       FILE ${H5MAFISC_PACKAGE}${H5MAFISC_PACKAGE_EXT}-targets.cmake
   )
-endif (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Set includes needed for build
@@ -427,7 +440,7 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
       DESTINATION ${H5MAFISC_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
-endif (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the h5mafisc-config-version.cmake file for the install directory
@@ -442,7 +455,7 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
       DESTINATION ${H5MAFISC_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
-endif (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the HDF5PL_Examples.cmake file and the examples
@@ -491,9 +504,9 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_NAME "${H5MAFISC_PACKAGE_NAME}")
   if (CDASH_LOCAL)
     set (CPACK_PACKAGE_VERSION "${H5MAFISC_PACKAGE_VERSION}")
-  else (CDASH_LOCAL)
+  else ()
     set (CPACK_PACKAGE_VERSION "${H5MAFISC_PACKAGE_VERSION_STRING}")
-  endif (CDASH_LOCAL)
+  endif ()
   set (CPACK_PACKAGE_VERSION_MAJOR "${H5MAFISC_PACKAGE_VERSION_MAJOR}")
   set (CPACK_PACKAGE_VERSION_MINOR "${H5MAFISC_PACKAGE_VERSION_MINOR}")
   set (CPACK_PACKAGE_VERSION_PATCH "")
@@ -510,7 +523,7 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
 
     if (NSIS_EXECUTABLE)
       list (APPEND CPACK_GENERATOR "NSIS")
-    endif (NSIS_EXECUTABLE)
+    endif ()
     # Installers for 32- vs. 64-bit CMake:
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
@@ -519,10 +532,10 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
     if (CMAKE_CL_64)
       set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
-    else (CMAKE_CL_64)
+    else ()
       set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
-    endif (CMAKE_CL_64)
+    endif ()
     # set the install/unistall icon used for the installer itself
     # There is a bug in NSI that does not handle full unix paths properly.
     #set (CPACK_NSIS_MUI_ICON "${H5MAFISC_RESOURCES_DIR}\\\\H5MAFISC.ico")
@@ -536,7 +549,7 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
 
     if (WIX_EXECUTABLE)
       list (APPEND CPACK_GENERATOR "WIX")
-    endif (WIX_EXECUTABLE)
+    endif ()
 #WiX variables
     set (CPACK_WIX_UNINSTALL "1")
 # .. variable:: CPACK_WIX_LICENSE_RTF
