@@ -31,7 +31,6 @@
 #include <string.h>
 #include <time.h>
 #include <assert.h>
-#include <stdarg.h>
 
 #include "H5PLextern.h"
 
@@ -123,28 +122,6 @@ static long doLzmaDecompression(size_t *byteCount, size_t oBufferSize, const voi
 
 static size_t decompress(size_t nBytes, size_t* bufferSize, void** buffer);
 static void doFiltering(const char* method, unsigned dataTypeSize, unsigned rank, size_t* dims, size_t valueCount, long nativeIsLE, const void* inputBuffer, void* outputBuffer);
-
-#if defined(_WIN32) && defined(_MSC_VER)
-char* asprintf(char* format, ...){
-
-    char *ret = 0;
-
-    if(!format) return 0;
-
-    va_list args;
-    va_start(args,format);
-    int size = _vscprintf(format, args);
-
-    if(size > 0){
-        size++; //for null
-        ret = (char*)malloc(size+2);
-        if(ret) _vsnprintf(ret, size, format, args);
-    }
-
-    va_end(args);
-    return ret;
-}
-#endif
 
 //A handy tool to add something to a byte stream.
 #define copyUpdate(to, from, count) memcpy(to, from, count), to = (void*)((size_t)to + count)
