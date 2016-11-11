@@ -45,11 +45,11 @@ main (void)
     char            filter_name[80];
     hsize_t         dims[2] = {DIM0, DIM1},
                     chunk[2] = {CHUNK0, CHUNK1};
-    size_t          nelmts = 1;                /* number of elements in cd_values */
+    size_t          nelmts = 8;                 /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int cd_values[1] = {3};     /* mafisc default is 3 */
-    unsigned int       values_out[1] = {99};
+    const unsigned int    cd_values[8];              /* mafisc default is 6 + rank */
+    unsigned int    values_out[8] = {99, 99, 99, 99, 99, 99, 99, 99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
@@ -83,7 +83,7 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_MAFISC, H5Z_FLAG_MANDATORY, (size_t)1, cd_values);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_MAFISC, H5Z_FLAG_MANDATORY, nelmts, cd_values);
     if (status < 0) goto done;
 
     /*
@@ -103,13 +103,17 @@ main (void)
     /*
      * Create the dataset.
      */
-    printf ("....Writing mafisc compressed data ................\n");
+    printf ("....Create dataset ................\n");
     dset_id = H5Dcreate (file_id, DATASET, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
-    if (dset_id < 0) goto done;
+    if (dset_id < 0) {
+        printf ("failed to create dataset.\n");
+        goto done;
+    }
 
     /*
      * Write the data to the dataset.
      */
+    printf ("....Writing mafisc compressed data ................\n");
     status = H5Dwrite (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
     if (status < 0) printf ("failed to write data.\n");
 
@@ -154,13 +158,23 @@ main (void)
     /*
      * Retrieve and print the filter id, compression level and filter's name for mafisc.
      */
+    /* Format of the cd_values array:
+        cd_values[0] = version = 0;
+        cd_values[1] = datasetId (created randomly);
+        cd_values[2] = dataTypeSize (in bytes);
+        cd_values[3] = isFloat (true, if the datatype is a float type);
+        cd_values[4] = byteOrder (same as H5T_order_t);
+        cd_values[5] = rank (# of dimension of a chunk);
+        cd_values[6] = Size of first dimension (the size of the chunk!);
+        ...
+        cd_values[6+rank-1] = Size of last dimension; */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
     printf ("Filter info is available from the dataset creation property \n ");
     printf ("  Filter identifier is ");
     switch (filter_id) {
         case H5Z_FILTER_MAFISC:
             printf ("%d\n", filter_id);
-            printf ("   Number of parameters is %d with the value %u\n", nelmts, values_out[0]);
+            printf ("   Number of parameters is %d with rank %u values %u %u\n", nelmts, values_out[5], values_out[6], values_out[7]);
             printf ("   To find more about the filter check %s\n", filter_name);
             break;
         default:

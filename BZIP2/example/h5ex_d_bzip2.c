@@ -1,22 +1,22 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright by The HDF Group.                                               * 
+ * Copyright by The HDF Group.                                               *
  * All rights reserved.                                                      *
- *                                                                           * 
- * This file is part of the HDF5 BZIP2 filter plugin source.  The full       * 
- * copyright notice, including terms governing use, modification, and        * 
- * terms governing use, modification, and redistribution, is contained in    * 
- * the file COPYING, which can be found at the root of the BZIP2 source code * 
- * distribution tree.  If you do not have access to this file, you may       * 
- * request a copy from help@hdfgroup.org.                                    * 
+ *                                                                           *
+ * This file is part of the HDF5 BZIP2 filter plugin source.  The full       *
+ * copyright notice, including terms governing use, modification, and        *
+ * terms governing use, modification, and redistribution, is contained in    *
+ * the file COPYING, which can be found at the root of the BZIP2 source code *
+ * distribution tree.  If you do not have access to this file, you may       *
+ * request a copy from help@hdfgroup.org.                                    *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /************************************************************
 
   This example shows how to write data and read it from a dataset
-  using bzip2 compression. 
-  bzip2 filter is not available in HDF5. 
-  The example uses a new feature available in HDF5 version 1.8.11 
-  to discover, load and register filters at run time.  
+  using bzip2 compression.
+  bzip2 filter is not available in HDF5.
+  The example uses a new feature available in HDF5 version 1.8.11
+  to discover, load and register filters at run time.
 
  ************************************************************/
 
@@ -49,7 +49,7 @@ main (void)
     unsigned int    flags;
     unsigned        filter_config;
     const unsigned int cd_values[1] = {2};     /* bzip2 default level is 2 */
-    unsigned int       values_out[1] = {99};          
+    unsigned int       values_out[1] = {99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
@@ -83,33 +83,37 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BZIP2, H5Z_FLAG_MANDATORY, (size_t)1, cd_values);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BZIP2, H5Z_FLAG_MANDATORY, nelmts, cd_values);
     if (status < 0) goto done;
 
-    /* 
+    /*
      * Check that filter is registered with the library now.
-     * If it is registered, retrieve filter's configuration. 
+     * If it is registered, retrieve filter's configuration.
      */
     avail = H5Zfilter_avail(H5Z_FILTER_BZIP2);
     if (avail) {
         status = H5Zget_filter_info (H5Z_FILTER_BZIP2, &filter_config);
-        if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) && 
-                (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) ) 
+        if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) &&
+                (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) )
             printf ("bzip2 filter is available for encoding and decoding.\n");
-    }     
+    }
     status = H5Pset_chunk (dcpl_id, 2, chunk);
     if (status < 0) printf ("failed to set chunk.\n");
 
     /*
      * Create the dataset.
      */
-    printf ("....Writing bzip2 compressed data ................\n");
+    printf ("....Create dataset ................\n");
     dset_id = H5Dcreate (file_id, DATASET, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
-    if (dset_id < 0) goto done;
+    if (dset_id < 0) {
+        printf ("failed to create dataset.\n");
+        goto done;
+    }
 
     /*
      * Write the data to the dataset.
      */
+    printf ("....Writing bzip2 compressed data ................\n");
     status = H5Dwrite (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
     if (status < 0) printf ("failed to write data.\n");
 
@@ -167,7 +171,7 @@ main (void)
             printf ("Not expected filter\n");
             break;
     }
-    
+
     /*
      * Read the data using the default properties.
      */
@@ -190,13 +194,13 @@ main (void)
      * Print the maximum value.
      */
     printf ("Maximum value in %s is %d\n", DATASET, max);
-    /* 
+    /*
      * Check that filter is registered with the library now.
      */
     avail = H5Zfilter_avail(H5Z_FILTER_BZIP2);
-    if (avail)  
+    if (avail)
         printf ("bzip2 filter is available now since H5Dread triggered loading of the filter.\n");
-         
+
     ret_value = 0;
 
 done:

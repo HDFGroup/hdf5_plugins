@@ -201,7 +201,7 @@ if (NOT HDF5_HDF5_HEADER)
     endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
     set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
-  else (HDF5_FOUND)
+  else ()
     find_package (HDF5) # Legacy find
 #Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
     set(HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
@@ -221,7 +221,7 @@ if (NOT HDF5_HDF5_HEADER)
     set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
-  endif (HDF5_FOUND)
+  endif ()
   set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
 
   if (HDF5_FOUND)
@@ -230,21 +230,21 @@ if (NOT HDF5_HDF5_HEADER)
     set (HDF5_HDF5_HEADER "h5pubconf.h")
     set (HDF5_INCLUDE_DIR_GEN ${HDF5_INCLUDE_DIR})
     message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
-  else (HDF5_FOUND)
+  else ()
     message (FATAL_ERROR " HDF5 is Required for ${H5BLOSC_PACKAGE_NAME} library")
-  endif (HDF5_FOUND)
-else (NOT HDF5_HDF5_HEADER)
+  endif ()
+else ()
   # This project is being called from within another and HDF5 is already configured
   set (HDF5_HAVE_H5PUBCONF_H 1)
   set (HDF5_HAVE_HDF5 1)
-endif (NOT HDF5_HDF5_HEADER)
+endif ()
 message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
 if (USE_SHARED_LIBS)
   set (H5_LIB_TYPE SHARED)
-else (USE_SHARED_LIBS)
+else ()
   set (H5_LIB_TYPE STATIC)
-endif (USE_SHARED_LIBS)
+endif ()
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if(WIN32)
@@ -253,34 +253,34 @@ if(WIN32)
     if(Threads_FOUND)
         set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
     endif(Threads_FOUND)
-else(WIN32)
+else()
     find_package(Threads REQUIRED)
     set(LINK_LIBS ${LINK_LIBS} ${CMAKE_THREAD_LIBS_INIT})
-endif(WIN32)
+endif()
 
 if (MSVC)
   set (CMAKE_MFC_FLAG 0)
-endif (MSVC)
+endif ()
 
 set (MAKE_SYSTEM)
 if (CMAKE_BUILD_TOOL MATCHES "make")
   set (MAKE_SYSTEM 1)
-endif (CMAKE_BUILD_TOOL MATCHES "make")
+endif ()
 
 set (CFG_INIT "/${CMAKE_CFG_INTDIR}")
 if (MAKE_SYSTEM)
   set (CFG_INIT "")
-endif (MAKE_SYSTEM)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Compiler specific flags : Shouldn't there be compiler tests for these
 #-----------------------------------------------------------------------------
 if (CMAKE_COMPILER_IS_GNUCC)
   set (CMAKE_C_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_C_FLAGS} -std=c99 -fomit-frame-pointer -finline-functions -fno-common")
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif ()
 
 #-----------------------------------------------------------------------------
 # This is in here to help some of the GCC based IDES like Eclipse
@@ -288,10 +288,10 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 #-----------------------------------------------------------------------------
 if (CMAKE_COMPILER_IS_GNUCC)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif ()
 
 include (ExternalProject)
 option (H5BLOSC_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
@@ -330,9 +330,9 @@ if (HDF_ENABLE_Z_LIB_SUPPORT)
         if (ZLIB_FOUND)
           set (LINK_LIBS ${LINK_LIBS} ${ZLIB_LIBRARIES})
           set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${ZLIB_LIBRARIES})
-        endif (ZLIB_FOUND)
-      endif (NOT ZLIB_FOUND)
-    endif (NOT ZLIB_USE_EXTERNAL)
+        endif ()
+      endif ()
+    endif ()
     if (ZLIB_FOUND)
       set (H5_HAVE_FILTER_DEFLATE 1)
       set (H5_HAVE_ZLIB_H 1)
@@ -340,17 +340,17 @@ if (HDF_ENABLE_Z_LIB_SUPPORT)
       set (H5_ZLIB_HEADER "zlib.h")
       set (ZLIB_INCLUDE_DIR_GEN ${ZLIB_INCLUDE_DIR})
       set (ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIR})
-    else (ZLIB_FOUND)
+    else ()
       if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
         EXTERNAL_ZLIB_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT})
         set (H5_HAVE_FILTER_DEFLATE 1)
         set (H5_HAVE_ZLIB_H 1)
         set (H5_HAVE_LIBZ 1)
         message (STATUS "Filter ZLIB is built")
-      else (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF5ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+      else ()
         message (FATAL_ERROR " ZLib is Required for ZLib support in HDF5")
-      endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    endif (ZLIB_FOUND)
+      endif ()
+    endif ()
   else (NOT H5_ZLIB_HEADER)
     # This project is being called from within another and ZLib is already configured
     set (H5_HAVE_FILTER_DEFLATE 1)
@@ -359,14 +359,14 @@ if (HDF_ENABLE_Z_LIB_SUPPORT)
   endif (NOT H5_ZLIB_HEADER)
   if (H5_HAVE_FILTER_DEFLATE)
     set (EXTERNAL_FILTERS "${EXTERNAL_FILTERS} DEFLATE")
-  endif (H5_HAVE_FILTER_DEFLATE)
+  endif ()
   if (BUILD_SHARED_LIBS)
     set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${ZLIB_SHARED_LIBRARY})
-  endif (BUILD_SHARED_LIBS)
+  endif ()
   set (LINK_LIBS ${LINK_LIBS} ${ZLIB_STATIC_LIBRARY})
   INCLUDE_DIRECTORIES (${ZLIB_INCLUDE_DIRS})
   message (STATUS "Filter ZLIB is ON")
-endif (HDF_ENABLE_Z_LIB_SUPPORT)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Option for Blosc support
@@ -381,37 +381,37 @@ if (HDF_ENABLE_BLOSC_SUPPORT)
         if (BLOSC_FOUND)
           set (LINK_LIBS ${LINK_LIBS} ${BLOSC_LIBRARIES})
           set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${BLOSC_LIBRARIES})
-        endif (BLOSC_FOUND)
-      endif (NOT BLOSC_FOUND)
-    endif (NOT BLOSC_USE_EXTERNAL)
+        endif ()
+      endif ()
+    endif ()
     if (BLOSC_FOUND)
       set (H5_HAVE_BLOSC_H 1)
       set (H5_HAVE_BLOSC 1)
       set (H5_BLOSC_HEADER "blosc.h")
       set (BLOSC_INCLUDE_DIR ${BLOSC_INCLUDE_DIR})
       set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIRS} ${BLOSC_INCLUDE_DIR})
-    else (BLOSC_FOUND)
+    else ()
       if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
         EXTERNAL_BLOSC_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT})
         set (H5_HAVE_BLOSC_H 1)
         set (H5_HAVE_BLOSC 1)
         set (H5_BLOSC_HEADER "blosc.h")
         message (STATUS "BLOSC is built")
-      else (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+      else ()
         message (FATAL_ERROR " BLOSC is Required for BLOSC support in plugin")
-      endif (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    endif (BLOSC_FOUND)
-  else (NOT H5_BLOSC_HEADER)
+      endif ()
+    endif ()
+  else ()
     # This project is being called from within another and BLOSC is already configured
     set (H5_HAVE_BLOSC_H 1)
-  endif (NOT H5_BLOSC_HEADER)
+  endif ()
   if (BUILD_SHARED_LIBS)
     set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${BLOSC_SHARED_LIBRARY})
-  endif (BUILD_SHARED_LIBS)
+  endif ()
   set (LINK_LIBS ${LINK_LIBS} ${BLOSC_STATIC_LIBRARY})
   INCLUDE_DIRECTORIES (${BLOSC_INCLUDE_DIRS})
   message (STATUS "BLOSC is ON")
-endif (HDF_ENABLE_BLOSC_SUPPORT)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Generate the config.h file containing user settings needed by compilation
@@ -427,13 +427,13 @@ if (NOT HDF_EXTERNALLY_CONFIGURED)
     set (HDF_NO_PACKAGES OFF CACHE BOOL "CPACK - Disable packaging" FORCE)
     if (HDF_ENABLE_Z_LIB_SUPPORT AND ZLIB_FOUND)
       PACKAGE_ZLIB_LIBRARY (${HDF5_ALLOW_EXTERNAL_SUPPORT})
-    endif (HDF_ENABLE_Z_LIB_SUPPORT AND ZLIB_FOUND)
+    endif ()
 
     if (HDF_ENABLE_BLOSC_SUPPORT AND BLOSC_FOUND)
       PACKAGE_BLOSC_LIBRARY (${H5BLOSC_ALLOW_EXTERNAL_SUPPORT})
-    endif (HDF_ENABLE_BLOSC_SUPPORT AND BLOSC_FOUND)
-  endif (HDF_PACKAGE_EXTLIBS)
-endif (NOT HDF_EXTERNALLY_CONFIGURED)
+    endif ()
+  endif ()
+endif ()
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -473,7 +473,7 @@ endif ()
 
 #if (BUILD_TESTING)
 #  add_subdirectory (${H5BLOSC_SOURCE_DIR}/tests)
-#endif (BUILD_TESTING)
+#endif ()
 
 #-----------------------------------------------------------------------------
 # Add file(s) to CMake Install
@@ -491,7 +491,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       FILE ${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-targets.cmake
       COMPONENT configinstall
   )
-endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Export all exported targets to the build tree for use by parent project
@@ -501,7 +501,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       TARGETS ${H5BLOSC_LIBRARIES_TO_EXPORT} ${H5BLOSC_LIB_DEPENDENCIES}
       FILE ${H5BLOSC_PACKAGE}${H5BLOSC_PACKAGE_EXT}-targets.cmake
   )
-endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Set includes needed for build
@@ -549,7 +549,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
-endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the blosc-config-version.cmake file for the install directory
@@ -564,7 +564,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
       DESTINATION ${H5BLOSC_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
-endif (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the HDF5PL_Examples.cmake file and the examples
@@ -613,9 +613,9 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_NAME "${H5BLOSC_PACKAGE_NAME}")
   if (CDASH_LOCAL)
     set (CPACK_PACKAGE_VERSION "${H5BLOSC_PACKAGE_VERSION}")
-  else (CDASH_LOCAL)
+  else ()
     set (CPACK_PACKAGE_VERSION "${H5BLOSC_PACKAGE_VERSION_STRING}")
-  endif (CDASH_LOCAL)
+  endif ()
   set (CPACK_PACKAGE_VERSION_MAJOR "${H5BLOSC_PACKAGE_VERSION_MAJOR}")
   set (CPACK_PACKAGE_VERSION_MINOR "${H5BLOSC_PACKAGE_VERSION_MINOR}")
   set (CPACK_PACKAGE_VERSION_PATCH "")
@@ -632,7 +632,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 
     if (NSIS_EXECUTABLE)
       list (APPEND CPACK_GENERATOR "NSIS")
-    endif (NSIS_EXECUTABLE)
+    endif ()
     # Installers for 32- vs. 64-bit CMake:
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
@@ -641,10 +641,10 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
     if (CMAKE_CL_64)
       set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
-    else (CMAKE_CL_64)
+    else ()
       set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
-    endif (CMAKE_CL_64)
+    endif ()
     # set the install/unistall icon used for the installer itself
     # There is a bug in NSI that does not handle full unix paths properly.
     #set (CPACK_NSIS_MUI_ICON "${H5BLOSC_RESOURCES_DIR}\\\\H5BLOSC.ico")
@@ -658,7 +658,7 @@ if (NOT H5BLOSC_EXTERNALLY_CONFIGURED)
 
     if (WIX_EXECUTABLE)
       list (APPEND CPACK_GENERATOR "WIX")
-    endif (WIX_EXECUTABLE)
+    endif ()
 #WiX variables
     set (CPACK_WIX_UNINSTALL "1")
 # .. variable:: CPACK_WIX_LICENSE_RTF
