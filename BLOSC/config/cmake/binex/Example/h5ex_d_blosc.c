@@ -1,21 +1,21 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright by The HDF Group.                                               * 
+ * Copyright by The HDF Group.                                               *
  * All rights reserved.                                                      *
- *                                                                           * 
- * This file is part of the HDF5 BLOSC filter plugin source.  The full       * 
- * copyright notice, including terms governing use, modification, and        * 
- * terms governing use, modification, and redistribution, is contained in    * 
- * the file COPYING, which can be found at the root of the BLOSC source code * 
- * distribution tree.  If you do not have access to this file, you may       * 
- * request a copy from help@hdfgroup.org.                                    * 
+ *                                                                           *
+ * This file is part of the HDF5 BLOSC filter plugin source.  The full       *
+ * copyright notice, including terms governing use, modification, and        *
+ * terms governing use, modification, and redistribution, is contained in    *
+ * the file COPYING, which can be found at the root of the BLOSC source code *
+ * distribution tree.  If you do not have access to this file, you may       *
+ * request a copy from help@hdfgroup.org.                                    *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /************************************************************
 
   This example shows how to write data and read it from a dataset
-  using blosc compression. 
-  blosc filter is not available in HDF5. 
-  The example uses a new feature available in HDF5 version 1.8.11 
-  to discover, load and register filters at run time.  
+  using blosc compression.
+  blosc filter is not available in HDF5.
+  The example uses a new feature available in HDF5 version 1.8.11
+  to discover, load and register filters at run time.
 
  ************************************************************/
 
@@ -44,11 +44,11 @@ main (void)
     char            filter_name[80];
     hsize_t         dims[2] = {DIM0, DIM1},
                     chunk[2] = {CHUNK0, CHUNK1};
-    size_t          nelmts = 6;                /* number of elements in cd_values */
+    size_t          nelmts = 7;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    unsigned int cd_values[6];     /* blosc iparameters */
-    unsigned int       values_out[6] = {99, 99, 99, 99, 99, 99};          
+    const unsigned int    cd_values[7] = {0, 0, 0, 0, 0, 5, 1, 0};     /* blosc parameters */
+    unsigned int    values_out[7] = {99, 99, 99, 99, 99, 99, 99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
@@ -82,22 +82,20 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    cd_values[4] = 5;  
-    cd_values[5] = 1;  
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BLOSC, H5Z_FLAG_OPTIONAL, (size_t)6, cd_values);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BLOSC, H5Z_FLAG_OPTIONAL, (size_t)nelmts, cd_values);
     if (status < 0) goto done;
 
-    /* 
+    /*
      * Check that filter is registered with the library now.
-     * If it is registered, retrieve filter's configuration. 
+     * If it is registered, retrieve filter's configuration.
      */
     avail = H5Zfilter_avail(H5Z_FILTER_BLOSC);
     if (avail) {
         status = H5Zget_filter_info (H5Z_FILTER_BLOSC, &filter_config);
-        if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) && 
-                (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) ) 
+        if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) &&
+                (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) )
             printf ("blosc filter is available for encoding and decoding.\n");
-    }     
+    }
     status = H5Pset_chunk (dcpl_id, 2, chunk);
     if (status < 0) printf ("failed to set chunk.\n");
 
@@ -161,14 +159,14 @@ main (void)
     switch (filter_id) {
         case H5Z_FILTER_BLOSC:
             printf ("%d\n", filter_id);
-            printf ("   Number of parameters is %d with the value %u %u\n", nelmts, values_out[4], values_out[5]);
+            printf ("   Number of parameters is %d with the value %u %u %u\n", nelmts, values_out[4], values_out[5], values_out[6]);
             printf ("   To find more about the filter check %s\n", filter_name);
             break;
         default:
             printf ("Not expected filter\n");
             break;
     }
-    
+
     /*
      * Read the data using the default properties.
      */
@@ -191,13 +189,13 @@ main (void)
      * Print the maximum value.
      */
     printf ("Maximum value in %s is %d\n", DATASET, max);
-    /* 
+    /*
      * Check that filter is registered with the library now.
      */
     avail = H5Zfilter_avail(H5Z_FILTER_BLOSC);
-    if (avail)  
+    if (avail)
         printf ("blosc filter is available now since H5Dread triggered loading of the filter.\n");
-         
+
     ret_value = 0;
 
 done:
