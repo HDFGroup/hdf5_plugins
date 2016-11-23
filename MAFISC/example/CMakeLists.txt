@@ -69,7 +69,7 @@ if (BUILD_TESTING)
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
-        NAME H5MAFISC_UD-clearall-objects
+        NAME H5MAFISC_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
             out-${testname}.${resultfile}
