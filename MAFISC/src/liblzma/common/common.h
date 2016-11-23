@@ -13,6 +13,16 @@
 #ifndef LZMA_COMMON_H
 #define LZMA_COMMON_H
 
+#ifdef _MSC_VER    /* Visual Studio */
+#  define FORCE_INLINE static __forceinline
+#else
+#  ifdef __GNUC__
+#    define FORCE_INLINE static inline __attribute__((always_inline))
+#  else
+#    define FORCE_INLINE static inline
+#  endif
+#endif
+
 #include "sysdefs.h"
 #include "mythread.h"
 #include "tuklib_integer.h"
