@@ -146,6 +146,6 @@ if (BUILD_TESTING)
   ADD_H5_TEST (h5ex_d_lz4)
 
 #UD LZ$
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,1,3,0 -l CHUNK=4x8)
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,1,3 -l CHUNK=4x8)
 
 endif (BUILD_TESTING)
