@@ -4,6 +4,7 @@ project (H5MAFISC C)
 #-----------------------------------------------------------------------------
 # Basic H5MAFISC stuff here
 #-----------------------------------------------------------------------------
+set (CMAKE_NO_SYSTEM_FROM_IMPORTED 1)
 
 #-----------------------------------------------------------------------------
 # Define some CMake variables for use later in the project
@@ -33,22 +34,22 @@ set (LZMA_LIB_TARGET              ${LZMA_LIB_CORENAME})
 
 if (NOT H5MAFISC_INSTALL_BIN_DIR)
   set (H5MAFISC_INSTALL_BIN_DIR bin)
-endif (NOT H5MAFISC_INSTALL_BIN_DIR)
+endif ()
 if (NOT H5MAFISC_INSTALL_LIB_DIR)
   set (H5MAFISC_INSTALL_LIB_DIR lib/plugin)
-endif (NOT H5MAFISC_INSTALL_LIB_DIR)
+endif ()
 if (NOT H5MAFISC_INSTALL_INCLUDE_DIR)
   set (H5MAFISC_INSTALL_INCLUDE_DIR include)
-endif (NOT H5MAFISC_INSTALL_INCLUDE_DIR)
+endif ()
 if (NOT H5MAFISC_INSTALL_DATA_DIR)
   if (NOT WIN32)
     set (H5MAFISC_INSTALL_DATA_DIR share)
     set (H5MAFISC_INSTALL_CMAKE_DIR share/cmake)
-  else (NOT WIN32)
+  else ()
     set (H5MAFISC_INSTALL_DATA_DIR ".")
     set (H5MAFISC_INSTALL_CMAKE_DIR cmake)
-  endif (NOT WIN32)
-endif (NOT H5MAFISC_INSTALL_DATA_DIR)
+  endif ()
+endif ()
 
 set (H5MAFISC_VERS_MAJOR 1)
 set (H5MAFISC_VERS_MINOR 0)
@@ -91,13 +92,13 @@ if (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
   set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
       ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
   )
-else (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
+else ()
   # if we are externally configured, but the project uses old cmake scripts
   # this may not be set
   if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-  endif (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-endif (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
+  endif ()
+endif ()
 
 #-----------------------------------------------------------------------------
 # Targets built within this project are exported at Install time for use
@@ -105,7 +106,7 @@ endif (NOT H5MAFISC_EXTERNALLY_CONFIGURED)
 #-----------------------------------------------------------------------------
 if (NOT H5MAFISC_EXPORTED_TARGETS)
   set (H5MAFISC_EXPORTED_TARGETS "H5mafisc-targets")
-endif (NOT H5MAFISC_EXPORTED_TARGETS)
+endif ()
 
 #-----------------------------------------------------------------------------
 # To include a library in the list exported by the project AT BUILD TIME,
@@ -127,9 +128,9 @@ set (LIB_TYPE SHARED)
 if (BUILD_SHARED_LIBS)
   set (LIB_TYPE SHARED)
   add_definitions (-DH5MAFISC_BUILT_AS_DYNAMIC_LIB)
-else (BUILD_SHARED_LIBS)
+else ()
   message (FATAL_ERROR " ${H5MAFISC_PACKAGE_NAME} library must be built as a shared library")
-endif (BUILD_SHARED_LIBS)
+endif ()
 
 #-----------------------------------------------------------------------------
 # HDF5 support
@@ -175,11 +176,11 @@ if (NOT HDF5_HDF5_HEADER)
         add_definitions (-DH5_BUILT_AS_STATIC_LIB)
       endif ()
       if (USE_SHARED_LIBS AND WIN32)
-        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
+        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
       else ()
-        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       endif ()
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
@@ -191,8 +192,8 @@ if (NOT HDF5_HDF5_HEADER)
         #mafisc source needs to be linked with HDF5
         set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
-      set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+      set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
     endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
     set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
@@ -494,7 +495,7 @@ if (WIN32)
     file(TO_CMAKE_PATH "$ENV{WIX}" CPACK_WIX_ROOT)
   endif()
   find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
-endif (WIN32)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Set the cpack variables

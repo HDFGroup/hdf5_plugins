@@ -30,22 +30,22 @@ set (H5BZ2_LIB_TARGET              ${H5BZ2_LIB_CORENAME})
 
 if (NOT H5BZ2_INSTALL_BIN_DIR)
   set (H5BZ2_INSTALL_BIN_DIR bin)
-endif (NOT H5BZ2_INSTALL_BIN_DIR)
+endif ()
 if (NOT H5BZ2_INSTALL_LIB_DIR)
   set (H5BZ2_INSTALL_LIB_DIR lib/plugin)
-endif (NOT H5BZ2_INSTALL_LIB_DIR)
+endif ()
 if (NOT H5BZ2_INSTALL_INCLUDE_DIR)
   set (H5BZ2_INSTALL_INCLUDE_DIR include)
-endif (NOT H5BZ2_INSTALL_INCLUDE_DIR)
+endif ()
 if (NOT H5BZ2_INSTALL_DATA_DIR)
   if (NOT WIN32)
     set (H5BZ2_INSTALL_DATA_DIR share)
     set (H5BZ2_INSTALL_CMAKE_DIR share/cmake)
-  else (NOT WIN32)
+  else ()
     set (H5BZ2_INSTALL_DATA_DIR ".")
     set (H5BZ2_INSTALL_CMAKE_DIR cmake)
-  endif (NOT WIN32)
-endif (NOT H5BZ2_INSTALL_DATA_DIR)
+  endif ()
+endif ()
 
 set (H5BZ2_VERS_MAJOR 1)
 set (H5BZ2_VERS_MINOR 0)
@@ -88,13 +88,13 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
   set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
       ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
   )
-else (NOT H5BZ2_EXTERNALLY_CONFIGURED)
+else ()
   # if we are externally configured, but the project uses old cmake scripts
   # this may not be set
   if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-  endif (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
+  endif ()
+endif ()
 
 #-----------------------------------------------------------------------------
 # Targets built within this project are exported at Install time for use
@@ -102,7 +102,7 @@ endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
 #-----------------------------------------------------------------------------
 if (NOT H5BZ2_EXPORTED_TARGETS)
   set (H5BZ2_EXPORTED_TARGETS "H5bz2-targets")
-endif (NOT H5BZ2_EXPORTED_TARGETS)
+endif ()
 
 #-----------------------------------------------------------------------------
 # To include a library in the list exported by the project AT BUILD TIME,
@@ -124,9 +124,9 @@ set (LIB_TYPE SHARED)
 if (BUILD_SHARED_LIBS)
   set (LIB_TYPE SHARED)
   add_definitions (-DH5BZ2_BUILT_AS_DYNAMIC_LIB)
-else (BUILD_SHARED_LIBS)
+else ()
   message (FATAL_ERROR " ${H5BZ2_PACKAGE_NAME} library must be built as a shared library")
-endif (BUILD_SHARED_LIBS)
+endif ()
 
 #-----------------------------------------------------------------------------
 # HDF5 support
@@ -163,11 +163,11 @@ if (NOT HDF5_HDF5_HEADER)
       message (STATUS "HDF5 libs:${HDF5_FOUND} C:${HDF5_C_FOUND}")
       set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
       if (USE_SHARED_LIBS AND WIN32)
-        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dumpdll")
+        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repackdll")
       else ()
-        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
         set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+        set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       endif ()
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
@@ -175,12 +175,12 @@ if (NOT HDF5_HDF5_HEADER)
       else (HDF5_static_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
-      set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+      set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
     endif (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
     set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
-  else (HDF5_FOUND)
+  else ()
     find_package (HDF5) # Legacy find
 #Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
     set(HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
@@ -198,7 +198,7 @@ if (NOT HDF5_HDF5_HEADER)
     set_property (TARGET hdf5::h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
     set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
-  endif (HDF5_FOUND)
+  endif ()
   set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
 
   if (HDF5_FOUND)
@@ -207,27 +207,27 @@ if (NOT HDF5_HDF5_HEADER)
     set (HDF5_HDF5_HEADER "h5pubconf.h")
     set (HDF5_INCLUDE_DIR_GEN ${HDF5_INCLUDE_DIR})
     message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
-  else (HDF5_FOUND)
+  else ()
     message (FATAL_ERROR " HDF5 is Required for ${H5BZ2_PACKAGE_NAME} library")
-  endif (HDF5_FOUND)
-else (NOT HDF5_HDF5_HEADER)
+  endif ()
+else ()
   # This project is being called from within another and HDF5 is already configured
   set (HDF5_HAVE_H5PUBCONF_H 1)
   set (HDF5_HAVE_HDF5 1)
-endif (NOT HDF5_HDF5_HEADER)
+endif ()
 message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
 if (USE_SHARED_LIBS)
   set (H5_LIB_TYPE SHARED)
-else (USE_SHARED_LIBS)
+else ()
   set (H5_LIB_TYPE STATIC)
-endif (USE_SHARED_LIBS)
+endif ()
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
 include (ExternalProject)
 set (H5BZ2_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
-set_property (CACHE H5BZ2_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO SVN TGZ)
+set_property (CACHE H5BZ2_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 if (H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   option (BZ2_USE_EXTERNAL "Use External Library Building for BZ2" 1)
   if (H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
@@ -310,10 +310,10 @@ endif ()
 #-----------------------------------------------------------------------------
 if (CMAKE_COMPILER_IS_GNUCC)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -357,7 +357,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
       FILE ${H5BZ2_PACKAGE}${H5BZ2_PACKAGE_EXT}-targets.cmake
       COMPONENT configinstall
   )
-endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Export all exported targets to the build tree for use by parent project
@@ -367,7 +367,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
       TARGETS ${H5BZ2_LIBRARIES_TO_EXPORT} ${H5BZ2_LIB_DEPENDENCIES}
       FILE ${H5BZ2_PACKAGE}${H5BZ2_PACKAGE_EXT}-targets.cmake
   )
-endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Set includes needed for build
@@ -415,7 +415,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
       DESTINATION ${H5BZ2_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
-endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the bzip2-config-version.cmake file for the install directory
@@ -430,7 +430,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
       DESTINATION ${H5BZ2_INSTALL_CMAKE_DIR}
       COMPONENT configinstall
   )
-endif (NOT H5BZ2_EXTERNALLY_CONFIGURED)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the HDF5PL_Examples.cmake file and the examples
@@ -469,7 +469,7 @@ if (WIN32)
     file(TO_CMAKE_PATH "$ENV{WIX}" CPACK_WIX_ROOT)
   endif()
   find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
-endif (WIN32)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Set the cpack variables
@@ -479,9 +479,9 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
   set (CPACK_PACKAGE_NAME "${H5BZ2_PACKAGE_NAME}")
   if (CDASH_LOCAL)
     set (CPACK_PACKAGE_VERSION "${H5BZ2_PACKAGE_VERSION}")
-  else (CDASH_LOCAL)
+  else ()
     set (CPACK_PACKAGE_VERSION "${H5BZ2_PACKAGE_VERSION_STRING}")
-  endif (CDASH_LOCAL)
+  endif ()
   set (CPACK_PACKAGE_VERSION_MAJOR "${H5BZ2_PACKAGE_VERSION_MAJOR}")
   set (CPACK_PACKAGE_VERSION_MINOR "${H5BZ2_PACKAGE_VERSION_MINOR}")
   set (CPACK_PACKAGE_VERSION_PATCH "")
@@ -498,7 +498,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
 
     if (NSIS_EXECUTABLE)
       list (APPEND CPACK_GENERATOR "NSIS")
-    endif (NSIS_EXECUTABLE)
+    endif ()
     # Installers for 32- vs. 64-bit CMake:
     #  - Root install directory (displayed to end user at installer-run time)
     #  - "NSIS package/display name" (text used in the installer GUI)
@@ -507,10 +507,10 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
     if (CMAKE_CL_64)
       set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
-    else (CMAKE_CL_64)
+    else ()
       set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
       set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
-    endif (CMAKE_CL_64)
+    endif ()
     # set the install/unistall icon used for the installer itself
     # There is a bug in NSI that does not handle full unix paths properly.
     #set (CPACK_NSIS_MUI_ICON "${H5BZ2_RESOURCES_DIR}\\\\H5BZ2.ico")
@@ -524,7 +524,7 @@ if (NOT H5BZ2_EXTERNALLY_CONFIGURED)
 
     if (WIX_EXECUTABLE)
       list (APPEND CPACK_GENERATOR "WIX")
-    endif (WIX_EXECUTABLE)
+    endif ()
 #WiX variables
     set (CPACK_WIX_UNINSTALL "1")
 # .. variable:: CPACK_WIX_LICENSE_RTF

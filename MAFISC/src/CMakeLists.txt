@@ -2,15 +2,6 @@ cmake_minimum_required (VERSION 3.1.0)
 project (H5MAFISC_SRC C)
 
 #-----------------------------------------------------------------------------
-# Setup include Directories
-#-----------------------------------------------------------------------------
-INCLUDE_DIRECTORIES (${H5MAFISC_SRC_SOURCE_DIR})
-INCLUDE_DIRECTORIES (
-    ${H5MAFISC_SRC_LIBLZMA_DIR}/api
-)
-INCLUDE_DIRECTORIES (${CMAKE_BINARY_DIR})
-
-#-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below
 #-----------------------------------------------------------------------------
 add_definitions (${HDF5_EXTRA_C_FLAGS})
@@ -18,7 +9,10 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR} ${MAFISC_INCLUDE_DIRS})
+include_directories (${H5MAFISC_SRC_SOURCE_DIR})
+include_directories (${H5MAFISC_SRC_LIBLZMA_DIR}/api)
+include_directories (${CMAKE_BINARY_DIR})
+include_directories (${HDF5_INCLUDE_DIR} ${MAFISC_INCLUDE_DIRS})
 
 add_subdirectory (${H5MAFISC_SRC_SOURCE_DIR}/liblzma ${PROJECT_BINARY_DIR}/liblzma)
 
@@ -66,7 +60,7 @@ if (BUILD_TESTING)
         "$<TARGET_FILE:${H5MAFISC_LIB_TARGET}>"
         "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5MAFISC_LIB_TARGET}>"
   )
-endif (BUILD_TESTING)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Add Target(s) to CMake Install for import into other projects

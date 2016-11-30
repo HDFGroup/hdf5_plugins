@@ -44,7 +44,7 @@ AWK='awk'
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
-PLUGIN_LIB="$FROM_DIR/libh5blosc.so.*"
+PLUGIN_LIB="$FROM_DIR/libh5mafisc.so.*"
 
 # Create test directories if not exists yet.
 test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
@@ -66,8 +66,8 @@ ENVCMD="env HDF5_PLUGIN_PATH=${PLUGIN_LIBDIR}"
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
-$SRC_TESTFILES/h5ex_d_blosc.ddl
-$SRC_TESTFILES/h5ex_d_blosc.tst
+$SRC_TESTFILES/h5ex_d_mafisc.ddl
+$SRC_TESTFILES/h5ex_d_mafisc.tst
 $SRC_TESTFILES/h5repack_layout.h5-ud_convert.ddl
 $SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
 "
@@ -195,7 +195,7 @@ DUMPTEST() {
 
 }
 
-REPACKTEST() 
+REPACKTEST()
 {
     infile=$1
     outfile=$2
@@ -213,7 +213,7 @@ REPACKTEST()
     RET=$?
     STDOUT_FILTER $actual
     cat $actual_err >> $actual
-    
+
      if [ $RET != 0 ] ; then
         echo "*FAILED*"
         nerrors="`expr $nerrors + 1`"
@@ -233,7 +233,7 @@ EXETEST() {
     actual_err="`basename $2 .tst`.err1"
 
     # Run test.
-    TESTING $fname 
+    TESTING $fname
     (
       $ENVCMD `pwd`/$fname
     ) >$actual 2>$actual_err
@@ -251,13 +251,13 @@ echo $ENVCMD
 
 COPY_TESTFILES_TO_TESTDIR
 
-EXETEST h5ex_d_blosc h5ex_d_blosc.tst
+EXETEST h5ex_d_mafisc h5ex_d_mafisc.tst
 
-DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
+DUMPTEST h5ex_d_mafisc.ddl h5ex_d_mafisc.h5
 
-#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
+REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9 -l CHUNK=4x5
 
-#DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
+DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 
 #rm -f ud_convert.h5repack_layout.h5
 
