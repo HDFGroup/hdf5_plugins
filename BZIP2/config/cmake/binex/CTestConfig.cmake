@@ -4,16 +4,16 @@
 ## # The following are required to uses Dart and the Cdash dashboard
 ##   ENABLE_TESTING()
 ##   INCLUDE(CTest)
+set (CTEST_PROJECT_NAME "HDF5PLUGINS")
 set (CTEST_NIGHTLY_START_TIME "18:00:00 CST")
-set (CTEST_PROJECT_NAME "HDF5Plugiins")
 
 set (CTEST_DROP_METHOD "http")
 if (CDASH_LOCAL)
   set (CTEST_DROP_SITE "cdash-internal.hdfgroup.org")
-  set (CTEST_DROP_LOCATION "/submit.php?project=HDF5Plugins")
+  set (CTEST_DROP_LOCATION "/submit.php?project=HDF5PLUGINS")
 else (CDASH_LOCAL)
   set (CTEST_DROP_SITE "cdash.hdfgroup.org")
-  set (CTEST_DROP_LOCATION "/submit.php?project=HDF5Plugins")
+  set (CTEST_DROP_LOCATION "/submit.php?project=HDF5PLUGINS")
 endif (CDASH_LOCAL)
 set (CTEST_DROP_SITE_CDASH TRUE)
 

@@ -1,17 +1,17 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (HDF5MAFISC_EX)
+project (HDF5BLOSC_EX)
 
 set (dyn_examples
-    h5ex_d_mafisc
+    h5ex_d_blosc
 )
 
 if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-else (USE_SHARED_LIBS)
+else ()
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-endif (USE_SHARED_LIBS)
+endif ()
 
-#run-time loadable mafisc library examples
+#run-time loadable blosc library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
@@ -19,8 +19,8 @@ foreach (example ${dyn_examples})
   target_link_libraries (${example} ${LINK_LIBS})
   if (NOT WIN32)
     target_link_libraries (${example} dl)
-  endif (NOT WIN32)
-endforeach (example ${dyn_examples})
+  endif ()
+endforeach ()
 
 if (BUILD_TESTING)
   MACRO (ADD_H5_TEST testname)
@@ -65,7 +65,7 @@ if (BUILD_TESTING)
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
-        NAME H5MAFISC_UD-clearall-objects
+        NAME H5BLOSC_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
             out-${testname}.${resultfile}
@@ -74,9 +74,13 @@ if (BUILD_TESTING)
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
     )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5BLOSC_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "H5BLOSC_UD-${testname}-clearall-objects")
     if (HDF5_BUILD_TOOLS)
       add_test (
-          NAME H5MAFISC_UD-${testname}
+          NAME H5BLOSC_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5repack>"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
@@ -87,9 +91,12 @@ if (BUILD_TESTING)
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5MAFISC_UD-${testname} PROPERTIES DEPENDS H5MAFISC_UD-clearall-objects)
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5BLOSC_UD-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5BLOSC_UD-${testname}")
       add_test (
-          NAME H5MAFISC_UD-h5dump-${testname}
+          NAME H5BLOSC_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5dump>"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
@@ -99,7 +106,10 @@ if (BUILD_TESTING)
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5MAFISC_UD-h5dump-${testname} PROPERTIES DEPENDS "H5MAFISC_UD-${testname}")
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5BLOSC_UD-h5dump-${testname}")
     endif (HDF5_BUILD_TOOLS)
   endmacro (ADD_H5_UD_TEST)
 
@@ -110,8 +120,8 @@ if (BUILD_TESTING)
       ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_mafisc.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_mafisc.tst
+      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_blosc.ddl
+      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_blosc.tst
       ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
       ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
   )
@@ -121,31 +131,31 @@ if (BUILD_TESTING)
     set (dest "${PROJECT_BINARY_DIR}/${fname}")
     #message (STATUS " Copying ${h5_file}")
     add_custom_command (
-        TARGET     h5ex_d_mafisc
+        TARGET     h5ex_d_blosc
         POST_BUILD
         COMMAND    ${CMAKE_COMMAND}
         ARGS       -E copy_if_different ${h5_file} ${dest}
     )
-  endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-  if (WIN32 AND NOT BUILD_MAFISC_LIBRARY_SOURCE AND ${H5_LIB_TYPE} MATCHES "SHARED")
+  endforeach ()
+  if (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
     set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
     if (MINGW)
-      set (outname "${MAFISC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    else (MINGW)
+      set (outname "${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    else ()
       set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
-      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${MAFISC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    endif (MINGW)
+      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    endif ()
     add_custom_command (
-        TARGET     h5ex_d_mafisc
+        TARGET     h5ex_d_blosc
         POST_BUILD
         COMMAND    ${CMAKE_COMMAND}
         ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
     )
-  endif (WIN32 AND NOT BUILD_MAFISC_LIBRARY_SOURCE AND ${H5_LIB_TYPE} MATCHES "SHARED")
+  endif ()
 
-  ADD_H5_TEST (h5ex_d_mafisc)
+  ADD_H5_TEST (h5ex_d_blosc)
 
-#UD MAFISC$
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32002,1,0 -l CHUNK=4x8)
+#UD BLOSC
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0)
 
 endif (BUILD_TESTING)

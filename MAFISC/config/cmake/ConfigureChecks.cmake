@@ -391,3 +391,11 @@ if (NOT WINDOWS)
     H5MAFISC_FUNCTION_TEST (${test})
   endforeach ()
 endif ()
+
+#-----------------------------------------------------------------------------
+# Determine how 'inline' is used
+#-----------------------------------------------------------------------------
+foreach (inline_test inline __inline__ __inline)
+  string (TOUPPER ${inline_test} INLINE_TEST_MACRO)
+  H5MAFISC_FUNCTION_TEST (HAVE_${INLINE_TEST_MACRO})
+endforeach (inline_test)
