@@ -89,6 +89,7 @@ if (BUILD_TESTING)
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
@@ -104,6 +105,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")

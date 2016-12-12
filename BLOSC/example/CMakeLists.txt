@@ -7,9 +7,9 @@ set (dyn_examples
 
 if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-else (USE_SHARED_LIBS)
+else ()
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-endif (USE_SHARED_LIBS)
+endif ()
 
 #run-time loadable blosc library examples
 foreach (example ${dyn_examples})
@@ -19,8 +19,8 @@ foreach (example ${dyn_examples})
   target_link_libraries (${example} ${HDF5_LINK_LIBS})
   if (NOT WIN32)
     target_link_libraries (${example} dl)
-  endif (NOT WIN32)
-endforeach (example ${dyn_examples})
+  endif ()
+endforeach ()
 
 if (BUILD_TESTING)
   MACRO (ADD_H5_TEST testname)
@@ -93,6 +93,7 @@ if (BUILD_TESTING)
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
@@ -110,6 +111,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
@@ -154,22 +156,22 @@ if (BUILD_TESTING)
         COMMAND    ${CMAKE_COMMAND}
         ARGS       -E copy_if_different ${h5_file} ${dest}
     )
-  endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
+  endforeach ()
   if (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
     set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
     if (MINGW)
       set (outname "${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    else (MINGW)
+    else ()
       set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
       set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BLOSC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    endif (MINGW)
+    endif ()
     add_custom_command (
         TARGET     h5ex_d_blosc
         POST_BUILD
         COMMAND    ${CMAKE_COMMAND}
         ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
     )
-  endif (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
+  endif ()
 
   ADD_H5_TEST (h5ex_d_blosc)
 

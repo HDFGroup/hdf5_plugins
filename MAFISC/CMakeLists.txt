@@ -140,8 +140,6 @@ set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 #find_package(LibLZMA REQUIRED)
 
-#add_definitions (-DH5_USE_18_API)
-
 if (NOT HDF5_HDF5_HEADER)
   if (USE_SHARED_LIBS)
     set (FIND_HDF_COMPONENTS C shared)
@@ -185,6 +183,7 @@ if (NOT HDF5_HDF5_HEADER)
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+        set (HDF5_LIBRARY_PATH ${PACKAGE_PREFIX_DIR}/lib)
         #mafisc source needs to be linked with HDF5
         #set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
       else (HDF5_static_C_FOUND)
