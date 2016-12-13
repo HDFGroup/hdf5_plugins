@@ -431,3 +431,13 @@ macro (H5BLOSC_README_PROPERTIES)
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
 endmacro (H5BLOSC_README_PROPERTIES)
+
+macro (HDFTEST_COPY_FILE src dest target)
+    add_custom_command(
+        OUTPUT  "${dest}"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS     -E copy_if_different "${src}" "${dest}"
+        DEPENDS "${src}"
+    )
+    list (APPEND ${target}_list "${dest}")
+endmacro ()

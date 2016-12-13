@@ -196,3 +196,13 @@ macro (TARGET_MSVC_PROPERTIES wintarget libtype addcompileflags addlinkflags)
     ) 
   endif (MSVC)
 endmacro (TARGET_MSVC_PROPERTIES)
+
+macro (HDFTEST_COPY_FILE src dest target)
+    add_custom_command(
+        OUTPUT  "${dest}"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS     -E copy_if_different "${src}" "${dest}"
+        DEPENDS "${src}"
+    )
+    list (APPEND ${target}_list "${dest}")
+endmacro ()

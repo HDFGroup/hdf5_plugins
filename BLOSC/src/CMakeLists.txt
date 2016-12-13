@@ -32,14 +32,8 @@ if (BUILD_TESTING)
 
   # make plugins dir
   file (MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/plugins")
-  add_custom_command (
-      TARGET     ${H5BLOSC_LIB_TARGET}
-      POST_BUILD
-      COMMAND    ${CMAKE_COMMAND}
-      ARGS       -E copy_if_different
-        "$<TARGET_FILE:${H5BLOSC_LIB_TARGET}>"
-        "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5BLOSC_LIB_TARGET}>"
-  )
+  HDFTEST_COPY_FILE("$<TARGET_FILE:${H5BLOSC_LIB_TARGET}>" "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5BLOSC_LIB_TARGET}>" "plugin_files")
+  add_custom_target(plugin_files ALL COMMENT "Copying plugin files needed by tests" DEPENDS ${plugin_files_list})
 endif ()
 
 #-----------------------------------------------------------------------------

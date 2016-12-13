@@ -129,15 +129,7 @@ if (BUILD_TESTING)
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-    get_filename_component(fname "${h5_file}" NAME)
-    set (dest "${PROJECT_BINARY_DIR}/${fname}")
-    #message (STATUS " Copying ${h5_file}")
-    add_custom_command (
-        TARGET     h5ex_d_blosc
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${h5_file} ${dest}
-    )
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
   endforeach ()
 
   ADD_H5_TEST (h5ex_d_blosc)
