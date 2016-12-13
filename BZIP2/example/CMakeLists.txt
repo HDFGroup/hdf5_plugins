@@ -125,41 +125,19 @@ if (BUILD_TESTING)
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5
+      h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_bzip2.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_bzip2.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
+      h5ex_d_bzip2.ddl
+      h5ex_d_bzip2.tst
+      h5repack_layout.h5-ud_convert.ddl
+      ud_convert.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-    get_filename_component(fname "${h5_file}" NAME)
-    set (dest "${PROJECT_BINARY_DIR}/${fname}")
-    #message (STATUS " Copying ${h5_file}")
-    add_custom_command (
-        TARGET     h5ex_d_bzip2
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${h5_file} ${dest}
-    )
-  endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-  if (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
-    set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-    if (MINGW)
-      set (outname "${BZ2_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    else (MINGW)
-      set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
-      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${BZ2_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    endif (MINGW)
-    add_custom_command (
-        TARGET     h5ex_d_bzip2
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
-    )
-  endif (WIN32 AND ${H5_LIB_TYPE} MATCHES "SHARED")
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
+  endforeach ()
+  add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
   ADD_H5_TEST (h5ex_d_bzip2)
 

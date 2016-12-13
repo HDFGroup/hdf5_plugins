@@ -89,6 +89,7 @@ if (BUILD_TESTING)
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
@@ -104,6 +105,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
@@ -127,31 +129,9 @@ if (BUILD_TESTING)
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-    get_filename_component(fname "${h5_file}" NAME)
-    set (dest "${PROJECT_BINARY_DIR}/${fname}")
-    #message (STATUS " Copying ${h5_file}")
-    add_custom_command (
-        TARGET     h5ex_d_mafisc
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${h5_file} ${dest}
-    )
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
   endforeach ()
-  if (WIN32 AND NOT BUILD_MAFISC_LIBRARY_SOURCE AND ${H5_LIB_TYPE} MATCHES "SHARED")
-    set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-    if (MINGW)
-      set (outname "${MAFISC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    else ()
-      set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
-      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${MAFISC_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    endif ()
-    add_custom_command (
-        TARGET     h5ex_d_mafisc
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
-    )
-  endif ()
+  add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
   ADD_H5_TEST (h5ex_d_mafisc)
 

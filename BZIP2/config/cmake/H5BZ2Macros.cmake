@@ -276,12 +276,22 @@ macro (H5BZ2_README_PROPERTIES)
   else (BUILD_SHARED_LIBS)
     set (LIB_TYPE "Static")
   endif (BUILD_SHARED_LIBS)
-    
+
   configure_file (
-      ${H5BZ2_RESOURCES_DIR}/README.txt.cmake.in 
+      ${H5BZ2_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
 endmacro (H5BZ2_README_PROPERTIES)
+
+macro (HDFTEST_COPY_FILE src dest target)
+    add_custom_command(
+        OUTPUT  "${dest}"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS     -E copy_if_different "${src}" "${dest}"
+        DEPENDS "${src}"
+    )
+    list (APPEND ${target}_list "${dest}")
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
@@ -293,7 +303,7 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
   if (${compress_type} MATCHES "SVN")
     EXTERNALPROJECT_ADD (BZ2
         SVN_REPOSITORY ${BZ2_URL}
-        # [SVN_REVISION rev] 
+        # [SVN_REVISION rev]
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
@@ -305,11 +315,11 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    ) 
+    )
   elseif (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (BZ2
         GIT_REPOSITORY ${BZ2_URL}
-        # [SVN_REVISION rev] 
+        # [SVN_REVISION rev]
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
@@ -321,7 +331,7 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    ) 
+    )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (BZ2
         URL ${BZ2_URL}
@@ -337,16 +347,16 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    ) 
+    )
   endif (${compress_type} MATCHES "SVN")
-  externalproject_get_property (BZ2 BINARY_DIR SOURCE_DIR) 
+  externalproject_get_property (BZ2 BINARY_DIR SOURCE_DIR)
 
   # Create imported target BZ2
   add_library (bz2 ${libtype} IMPORTED)
   H5BZ2_IMPORT_SET_LIB_OPTIONS (bz2 "bz2" ${libtype} "")
   add_dependencies (BZ2 bz2)
 
-#  include (${BINARY_DIR}/BZ2-targets.cmake)  
+#  include (${BINARY_DIR}/BZ2-targets.cmake)
   set (BZ2_LIBRARY "bz2")
 
   set (BZ2_INCLUDE_DIR_GEN "${BINARY_DIR}")
