@@ -43,7 +43,8 @@ if (BUILD_TESTING)
 
   # make plugins dir
   file (MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/plugins")
-  HDFTEST_COPY_FILE("$<TARGET_FILE:${H5LZ4_LIB_TARGET}>" "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5LZ4_LIB_TARGET}>" "plugin_files")
+  get_filename_component(fname "$<TARGET_FILE:${H5LZ4_LIB_TARGET}>" NAME)
+  HDFTEST_COPY_FILE("$<TARGET_FILE:${H5LZ4_LIB_TARGET}>" "${CMAKE_BINARY_DIR}/plugins/${fname}" "plugin_files")
   add_custom_target(plugin_files ALL COMMENT "Copying plugin files needed by tests" DEPENDS ${plugin_files_list})
 endif ()
 
