@@ -127,13 +127,13 @@ if (BUILD_TESTING)
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5
+      h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_mafisc.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_mafisc.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
+      h5ex_d_mafisc.ddl
+      h5ex_d_mafisc.tst
+      h5repack_layout.h5-ud_convert.ddl
+      ud_convert.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})

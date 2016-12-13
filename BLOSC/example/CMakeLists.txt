@@ -127,23 +127,23 @@ if (BUILD_TESTING)
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5
+      h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_blosc.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_blosc.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_lz.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_lz.h5repack_layout.h5.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_lz4.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_lz4.h5repack_layout.h5.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_lz4hc.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_lz4hc.h5repack_layout.h5.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_zlib.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_zlib.h5repack_layout.h5.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert_zstd.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert_zstd.h5repack_layout.h5.tst
+      h5ex_d_blosc.ddl
+      h5ex_d_blosc.tst
+      h5repack_layout.h5-ud_convert.ddl
+      ud_convert.h5repack_layout.h5.tst
+      h5repack_layout.h5-ud_convert_lz.ddl
+      ud_convert_lz.h5repack_layout.h5.tst
+      h5repack_layout.h5-ud_convert_lz4.ddl
+      ud_convert_lz4.h5repack_layout.h5.tst
+      h5repack_layout.h5-ud_convert_lz4hc.ddl
+      ud_convert_lz4hc.h5repack_layout.h5.tst
+      h5repack_layout.h5-ud_convert_zlib.ddl
+      ud_convert_zlib.h5repack_layout.h5.tst
+      h5repack_layout.h5-ud_convert_zstd.ddl
+      ud_convert_zstd.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
