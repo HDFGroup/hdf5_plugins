@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (H5BLOSC_SRC C CXX)
+project (H5BLOSC_SRC C)
 
 #-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below

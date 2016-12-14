@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (H5BLOSC C CXX)
+project (H5BLOSC C)
 
 #-----------------------------------------------------------------------------
 # Basic H5BLOSC stuff here
@@ -443,16 +443,10 @@ add_subdirectory (${H5BLOSC_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 if (H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BLOSC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   if (ZLIB_FOUND AND ZLIB_USE_EXTERNAL)
-    ADD_DEPENDENCIES (${HDF5_LIB_TARGET} ZLIB)
-    if (BUILD_SHARED_LIBS)
-      add_dependencies (${HDF5_LIBSH_TARGET} ZLIB)
-    endif ()
+    add_dependencies (${H5BLOSC_LIB_TARGET} ZLIB)
   endif ()
   if (BLOSC_FOUND AND BLOSC_USE_EXTERNAL)
-    ADD_DEPENDENCIES (${H5BLOSC_LIB_TARGET} BLOSC)
-    if (BUILD_SHARED_LIBS)
-      add_dependencies (${H5BLOSC_LIB_TARGET} BLOSC)
-    endif ()
+    add_dependencies (${H5BLOSC_LIB_TARGET} BLOSC)
   endif ()
 endif ()
 
@@ -505,10 +499,6 @@ set (H5BLOSC_INCLUDES_BUILD_TIME
 set (H5BLOSC_VERSION_STRING ${H5BLOSC_PACKAGE_VERSION})
 set (H5BLOSC_VERSION_MAJOR  ${H5BLOSC_PACKAGE_VERSION_MAJOR})
 set (H5BLOSC_VERSION_MINOR  ${H5BLOSC_PACKAGE_VERSION_MINOR})
-set (HDF5_LOCATION_STRING $ENV{HDF5_DIR}/..)
-if (WIN32)
-  set (HDF5_LOCATION_STRING $ENV{HDF5_DIR}/..)
-endif ()
 
 #-----------------------------------------------------------------------------
 # Configure the h5bzip2-config.cmake file for the build directory

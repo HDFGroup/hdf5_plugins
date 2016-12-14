@@ -172,6 +172,7 @@ if (NOT HDF5_HDF5_HEADER)
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+        set (HDF5_LIBRARY_PATH ${PACKAGE_PREFIX_DIR}/lib)
       else (HDF5_static_C_FOUND)
         set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
@@ -324,7 +325,7 @@ add_subdirectory (${H5BZ2_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
 if (H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5BZ2_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   if (BZ2_FOUND AND BZ2_USE_EXTERNAL)
-    ADD_DEPENDENCIES (${H5BZ2_LIB_TARGET} BZ2)
+    add_dependencies (${H5BZ2_LIB_TARGET} BZ2)
   endif ()
 endif ()
 
@@ -373,7 +374,6 @@ set (H5BZ2_INCLUDES_BUILD_TIME
 set (H5BZ2_VERSION_STRING ${H5BZ2_PACKAGE_VERSION})
 set (H5BZ2_VERSION_MAJOR  ${H5BZ2_PACKAGE_VERSION_MAJOR})
 set (H5BZ2_VERSION_MINOR  ${H5BZ2_PACKAGE_VERSION_MINOR})
-set (HDF5_LOCATION_STRING $ENV{HDF5_DIR})
 
 #-----------------------------------------------------------------------------
 # Configure the h5bzip2-config.cmake file for the build directory
