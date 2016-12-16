@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (HDFPLExamples C CXX)
+project (HDFPLExamples C)
 
 #-----------------------------------------------------------------------------
 # Instructions for use : Normal Build
@@ -109,6 +109,7 @@ if (NOT HDF5_HDF5_HEADER)
         add_executable (hdf5::h5dump IMPORTED)
     endif()
     if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      #find library from non-dual-binary package
       set (FIND_HDF_COMPONENTS C)
       message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
 
@@ -130,6 +131,7 @@ if (NOT HDF5_HDF5_HEADER)
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+        set (HDF5_LIBRARY_PATH ${PACKAGE_PREFIX_DIR}/lib)
       else (HDF5_static_C_FOUND)
         set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)

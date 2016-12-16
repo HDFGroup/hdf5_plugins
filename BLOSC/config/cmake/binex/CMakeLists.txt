@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (HDFPLExamples C CXX)
+project (HDFPLExamples C)
 
 #-----------------------------------------------------------------------------
 # Instructions for use : Normal Build
