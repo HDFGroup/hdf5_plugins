@@ -43,6 +43,27 @@ AWK='awk'
 ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
 TESTDIR=$builddir
+PLUGIN_LIBDIR=plugins
+FROM_DIR=`pwd`/../src/.libs
+PLUGIN_LIB="$FROM_DIR/libh5lz4.so.*"
+
+# Create test directories if not exists yet.
+test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
+if [ $? != 0 ]; then
+    echo "Failed to create test directory($PLUGIN_LIBDIR)"
+    exit $EXIT_FAILURE
+fi
+
+# copy plugin library for test
+$CP $PLUGIN_LIB $PLUGIN_LIBDIR
+if [ $? != 0 ]; then
+    echo "Failed to copy plugin library ($PLUGIN_LIB) for test."
+    exit $EXIT_FAILURE
+fi
+
+# setup plugin path
+ENVCMD="env HDF5_PLUGIN_PATH=${PLUGIN_LIBDIR}"
+
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
