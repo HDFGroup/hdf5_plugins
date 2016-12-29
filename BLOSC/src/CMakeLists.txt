@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (H5BLOSC_SRC C CXX)
+project (H5BLOSC_SRC C)
 
 #-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below
@@ -20,12 +20,8 @@ set (H5BLOSC_SRCS
     ${H5BLOSC_SRC_SOURCE_DIR}/H5Zblosc.c
 )
 
-# targets
 add_library (${H5BLOSC_LIB_TARGET} SHARED ${H5BLOSC_SRCS})
 target_link_libraries (${H5BLOSC_LIB_TARGET} ${LINK_LIBS})
-if (NOT USE_SHARED_LIBS)
-  target_link_libraries (${H5BLOSC_LIB_TARGET} ${HDF5_LIBRARIES})
-endif (NOT USE_SHARED_LIBS)
 set_global_variable (H5BLOSC_LIBRARIES_TO_EXPORT ${H5BLOSC_LIB_TARGET})
 H5BLOSC_SET_LIB_OPTIONS (${H5BLOSC_LIB_TARGET} ${H5BLOSC_LIB_NAME} ${LIB_TYPE})
 
@@ -44,7 +40,7 @@ if (BUILD_TESTING)
         "$<TARGET_FILE:${H5BLOSC_LIB_TARGET}>"
         "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5BLOSC_LIB_TARGET}>"
   )
-endif (BUILD_TESTING)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Add Target(s) to CMake Install for import into other projects

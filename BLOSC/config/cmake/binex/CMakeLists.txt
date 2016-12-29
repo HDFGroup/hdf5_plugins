@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (HDFPLExamples C CXX)
+project (HDFPLExamples C)
 
 #-----------------------------------------------------------------------------
 # Instructions for use : Normal Build
@@ -24,7 +24,7 @@ endif (HDFPL_USE_FOLDERS)
 #-----------------------------------------------------------------------------
 # Define some CMake variables for use later in the project
 #-----------------------------------------------------------------------------
-set (H5PL_RESOURCES_DIR       ${PROJECT_SOURCE_DIR}/config/cmake)
+set (H5PL_RESOURCES_DIR        ${PROJECT_SOURCE_DIR}/config/cmake)
 set (HDF5PL_SRC_DIR            ${PROJECT_SOURCE_DIR}/Example)
 
 #-----------------------------------------------------------------------------
@@ -79,10 +79,10 @@ endif (MAKE_SYSTEM)
 #-----------------------------------------------------------------------------
 if (CMAKE_COMPILER_IS_GNUCC)
   set (CMAKE_C_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_C_FLAGS} -std=c99 -fomit-frame-pointer -finline-functions -fno-common")
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif ()
 
 #-----------------------------------------------------------------------------
 # HDF5 support
@@ -93,9 +93,9 @@ set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 if (NOT HDF5_HDF5_HEADER)
   if (BUILD_SHARED_LIBS)
     set (FIND_HDF_COMPONENTS C shared)
-  else (BUILD_SHARED_LIBS)
+  else ()
     set (FIND_HDF_COMPONENTS C static)
-  endif (BUILD_SHARED_LIBS)
+  endif ()
   message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
   set (SEARCH_PACKAGE_NAME ${HDF5_PACKAGE_NAME})
 
@@ -109,6 +109,7 @@ if (NOT HDF5_HDF5_HEADER)
         add_executable (hdf5::h5dump IMPORTED)
     endif()
     if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
+      #find library from non-dual-binary package
       set (FIND_HDF_COMPONENTS C)
       message (STATUS "HDF5 find comps: ${FIND_HDF_COMPONENTS}")
 
@@ -130,6 +131,7 @@ if (NOT HDF5_HDF5_HEADER)
     else (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
       if (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)
         set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+        set (HDF5_LIBRARY_PATH ${PACKAGE_PREFIX_DIR}/lib)
       else (HDF5_static_C_FOUND)
         set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
       endif (BUILD_SHARED_LIBS AND HDF5_shared_C_FOUND)
@@ -144,21 +146,21 @@ if (NOT HDF5_HDF5_HEADER)
     set (HDF5_HDF5_HEADER "h5pubconf.h")
     set (HDF5_INCLUDE_DIR_GEN ${HDF5_INCLUDE_DIR})
     message (STATUS "HDF5-${HDF5_VERSION_STRING} found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
-  else (HDF5_FOUND)
+  else ()
     message (FATAL_ERROR " HDF5 is Required for HDFPL Examples")
-  endif (HDF5_FOUND)
+  endif ()
   set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
-else (NOT HDF5_HDF5_HEADER)
+else ()
   # This project is being called from within another and HDF5 is already configured
   set (HDF5_HAVE_H5PUBCONF_H 1)
   set (HDF5_HAVE_HDF5 1)
-endif (NOT HDF5_HDF5_HEADER)
+endif ()
 
 if (USE_SHARED_LIBS)
   set (H5_LIB_TYPE SHARED)
-else (USE_SHARED_LIBS)
+else ()
   set (H5_LIB_TYPE STATIC)
-endif (USE_SHARED_LIBS)
+endif ()
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 message (STATUS "HDF5 link libs: ${LINK_LIBS}")
@@ -169,7 +171,7 @@ message (STATUS "HDF5 link libs: ${LINK_LIBS}")
 set (LIB_TYPE STATIC)
 if (BUILD_SHARED_LIBS)
   set (LIB_TYPE SHARED)
-endif (BUILD_SHARED_LIBS)
+endif ()
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 #-----------------------------------------------------------------------------
@@ -208,10 +210,10 @@ endif (HDF_DISABLE_COMPILER_WARNINGS)
 #-----------------------------------------------------------------------------
 if (CMAKE_COMPILER_IS_GNUCC)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCXX)
+endif ()
 
 #-----------------------------------------------------------------------------
 # All examples need the main include directories
@@ -231,9 +233,9 @@ if (BUILD_TESTING)
   include (CTest)
   include (${PROJECT_SOURCE_DIR}/CTestConfig.cmake)
   configure_file (${H5PL_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
-endif (BUILD_TESTING)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Build examples
 #-----------------------------------------------------------------------------
-add_subdirectory (${PROJECT_SOURCE_DIR}/Example ${PROJECT_BINARY_DIR}/Example)
+add_subdirectory (${PROJECT_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)

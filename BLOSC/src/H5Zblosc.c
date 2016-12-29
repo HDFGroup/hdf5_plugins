@@ -46,10 +46,26 @@
 #define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
 #endif
 
-static size_t blosc_filter(unsigned flags, size_t cd_nelmts,
-                    const unsigned cd_values[], size_t nbytes,
+static size_t blosc_filter(unsigned int flags, size_t cd_nelmts,
+                    const unsigned int cd_values[], size_t nbytes,
                     size_t *buf_size, void **buf);
 herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space);
+
+const H5Z_class2_t blosc_H5Filter[1] = {{
+    H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
+    (H5Z_filter_t)(FILTER_BLOSC),         /* Filter id number */
+    1,                   /* encoder_present flag (set to true) */
+    1,                   /* decoder_present flag (set to true) */
+    "HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html", /* Filter name for debugging */
+    NULL,                           /* The "can apply" callback */
+    (H5Z_set_local_func_t)(blosc_set_local), /* The "set local" callback */
+    (H5Z_func_t)(blosc_filter),    /* The actual filter function */
+}};
+
+
+H5PL_type_t H5PLget_plugin_type(void) { return H5PL_TYPE_FILTER; }
+const void* H5PLget_plugin_info(void) { return blosc_H5Filter; }
+
 
 /*  Filter setup.  Records the following inside the DCPL:
 
@@ -74,9 +90,15 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
     unsigned int values[] = {0,0,0,0,0,0,0,0};
     hid_t super_type;
     H5T_class_t classt;
+#ifdef BLOSC_DEBUG
+    fprintf(stderr, "Blosc: blosc_set_local start\n");
+#endif
 
-    r = H5Pget_filter_by_id(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
+    r = H5Pget_filter_by_id2(dcpl, FILTER_BLOSC, &flags, &nelements, values, 0, NULL, NULL);
     if (r < 0) return -1;
+#ifdef BLOSC_DEBUG
+    fprintf(stderr, "Blosc: H5Pget_filter_by_id\n");
+#endif
 
     if (nelements < 4) nelements = 4;  /* First 4 slots reserved. */
 
@@ -93,6 +115,9 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     typesize = H5Tget_size(type);
     if (typesize==0) return -1;
+#ifdef BLOSC_DEBUG
+    fprintf(stderr, "Blosc: H5Tget_size\n");
+#endif
     /* Get the size of the base type, even for ARRAY types */
     classt = H5Tget_class(type);
     if (classt == H5T_ARRAY) {
@@ -126,28 +151,15 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
     r = H5Pmodify_filter(dcpl, FILTER_BLOSC, flags, nelements, values);
     if (r < 0) return -1;
 
+#ifdef BLOSC_DEBUG
+    fprintf(stderr, "Blosc: blosc_set_local end\n");
+#endif
     return 1;
 }
 
-const H5Z_class2_t blosc_H5Filter[1] = {{
-    H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
-    (H5Z_filter_t)(FILTER_BLOSC),         /* Filter id number */
-    1,                   /* encoder_present flag (set to true) */
-    1,                   /* decoder_present flag (set to true) */
-    "HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html", /* Filter name for debugging */
-    NULL,                           /* The "can apply" callback */
-    (H5Z_set_local_func_t)(blosc_set_local), /* The "set local" callback */
-    (H5Z_func_t)(blosc_filter),    /* The actual filter function */
-}};
-
-
-H5PL_type_t H5PLget_plugin_type(void) { return H5PL_TYPE_FILTER; }
-const void* H5PLget_plugin_info(void) { return blosc_H5Filter; }
-
-
 /* The filter function */
-size_t blosc_filter(unsigned flags, size_t cd_nelmts,
-                    const unsigned cd_values[], size_t nbytes,
+size_t blosc_filter(unsigned int flags, size_t cd_nelmts,
+                    const unsigned int cd_values[], size_t nbytes,
                     size_t *buf_size, void **buf) {
 
     void* outbuf = NULL;

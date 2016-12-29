@@ -1,17 +1,17 @@
 cmake_minimum_required (VERSION 3.1.0)
-project (HDF5LZ4_EX)
+project (HDF5BLOSC_EX)
 
 set (dyn_examples
-    h5ex_d_lz4
+    h5ex_d_blosc
 )
 
 if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
-else (USE_SHARED_LIBS)
+else ()
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
-endif (USE_SHARED_LIBS)
+endif ()
 
-#run-time loadable lz4 library examples
+#run-time loadable blosc library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
@@ -19,8 +19,8 @@ foreach (example ${dyn_examples})
   target_link_libraries (${example} ${LINK_LIBS})
   if (NOT WIN32)
     target_link_libraries (${example} dl)
-  endif (NOT WIN32)
-endforeach (example ${dyn_examples})
+  endif ()
+endforeach ()
 
 if (BUILD_TESTING)
   MACRO (ADD_H5_TEST testname)
@@ -43,6 +43,7 @@ if (BUILD_TESTING)
             -D "TEST_EXPECT=0"
             -D "TEST_OUTPUT=${testname}.out"
             -D "TEST_REFERENCE=${testname}.tst"
+            -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
             -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
     )
     set_tests_properties(${testname} PROPERTIES DEPENDS ${testname}-clearall)
@@ -56,6 +57,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties(H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
@@ -65,7 +67,7 @@ if (BUILD_TESTING)
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
-        NAME H5LZ4_UD-clearall-objects
+        NAME H5BLOSC_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
             out-${testname}.${resultfile}
@@ -74,9 +76,13 @@ if (BUILD_TESTING)
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
     )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5BLOSC_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "H5BLOSC_UD-${testname}-clearall-objects")
     if (HDF5_BUILD_TOOLS)
       add_test (
-          NAME H5LZ4_UD-${testname}
+          NAME H5BLOSC_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5repack>"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
@@ -85,11 +91,15 @@ if (BUILD_TESTING)
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5LZ4_UD-${testname} PROPERTIES DEPENDS H5LZ4_UD-clearall-objects)
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5BLOSC_UD-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5BLOSC_UD-${testname}")
       add_test (
-          NAME H5LZ4_UD-h5dump-${testname}
+          NAME H5BLOSC_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5dump>"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
@@ -97,9 +107,13 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5LZ4_UD-h5dump-${testname} PROPERTIES DEPENDS "H5LZ4_UD-${testname}")
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
+      set (last_test "H5BLOSC_UD-h5dump-${testname}")
     endif (HDF5_BUILD_TOOLS)
   endmacro (ADD_H5_UD_TEST)
 
@@ -107,45 +121,23 @@ if (BUILD_TESTING)
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5
+      h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_lz4.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_lz4.tst
-      ${PROJECT_SOURCE_DIR}/testfiles/h5repack_layout.h5-ud_convert.ddl
-      ${PROJECT_SOURCE_DIR}/testfiles/ud_convert.h5repack_layout.h5.tst
+      h5ex_d_blosc.ddl
+      h5ex_d_blosc.tst
+      h5repack_layout.h5-ud_convert.ddl
+      ud_convert.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-    get_filename_component(fname "${h5_file}" NAME)
-    set (dest "${PROJECT_BINARY_DIR}/${fname}")
-    #message (STATUS " Copying ${h5_file}")
-    add_custom_command (
-        TARGET     h5ex_d_lz4
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${h5_file} ${dest}
-    )
-  endforeach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-  if (WIN32 AND NOT BUILD_LZ4_LIBRARY_SOURCE AND ${H5_LIB_TYPE} MATCHES "SHARED")
-    set (outdir "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-    if (MINGW)
-      set (outname "${LZ4_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    else (MINGW)
-      set (outdir "${outdir}/${CMAKE_BUILD_TYPE}")
-      set (outname "${CMAKE_SHARED_LIBRARY_PREFIX}${LZ4_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    endif (MINGW)
-    add_custom_command (
-        TARGET     h5ex_d_lz4
-        POST_BUILD
-        COMMAND    ${CMAKE_COMMAND}
-        ARGS       -E copy_if_different ${outdir}/${outname} ${PROJECT_BINARY_DIR}/${outname}
-    )
-  endif (WIN32 AND NOT BUILD_LZ4_LIBRARY_SOURCE AND ${H5_LIB_TYPE} MATCHES "SHARED")
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
+  endforeach ()
+  add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
-  ADD_H5_TEST (h5ex_d_lz4)
+  ADD_H5_TEST (h5ex_d_blosc)
 
-#UD LZ$
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,2,32,0 -l CHUNK=4x8)
+#UD BLOSC
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0)
 
 endif (BUILD_TESTING)

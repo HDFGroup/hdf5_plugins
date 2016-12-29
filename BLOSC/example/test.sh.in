@@ -195,7 +195,7 @@ DUMPTEST() {
 
 }
 
-REPACKTEST() 
+REPACKTEST()
 {
     infile=$1
     outfile=$2
@@ -213,7 +213,7 @@ REPACKTEST()
     RET=$?
     STDOUT_FILTER $actual
     cat $actual_err >> $actual
-    
+
      if [ $RET != 0 ] ; then
         echo "*FAILED*"
         nerrors="`expr $nerrors + 1`"
@@ -233,7 +233,7 @@ EXETEST() {
     actual_err="`basename $2 .tst`.err1"
 
     # Run test.
-    TESTING $fname 
+    TESTING $fname
     (
       $ENVCMD `pwd`/$fname
     ) >$actual 2>$actual_err
