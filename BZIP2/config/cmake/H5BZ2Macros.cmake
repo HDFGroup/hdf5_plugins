@@ -276,7 +276,7 @@ macro (H5BZ2_README_PROPERTIES)
   else (BUILD_SHARED_LIBS)
     set (LIB_TYPE "Static")
   endif (BUILD_SHARED_LIBS)
-    
+
   configure_file (
       ${H5BZ2_RESOURCES_DIR}/README.txt.cmake.in 
       ${CMAKE_BINARY_DIR}/README.txt @ONLY

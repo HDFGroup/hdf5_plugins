@@ -283,6 +283,16 @@ macro (H5LZ4_README_PROPERTIES)
   )
 endmacro (H5LZ4_README_PROPERTIES)
 
+macro (HDFTEST_COPY_FILE src dest target)
+    add_custom_command(
+        OUTPUT  "${dest}"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS     -E copy_if_different "${src}" "${dest}"
+        DEPENDS "${src}"
+    )
+    list (APPEND ${target}_list "${dest}")
+endmacro ()
+
 #-------------------------------------------------------------------------------
 macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")

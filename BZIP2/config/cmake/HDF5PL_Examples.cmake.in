@@ -61,7 +61,7 @@ set(BUILD_OPTIONS "${BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRI
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.10.0-Source")
+#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.8.0-Source")
 #endif()
 
 ###############################################################################################################
@@ -74,23 +74,24 @@ if(WIN32)
   set(CTEST_BINARY_NAME ${CTEST_SOURCE_NAME}\\build)
   set(CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}\\${CTEST_SOURCE_NAME}")
   set(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}\\${CTEST_BINARY_NAME}")
+  set(ENV{PATH} "$ENV{PATH};${HDF5INSTALLDIR}")
 else(WIN32)
   if(${STATICLIBRARIES})
     set(BUILD_OPTIONS "${BUILD_OPTIONS} -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_ANSI_CFLAGS:STRING=-fPIC")
   endif()
-  set(ENV{LD_LIBRARY_PATH} "${HDF5INSTALLDIR}/../lib")
+  set(ENV{LD_LIBRARY_PATH} "${HDFINSTALLDIR}/lib")
   set(CTEST_BINARY_NAME ${CTEST_SOURCE_NAME}/build)
   set(CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_SOURCE_NAME}")
   set(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_BINARY_NAME}")
+  set(ENV{PATH} "$ENV{PATH}:${HDF5INSTALLDIR}")
 endif(WIN32)
 if(${CDASH_LOCAL})
   set(BUILD_OPTIONS "${BUILD_OPTIONS} -DCDASH_LOCAL:BOOL=ON")
 endif()
-set(BUILD_OPTIONS "${BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE@@HDF_PACKAGE_EXT@")
+set(BUILD_OPTIONS "${BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE_NAME@")
 set(HDF5_PLUGIN_ROOT "${INSTALLDIR}/lib/plugin")
 set(ENV{HDF5_PLUGIN_PATH} "${HDF5_PLUGIN_ROOT}")
 set(ENV{HDF5_DIR} "${HDF5INSTALLDIR}")
-set(ENV{PATH} "$ENV{PATH};$ENV{HDF5_DIR}")
 
 ###############################################################################################################
 # For any comments please contact cdashhelp@hdfgroup.org
@@ -175,7 +176,7 @@ ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" APPEND ${ctest_test_args} RETURN_V
 if(LOCAL_SUBMIT)
   ctest_submit (PARTS Test)
 endif()
-if(res GREATER 0)
+if(${res} LESS 0 OR ${res} GREATER 0)
   message (FATAL_ERROR "tests FAILED")
 endif()
 #-----------------------------------------------------------------------------

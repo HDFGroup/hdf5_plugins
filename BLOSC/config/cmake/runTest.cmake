@@ -40,6 +40,14 @@ endif ()
 
 message (STATUS "COMMAND: ${TEST_PROGRAM} ${TEST_ARGS}")
 
+if (TEST_LIBRARY_DIRECTORY)
+  if (WIN32 AND NOT MINGW)
+    set (ENV{PATH} "$ENV{PATH}")
+  else ()
+    set (ENV{LD_LIBRARY_PATH} "$ENV{LD_LIBRARY_PATH}:${TEST_LIBRARY_DIRECTORY}")
+  endif ()
+endif ()
+
 if (TEST_ENV_VAR)
   set (ENV{${TEST_ENV_VAR}} "${TEST_ENV_VALUE}")
 endif ()

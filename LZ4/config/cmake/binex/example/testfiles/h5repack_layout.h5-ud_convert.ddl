@@ -5,14 +5,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
@@ -28,14 +28,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
@@ -51,14 +51,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
@@ -74,14 +74,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
@@ -97,14 +97,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
@@ -120,14 +120,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
@@ -143,14 +143,14 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4376 (0.731:1 COMPRESSION)
+         SIZE 9360 (0.342:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 32 0 }
+            PARAMS { 3 }
          }
       }
       FILLVALUE {
