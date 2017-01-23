@@ -38,6 +38,11 @@ if (BUILD_TESTING)
       set_tests_properties (${testname}-clearall PROPERTIES DEPENDS ${last_test})
     endif (NOT "${last_test}" STREQUAL "")
     set (last_test "${testname}-clearall")
+    if (WIN32)
+      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+    else ()
+      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+    endif ()
     add_test (
         NAME ${testname}
         COMMAND "${CMAKE_COMMAND}"
@@ -47,7 +52,7 @@ if (BUILD_TESTING)
             -D "TEST_EXPECT=0"
             -D "TEST_OUTPUT=${testname}.out"
             -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
             -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
     )
     if (NOT "${last_test}" STREQUAL "")
@@ -64,7 +69,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
@@ -89,6 +94,11 @@ if (BUILD_TESTING)
       set_tests_properties (H5BZ2_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
     endif (NOT "${last_test}" STREQUAL "")
     set (last_test "H5BZ2_UD-${testname}-clearall-objects")
+    if (WIN32)
+      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+    else ()
+      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+    endif ()
     if (HDF5_BUILD_TOOLS)
       add_test (
           NAME H5BZ2_UD-${testname}
@@ -100,7 +110,7 @@ if (BUILD_TESTING)
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
-              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
@@ -116,7 +126,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
