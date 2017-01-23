@@ -39,9 +39,9 @@ if (BUILD_TESTING)
     endif (NOT "${last_test}" STREQUAL "")
     set (last_test "${testname}-clearall")
     if (WIN32)
-      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+      set(TESTLIBDIR "${HDF5_TOOLS_DIR}")
     else ()
-      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+      set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
     add_test (
         NAME ${testname}
