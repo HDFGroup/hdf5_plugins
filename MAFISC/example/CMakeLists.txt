@@ -34,6 +34,10 @@ if (BUILD_TESTING)
             ${testname}.ddl.out.err
             ${testname}.h5
     )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (${testname}-clearall PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "${testname}-clearall")
     add_test (
         NAME ${testname}
         COMMAND "${CMAKE_COMMAND}"
@@ -48,7 +52,10 @@ if (BUILD_TESTING)
             -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
             -P "${H5MAFISC_RESOURCES_DIR}/runTest.cmake"
     )
-    set_tests_properties(${testname} PROPERTIES DEPENDS ${testname}-clearall)
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
       add_test (
           NAME H5DUMP-${testname}
@@ -64,7 +71,9 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5MAFISC_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties(H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
     endif (HDF5_BUILD_TOOLS)
   ENDMACRO (ADD_H5_TEST)
 
