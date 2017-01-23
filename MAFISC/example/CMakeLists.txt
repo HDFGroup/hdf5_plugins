@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1.0)
+cmake_minimum_required (VERSION 3.2.2)
 project (HDF5MAFISC_EX)
 
 set (dyn_examples
@@ -34,6 +34,15 @@ if (BUILD_TESTING)
             ${testname}.ddl.out.err
             ${testname}.h5
     )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (${testname}-clearall PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "${testname}-clearall")
+    if (WIN32)
+      set(TESTLIBDIR "${HDF5_TOOLS_DIR}")
+    else ()
+      set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
+    endif ()
     add_test (
         NAME ${testname}
         COMMAND "${CMAKE_COMMAND}"
@@ -43,12 +52,15 @@ if (BUILD_TESTING)
             -D "TEST_EXPECT=0"
             -D "TEST_OUTPUT=${testname}.out"
             -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
             -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
             -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
             -P "${H5MAFISC_RESOURCES_DIR}/runTest.cmake"
     )
-    set_tests_properties(${testname} PROPERTIES DEPENDS ${testname}-clearall)
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
+    endif (NOT "${last_test}" STREQUAL "")
+    set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
       add_test (
           NAME H5DUMP-${testname}
@@ -59,12 +71,14 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5MAFISC_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties(H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
+      endif (NOT "${last_test}" STREQUAL "")
     endif (HDF5_BUILD_TOOLS)
   ENDMACRO (ADD_H5_TEST)
 
@@ -84,6 +98,11 @@ if (BUILD_TESTING)
       set_tests_properties (H5MAFISC_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
     endif (NOT "${last_test}" STREQUAL "")
     set (last_test "H5MAFISC_UD-${testname}-clearall-objects")
+    if (WIN32)
+      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+    else ()
+      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+    endif ()
     if (HDF5_BUILD_TOOLS)
       add_test (
           NAME H5MAFISC_UD-${testname}
@@ -95,7 +114,7 @@ if (BUILD_TESTING)
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
-              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5MAFISC_RESOURCES_DIR}/runTest.cmake"
@@ -113,7 +132,7 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${HDF5_LIBRARY_PATH}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5MAFISC_RESOURCES_DIR}/runTest.cmake"
