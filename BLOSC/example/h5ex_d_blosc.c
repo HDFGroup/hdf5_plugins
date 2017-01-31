@@ -47,7 +47,7 @@ main (void)
     size_t          nelmts = 7;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[7] = {0, 0, 0, 0, 5, 1, 1};     /* blosc parameters */
+    const unsigned int    cd_values[7] = {0, 0, 0, 0, 4, 1, 2};     /* blosc parameters */
     unsigned int    values_out[7] = {99, 99, 99, 99, 99, 99, 99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
