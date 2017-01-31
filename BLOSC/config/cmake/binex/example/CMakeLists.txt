@@ -63,7 +63,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5dump>"
+              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
@@ -103,7 +103,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5BLOSC_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5repack>"
+              -D "TEST_PROGRAM=${HDF5_REPACK_EXECUTABLE}"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
@@ -120,7 +120,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5BLOSC_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=$<TARGET_FILE:hdf5::h5dump>"
+              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
