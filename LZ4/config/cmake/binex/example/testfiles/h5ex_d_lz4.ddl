@@ -3,6 +3,25 @@ GROUP "/" {
    DATASET "DS1" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 32, 64 ) / ( 32, 64 ) }
+      STORAGE_LAYOUT {
+         CHUNKED ( 4, 8 )
+         SIZE 19968 (0.410:1 COMPRESSION)
+      }
+      FILTERS {
+         USER_DEFINED_FILTER {
+            FILTER_ID 32004
+            
+            COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
+            PARAMS { 3 }
+         }
+      }
+      FILLVALUE {
+         FILL_TIME H5D_FILL_TIME_IFSET
+         VALUE  H5D_FILL_VALUE_DEFAULT
+      }
+      ALLOCATION_TIME {
+         H5D_ALLOC_TIME_INCR
+      }
       DATA {
       (0,0): 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14,
       (0,15): -15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26,
