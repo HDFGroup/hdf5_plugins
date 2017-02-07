@@ -9,6 +9,7 @@
  * distribution tree.  If you do not have access to this file, you may       *
  * request a copy from help@hdfgroup.org.                                    *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 /************************************************************
 
   This example shows how to write data and read it from a dataset
@@ -47,7 +48,7 @@ main (void)
     size_t          nelmts = 7;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[7] = {0, 0, 0, 0, 5, 1, 0};     /* blosc parameters */
+    const unsigned int    cd_values[7] = {0, 0, 0, 0, 4, 1, 2};     /* blosc parameters */
     unsigned int    values_out[7] = {99, 99, 99, 99, 99, 99, 99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
@@ -158,7 +159,7 @@ main (void)
      * Retrieve and print the filter id, compression level and filter's name for blosc.
      */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
-    printf ("Filter info is available from the dataset creation property \n ");
+    printf ("Filter info is available from the dataset creation property\n ");
     printf ("  Filter identifier is ");
     switch (filter_id) {
         case H5Z_FILTER_BLOSC:

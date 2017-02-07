@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1.0)
+cmake_minimum_required (VERSION 3.2.2)
 project (H5BZ2_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -55,4 +55,4 @@ if (H5BZ2_EXPORTED_TARGETS)
       ARCHIVE DESTINATION ${H5BZ2_INSTALL_LIB_DIR} COMPONENT libraries
       RUNTIME DESTINATION ${H5BZ2_INSTALL_BIN_DIR} COMPONENT libraries
   )
-endif (H5BZ2_EXPORTED_TARGETS)
+endif ()

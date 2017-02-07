@@ -13,7 +13,7 @@ include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
 include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
 if(CMAKE_CXX_COMPILER)
   include (${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
-endif(CMAKE_CXX_COMPILER)
+endif()
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -28,17 +28,17 @@ if (APPLE)
     "variable has been set to a blank value which will build the default architecture for this system.")
   endif ()
   set (${H5BZ2_PREFIX}_AC_APPLE_UNIVERSAL_BUILD 0)
-endif (APPLE)
+endif ()
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
     set (${H5BZ2_PREFIX}_HAVE_DARWIN 1) 
-endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+endif ()
 
 # Check for Solaris
 if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS") 
     set (${H5BZ2_PREFIX}_HAVE_SOLARIS 1) 
-endif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
+endif ()
 
 #-----------------------------------------------------------------------------
 # This MACRO checks IF the symbol exists in the library and IF it
@@ -49,8 +49,8 @@ MACRO (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
   CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
   if (${VARIABLE})
     set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
-  endif (${VARIABLE})
-ENDMACRO (CHECK_LIBRARY_EXISTS_CONCAT)
+  endif ()
+ENDMACRO ()
 
 # ----------------------------------------------------------------------
 # WINDOWS Hard code Values
@@ -62,7 +62,7 @@ if (WIN32)
     set (${H5BZ2_PREFIX}_HAVE_MINGW 1)
     set (WINDOWS 1) # MinGW tries to imitate Windows
     set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
-  endif (MINGW)
+  endif ()
   set (${H5BZ2_PREFIX}_HAVE_WIN32_API 1)
   set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
   if (NOT UNIX AND NOT MINGW)
@@ -70,9 +70,9 @@ if (WIN32)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
     if (MSVC)
       set (${H5BZ2_PREFIX}_HAVE_VISUAL_STUDIO 1)
-    endif (MSVC)
-  endif (NOT UNIX AND NOT MINGW)
-endif (WIN32)
+    endif ()
+  endif ()
+endif ()
 
 if (WINDOWS)
   set (HAVE_STDDEF_H 1)
@@ -84,17 +84,17 @@ if (WINDOWS)
   set (HAVE_LONGJMP 1)
   if (NOT MINGW)
     set (HAVE_GETHOSTNAME 1)
-  endif (NOT MINGW)
+  endif ()
   set (HAVE_FUNCTION 1)
   set (GETTIMEOFDAY_GIVES_TZ 1)
   set (HAVE_TIMEZONE 1)
   set (HAVE_GETTIMEOFDAY 1)
   if (MINGW)
     set (HAVE_WINSOCK2_H 1)
-  endif (MINGW)
+  endif ()
   set (HAVE_LIBWS2_32 1)
   set (HAVE_LIBWSOCK32 1)
-endif (WINDOWS)
+endif ()
 
 # ----------------------------------------------------------------------
 # END of WINDOWS Hard code Values
@@ -107,7 +107,7 @@ if (NOT WINDOWS)
   CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
   CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
   CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
-endif (NOT WINDOWS)
+endif ()
 
 # UCB (BSD) compatibility library
 CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
@@ -118,7 +118,7 @@ set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
 set (USE_INCLUDES "")
 if (WINDOWS)
   set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
-endif (WINDOWS)
+endif ()
 
 # For other other specific tests, use this MACRO.
 MACRO (H5BZ2_FUNCTION_TEST OTHER_TEST)
@@ -127,11 +127,11 @@ MACRO (H5BZ2_FUNCTION_TEST OTHER_TEST)
     set (OTHER_TEST_ADD_LIBRARIES)
     if (CMAKE_REQUIRED_LIBRARIES)
       set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
-    endif (CMAKE_REQUIRED_LIBRARIES)
+    endif ()
 
     foreach (def ${H5BZ2_EXTRA_TEST_DEFINITIONS})
       set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
-    endforeach (def)
+    endforeach ()
 
     foreach (def
         HAVE_SYS_TIME_H
@@ -141,14 +141,14 @@ MACRO (H5BZ2_FUNCTION_TEST OTHER_TEST)
     )
       if ("${def}")
         set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif ("${def}")
-    endforeach (def)
+      endif ()
+    endforeach ()
 
     if (LARGEFILE)
       set (MACRO_CHECK_FUNCTION_DEFINITIONS
           "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
       )
-    endif (LARGEFILE)
+    endif ()
 
     #message (STATUS "Performing ${OTHER_TEST}")
     try_compile (${OTHER_TEST}
@@ -161,16 +161,16 @@ MACRO (H5BZ2_FUNCTION_TEST OTHER_TEST)
     if (${OTHER_TEST})
       set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
       message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
-    else (${OTHER_TEST})
+    else ()
       message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
       set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
           "${OUTPUT}\n"
       )
-    endif (${OTHER_TEST})
-  endif ("${OTHER_TEST}" MATCHES "^${OTHER_TEST}$")
-ENDMACRO (H5BZ2_FUNCTION_TEST)
+    endif ()
+  endif ()
+ENDMACRO ()
 
 H5BZ2_FUNCTION_TEST (STDC_HEADERS)
 
@@ -183,8 +183,8 @@ MACRO (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
   CHECK_INCLUDE_FILES ("${USE_INCLUDES};${FILE}" ${VARIABLE})
   if (${VARIABLE})
     set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
-  endif (${VARIABLE})
-ENDMACRO (CHECK_INCLUDE_FILE_CONCAT)
+  endif ()
+ENDMACRO ()
 
 #-----------------------------------------------------------------------------
 #  Check for the existence of certain header files
@@ -203,14 +203,14 @@ if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
   if (NOT HAVE_STDINT_H_CXX)
     set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
     set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
-  endif (NOT HAVE_STDINT_H_CXX)
-endif (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
+  endif ()
+endif ()
 
 # Windows
 CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
 if (NOT CYGWIN)
   CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      HAVE_WINSOCK_H)
-endif (NOT CYGWIN)
+endif ()
 
 CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
 CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
@@ -250,9 +250,9 @@ if (NOT WINDOWS)
     )
   if (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
     set (H5BZ2_EXTRA_FLAGS -D_DEFAULT_SOURCE)
-  else (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+  else ()
     set (H5BZ2_EXTRA_FLAGS -D_BSD_SOURCE)
-  endif (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
+  endif ()
 
   option (H5BZ2_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
   if (H5BZ2_ENABLE_LARGE_FILE)
@@ -269,24 +269,24 @@ if (NOT WINDOWS)
         set (LARGEFILE 1)
         set (H5BZ2_EXTRA_FLAGS ${H5BZ2_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
         message (STATUS "${msg}... yes")
-      else (TEST_LFS_WORKS_RUN  MATCHES 0)
+      else ()
         set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
         message (STATUS "${msg}... no")
         file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
               "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
         )
-      endif (TEST_LFS_WORKS_RUN  MATCHES 0)
-    else (TEST_LFS_WORKS_COMPILE )
+      endif ()
+    else ()
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Test TEST_LFS_WORKS Compile failed with the following output:\n ${OUTPUT}\n"
       )
-    endif (TEST_LFS_WORKS_COMPILE)
-  endif (H5BZ2_ENABLE_LARGE_FILE)
+    endif ()
+  endif ()
   set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${H5BZ2_EXTRA_FLAGS})
-  endif (NOT ${H5BZ2_PREFIX}_HAVE_SOLARIS)
-endif (NOT WINDOWS)
+  endif ()
+endif ()
 
 add_definitions (${H5BZ2_EXTRA_FLAGS})
 #-----------------------------------------------------------------------------
@@ -302,5 +302,5 @@ if (NOT WINDOWS)
       CXX_HAVE_OFFSETOF
   )
     H5BZ2_FUNCTION_TEST (${test})
-  endforeach (test)
-endif (NOT WINDOWS)
+  endforeach ()
+endif ()

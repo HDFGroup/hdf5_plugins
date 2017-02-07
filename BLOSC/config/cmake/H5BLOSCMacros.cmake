@@ -2,16 +2,15 @@
 macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")
     set (BUILD_EXT_SHARED_LIBS "ON")
-  else (${libtype} MATCHES "SHARED")
+  else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif (${libtype} MATCHES "SHARED")
+  endif ()
   if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (BLOSC
         GIT_REPOSITORY ${BLOSC_URL}
         GIT_TAG ${BLOSC_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DBUILD_SHARED:BOOL=${BUILD_EXT_SHARED_LIBS}
             -DBUILD_TESTS:BOOL=OFF
             -DBUILD_BENCHMARKS:BOOL=OFF
             -DPREFER_EXTERNAL_SNAPPY:BOOL=OFF
@@ -23,6 +22,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     )
   elseif (${compress_type} MATCHES "TGZ")
@@ -31,7 +31,6 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
         URL_MD5 ""
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DBUILD_SHARED:BOOL=${BUILD_EXT_SHARED_LIBS}
             -DBUILD_TESTS:BOOL=OFF
             -DBUILD_BENCHMARKS:BOOL=OFF
             -DPREFER_EXTERNAL_SNAPPY:BOOL=OFF
@@ -43,9 +42,10 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     )
-  endif (${compress_type} MATCHES "GIT")
+  endif ()
   externalproject_get_property (BLOSC BINARY_DIR SOURCE_DIR)
 
 ##include (${BINARY_DIR}/${BLOSC_PACKAGE_NAME}${HDF_PACKAGE_EXT}-targets.cmake)
@@ -60,7 +60,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
   set (BLOSC_FOUND 1)
   set (BLOSC_LIBRARIES ${BLOSC_LIBRARY})
   set (BLOSC_INCLUDE_DIRS ${BLOSC_INCLUDE_DIR_GEN} ${BLOSC_INCLUDE_DIR})
-endmacro (EXTERNAL_BLOSC_LIBRARY)
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (PACKAGE_BLOSC_LIBRARY compress_type)
@@ -71,16 +71,16 @@ macro (PACKAGE_BLOSC_LIBRARY compress_type)
   set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/blosc-export.h)
   if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
     add_dependencies (BLOSC-GenHeader-Copy BLOSC)
-  endif (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-endmacro (PACKAGE_BLOSC_LIBRARY)
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")
     set (BUILD_EXT_SHARED_LIBS "ON")
-  else (${libtype} MATCHES "SHARED")
+  else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif (${libtype} MATCHES "SHARED")
+  endif ()
   if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (ZLIB
         GIT_REPOSITORY ${ZLIB_URL}
@@ -95,6 +95,7 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
     )
   elseif (${compress_type} MATCHES "TGZ")
@@ -111,17 +112,18 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
     )
-  endif (${compress_type} MATCHES "GIT")
+  endif ()
   externalproject_get_property (ZLIB BINARY_DIR SOURCE_DIR)
 
   if (WIN32)
     set (ZLIB_LIB_NAME "zlib")
-  else (WIN32)
+  else ()
     set (ZLIB_LIB_NAME "z")
-  endif (WIN32)
-##include (${BINARY_DIR}/${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT}-targets.cmake)
+  endif ()
+
 # Create imported target zlib-static
   add_library(zlib ${libtype} IMPORTED)
   H5BLOSC_IMPORT_SET_LIB_OPTIONS (zlib ${ZLIB_LIB_NAME} ${libtype} "")
@@ -133,7 +135,7 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
   set (ZLIB_FOUND 1)
   set (ZLIB_LIBRARIES ${ZLIB_LIBRARY})
   set (ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR_GEN} ${ZLIB_INCLUDE_DIR})
-endmacro (EXTERNAL_ZLIB_LIBRARY)
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (PACKAGE_ZLIB_LIBRARY compress_type)
@@ -144,8 +146,8 @@ macro (PACKAGE_ZLIB_LIBRARY compress_type)
   set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zconf.h)
   if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
     add_dependencies (ZLIB-GenHeader-Copy ZLIB)
-  endif (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-endmacro (PACKAGE_ZLIB_LIBRARY)
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
@@ -155,16 +157,16 @@ macro (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
       set (LIBH5BLOSC_VERSION ${H5BLOSC_PACKAGE_VERSION_MAJOR})
-    else (WIN32)
+    else ()
       set (LIBH5BLOSC_VERSION ${H5BLOSC_PACKAGE_VERSION})
-    endif (WIN32)
+    endif ()
     set_target_properties (${libtarget} PROPERTIES VERSION ${LIBH5BLOSC_VERSION})
     if (WIN32)
         set (${libname} "${libname}-${H5BLOSC_PACKAGE_SOVERSION}")
-    else (WIN32)
+    else ()
         set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5BLOSC_PACKAGE_SOVERSION})
-    endif (WIN32)
-  endif (${libtype} MATCHES "SHARED")
+    endif ()
+  endif ()
 
   #-- Apple Specific install_name for libraries
   if (APPLE)
@@ -175,15 +177,14 @@ macro (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
           INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
           BUILD_WITH_INSTALL_RPATH ${H5BLOSC_BUILD_WITH_INSTALL_NAME}
       )
-    endif (H5BLOSC_BUILD_WITH_INSTALL_NAME)
-  endif (APPLE)
-
-endmacro (H5BLOSC_SET_LIB_OPTIONS)
+    endif ()
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (SET_GLOBAL_VARIABLE name value)
   set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)
-endmacro (SET_GLOBAL_VARIABLE)
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (IDE_GENERATED_PROPERTIES SOURCE_PATH HEADERS SOURCES)
@@ -196,7 +197,7 @@ macro (IDE_GENERATED_PROPERTIES SOURCE_PATH HEADERS SOURCES)
   #set_property (SOURCE ${HEADERS}
   #       PROPERTY MACOSX_PACKAGE_LOCATION Headers/${NAME}
   #)
-endmacro (IDE_GENERATED_PROPERTIES)
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (IDE_SOURCE_PROPERTIES SOURCE_PATH HEADERS SOURCES)
@@ -213,45 +214,49 @@ macro (IDE_SOURCE_PROPERTIES SOURCE_PATH HEADERS SOURCES)
   #set_property (SOURCE ${HEADERS}
   #       PROPERTY MACOSX_PACKAGE_LOCATION Headers/${NAME}
   #)
-endmacro (IDE_SOURCE_PROPERTIES)
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (TARGET_NAMING libtarget libtype)
   if (${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}${ARGN}")
-  endif (${libtype} MATCHES "SHARED")
-endmacro (TARGET_NAMING)
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
   if (WIN32 AND MSVC)
-    get_target_property (target_name ${libtarget} OUTPUT_NAME_RELWITHDEBINFO)
+    get_target_property (target_type ${libtarget} TYPE)
+    if (${libtype} MATCHES "SHARED")
+      set (targetfilename $<TARGET_PDB_FILE:${libtarget}>)
+    else ()
+      get_property (target_name TARGET ${libtarget} PROPERTY OUTPUT_NAME_RELWITHDEBINFO)
+      set (targetfilename $<TARGET_FILE_DIR:${libtarget}>/${target_name}.pdb)
+    endif ()
     install (
       FILES
-          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${target_name}.pdb
+          ${targetfilename}
       DESTINATION
           ${targetdestination}
       CONFIGURATIONS RelWithDebInfo
       COMPONENT ${targetcomponent}
   )
-  endif (WIN32 AND MSVC)
-endmacro (INSTALL_TARGET_PDB)
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (INSTALL_PROGRAM_PDB progtarget targetdestination targetcomponent)
   if (WIN32 AND MSVC)
-    get_target_property (target_name ${progtarget} OUTPUT_NAME_RELWITHDEBINFO)
-    get_target_property (target_prefix ${progtarget} PREFIX)
     install (
       FILES
-          ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${target_prefix}${target_name}.pdb
+          $<TARGET_PDB_FILE:${progtarget}>
       DESTINATION
           ${targetdestination}
       CONFIGURATIONS RelWithDebInfo
       COMPONENT ${targetcomponent}
   )
-  endif (WIN32 AND MSVC)
-endmacro (INSTALL_PROGRAM_PDB)
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (H5BLOSC_SET_BASE_OPTIONS libtarget libname libtype)
@@ -259,19 +264,19 @@ macro (H5BLOSC_SET_BASE_OPTIONS libtarget libname libtype)
     if (WIN32)
       set (LIB_RELEASE_NAME "${libname}")
       set (LIB_DEBUG_NAME "${libname}_D")
-    else (WIN32)
+    else ()
       set (LIB_RELEASE_NAME "${libname}")
       set (LIB_DEBUG_NAME "${libname}_debug")
-    endif (WIN32)
-  else (${libtype} MATCHES "SHARED")
+    endif ()
+  else ()
     if (WIN32)
       set (LIB_RELEASE_NAME "lib${libname}")
       set (LIB_DEBUG_NAME "lib${libname}_D")
-    else (WIN32)
+    else ()
       set (LIB_RELEASE_NAME "${libname}")
       set (LIB_DEBUG_NAME "${libname}_debug")
-    endif (WIN32)
-  endif (${libtype} MATCHES "SHARED")
+    endif ()
+  endif ()
 
   set_target_properties (${libtarget}
       PROPERTIES
@@ -289,9 +294,8 @@ macro (H5BLOSC_SET_BASE_OPTIONS libtarget libname libtype)
         IMPORT_PREFIX ""
         PREFIX ""
     )
-  endif (MINGW AND ${libtype} MATCHES "SHARED")
-
-endmacro (H5BLOSC_SET_BASE_OPTIONS)
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (H5BLOSC_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
@@ -299,12 +303,12 @@ macro (H5BLOSC_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
 
   if (${importtype} MATCHES "IMPORT")
     set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
-  endif (${importtype} MATCHES "IMPORT")
+  endif ()
   if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set (IMPORT_LIB_NAME ${LIB_DEBUG_NAME})
-  else (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+  else ()
     set (IMPORT_LIB_NAME ${LIB_RELEASE_NAME})
-  endif (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+  endif ()
 
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
@@ -313,65 +317,56 @@ macro (H5BLOSC_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
             IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${IMPORT_LIB_NAME}.lib"
             IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-      else (MINGW)
+      else ()
         set_target_properties (${libtarget} PROPERTIES
             IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_IMPORT_LIBRARY_SUFFIX}"
             IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-      endif (MINGW)
-    else (WIN32)
+      endif ()
+    else ()
       if (CYGWIN)
         set_target_properties (${libtarget} PROPERTIES
             IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_IMPORT_LIBRARY_SUFFIX}"
             IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
-      else (CYGWIN)
+      else ()
         set_target_properties (${libtarget} PROPERTIES
             IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
             IMPORTED_SONAME "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}.${libversion}"
             SOVERSION "${libversion}"
         )
-      endif (CYGWIN)
-    endif (WIN32)
-  else (${libtype} MATCHES "SHARED")
+      endif ()
+    endif ()
+  else ()
     if (WIN32 AND NOT MINGW)
       set_target_properties (${libtarget} PROPERTIES
           IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${IMPORT_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
           IMPORTED_LINK_INTERFACE_LANGUAGES "C"
       )
-    else (WIN32 AND NOT MINGW)
+    else ()
       set_target_properties (${libtarget} PROPERTIES
           IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_STATIC_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
           IMPORTED_LINK_INTERFACE_LANGUAGES "C"
       )
-    endif (WIN32 AND NOT MINGW)
-  endif (${libtype} MATCHES "SHARED")
-
-endmacro (H5BLOSC_IMPORT_SET_LIB_OPTIONS)
+    endif ()
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (TARGET_C_PROPERTIES wintarget libtype addcompileflags addlinkflags)
   if (MSVC)
     TARGET_MSVC_PROPERTIES (${wintarget} ${libtype} "${addcompileflags} ${WIN_COMPILE_FLAGS}" "${addlinkflags} ${WIN_LINK_FLAGS}")
-  else (MSVC)
-    set_target_properties (${wintarget}
-        PROPERTIES
-            COMPILE_FLAGS "${addcompileflags}"
-            LINK_FLAGS "${addlinkflags}"
-    )
-  endif (MSVC)
-endmacro (TARGET_C_PROPERTIES)
+  else ()
+    set_target_properties (${wintarget} PROPERTIES COMPILE_FLAGS "${addcompileflags}" LINK_FLAGS "${addlinkflags}")
+  endif ()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (TARGET_MSVC_PROPERTIES wintarget libtype addcompileflags addlinkflags)
   if (MSVC)
-    set_target_properties (${wintarget}
-        PROPERTIES
-            COMPILE_FLAGS "${addcompileflags}"
-            LINK_FLAGS "${addlinkflags}"
-    )
-  endif (MSVC)
-endmacro (TARGET_MSVC_PROPERTIES)
+    set_target_properties (${wintarget} PROPERTIES COMPILE_FLAGS "${addcompileflags}" LINK_FLAGS "${addlinkflags}")
+  endif ()
+endmacro ()
 
 #-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
@@ -384,16 +379,16 @@ macro (H5BLOSC_README_PROPERTIES)
     set (BINARY_INSTALL_ENDING "msi")
     if (CMAKE_CL_64)
       set (BINARY_SYSTEM_NAME "win64")
-    else (CMAKE_CL_64)
+    else ()
       set (BINARY_SYSTEM_NAME "win32")
-    endif (CMAKE_CL_64)
+    endif ()
     if (${CMAKE_SYSTEM_VERSION} MATCHES "6.1")
       set (BINARY_PLATFORM "${BINARY_PLATFORM} 7")
     elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.2")
       set (BINARY_PLATFORM "${BINARY_PLATFORM} 8")
     elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.3")
       set (BINARY_PLATFORM "${BINARY_PLATFORM} 10")
-    endif (${CMAKE_SYSTEM_VERSION} MATCHES "6.1")
+    endif ()
     set (BINARY_PLATFORM "${BINARY_PLATFORM} ${MSVC_C_ARCHITECTURE_ID}")
     if (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2010")
@@ -405,32 +400,32 @@ macro (H5BLOSC_README_PROPERTIES)
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2013")
     elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "19.*")
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2015")
-    else (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
+    else ()
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
-    endif (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
+    endif ()
   elseif (APPLE)
     set (BINARY_EXAMPLE_ENDING "tar.gz")
     set (BINARY_INSTALL_ENDING "dmg")
     set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
     set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
-  else (WIN32)
+  else ()
     set (BINARY_EXAMPLE_ENDING "tar.gz")
     set (BINARY_INSTALL_ENDING "sh")
     set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
     set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
-  endif (WIN32)
+  endif ()
 
   if (BUILD_SHARED_LIBS)
     set (LIB_TYPE "Static and Shared")
-  else (BUILD_SHARED_LIBS)
+  else ()
     set (LIB_TYPE "Static")
-  endif (BUILD_SHARED_LIBS)
+  endif ()
 
   configure_file (
       ${H5BLOSC_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
-endmacro (H5BLOSC_README_PROPERTIES)
+endmacro ()
 
 macro (HDFTEST_COPY_FILE src dest target)
     add_custom_command(
