@@ -9,6 +9,7 @@
  * distribution tree.  If you do not have access to this file, you may       *
  * request a copy from help@hdfgroup.org.                                    *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 /************************************************************
 
   This example shows how to write data and read it from a dataset

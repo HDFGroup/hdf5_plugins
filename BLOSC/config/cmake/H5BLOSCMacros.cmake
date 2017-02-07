@@ -11,7 +11,6 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
         GIT_TAG ${BLOSC_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DBUILD_SHARED:BOOL=${BUILD_EXT_SHARED_LIBS}
             -DBUILD_TESTS:BOOL=OFF
             -DBUILD_BENCHMARKS:BOOL=OFF
             -DPREFER_EXTERNAL_SNAPPY:BOOL=OFF
@@ -32,7 +31,6 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
         URL_MD5 ""
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DBUILD_SHARED:BOOL=${BUILD_EXT_SHARED_LIBS}
             -DBUILD_TESTS:BOOL=OFF
             -DBUILD_BENCHMARKS:BOOL=OFF
             -DPREFER_EXTERNAL_SNAPPY:BOOL=OFF
@@ -237,7 +235,7 @@ macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
     endif ()
     install (
       FILES
-          ${targetfilename}>
+          ${targetfilename}
       DESTINATION
           ${targetdestination}
       CONFIGURATIONS RelWithDebInfo

@@ -1,32 +1,14 @@
 #-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
 macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")
     set (BUILD_EXT_SHARED_LIBS "ON")
   else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
   endif ()
-  if (${compress_type} MATCHES "SVN")
-    EXTERNALPROJECT_ADD (BZ2
-        SVN_REPOSITORY ${BZ2_URL}
-        # [SVN_REVISION rev]
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBZ2_PACKAGE_EXT:STRING=${BZ2_PACKAGE_EXT}
-            -DBZ2_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    )
-  elseif (${compress_type} MATCHES "GIT")
+  if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (BZ2
         GIT_REPOSITORY ${BZ2_URL}
-        # [SVN_REVISION rev]
+        GIT_TAG ${BZ2_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
@@ -89,6 +71,7 @@ macro (PACKAGE_BZ2_LIBRARY compress_type)
   endif ()
 endmacro ()
 
+#-------------------------------------------------------------------------------
 macro (H5BZ2_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   set (libname "${defaultlibname}")
   H5BZ2_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
@@ -174,7 +157,7 @@ macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
     endif ()
     install (
       FILES
-          ${targetfilename}>
+          ${targetfilename}
       DESTINATION
           ${targetdestination}
       CONFIGURATIONS RelWithDebInfo
@@ -224,6 +207,18 @@ macro (H5BZ2_SET_BASE_OPTIONS libtarget libname libtype)
       OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
       OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
+  if (${libtype} MATCHES "STATIC")
+    if (WIN32)
+      set_target_properties (${libtarget}
+          PROPERTIES
+          COMPILE_PDB_NAME_DEBUG          ${LIB_DEBUG_NAME}
+          COMPILE_PDB_NAME_RELEASE        ${LIB_RELEASE_NAME}
+          COMPILE_PDB_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
+          COMPILE_PDB_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
+          COMPILE_PDB_OUTPUT_DIRECTORY    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+      )
+    endif ()
+  endif ()
 
   #----- Use MSVC Naming conventions for Shared Libraries
   if (MINGW AND ${libtype} MATCHES "SHARED")

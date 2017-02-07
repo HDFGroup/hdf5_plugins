@@ -464,7 +464,7 @@ install (
 #-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
 #-----------------------------------------------------------------------------
-H5BZ2_README_PROPERTIES()
+H5BZ2_README_PROPERTIES("")
 
 #-----------------------------------------------------------------------------
 # Check for Installation Utilities
