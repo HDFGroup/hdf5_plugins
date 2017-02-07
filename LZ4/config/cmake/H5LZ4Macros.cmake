@@ -5,27 +5,10 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
   else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
   endif ()
-  if (${compress_type} MATCHES "SVN")
-    EXTERNALPROJECT_ADD (LZ4
-        SVN_REPOSITORY ${LZ4_URL}
-        # [SVN_REVISION rev] 
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DLZ4_PACKAGE_EXT:STRING=${LZ4_PACKAGE_EXT}
-            -DLZ4_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    )
-  elseif (${compress_type} MATCHES "GIT")
+  if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (LZ4
         GIT_REPOSITORY ${LZ4_URL}
-        # [SVN_REVISION rev] 
+        GIT_TAG ${LZ4_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
@@ -88,6 +71,7 @@ macro (PACKAGE_LZ4_LIBRARY compress_type)
   endif ()
 endmacro ()
 
+#-------------------------------------------------------------------------------
 macro (H5LZ4_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   set (libname "${defaultlibname}")
   H5LZ4_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
@@ -173,7 +157,7 @@ macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
     endif ()
     install (
       FILES
-          ${targetfilename}>
+          ${targetfilename}
       DESTINATION
           ${targetdestination}
       CONFIGURATIONS RelWithDebInfo
@@ -223,6 +207,18 @@ macro (H5LZ4_SET_BASE_OPTIONS libtarget libname libtype)
       OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
       OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
+  if (${libtype} MATCHES "STATIC")
+    if (WIN32)
+      set_target_properties (${libtarget}
+          PROPERTIES
+          COMPILE_PDB_NAME_DEBUG          ${LIB_DEBUG_NAME}
+          COMPILE_PDB_NAME_RELEASE        ${LIB_RELEASE_NAME}
+          COMPILE_PDB_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
+          COMPILE_PDB_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
+          COMPILE_PDB_OUTPUT_DIRECTORY    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+      )
+    endif ()
+  endif ()
 
   #----- Use MSVC Naming conventions for Shared Libraries
   if (MINGW AND ${libtype} MATCHES "SHARED")
