@@ -12,7 +12,7 @@ set(CTEST_DASHBOARD_ROOT ${CTEST_SCRIPT_DIRECTORY})
 #INSTALLDIR - HDF5 plugin root folder
 #CTEST_CONFIGURATION_TYPE - Release, Debug, RelWithDebInfo
 #CTEST_SOURCE_NAME - name of source folder; HDFPLExamples
-#STATIC_LIBRARIES - Default is YES
+#STATIC_ONLY - Default is YES
 if(DEFINED CTEST_SCRIPT_ARG)
     # transform ctest script arguments of the form
     # script.ctest,var1=value1,var2=value2
@@ -41,9 +41,9 @@ endif()
 if(NOT DEFINED CTEST_SOURCE_NAME)
     set(CTEST_SOURCE_NAME "HDFPLExamples")
 endif()
-if(NOT DEFINED STATIC_LIBRARIES)
+if(NOT DEFINED STATIC_ONLY)
     set(STATICLIBRARIES "YES")
-else(NOT DEFINED STATIC_LIBRARIES)
+else(NOT DEFINED STATIC_ONLY)
     set(STATICLIBRARIES "NO")
 endif()
 if(NOT DEFINED HDF_LOCAL)
