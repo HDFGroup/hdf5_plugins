@@ -44,7 +44,7 @@ AWK='awk'
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
-PLUGIN_LIB="$FROM_DIR/libh5blosc.so.*"
+PLUGIN_LIB="$FROM_DIR/libh5mafisc.so.*"
 
 # Create test directories if not exists yet.
 test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
