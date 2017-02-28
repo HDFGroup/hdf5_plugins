@@ -69,7 +69,11 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
 const H5Z_class2_t H5Z_BZIP2[1] = {{
     H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
     (H5Z_filter_t)H5Z_FILTER_BZIP2,         /* Filter id number             */
-    1,              /* encoder_present flag (set to true) */
+#ifdef FILTER_DECODE_ONLY
+    0,                   /* encoder_present flag (false is not available) */
+#else
+    1,                   /* encoder_present flag (set to true) */
+#endif
     1,              /* decoder_present flag (set to true) */
     "HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html",
                                 /* Filter name for debugging    */

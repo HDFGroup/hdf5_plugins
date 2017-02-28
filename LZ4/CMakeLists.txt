@@ -239,6 +239,11 @@ else ()
   set (H5_LIB_TYPE STATIC)
 endif ()
 
+option (DISABLE_LZ4_ENCODER "build the lz4 library without encoding" OFF)
+if (NOT DISABLE_LZ4_ENCODER)
+  set (FILTER_DECODE_ONLY 1)
+endif ()
+
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
 option (BUILD_LZ4_LIBRARY_SOURCE "build the lz4 library within the plugin" OFF)
