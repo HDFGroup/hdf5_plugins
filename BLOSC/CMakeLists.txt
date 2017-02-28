@@ -260,6 +260,11 @@ else ()
   set (H5_LIB_TYPE STATIC)
 endif ()
 
+option (DISABLE_BLOSC_ENCODER "build the blosc library without encoding" OFF)
+if (NOT DISABLE_BLOSC_ENCODER)
+  set (FILTER_DECODE_ONLY 1)
+endif ()
+
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if(WIN32)
     # try to use the system library

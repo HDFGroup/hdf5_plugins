@@ -54,7 +54,11 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space);
 const H5Z_class2_t blosc_H5Filter[1] = {{
     H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
     (H5Z_filter_t)(FILTER_BLOSC),         /* Filter id number */
+#ifdef FILTER_DECODE_ONLY
+    0,                   /* encoder_present flag (false is not available) */
+#else
     1,                   /* encoder_present flag (set to true) */
+#endif
     1,                   /* decoder_present flag (set to true) */
     "HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html", /* Filter name for debugging */
     NULL,                           /* The "can apply" callback */
