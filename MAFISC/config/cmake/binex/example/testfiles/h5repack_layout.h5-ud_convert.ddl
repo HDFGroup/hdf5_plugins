@@ -11,7 +11,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 1998332870 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
@@ -33,7 +33,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 -516493177 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
@@ -55,7 +55,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 538916331 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
@@ -77,7 +77,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 -456326887 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
@@ -99,7 +99,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 844824370 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
@@ -121,7 +121,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 615326468 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
@@ -143,7 +143,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 -1303758287 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {

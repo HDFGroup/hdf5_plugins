@@ -11,7 +11,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32002
             COMMENT MAFISC
-            PARAMS { 0 1998332870 4 0 1 2 4 8 }
+            PARAMS { 0 XXXX 4 0 1 2 4 8 }
          }
       }
       FILLVALUE {
