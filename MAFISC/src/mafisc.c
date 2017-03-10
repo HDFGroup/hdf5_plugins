@@ -162,7 +162,11 @@ const void *H5PLget_plugin_info(void) {
     static H5Z_class2_t filterClass = {
         .version = H5Z_CLASS_T_VERS,
         .id = MAFISC_ID,
+#ifdef FILTER_DECODE_ONLY
+        .encoder_present = 0,
+#else
         .encoder_present = 1,
+#endif
         .decoder_present = 1,
         .name = "MAFISC",
         .can_apply = &compressorCanCompress,
