@@ -239,6 +239,11 @@ else ()
   set (H5_LIB_TYPE STATIC)
 endif ()
 
+option (DISABLE_BZ2_ENCODER "build the bz2 library without encoding" OFF)
+if (NOT DISABLE_BZ2_ENCODER)
+  set (FILTER_DECODE_ONLY 1)
+endif ()
+
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
 include (ExternalProject)
