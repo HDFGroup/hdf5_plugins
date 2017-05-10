@@ -28,7 +28,7 @@ if(NOT DEFINED INSTALLDIR)
     set(INSTALLDIR "@CMAKE_INSTALL_PREFIX@")
 endif()
 if(NOT DEFINED HDFINSTALLDIR)
-  set(HDFINSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.9")
+  set(HDFINSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.11")
 endif()
 if(WIN32)
   set(HDF5INSTALLDIR "${HDFINSTALLDIR}/cmake")
@@ -61,7 +61,7 @@ set(BUILD_OPTIONS "${BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRI
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.10.0-Source")
+#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.10.1-Source")
 #endif()
 
 ###############################################################################################################
