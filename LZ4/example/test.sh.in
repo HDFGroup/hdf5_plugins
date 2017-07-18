@@ -164,7 +164,7 @@ DUMPTEST() {
     # Run test.
     TESTING $DUMPER $@
     (
-      $ENVCMD $H5DUMP "$@"
+      $ENVCMD $H5DUMP --enable-error-stack -p "$@"
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
