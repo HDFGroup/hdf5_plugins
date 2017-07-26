@@ -1,107 +1,4 @@
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
-  if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (BZ2
-        GIT_REPOSITORY ${BZ2_URL}
-        GIT_TAG ${BZ2_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBZ2_PACKAGE_EXT:STRING=${BZ2_PACKAGE_EXT}
-            -DBZ2_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    )
-  elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (BZ2
-        URL ${BZ2_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBZ2_PACKAGE_EXT:STRING=${BZ2_PACKAGE_EXT}
-            -DBZ2_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-    )
-  endif ()
-  externalproject_get_property (BZ2 BINARY_DIR SOURCE_DIR)
-
-  # Create imported target BZ2
-  add_library (bz2 ${libtype} IMPORTED)
-  H5BZ2_IMPORT_SET_LIB_OPTIONS (bz2 "bz2" ${libtype} "")
-  add_dependencies (BZ2 bz2)
-
-#  include (${BINARY_DIR}/BZ2-targets.cmake)
-  set (BZ2_LIBRARY "bz2")
-
-  set (BZ2_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (BZ2_INCLUDE_DIR "${SOURCE_DIR}/src")
-  set (BZ2_FOUND 1)
-  set (BZ2_LIBRARIES ${BZ2_LIBRARY})
-  set (BZ2_INCLUDE_DIRS ${BZ2_INCLUDE_DIR_GEN} ${BZ2_INCLUDE_DIR})
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_BZ2_LIBRARY compress_type)
-  add_custom_target (BZ2-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZ2_INCLUDE_DIR}/bzlib.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${BZ2_INCLUDE_DIR}/bzlib.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bzlib.h)
-  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (BZ2-GenHeader-Copy bz2)
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (H5BZ2_SET_LIB_OPTIONS libtarget defaultlibname libtype)
-  set (libname "${defaultlibname}")
-  H5BZ2_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
-
-  if (${libtype} MATCHES "SHARED")
-    if (WIN32)
-      set (LIBH5BZ2_VERSION ${H5BZ2_PACKAGE_VERSION_MAJOR})
-    else ()
-      set (LIBH5BZ2_VERSION ${H5BZ2_PACKAGE_VERSION})
-    endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${LIBH5BZ2_VERSION})
-    if (WIN32)
-        set (${libname} "${libname}-${H5BZ2_PACKAGE_SOVERSION}")
-    else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5BZ2_PACKAGE_SOVERSION})
-    endif ()
-  endif ()
-
-  #-- Apple Specific install_name for libraries
-  if (APPLE)
-    option (H5BZ2_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
-    if (H5BZ2_BUILD_WITH_INSTALL_NAME)
-      set_target_properties(${libtarget} PROPERTIES
-          LINK_FLAGS "-current_version ${H5BZ2_PACKAGE_VERSION} -compatibility_version ${H5BZ2_PACKAGE_VERSION}"
-          INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-          BUILD_WITH_INSTALL_RPATH ${H5BZ2_BUILD_WITH_INSTALL_NAME}
-      )
-    endif ()
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
 macro (SET_GLOBAL_VARIABLE name value)
   set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)
 endmacro ()
@@ -179,7 +76,7 @@ macro (INSTALL_PROGRAM_PDB progtarget targetdestination targetcomponent)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (H5BZ2_SET_BASE_OPTIONS libtarget libname libtype)
+macro (HDF_SET_LIB_OPTIONS libtarget libname libtype)
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
       set (LIB_RELEASE_NAME "${libname}")
@@ -230,8 +127,8 @@ macro (H5BZ2_SET_BASE_OPTIONS libtarget libname libtype)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (H5BZ2_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
-  H5BZ2_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
+macro (HDF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
+  HDF_SET_LIB_OPTIONS (${libtarget} ${libname} ${libtype})
 
   if (${importtype} MATCHES "IMPORT")
     set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
@@ -298,65 +195,6 @@ macro (TARGET_MSVC_PROPERTIES wintarget libtype addcompileflags addlinkflags)
   if (MSVC)
     set_target_properties (${wintarget} PROPERTIES COMPILE_FLAGS "${addcompileflags}" LINK_FLAGS "${addlinkflags}")
   endif ()
-endmacro ()
-
-#-----------------------------------------------------------------------------
-# Configure the README.txt file for the binary package
-#-----------------------------------------------------------------------------
-macro (H5BZ2_README_PROPERTIES)
-  set (BINARY_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
-  set (BINARY_PLATFORM "${CMAKE_SYSTEM_NAME}")
-  if (WIN32)
-    set (BINARY_EXAMPLE_ENDING "zip")
-    set (BINARY_INSTALL_ENDING "msi")
-    if (CMAKE_CL_64)
-      set (BINARY_SYSTEM_NAME "win64")
-    else ()
-      set (BINARY_SYSTEM_NAME "win32")
-    endif ()
-    if (${CMAKE_SYSTEM_VERSION} MATCHES "6.1")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM} 7")
-    elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.2")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM} 8")
-    elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.3")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM} 10")
-    endif ()
-    set (BINARY_PLATFORM "${BINARY_PLATFORM} ${MSVC_C_ARCHITECTURE_ID}")
-    if (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2010")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "15.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2008")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "17.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2012")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "18.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2013")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "19.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2015")
-    else ()
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
-    endif ()
-  elseif (APPLE)
-    set (BINARY_EXAMPLE_ENDING "tar.gz")
-    set (BINARY_INSTALL_ENDING "dmg")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
-  else ()
-    set (BINARY_EXAMPLE_ENDING "tar.gz")
-    set (BINARY_INSTALL_ENDING "sh")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
-    set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
-  endif ()
-
-  if (BUILD_SHARED_LIBS)
-    set (LIB_TYPE "Static and Shared")
-  else ()
-    set (LIB_TYPE "Static")
-  endif ()
-
-  configure_file (
-      ${H5BZ2_RESOURCES_DIR}/README.txt.cmake.in
-      ${CMAKE_BINARY_DIR}/README.txt @ONLY
-  )
 endmacro ()
 
 macro (HDFTEST_COPY_FILE src dest target)
