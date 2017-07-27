@@ -35,7 +35,7 @@ RM="rm -rf"
 DIFF="diff -c"
 CMP="cmp -s"
 GREP='grep'
-CP='cp'
+CP="cp -p"  # Use -p to preserve mode,ownership,timestamps
 DIRNAME='dirname'
 LS='ls'
 AWK='awk'
@@ -236,7 +236,7 @@ EXETEST() {
     # Run test.
     TESTING $fname
     (
-      $ENVCMD ./$fname
+      $ENVCMD `pwd`/$fname
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
@@ -247,6 +247,8 @@ EXETEST() {
 ################################
 #########  THE TESTS   #########
 ################################
+
+echo $ENVCMD
 
 COPY_TESTFILES_TO_TESTDIR
 

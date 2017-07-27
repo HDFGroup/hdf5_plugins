@@ -12537,51 +12537,6 @@ else
 fi
 
 
-## Check if a Fortran 2003 compiler was used for h5fc
-HAVE_FORTRAN_2003="no"
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if h5fc was compiled with Fortran 2003 enabled" >&5
-$as_echo_n "checking if h5fc was compiled with Fortran 2003 enabled... " >&6; }
-if (${FC} -showconfig 2>&1 | grep 'Fortran 2003 Compiler: yes') > /dev/null; then
-  HAVE_FORTRAN_2003="yes"
-fi
-echo $HAVE_FORTRAN_2003
-
-## Check if we have Fortran 2003 and Intel compiler; Intel does not work with RECURSIVE used by h5ex_g_traverse.f90
-## The example will not be built when Intel compiler is used (EIP 2011/10/14)
-
-if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
-  HAVE_FORTRAN_2003_NOTINTEL="yes"
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if h5fc is an Intel Fortran compiler" >&5
-$as_echo_n "checking if h5fc is an Intel Fortran compiler... " >&6; }
-  if (${H5FC} -showconfig 2>&1 | grep 'Intel(R) Fortran ') > /dev/null; then
-    HAVE_FORTRAN_2003_NOTINTEL="no"
-  fi
-  if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
-    echo "no"
-  else
-    echo "yes"
-  fi
-fi
-## End check if we have Fortran 2003 and Intel compiler.
-
- if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
-  FORTRAN_2003_CONDITIONAL_F_TRUE=
-  FORTRAN_2003_CONDITIONAL_F_FALSE='#'
-else
-  FORTRAN_2003_CONDITIONAL_F_TRUE='#'
-  FORTRAN_2003_CONDITIONAL_F_FALSE=
-fi
-
- if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE=
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE='#'
-else
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE='#'
-  FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE=
-fi
-
-
 : ${CONFIG_LT=./config.lt}
 { $as_echo "$as_me:${as_lineno-$LINENO}: creating $CONFIG_LT" >&5
 $as_echo "$as_me: creating $CONFIG_LT" >&6;}
@@ -14094,14 +14049,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${H5LZF_TRUE}" && test -z "${H5LZF_FALSE}"; then
   as_fn_error $? "conditional \"H5LZF\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${FORTRAN_2003_CONDITIONAL_F_TRUE}" && test -z "${FORTRAN_2003_CONDITIONAL_F_FALSE}"; then
-  as_fn_error $? "conditional \"FORTRAN_2003_CONDITIONAL_F\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${FORTRAN_2003_NOTINTEL_CONDITIONAL_F_TRUE}" && test -z "${FORTRAN_2003_NOTINTEL_CONDITIONAL_F_FALSE}"; then
-  as_fn_error $? "conditional \"FORTRAN_2003_NOTINTEL_CONDITIONAL_F\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

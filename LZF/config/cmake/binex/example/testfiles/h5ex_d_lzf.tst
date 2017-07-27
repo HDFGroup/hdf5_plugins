@@ -3,8 +3,8 @@ lzf filter is available for encoding and decoding.
 ....Writing lzf compressed data ................
 ....Close the file and reopen for reading ........
 Filter info is available from the dataset creation property 
-   Filter identifier is 32004
-   Number of parameters is 1 with the value 3
+   Filter identifier is 32000
+   Number of parameters is 3 with the value 4
    To find more about the filter check HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
 ....Reading lzf compressed data ................
 Maximum value in DS1 is 1890

@@ -366,35 +366,6 @@ then
 fi
 AM_CONDITIONAL(H5LZF, test "$PLUGIN_H5LZF")
 
-## Check if a Fortran 2003 compiler was used for h5fc
-HAVE_FORTRAN_2003="no"
-
-AC_MSG_CHECKING([if h5fc was compiled with Fortran 2003 enabled])
-if (${FC} -showconfig 2>&1 | grep 'Fortran 2003 Compiler: yes') > /dev/null; then
-  HAVE_FORTRAN_2003="yes"
-fi
-echo $HAVE_FORTRAN_2003 
-
-## Check if we have Fortran 2003 and Intel compiler; Intel does not work with RECURSIVE used by h5ex_g_traverse.f90
-## The example will not be built when Intel compiler is used (EIP 2011/10/14)
-
-if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
-  HAVE_FORTRAN_2003_NOTINTEL="yes"
-  AC_MSG_CHECKING([if h5fc is an Intel Fortran compiler])
-  if (${H5FC} -showconfig 2>&1 | grep 'Intel(R) Fortran ') > /dev/null; then
-    HAVE_FORTRAN_2003_NOTINTEL="no"
-  fi
-  if test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"; then
-    echo "no"
-  else
-    echo "yes"
-  fi 
-fi
-## End check if we have Fortran 2003 and Intel compiler.
-
-AM_CONDITIONAL([FORTRAN_2003_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003" = "Xyes"])
-AM_CONDITIONAL([FORTRAN_2003_NOTINTEL_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003_NOTINTEL" = "Xyes"])
-
 LT_OUTPUT
 
 ## Set subdirectories

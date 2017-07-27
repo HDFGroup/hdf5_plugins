@@ -91,8 +91,8 @@ PATH=${AUTOCONF_DIR}:${M4_DIR}:$PATH
   echo ${ACLOCAL} -I ${LIBTOOL_DIR}/../share/aclocal
   ${ACLOCAL} -I ${LIBTOOL_DIR}/../share/aclocal || exit 1
 
-  echo ${AUTOHEADER}
-  ${AUTOHEADER} || exit 1
+#  echo ${AUTOHEADER}
+#  ${AUTOHEADER} || exit 1
 
   echo ${AUTOMAKE} --add-missing
   ${AUTOMAKE} --add-missing || exit 1

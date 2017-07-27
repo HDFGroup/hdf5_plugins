@@ -30,7 +30,7 @@
 #define DIM1            64
 #define CHUNK0          4
 #define CHUNK1          8
-#define H5Z_FILTER_LZF        32004
+#define H5Z_FILTER_LZF        32000
 
 int
 main (void)
@@ -45,11 +45,11 @@ main (void)
     char            filter_name[80];
     hsize_t         dims[2] = {DIM0, DIM1},
                     chunk[2] = {CHUNK0, CHUNK1};
-    size_t          nelmts = 1;                /* number of elements in cd_values */
+    size_t          nelmts = 3;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[1] = {3};     /* lzf default is 3 */
-    unsigned int    values_out[1] = {99};
+    const unsigned int    cd_values[3] = {0, 0, 0};
+    unsigned int    values_out[3] = {99, 99, 99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;

@@ -265,7 +265,6 @@ size_t blosc_filter(unsigned int flags, size_t cd_nelmts,
             PUSH_ERR("blosc_filter", H5E_CALLBACK, "Blosc decompression error");
             goto failed;
         } /* if !status */
-
     } /* compressing vs decompressing */
 
     if (status != 0) {
@@ -275,8 +274,7 @@ size_t blosc_filter(unsigned int flags, size_t cd_nelmts,
         return status;  /* Size of compressed/decompressed data */
     }
 
- failed:
+failed:
     free(outbuf);
     return 0;
-
 } /* End filter function */
