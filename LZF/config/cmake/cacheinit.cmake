@@ -6,13 +6,13 @@
 
 set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
-set (BUILD_LZF_LIBRARY_SOURCE ON CACHE BOOL "build the lzf library within the plugin" FORCE)
-
 set (BUILD_TESTING ON CACHE BOOL "Build h5lzf Unit Testing" FORCE)
 
 set (BUILD_EXAMPLES ON CACHE BOOL "Build h5lzf Examples" FORCE)
 
 set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
+
+set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (H5LZF_PACKAGE_NAME "h5lzf" CACHE STRING "Name of h5lzf package" FORCE)
 

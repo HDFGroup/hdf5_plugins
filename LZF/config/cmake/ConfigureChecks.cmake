@@ -11,6 +11,9 @@ include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
 include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
 include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
+if(CMAKE_CXX_COMPILER)
+  include (${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
+endif(CMAKE_CXX_COMPILER)
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
