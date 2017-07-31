@@ -60,7 +60,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /* Filter revision number, starting at 1 */
-#define H5PY_FILTER_LZF_VERSION 4
+#define FILTER_LZF_VERSION 4
 
 /* Filter ID registered with the HDF Group */
 #define H5Z_FILTER_LZF 32000
@@ -137,7 +137,7 @@ herr_t H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     /* It seems the H5Z_FLAG_REVERSE flag doesn't work here, so we have to be
        careful not to clobber any existing version info */
-    if (values[0] == 0) values[0] = H5PY_FILTER_LZF_VERSION;
+    if (values[0] == 0) values[0] = FILTER_LZF_VERSION;
     if (values[1] == 0) values[1] = LZF_VERSION;
 
     ndims = H5Pget_chunk(dcpl, 32, chunkdims);
@@ -149,6 +149,9 @@ herr_t H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     bufsize = H5Tget_size(type);
     if (bufsize == 0) return -1;
+#ifdef H5PY_LZF_DEBUG
+    fprintf(stderr, "LZF: H5Tget_size\n");
+#endif
 
     for (i = 0;i < ndims;i++) {
         bufsize *= chunkdims[i];
@@ -218,42 +221,38 @@ static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts,
             outbuf_size = (*buf_size);
         }
 
+        free(outbuf);
+
 #ifdef H5PY_LZF_DEBUG
         fprintf(stderr, "Decompress %d chunk w/buffer %d\n", nbytes, outbuf_size);
 #endif
 
-        while (!status) {
+        outbuf = malloc(outbuf_size);
 
-            free(outbuf);
-            outbuf = malloc(outbuf_size);
+        if (outbuf == NULL) {
+            PUSH_ERR("lzf_filter", H5E_CALLBACK, "Can't allocate decompression buffer");
+            goto failed;
+        }
 
-            if (outbuf == NULL) {
-                PUSH_ERR("lzf_filter", H5E_CALLBACK, "Can't allocate decompression buffer");
+        status = lzf_decompress(*buf, nbytes, outbuf, outbuf_size);
+
+        if (!status) {    /* compression failed */
+
+            if (errno == E2BIG) {
+                outbuf_size += (*buf_size);
+#ifdef H5PY_LZF_DEBUG
+                fprintf(stderr, "    Too small: %d\n", outbuf_size);
+#endif
+            }
+            else if (errno == EINVAL) {
+                PUSH_ERR("lzf_filter", H5E_CALLBACK, "Invalid data for LZF decompression");
                 goto failed;
             }
-
-            status = lzf_decompress(*buf, nbytes, outbuf, outbuf_size);
-
-            if (!status) {    /* compression failed */
-
-                if (errno == E2BIG) {
-                    outbuf_size += (*buf_size);
-#ifdef H5PY_LZF_DEBUG
-                    fprintf(stderr, "    Too small: %d\n", outbuf_size);
-#endif
-                }
-                else if (errno == EINVAL) {
-                    PUSH_ERR("lzf_filter", H5E_CALLBACK, "Invalid data for LZF decompression");
-                    goto failed;
-
-                }
-                else {
-                    PUSH_ERR("lzf_filter", H5E_CALLBACK, "Unknown LZF decompression error");
-                    goto failed;
-                }
-            } /* if !status */
-        } /* while !status */
-
+            else {
+                PUSH_ERR("lzf_filter", H5E_CALLBACK, "Unknown LZF decompression error");
+                goto failed;
+            }
+        } /* if !status */
     } /* compressing vs decompressing */
 
     if (status != 0) {
