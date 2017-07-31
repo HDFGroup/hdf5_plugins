@@ -83,7 +83,7 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_LZF, H5Z_FLAG_MANDATORY, nelmts, cd_values);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_LZF, H5Z_FLAG_OPTIONAL, 0, NULL);
     if (status < 0) goto done;
 
     /*
@@ -160,7 +160,7 @@ main (void)
      */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
     printf ("Filter info is available from the dataset creation property\n");
-    printf (" Filter identifier is ");
+    printf ("   Filter identifier is ");
     switch (filter_id) {
         case H5Z_FILTER_LZF:
             printf ("%d\n", filter_id);
