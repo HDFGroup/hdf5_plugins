@@ -11,19 +11,19 @@ set (CTEST_DROP_METHOD "http")
 if (CDASH_LOCAL)
   set (CTEST_DROP_SITE "cdash-internal.hdfgroup.org")
   set (CTEST_DROP_LOCATION "/submit.php?project=HDF5PLUGINS")
-else (CDASH_LOCAL)
+else ()
   set (CTEST_DROP_SITE "cdash.hdfgroup.org")
   set (CTEST_DROP_LOCATION "/submit.php?project=HDF5PLUGINS")
-endif (CDASH_LOCAL)
+endif ()
 set (CTEST_DROP_SITE_CDASH TRUE)
 
 set (UPDATE_TYPE git)
 set (VALGRIND_COMMAND "/usr/bin/valgrind")
 set (VALGRIND_COMMAND_OPTIONS "-v --tool=memcheck --leak-check=full --track-fds=yes --num-callers=50 --show-reachable=yes --track-origins=yes --malloc-fill=0xff --free-fill=0xfe")
 
-set (CTEST_TEST_TIMEOUT 3600 CACHE STRING 
-    "Maximum time allowed before CTest will kill the test.") 
-set (DART_TESTING_TIMEOUT 3600 CACHE STRING 
+set (CTEST_TEST_TIMEOUT 3600 CACHE STRING
+    "Maximum time allowed before CTest will kill the test.")
+set (DART_TESTING_TIMEOUT 3600 CACHE STRING
     "Maximum time allowed before CTest will kill the test." FORCE)
 
 set (CTEST_SUBMIT_RETRY_DELAY 20 CACHE STRING
