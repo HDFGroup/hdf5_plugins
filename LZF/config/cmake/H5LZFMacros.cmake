@@ -1,101 +1,101 @@
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
+macro (EXTERNAL_LZF_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")
     set (BUILD_EXT_SHARED_LIBS "ON")
   else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
   endif ()
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (BZ2
-        GIT_REPOSITORY ${BZ2_URL}
-        GIT_TAG ${BZ2_BRANCH}
+    EXTERNALPROJECT_ADD (LZF
+        GIT_REPOSITORY ${LZF_URL}
+        GIT_TAG ${LZF_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBZ2_PACKAGE_EXT:STRING=${BZ2_PACKAGE_EXT}
-            -DBZ2_EXTERNALLY_CONFIGURED:BOOL=OFF
+            -DLZF_PACKAGE_EXT:STRING=${LZF_PACKAGE_EXT}
+            -DLZF_EXTERNALLY_CONFIGURED:BOOL=OFF
             -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
+            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (BZ2
-        URL ${BZ2_URL}
+    EXTERNALPROJECT_ADD (LZF
+        URL ${LZF_URL}
         URL_MD5 ""
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBZ2_PACKAGE_EXT:STRING=${BZ2_PACKAGE_EXT}
-            -DBZ2_EXTERNALLY_CONFIGURED:BOOL=OFF
+            -DLZF_PACKAGE_EXT:STRING=${LZF_PACKAGE_EXT}
+            -DLZF_EXTERNALLY_CONFIGURED:BOOL=OFF
             -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
+            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     )
   endif ()
-  externalproject_get_property (BZ2 BINARY_DIR SOURCE_DIR)
+  externalproject_get_property (LZF BINARY_DIR SOURCE_DIR)
 
-  # Create imported target BZ2
-  add_library (bz2 ${libtype} IMPORTED)
-  H5BZ2_IMPORT_SET_LIB_OPTIONS (bz2 "bz2" ${libtype} "")
-  add_dependencies (BZ2 bz2)
+  # Create imported target LZF
+  add_library (lzf ${libtype} IMPORTED)
+  H5LZF_IMPORT_SET_LIB_OPTIONS (lzf "lzf" ${libtype} "")
+  add_dependencies (LZF lzf)
 
-#  include (${BINARY_DIR}/BZ2-targets.cmake)
-  set (BZ2_LIBRARY "bz2")
+#  include (${BINARY_DIR}/LZF-targets.cmake)
+  set (LZF_LIBRARY "lzf")
 
-  set (BZ2_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (BZ2_INCLUDE_DIR "${SOURCE_DIR}/src")
-  set (BZ2_FOUND 1)
-  set (BZ2_LIBRARIES ${BZ2_LIBRARY})
-  set (BZ2_INCLUDE_DIRS ${BZ2_INCLUDE_DIR_GEN} ${BZ2_INCLUDE_DIR})
+  set (LZF_INCLUDE_DIR_GEN "${BINARY_DIR}")
+  set (LZF_INCLUDE_DIR "${SOURCE_DIR}")
+  set (LZF_FOUND 1)
+  set (LZF_LIBRARIES ${LZF_LIBRARY})
+  set (LZF_INCLUDE_DIRS ${LZF_INCLUDE_DIR_GEN} ${LZF_INCLUDE_DIR})
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (PACKAGE_BZ2_LIBRARY compress_type)
-  add_custom_target (BZ2-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BZ2_INCLUDE_DIR}/bzlib.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${BZ2_INCLUDE_DIR}/bzlib.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+macro (PACKAGE_LZF_LIBRARY compress_type)
+  add_custom_target (LZF-GenHeader-Copy ALL
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LZF_INCLUDE_DIR}/lzf.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+      COMMENT "Copying ${LZF_INCLUDE_DIR}/lzf.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
   )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/bzlib.h)
+  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lzf.h)
   if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (BZ2-GenHeader-Copy bz2)
+    add_dependencies (LZF-GenHeader-Copy LZF)
   endif ()
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (H5BZ2_SET_LIB_OPTIONS libtarget defaultlibname libtype)
+macro (H5LZF_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   set (libname "${defaultlibname}")
-  H5BZ2_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
+  H5LZF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
 
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
-      set (LIBH5BZ2_VERSION ${H5BZ2_PACKAGE_VERSION_MAJOR})
+      set (LIBH5LZF_VERSION ${H5LZF_PACKAGE_VERSION_MAJOR})
     else ()
-      set (LIBH5BZ2_VERSION ${H5BZ2_PACKAGE_VERSION})
+      set (LIBH5LZF_VERSION ${H5LZF_PACKAGE_VERSION})
     endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${LIBH5BZ2_VERSION})
+    set_target_properties (${libtarget} PROPERTIES VERSION ${LIBH5LZF_VERSION})
     if (WIN32)
-        set (${libname} "${libname}-${H5BZ2_PACKAGE_SOVERSION}")
+        set (${libname} "${libname}-${H5LZF_PACKAGE_SOVERSION}")
     else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5BZ2_PACKAGE_SOVERSION})
+        set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5LZF_PACKAGE_SOVERSION})
     endif ()
   endif ()
 
   #-- Apple Specific install_name for libraries
   if (APPLE)
-    option (H5BZ2_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
-    if (H5BZ2_BUILD_WITH_INSTALL_NAME)
+    option (H5LZF_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
+    if (H5LZF_BUILD_WITH_INSTALL_NAME)
       set_target_properties(${libtarget} PROPERTIES
-          LINK_FLAGS "-current_version ${H5BZ2_PACKAGE_VERSION} -compatibility_version ${H5BZ2_PACKAGE_VERSION}"
+          LINK_FLAGS "-current_version ${H5LZF_PACKAGE_VERSION} -compatibility_version ${H5LZF_PACKAGE_VERSION}"
           INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-          BUILD_WITH_INSTALL_RPATH ${H5BZ2_BUILD_WITH_INSTALL_NAME}
+          BUILD_WITH_INSTALL_RPATH ${H5LZF_BUILD_WITH_INSTALL_NAME}
       )
     endif ()
   endif ()
@@ -179,7 +179,7 @@ macro (INSTALL_PROGRAM_PDB progtarget targetdestination targetcomponent)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (H5BZ2_SET_BASE_OPTIONS libtarget libname libtype)
+macro (H5LZF_SET_BASE_OPTIONS libtarget libname libtype)
   if (${libtype} MATCHES "SHARED")
     if (WIN32)
       set (LIB_RELEASE_NAME "${libname}")
@@ -230,8 +230,8 @@ macro (H5BZ2_SET_BASE_OPTIONS libtarget libname libtype)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (H5BZ2_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
-  H5BZ2_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
+macro (H5LZF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
+  H5LZF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
 
   if (${importtype} MATCHES "IMPORT")
     set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
@@ -303,7 +303,7 @@ endmacro ()
 #-----------------------------------------------------------------------------
 # Configure the README.txt file for the binary package
 #-----------------------------------------------------------------------------
-macro (H5BZ2_README_PROPERTIES)
+macro (H5LZF_README_PROPERTIES)
   set (BINARY_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
   set (BINARY_PLATFORM "${CMAKE_SYSTEM_NAME}")
   if (WIN32)
@@ -354,7 +354,7 @@ macro (H5BZ2_README_PROPERTIES)
   endif ()
 
   configure_file (
-      ${H5BZ2_RESOURCES_DIR}/README.txt.cmake.in
+      ${H5LZF_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
 endmacro ()

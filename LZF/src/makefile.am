@@ -1,0 +1,32 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+##
+## Makefile.am
+## Run automake to generate a Makefile.in from this file.
+##
+#
+# HDF5 LZF Library Plugin makefile(.in)
+#
+
+# Shell commands used in Makefiles
+RM=rm -f
+CP=cp
+
+MAJOR = 0
+MINOR = 1
+VERSION = $(MAJOR).$(MINOR)
+
+AM_CPPFLAGS=-I$(HDF5_ROOT)/include -I$(LZF_ROOT)/include
+
+# The libh5lzf library for plugin module.
+# Build it as shared library.
+lib_LTLIBRARIES=libh5lzf.la
+libh5lzf_la_SOURCES=H5Zlzf.c
+
+LDFLAGS=-L$(LZF_ROOT)/lib
+LIBS=-llzf
+
+CHECK_CLEANFILES=*.o *.so* 
+DISTCLEANFILES=*.o *.so* 

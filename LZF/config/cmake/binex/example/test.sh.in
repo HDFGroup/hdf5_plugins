@@ -40,10 +40,12 @@ DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
+ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
+
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
-PLUGIN_LIB="$FROM_DIR/libh5blosc.so.*"
+PLUGIN_LIB="$FROM_DIR/libh5lzf.so.*"
 
 # Create test directories if not exists yet.
 test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
@@ -65,8 +67,8 @@ ENVCMD="env HDF5_PLUGIN_PATH=${PLUGIN_LIBDIR}"
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
-$SRC_TESTFILES/h5ex_d_blosc.ddl
-$SRC_TESTFILES/h5ex_d_blosc.tst
+$SRC_TESTFILES/h5ex_d_lzf.ddl
+$SRC_TESTFILES/h5ex_d_lzf.tst
 $SRC_TESTFILES/h5repack_layout.h5-ud_convert.ddl
 $SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
 "
@@ -250,11 +252,11 @@ echo $ENVCMD
 
 COPY_TESTFILES_TO_TESTDIR
 
-EXETEST h5ex_d_blosc h5ex_d_blosc.tst
+EXETEST h5ex_d_lzf h5ex_d_lzf.tst
 
-DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
+DUMPTEST h5ex_d_lzf.ddl h5ex_d_lzf.h5
 
-#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
+#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9 -l CHUNK=4x5
 
 #DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 

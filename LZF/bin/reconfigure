@@ -14,7 +14,7 @@
 # Be very careful when specifying these tools manually!  There are a lot
 # of versions that can get confused (not even counting the m4 utility)!
 
-# blosc currently uses the following versions of the autotools:
+# h5lzf currently uses the following versions of the autotools:
 AUTOCONF_VERSION="autoconf (GNU Autoconf) 2.69"
 AUTOMAKE_VERSION="automake (GNU automake) 1.14.1"
 AUTOHEADER_VERSION="autoheader (GNU Autoconf) 2.69"

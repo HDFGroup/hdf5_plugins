@@ -92,7 +92,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = h5ex_d_blosc$(EXEEXT)
+noinst_PROGRAMS = h5ex_d_lzf$(EXEEXT)
 TESTS = $(TEST_SCRIPT)
 subdir = example
 DIST_COMMON = $(srcdir)/makefile.in $(srcdir)/makefile.am \
@@ -107,9 +107,9 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES = test.sh
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-h5ex_d_blosc_SOURCES = h5ex_d_blosc.c
-h5ex_d_blosc_OBJECTS = h5ex_d_blosc.$(OBJEXT)
-h5ex_d_blosc_LDADD = $(LDADD)
+h5ex_d_lzf_SOURCES = h5ex_d_lzf.c
+h5ex_d_lzf_OBJECTS = h5ex_d_lzf.$(OBJEXT)
+h5ex_d_lzf_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -148,8 +148,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = h5ex_d_blosc.c
-DIST_SOURCES = h5ex_d_blosc.c
+SOURCES = h5ex_d_lzf.c
+DIST_SOURCES = h5ex_d_lzf.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -325,11 +325,11 @@ top_srcdir = @top_srcdir@
 # Shell commands used in Makefiles
 RM = rm -f
 CP = cp
-EXTRA_DIST = testfiles/h5ex_d_blosc.tst testfiles/h5ex_d_blosc.ddl test.sh
+EXTRA_DIST = testfiles/h5ex_d_lzf.tst testfiles/h5ex_d_lzf.ddl test.sh
 EXTRA_PROG = $(noinst_PROGRAMS)
 TESTS_ENVIRONMENT = sh
 TEST_SCRIPT = test.sh
-SCRIPT_DEPEND = h5ex_d_blosc$(EXEEXT)
+SCRIPT_DEPEND = h5ex_d_lzf$(EXEEXT)
 TEST_EXTENSIONS = .sh
 SH_LOG_COMPILER = $(SHELL)
 AM_SH_LOG_FLAGS = 
@@ -381,9 +381,9 @@ clean-noinstPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-h5ex_d_blosc$(EXEEXT): $(h5ex_d_blosc_OBJECTS) $(h5ex_d_blosc_DEPENDENCIES) $(EXTRA_h5ex_d_blosc_DEPENDENCIES) 
-	@rm -f h5ex_d_blosc$(EXEEXT)
-	$(AM_V_CCLD)$(LINK) $(h5ex_d_blosc_OBJECTS) $(h5ex_d_blosc_LDADD) $(LIBS)
+h5ex_d_lzf$(EXEEXT): $(h5ex_d_lzf_OBJECTS) $(h5ex_d_lzf_DEPENDENCIES) $(EXTRA_h5ex_d_lzf_DEPENDENCIES) 
+	@rm -f h5ex_d_lzf$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(h5ex_d_lzf_OBJECTS) $(h5ex_d_lzf_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -391,7 +391,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/h5ex_d_blosc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/h5ex_d_lzf.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

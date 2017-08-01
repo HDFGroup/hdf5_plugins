@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 3.2.2)
-project (HDF5BLOSC_EX)
+project (HDF5LZF_EX)
 
 set (dyn_examples
-    h5ex_d_blosc
+    h5ex_d_lzf
 )
 
 if (USE_SHARED_LIBS)
@@ -11,7 +11,7 @@ else ()
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
 endif ()
 
-#run-time loadable blosc library examples
+#run-time loadable lzf library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
@@ -55,7 +55,7 @@ if (BUILD_TESTING)
             -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
             -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
             -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-            -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
+            -P "${H5LZF_RESOURCES_DIR}/runTest.cmake"
     )
     if (NOT "${last_test}" STREQUAL "")
       set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
@@ -74,7 +74,7 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-              -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
+              -P "${H5LZF_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
         set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
@@ -85,7 +85,7 @@ if (BUILD_TESTING)
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
-        NAME H5BLOSC_UD-${testname}-clearall-objects
+        NAME H5LZF_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
             out-${testname}.${resultfile}
@@ -95,9 +95,9 @@ if (BUILD_TESTING)
             ${resultfile}-${testname}.out.err
     )
     if (NOT "${last_test}" STREQUAL "")
-      set_tests_properties (H5BLOSC_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+      set_tests_properties (H5LZF_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
     endif ()
-    set (last_test "H5BLOSC_UD-${testname}-clearall-objects")
+    set (last_test "H5LZF_UD-${testname}-clearall-objects")
     if (WIN32)
       set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
     else ()
@@ -105,7 +105,7 @@ if (BUILD_TESTING)
     endif ()
     if (HDF5_BUILD_TOOLS)
       add_test (
-          NAME H5BLOSC_UD-${testname}
+          NAME H5LZF_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_REPACK_EXECUTABLE}"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
@@ -117,14 +117,14 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-              -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
+              -P "${H5LZF_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5BLOSC_UD-${testname} PROPERTIES DEPENDS ${last_test})
+        set_tests_properties (H5LZF_UD-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
-      set (last_test "H5BLOSC_UD-${testname}")
+      set (last_test "H5LZF_UD-${testname}")
       add_test (
-          NAME H5BLOSC_UD-h5dump-${testname}
+          NAME H5LZF_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
@@ -135,12 +135,12 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-              -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
+              -P "${H5LZF_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+        set_tests_properties (H5LZF_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
-      set (last_test "H5BLOSC_UD-h5dump-${testname}")
+      set (last_test "H5LZF_UD-h5dump-${testname}")
     endif ()
   endmacro ()
 
@@ -151,20 +151,10 @@ if (BUILD_TESTING)
       h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      h5ex_d_blosc.ddl
-      h5ex_d_blosc.tst
+      h5ex_d_lzf.ddl
+      h5ex_d_lzf.tst
       h5repack_layout.h5-ud_convert.ddl
       ud_convert.h5repack_layout.h5.tst
-      h5repack_layout.h5-ud_convert_lz.ddl
-      ud_convert_lz.h5repack_layout.h5.tst
-      h5repack_layout.h5-ud_convert_lz4.ddl
-      ud_convert_lz4.h5repack_layout.h5.tst
-      h5repack_layout.h5-ud_convert_lz4hc.ddl
-      ud_convert_lz4hc.h5repack_layout.h5.tst
-      h5repack_layout.h5-ud_convert_zlib.ddl
-      ud_convert_zlib.h5repack_layout.h5.tst
-      h5repack_layout.h5-ud_convert_zstd.ddl
-      ud_convert_zstd.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
@@ -172,21 +162,9 @@ if (BUILD_TESTING)
   endforeach ()
   add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
-  ADD_H5_TEST (h5ex_d_blosc)
+  ADD_H5_TEST (h5ex_d_lzf)
 
-#UD BLOSC
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0)
-# ...BLOSC_BLOSCLZ
-  ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,0)
-# ...BLOSC_LZ4
-  ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,1)
-# ...BLOSC_LZ4HC
-  ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,2)
-# ...BLOSC_SNAPPY
-#  ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,0,0,3)
-# ...BLOSC_ZLIB
-  ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,4)
-# ...BLOSC_ZSTD
-  ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,5)
+#UD LZ$
+#  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32000,3,0,0,0 -l CHUNK=4x8)
 
 endif ()
