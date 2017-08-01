@@ -75,6 +75,10 @@ set (HDF5PL_PACKAGE_TARNAME "${HDF5PL_PACKAGE_NAME}${HDF_PACKAGE_EXT}")
 set (HDF5PL_PACKAGE_URL "https://support.hdfgroup.org/hdf5/")
 set (HDF5PL_PACKAGE_BUGREPORT "help@hdfgroup.org")
 
+set (HDF5PL_VERS_MAJOR "1")
+set (HDF5PL_VERS_MINOR "0")
+set (HDF5PL_VERS_RELEASE "0")
+
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
 #-----------------------------------------------------------------------------
