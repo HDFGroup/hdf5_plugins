@@ -40,6 +40,7 @@ DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
+ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins

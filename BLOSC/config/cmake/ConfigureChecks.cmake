@@ -50,7 +50,7 @@ MACRO (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
   if (${VARIABLE})
     set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
   endif ()
-ENDMACRO (CHECK_LIBRARY_EXISTS_CONCAT)
+ENDMACRO ()
 
 # ----------------------------------------------------------------------
 # WINDOWS Hard code Values
@@ -170,7 +170,7 @@ MACRO (H5BLOSC_FUNCTION_TEST OTHER_TEST)
       )
     endif ()
   endif ()
-ENDMACRO (H5BLOSC_FUNCTION_TEST)
+ENDMACRO ()
 
 H5BLOSC_FUNCTION_TEST (STDC_HEADERS)
 
@@ -184,7 +184,7 @@ MACRO (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
   if (${VARIABLE})
     set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
   endif ()
-ENDMACRO (CHECK_INCLUDE_FILE_CONCAT)
+ENDMACRO ()
 
 #-----------------------------------------------------------------------------
 #  Check for the existence of certain header files
