@@ -40,14 +40,14 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
     )
   endif ()
-  externalproject_get_property (LZ4 BINARY_DIR SOURCE_DIR) 
+  externalproject_get_property (LZ4 BINARY_DIR SOURCE_DIR)
 
   # Create imported target LZ4
   add_library (lz4 ${libtype} IMPORTED)
   H5LZ4_IMPORT_SET_LIB_OPTIONS (lz4 "lz4" ${libtype} "")
   add_dependencies (LZ4 lz4)
 
-#  include (${BINARY_DIR}/LZ4-targets.cmake)  
+#  include (${BINARY_DIR}/LZ4-targets.cmake)
   set (LZ4_LIBRARY "lz4")
 
   set (LZ4_INCLUDE_DIR_GEN "${BINARY_DIR}")
@@ -65,7 +65,7 @@ macro (PACKAGE_LZ4_LIBRARY compress_type)
         COMMENT "Copying ${LZ4_INCLUDE_DIR}/lz4.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
     )
     set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lz4.h)
-    if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
+    if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
       add_dependencies (LZ4-GenHeader-Copy LZ4)
     endif ()
   endif ()
@@ -356,7 +356,7 @@ macro (H5LZ4_README_PROPERTIES)
   endif ()
 
   configure_file (
-      ${H5LZ4_RESOURCES_DIR}/README.txt.cmake.in 
+      ${H5LZ4_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
 endmacro ()

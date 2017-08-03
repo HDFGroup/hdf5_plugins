@@ -40,7 +40,6 @@ DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
-
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
