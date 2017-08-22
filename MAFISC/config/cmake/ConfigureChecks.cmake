@@ -363,7 +363,7 @@ if (NOT WINDOWS)
               "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
         )
       endif ()
-    else ( )
+    else ()
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
