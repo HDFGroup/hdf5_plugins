@@ -1,4 +1,6 @@
 #-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
 macro (SET_GLOBAL_VARIABLE name value)
   set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)
 endmacro ()

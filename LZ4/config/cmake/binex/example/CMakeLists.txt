@@ -76,7 +76,7 @@ if (BUILD_TESTING)
         set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
     endif ()
-  ENDMACRO (ADD_H5_TEST)
+  ENDMACRO ()
 
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run

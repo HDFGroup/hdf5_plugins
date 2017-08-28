@@ -76,7 +76,7 @@ if (BUILD_TESTING)
         set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
     endif ()
-  ENDMACRO (ADD_H5_TEST)
+  ENDMACRO ()
 
   MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
@@ -133,8 +133,8 @@ if (BUILD_TESTING)
         set_tests_properties (H5BLOSC_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
       set (last_test "H5BLOSC_UD-h5dump-${testname}")
-    endif (HDF5_BUILD_TOOLS)
-  endmacro (ADD_H5_UD_TEST)
+    endif ()
+  endmacro ()
 
   # --------------------------------------------------------------------
   # Copy all the HDF5 files from the source directory into the test directory
