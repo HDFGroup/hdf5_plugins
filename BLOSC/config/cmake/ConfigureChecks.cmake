@@ -13,7 +13,7 @@ include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
 include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
 if(CMAKE_CXX_COMPILER)
   include (${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
-endif(CMAKE_CXX_COMPILER)
+endif()
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -304,4 +304,3 @@ if (NOT WINDOWS)
     H5BLOSC_FUNCTION_TEST (${test})
   endforeach ()
 endif ()
-
