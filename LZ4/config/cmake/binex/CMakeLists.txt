@@ -5,7 +5,7 @@ project (HDFPLExamples C)
 # For standard build of HDF5  plugin examples.
 #-----------------------------------------------------------------------------
 include (${PROJECT_SOURCE_DIR}/config/cmak/HDFPluginMacros.cmake)
-BASIC_SETTINGS ()
+BASIC_SETTINGS (HDFPLExamples)
 
 #-----------------------------------------------------------------------------
 # HDF5 support
