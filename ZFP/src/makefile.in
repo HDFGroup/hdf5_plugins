@@ -1,0 +1,66 @@
+VERSION = 3.6
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+bindir = @bindir@
+includedir = @includedir@
+
+VPATH = @srcdir@
+
+CC = @CC@
+CPPFLAGS = -I. @CPPFLAGS@
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+
+all: Makefile zfp
+
+clean:
+	-rm -f *.o *.a zfp bench
+
+zfp_c.o: zfp_c.c zfpP.h
+
+zfp_d.o: zfp_d.c zfpP.h
+
+zfp.o: zfp.c
+
+zfp: zfp.o libzfp.a
+
+zfpP.h: zfp.h config.h
+
+libzfp.a: zfp_c.o zfp_d.o
+	rm -f $@
+	$(AR) rc $@ $^
+	$(RANLIB) $@
+
+install: all
+	$(INSTALL) -d $(bindir)
+	$(INSTALL) -m 755 zfp $(bindir)
+	$(INSTALL) -d $(includedir)
+	$(INSTALL_DATA) zfp.h $(includedir)
+	$(INSTALL) -d $(libdir)
+	$(INSTALL_DATA) libzfp.a $(libdir)
+
+dist:
+	mkdir libzfp-$(VERSION)
+	tar c LICENSE README Makefile.in config.h.in \
+              configure configure.ac install-sh \
+	      cs/README cs/CZFP.cs \
+              zfp.h zfpP.h zfp_c.c zfp_d.c \
+              crc32.h zfp.c Changes \
+              | tar xpC libzfp-$(VERSION)
+	-chown -R root.root libzfp-$(VERSION)
+	chmod -R u=rwX,go=rX libzfp-$(VERSION)
+	tar cvf - libzfp-$(VERSION) | gzip -9 >libzfp-$(VERSION).tar.gz
+	rm -rf libzfp-$(VERSION)
+	ls -l libzfp-$(VERSION).tar.gz
+
+Makefile: Makefile.in
+	./config.status
+
+bench: Makefile libzfp.a bench.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -g -o bench bench.c -L. -lzfp
+
