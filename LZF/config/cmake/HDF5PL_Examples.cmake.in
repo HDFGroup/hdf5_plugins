@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 3.2.2 FATAL_ERROR)
 ###############################################################################################################
 # This script will build and run the examples from a folder
 # Execute from a command line:
-#     ctest -S HDFPL_Examples.cmake,OPTION=VALUE -C Release -V -O test.log
+#     ctest -S HDFPL_Examples.cmake,OPTION=VALUE -C Release -VV -O test.log
 ###############################################################################################################
 
 set(CTEST_CMAKE_GENERATOR "@CMAKE_GENERATOR@")
+if("@CMAKE_GENERATOR_TOOLSET@")
+  set(CMAKE_GENERATOR_TOOLSET "@CMAKE_GENERATOR_TOOLSET@")
+endif()
 set(CTEST_DASHBOARD_ROOT ${CTEST_SCRIPT_DIRECTORY})
 
 # handle input parameters to script.
@@ -24,31 +27,31 @@ if(DEFINED CTEST_SCRIPT_ARG)
         endif()
     endforeach()
 endif()
+
 if(NOT DEFINED INSTALLDIR)
     set(INSTALLDIR "@CMAKE_INSTALL_PREFIX@")
 endif()
-if(NOT DEFINED HDFINSTALLDIR)
-  set(HDFINSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.8")
+if(NOT DEFINED HDF5INSTALLDIR)
+  set(HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.8")
 endif()
-if(WIN32)
-  set(HDF5INSTALLDIR "${HDFINSTALLDIR}/cmake")
-else(WIN32)
-  set(HDF5INSTALLDIR "${HDFINSTALLDIR}/share/cmake")
-endif(WIN32)
+
 if(NOT DEFINED CTEST_CONFIGURATION_TYPE)
     set(CTEST_CONFIGURATION_TYPE "Release")
 endif()
+
 if(NOT DEFINED CTEST_SOURCE_NAME)
     set(CTEST_SOURCE_NAME "HDFPLExamples")
 endif()
+
 if(NOT DEFINED STATIC_ONLY)
     set(STATICLIBRARIES "YES")
 else(NOT DEFINED STATIC_ONLY)
     set(STATICLIBRARIES "NO")
 endif()
+
 if(NOT DEFINED HDF_LOCAL)
     set(CDASH_LOCAL "NO")
-else(NOT HDF_LOCAL)
+else()
     set(CDASH_LOCAL "YES")
 endif()
 if(NOT DEFINED CTEST_SITE)
@@ -61,7 +64,7 @@ set(BUILD_OPTIONS "${BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRI
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.8-Source")
+#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.10.1-Source")
 #endif()
 
 ###############################################################################################################
@@ -76,23 +79,24 @@ if(WIN32)
   set(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}\\${CTEST_BINARY_NAME}")
   set(ENV{PATH} "$ENV{PATH};${HDF5INSTALLDIR}")
   set(HDF5_PLUGIN_ROOT "${INSTALLDIR}/bin")
-else(WIN32)
+  set(ENV{HDF5_DIR} "${HDF5INSTALLDIR}/cmake")
+else()
   if(${STATICLIBRARIES})
     set(BUILD_OPTIONS "${BUILD_OPTIONS} -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_ANSI_CFLAGS:STRING=-fPIC")
   endif()
-  set(ENV{LD_LIBRARY_PATH} "${HDFINSTALLDIR}/lib")
+  set(ENV{HDF5_DIR} "${HDF5INSTALLDIR}/share/cmake")
+  set(ENV{LD_LIBRARY_PATH} "${HDF5INSTALLDIR}/lib")
   set(CTEST_BINARY_NAME ${CTEST_SOURCE_NAME}/build)
   set(CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_SOURCE_NAME}")
   set(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_BINARY_NAME}")
   set(ENV{PATH} "$ENV{PATH}:${HDF5INSTALLDIR}")
   set(HDF5_PLUGIN_ROOT "${INSTALLDIR}/lib/plugin")
-endif(WIN32)
+endif()
 if(${CDASH_LOCAL})
   set(BUILD_OPTIONS "${BUILD_OPTIONS} -DCDASH_LOCAL:BOOL=ON")
 endif()
 set(BUILD_OPTIONS "${BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE_NAME@")
 set(ENV{HDF5_PLUGIN_PATH} "${HDF5_PLUGIN_ROOT}")
-set(ENV{HDF5_DIR} "${HDF5INSTALLDIR}")
 
 ###############################################################################################################
 # For any comments please contact cdashhelp@hdfgroup.org
