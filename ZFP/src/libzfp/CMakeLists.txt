@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES (${CMAKE_BINARY_DIR})
 #-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below
 #-----------------------------------------------------------------------------
-add_definitions (${HDF5_EXTRA_C_FLAGS} -DHAVE_CONFIG_H)
+add_definitions (${HDF5_EXTRA_C_FLAGS} -DHAVE_CONFIG_H -DBIT_STREAM_WORD_TYPE=uint8)
 
 #-----------------------------------------------------------------------------
 # Setup include Directories
