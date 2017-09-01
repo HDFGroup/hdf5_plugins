@@ -24,20 +24,20 @@ INCLUDE_DIRECTORIES (
 #-----------------------------------------------------------------------------
 if (BUILD_ZFP_LIBRARY_SOURCE)
   set (ZFP_SRCS ${H5ZFP_SRCS}
-      ${H5ZFP_SRC_SOURCE_DIR}/src/bitstream.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/decode1f.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/decode1d.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/encode1f.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/encode1d.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/decode2f.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/decode2d.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/encode2f.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/encode2d.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/decode3f.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/decode3d.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/encode3f.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/encode3d.c
-      ${H5ZFP_SRC_SOURCE_DIR}/src/zfp.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/bitstream.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/decode1f.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/decode1d.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/encode1f.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/encode1d.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/decode2f.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/decode2d.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/encode2f.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/encode2d.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/decode3f.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/decode3d.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/encode3f.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/encode3d.c
+      ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/zfp.c
 
   )
 endif (BUILD_ZFP_LIBRARY_SOURCE)
