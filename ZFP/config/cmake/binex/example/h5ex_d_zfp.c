@@ -48,9 +48,9 @@ main (void)
     size_t          nelmts = 3;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[3] = {0, 0, 0};
-    unsigned int    values_out[3] = {99, 99, 99};
-    int             wdata[DIM0][DIM1],          /* Write buffer */
+    const unsigned int    cd_values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int    values_out[10] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
+    double          wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
     hsize_t         i, j;

@@ -157,6 +157,6 @@ if (BUILD_TESTING)
   ADD_H5_TEST (h5ex_d_bzip2)
 
 #UD BZIP2
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,1,9)
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,0,1,9)
 
 endif ()

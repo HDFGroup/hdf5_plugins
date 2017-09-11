@@ -48,9 +48,9 @@ main (void)
     size_t          nelmts = 3;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[3] = {0, 0, 0};
-    unsigned int    values_out[3] = {99, 99, 99};
-    int             wdata[DIM0][DIM1],          /* Write buffer */
+    const unsigned int    cd_values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int    values_out[10] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
+    double          wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
     hsize_t         i, j;
@@ -104,7 +104,7 @@ main (void)
      * Create the dataset.
      */
     printf ("....Create dataset ................\n");
-    dset_id = H5Dcreate (file_id, DATASET, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
+    dset_id = H5Dcreate (file_id, DATASET, H5T_NATIVE_DOUBLE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
     if (dset_id < 0) {
         printf ("failed to create dataset.\n");
         goto done;
@@ -114,7 +114,7 @@ main (void)
      * Write the data to the dataset.
      */
     printf ("....Writing zfp compressed data ................\n");
-    status = H5Dwrite (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
+    status = H5Dwrite (dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
     if (status < 0) printf ("failed to write data.\n");
 
     /*
@@ -176,7 +176,7 @@ main (void)
      * Read the data using the default properties.
      */
     printf ("....Reading zfp compressed data ................\n");
-    status = H5Dread (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
+    status = H5Dread (dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
     if (status < 0) printf ("failed to read data.\n");
 
     /*

@@ -69,8 +69,8 @@ include (${H5MAFISC_RESOURCES_DIR}/ConfigureChecks.cmake)
 HDF5_SUPPORT (TRUE)
 message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
-option (DISABLE_MAFISC_ENCODER "build the mafisc library without encoding" OFF)
-if (NOT DISABLE_MAFISC_ENCODER)
+option (DISABLE_H5MAFISC_ENCODER "build the mafisc library without encoding" OFF)
+if (NOT DISABLE_H5MAFISC_ENCODER)
   set (FILTER_DECODE_ONLY 1)
 endif ()
 

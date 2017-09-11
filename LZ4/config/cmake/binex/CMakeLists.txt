@@ -10,7 +10,7 @@ BASIC_SETTINGS (HDFPLExamples)
 #-----------------------------------------------------------------------------
 # HDF5 support
 #-----------------------------------------------------------------------------
-HDF5_SUPPORT (FALSE)
+HDF5_SUPPORT (TRUE)
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 message (STATUS "HDF5 link libs: ${LINK_LIBS}")
