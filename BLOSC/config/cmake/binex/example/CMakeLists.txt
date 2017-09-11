@@ -157,6 +157,6 @@ if (BUILD_TESTING)
   ADD_H5_TEST (h5ex_d_blosc)
 
 #UD BLOSC
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0)
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0,0)
 
 endif ()
