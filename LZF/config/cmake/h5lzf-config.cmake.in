@@ -1,0 +1,58 @@
+#-----------------------------------------------------------------------------
+# h5lzf Config file for compiling against h5lzf install directory
+#-----------------------------------------------------------------------------
+@PACKAGE_INIT@
+
+string(TOUPPER @H5LZF_PACKAGE@ H5LZF_PACKAGE_NAME)
+
+set (${H5LZF_PACKAGE_NAME}_VALID_COMPONENTS static shared)
+
+#-----------------------------------------------------------------------------
+# User Options
+#-----------------------------------------------------------------------------
+set (${H5LZF_PACKAGE_NAME}_BUILD_SHARED_LIBS    @BUILD_SHARED_LIBS@)
+set (${H5LZF_PACKAGE_NAME}_EXPORT_LIBRARIES     @H5LZF_LIBRARIES_TO_EXPORT@)
+
+#-----------------------------------------------------------------------------
+# Directories
+#-----------------------------------------------------------------------------
+set (${H5LZF_PACKAGE_NAME}_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+set (${H5LZF_PACKAGE_NAME}_SHARE_DIR "@PACKAGE_SHARE_INSTALL_DIR@")
+set_and_check (${H5LZF_PACKAGE_NAME}_BUILD_DIR "@PACKAGE_CURRENT_BUILD_DIR@")
+
+#-----------------------------------------------------------------------------
+# Version Strings
+#-----------------------------------------------------------------------------
+set (${H5LZF_PACKAGE_NAME}_VERSION_STRING @H5LZF_VERSION_STRING@)
+set (${H5LZF_PACKAGE_NAME}_VERSION_MAJOR  @H5LZF_VERSION_MAJOR@)
+set (${H5LZF_PACKAGE_NAME}_VERSION_MINOR  @H5LZF_VERSION_MINOR@)
+
+#-----------------------------------------------------------------------------
+# Don't include targets if this file is being picked up by another
+# project which has already built h5lzf as a subproject
+#-----------------------------------------------------------------------------
+if (NOT TARGET "@H5LZF_PACKAGE@")
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5LZF_PACKAGE@@H5LZF_PACKAGE_EXT@-targets.cmake)
+endif ()
+
+# Handle default component(static) :
+if (NOT ${H5LZF_PACKAGE_NAME}_FIND_COMPONENTS)
+    set (${H5LZF_PACKAGE_NAME}_FIND_COMPONENTS static)
+    set (${H5LZF_PACKAGE_NAME}_FIND_REQUIRED_static true)
+endif ()
+
+# Handle requested components:
+list (REMOVE_DUPLICATES ${H5LZF_PACKAGE_NAME}_FIND_COMPONENTS)
+foreach (comp IN LISTS ${H5LZF_PACKAGE_NAME}_FIND_COMPONENTS)
+    list (FIND ${H5LZF_PACKAGE_NAME}_EXPORT_LIBRARIES "@H5LZF_LIB_CORENAME@-${comp}" HAVE_COMP) 
+    if (${HAVE_COMP} LESS 0) 
+      set (${H5LZF_PACKAGE_NAME}_${comp}_FOUND 0)
+    else ()
+      set (${H5LZF_PACKAGE_NAME}_${comp}_FOUND 1)
+      string(TOUPPER ${H5LZF_PACKAGE_NAME}_${comp}_LIBRARY COMP_LIBRARY)
+      set (${COMP_LIBRARY} ${${COMP_LIBRARY}} @H5LZF_LIB_CORENAME@-${comp})
+    endif ()
+endforeach ()
+
+check_required_components (${H5LZF_PACKAGE_NAME})

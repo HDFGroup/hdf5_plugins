@@ -40,7 +40,6 @@ DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
-
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
@@ -96,7 +95,7 @@ COPY_TESTFILES_TO_TESTDIR()
                 $CP -f $tstfile $TESTDIR
                 if [ $? -ne 0 ]; then
                     echo "Error: FAILED to copy $tstfile ."
-                
+
                     # Comment out this to CREATE expected file
                     exit $EXIT_FAILURE
                 fi
@@ -184,12 +183,12 @@ DUMPTEST() {
     # Run test.
     TESTING $DUMPER $@
     (
-      $ENVCMD $H5DUMP "$@"
+      $ENVCMD $H5DUMP --enable-error-stack -p "$@"
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
     CMP_OUTPUT $expect $actual
-    
+
     # Clean up output file
 #    rm -f $actual $actual_err
 
