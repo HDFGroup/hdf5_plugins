@@ -51,8 +51,8 @@ main (void)
     const unsigned int    cd_values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     unsigned int    values_out[10] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
     double          wdata[DIM0][DIM1],          /* Write buffer */
-                    rdata[DIM0][DIM1],          /* Read buffer */
-                    max;
+                    rdata[DIM0][DIM1];          /* Read buffer */
+    long            max;
     hsize_t         i, j;
     int             ret_value = 1;
 
@@ -61,7 +61,7 @@ main (void)
      */
     for (i=0; i<DIM0; i++)
         for (j=0; j<DIM1; j++)
-            wdata[i][j] = i * j - j;
+            wdata[i][j] = (double)(i * j - j);
 
     /*
      * Create a new file using the default properties.
@@ -183,17 +183,17 @@ main (void)
      * Find the maximum value in the dataset, to verify that it was
      * read correctly.
      */
-    max = rdata[0][0];
+    max = (long)rdata[0][0];
     for (i=0; i<DIM0; i++)
         for (j=0; j<DIM1; j++) {
             /*printf("%d \n", rdata[i][j]); */
-            if (max < rdata[i][j])
-                max = rdata[i][j];
+            if (max < (long)rdata[i][j])
+                max = (long)rdata[i][j];
         }
     /*
      * Print the maximum value.
      */
-    printf ("Maximum value in %s is %d\n", DATASET, max);
+    printf ("Maximum value in %s is %ld\n", DATASET, max);
     /*
      * Check that filter is registered with the library now.
      */
