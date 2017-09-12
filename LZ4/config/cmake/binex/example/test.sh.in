@@ -254,7 +254,7 @@ EXETEST h5ex_d_lz4 h5ex_d_lz4.tst
 
 DUMPTEST h5ex_d_lz4.ddl h5ex_d_lz4.h5
 
-REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9 -l CHUNK=4x5
+REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=32004,0,1,3 -l CHUNK=4x8
 
 DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 
