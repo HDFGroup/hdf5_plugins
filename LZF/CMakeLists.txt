@@ -1,0 +1,151 @@
+cmake_minimum_required (VERSION 3.2.2)
+project (H5LZF C)
+
+#-----------------------------------------------------------------------------
+# Basic H5LZF stuff here
+#-----------------------------------------------------------------------------
+include (${H5LZF_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
+include (${H5LZF_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+BASIC_SETTINGS (H5LZF)
+
+set (H5LZF_VERS_MAJOR 1)
+set (H5LZF_VERS_MINOR 0)
+set (H5LZF_VERS_RELEASE 0)
+
+set (H5LZF_SOVERS_MAJOR 1)
+set (H5LZF_SOVERS_MINOR 0)
+set (H5LZF_SOVERS_INTERFACE 1)
+set (H5LZF_SOVERS_RELEASE 0)
+math (EXPR H5LZF_SOVERS_MAJOR ${H5LZF_SOVERS_INTERFACE}-${H5LZF_SOVERS_RELEASE})
+
+#-----------------------------------------------------------------------------
+set (H5LZF_PACKAGE "h5lzf")
+set (H5LZF_PACKAGE_NAME "h5lzf")
+set (H5LZF_PACKAGE_VERSION "${H5LZF_VERS_MAJOR}.${H5LZF_VERS_MINOR}")
+set (H5LZF_PACKAGE_VERSION_STRING "${H5LZF_PACKAGE_VERSION}")
+set (H5LZF_PACKAGE_VERSION_MAJOR "${H5LZF_VERS_MAJOR}")
+set (H5LZF_PACKAGE_VERSION_MINOR "${H5LZF_VERS_MINOR}")
+set (H5LZF_PACKAGE_STRING "${H5LZF_PACKAGE_NAME} ${H5LZF_PACKAGE_VERSION}")
+set (H5LZF_PACKAGE_TARNAME "${H5LZF_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
+set (H5LZF_PACKAGE_URL "http://www.hdfgroup.org")
+set (H5LZF_PACKAGE_BUGREPORT "help@hdfgroup.org")
+set (H5LZF_PACKAGE_SOVERSION "${H5LZF_SOVERS_MAJOR}.${H5LZF_SOVERS_RELEASE}.${H5LZF_SOVERS_MINOR}")
+
+#-----------------------------------------------------------------------------
+# Include some macros for reusable code
+#-----------------------------------------------------------------------------
+include (${H5LZF_RESOURCES_DIR}/H5LZFMacros.cmake)
+
+#-----------------------------------------------------------------------------
+# Run all the CMake configuration tests for our build environment
+#-----------------------------------------------------------------------------
+include (${H5LZF_RESOURCES_DIR}/ConfigureChecks.cmake)
+
+#-----------------------------------------------------------------------------
+# HDF5 support
+#-----------------------------------------------------------------------------
+HDF5_SUPPORT (TRUE)
+message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+
+if (USE_SHARED_LIBS)
+  set (H5_LIB_TYPE SHARED)
+else ()
+  set (H5_LIB_TYPE STATIC)
+endif ()
+
+option (DISABLE_H5LZF_ENCODER "build the lzf library without encoding" OFF)
+if (NOT DISABLE_H5LZF_ENCODER)
+  set (FILTER_DECODE_ONLY 1)
+endif ()
+
+INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
+
+include (ExternalProject)
+set (H5LZF_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
+set_property (CACHE H5LZF_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
+if (H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  option (LZF_USE_EXTERNAL "Use External Library Building for LZF" 1)
+  if (H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    set (LZF_URL ${LZF_GIT_URL} CACHE STRING "Path to lzf git repository")
+    set (LZF_BRANCH ${LZF_GIT_BRANCH})
+  elseif (H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    if (NOT TGZPATH)
+      set (TGZPATH ${H5LZF_SOURCE_DIR})
+    endif ()
+    set (LZF_URL ${TGZPATH}/${LZF_TGZ_NAME})
+  else ()
+    set (LZF_USE_EXTERNAL 0)
+  endif ()
+endif ()
+#-----------------------------------------------------------------------------
+# lzf Library Settings
+#-----------------------------------------------------------------------------
+if (NOT H5_LZF_HEADER)
+  if (NOT LZF_USE_EXTERNAL)
+    find_package (LZF NAMES ${LZF_PACKAGE_NAME}${HDF_PACKAGE_EXT} COMPONENTS static)
+    if (NOT LZF_FOUND)
+      find_package (LZF) # Legacy find
+      if (LZF_FOUND)
+        set (LINK_LIBS ${LINK_LIBS} ${LZFC_LIBRARIES})
+      endif ()
+    endif ()
+  endif ()
+  if (LZF_FOUND)
+    set (H5_HAVE_LZF_H 1)
+    set (H5_HAVE_LZF 1)
+    set (H5_LZF_HEADER "lzf.h")
+    set (LZF_INCLUDE_DIR_GEN ${LZF_INCLUDE_DIR})
+    set (LZF_INCLUDE_DIRS ${LZF_INCLUDE_DIRS} ${LZF_INCLUDE_DIR})
+  else ()
+    if (H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+      EXTERNAL_LZF_LIBRARY (${H5LZF_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      set (H5_HAVE_LZF_H 1)
+      set (H5_HAVE_LZF 1)
+      message (STATUS "Filter LZF is built")
+    else ()
+      message (FATAL_ERROR " LZF is Required for ${H5LZF_PACKAGE_NAME} library")
+    endif ()
+  endif ()
+else ()
+  # This project is being called from within another and LZF is already configured
+  set (H5_HAVE_LZF_H 1)
+endif ()
+message (STATUS "lzf found: INC=${LZF_INCLUDE_DIR} TOOLS=${LZF_LIBRARIES}")
+set (LINK_LIBS ${LINK_LIBS} ${LZF_LIBRARY})
+INCLUDE_DIRECTORIES (${LZF_INCLUDE_DIRS})
+
+if (LZF_FOUND)
+  PACKAGE_LZF_LIBRARY (${H5LZF_ALLOW_EXTERNAL_SUPPORT})
+endif ()
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+# Dashboard and Testing Settings
+#-----------------------------------------------------------------------------
+option (BUILD_TESTING "Build h5lzf Unit Testing" OFF)
+if (BUILD_TESTING)
+  set (DART_TESTING_TIMEOUT 1200 CACHE INTEGER
+       "Timeout in seconds for each test (default 1200=20minutes)")
+  enable_testing ()
+  include (CTest)
+  include (${PROJECT_SOURCE_DIR}/CTestConfig.cmake)
+  configure_file (${HDF_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
+endif ()
+
+add_subdirectory (${H5LZF_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+
+if (H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5LZF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  if (LZF_FOUND AND LZF_USE_EXTERNAL)
+    add_dependencies (${H5LZF_LIB_TARGET} LZF)
+  endif ()
+endif ()
+
+option (BUILD_EXAMPLES "Build h5lzf Examples" OFF)
+if (BUILD_EXAMPLES)
+  add_subdirectory (${H5LZF_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)
+endif ()
+
+#-----------------------------------------------------------------------------
+# Add file(s) to CMake Install
+#-----------------------------------------------------------------------------
+INSTALL_SUPPORT (H5LZF)

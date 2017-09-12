@@ -186,7 +186,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
             i32Buf[0] = htobe32t((uint32_t)compBlockSize);  /* write blocksize */
             roBuf += 4;
 
-            rpos += blockSize;         /* advance read pointer */
+            rpos += blockSize;     	/* advance read pointer */
             roBuf += compBlockSize;       /* advance write pointer */
             outSize += compBlockSize + 4;
         }

@@ -76,7 +76,7 @@ COPY_TESTFILES_TO_TESTDIR()
                 $CP -f $tstfile $TESTDIR
                 if [ $? -ne 0 ]; then
                     echo "Error: FAILED to copy $tstfile ."
-                
+
                     # Comment out this to CREATE expected file
                     exit $EXIT_FAILURE
                 fi
@@ -164,18 +164,18 @@ DUMPTEST() {
     # Run test.
     TESTING $DUMPER $@
     (
-      $ENVCMD $H5DUMP "$@"
+      $ENVCMD $H5DUMP --enable-error-stack -p "$@"
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
     CMP_OUTPUT $expect $actual
-    
+
     # Clean up output file
 #    rm -f $actual $actual_err
 
 }
 
-REPACKTEST() 
+REPACKTEST()
 {
     infile=$1
     outfile=$2
@@ -193,7 +193,7 @@ REPACKTEST()
     RET=$?
     STDOUT_FILTER $actual
     cat $actual_err >> $actual
-    
+
      if [ $RET != 0 ] ; then
         echo "*FAILED*"
         nerrors="`expr $nerrors + 1`"
@@ -213,7 +213,7 @@ EXETEST() {
     actual_err="`basename $2 .tst`.err1"
 
     # Run test.
-    TESTING $fname 
+    TESTING $fname
     (
       $ENVCMD ./$fname
     ) >$actual 2>$actual_err
@@ -233,7 +233,7 @@ EXETEST h5ex_d_bzip2 h5ex_d_bzip2.tst
 
 DUMPTEST h5ex_d_bzip2.ddl h5ex_d_bzip2.h5
 
-REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
+REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,0,1,9
 
 DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 

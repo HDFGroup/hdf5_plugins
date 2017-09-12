@@ -127,7 +127,7 @@ MACRO (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
   if (${VARIABLE})
     set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
   endif ()
-ENDMACRO (CHECK_LIBRARY_EXISTS_CONCAT)
+ENDMACRO ()
 
 # ----------------------------------------------------------------------
 # WINDOWS Hard code Values
@@ -247,7 +247,7 @@ MACRO (H5MAFISC_FUNCTION_TEST OTHER_TEST)
       )
     endif ()
   endif ()
-ENDMACRO (H5MAFISC_FUNCTION_TEST)
+ENDMACRO ()
 
 H5MAFISC_FUNCTION_TEST (STDC_HEADERS)
 
@@ -261,7 +261,7 @@ MACRO (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
   if (${VARIABLE})
     set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
   endif ()
-ENDMACRO (CHECK_INCLUDE_FILE_CONCAT)
+ENDMACRO ()
 
 #-----------------------------------------------------------------------------
 #  Check for the existence of certain header files
@@ -363,7 +363,7 @@ if (NOT WINDOWS)
               "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
         )
       endif ()
-    else (TEST_LFS_WORKS_COMPILE )
+    else ()
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
@@ -398,4 +398,4 @@ endif ()
 foreach (inline_test inline __inline__ __inline)
   string (TOUPPER ${inline_test} INLINE_TEST_MACRO)
   H5MAFISC_FUNCTION_TEST (HAVE_${INLINE_TEST_MACRO})
-endforeach (inline_test)
+endforeach ()

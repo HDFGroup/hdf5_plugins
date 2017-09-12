@@ -31,13 +31,13 @@ if (APPLE)
 endif ()
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
-    set (${H5BZ2_PREFIX}_HAVE_DARWIN 1) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set (${H5BZ2_PREFIX}_HAVE_DARWIN 1)
 endif ()
 
 # Check for Solaris
-if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS") 
-    set (${H5BZ2_PREFIX}_HAVE_SOLARIS 1) 
+if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
+    set (${H5BZ2_PREFIX}_HAVE_SOLARIS 1)
 endif ()
 
 #-----------------------------------------------------------------------------

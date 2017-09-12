@@ -32,7 +32,7 @@ if (NOT TEST_ERRREF)
   set (ERROR_APPEND 1)
 endif ()
 
-message (STATUS "COMMAND: ${TEST_PROGRAM} ${TEST_ARGS}")
+message (STATUS "COMMAND: ${TEST_PROGRAM} ${TEST_ARGS}\nPL:$ENV{HDF5_PLUGIN_PATH}")
 
 if (TEST_LIBRARY_DIRECTORY)
   if (WIN32 AND NOT MINGW)
@@ -71,6 +71,16 @@ else ()
   )
 endif ()
 
+if (TEST_REGEX)
+  # TEST_REGEX should always be matched
+  file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
+  string (REGEX MATCH "${TEST_REGEX}" REGEX_MATCH ${TEST_STREAM})
+  string (COMPARE EQUAL "${REGEX_MATCH}" "${TEST_MATCH}" REGEX_RESULT)
+  if (${REGEX_RESULT} STREQUAL "0")
+    message (STATUS "Failed: The output of ${TEST_PROGRAM} did not contain ${TEST_MATCH}")
+  endif ()
+endif ()
+
 message (STATUS "COMMAND Result: ${TEST_RESULT}")
 
 # if the .err file exists and ERRROR_APPEND is enabled
@@ -90,8 +100,8 @@ if (NOT ${TEST_RESULT} STREQUAL ${TEST_EXPECT})
     if (EXISTS ${TEST_FOLDER}/${TEST_OUTPUT})
       file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
       message (STATUS "Output :\n${TEST_STREAM}")
-    endif()
-  endif()
+    endif ()
+  endif ()
   message (FATAL_ERROR "Failed: Test program ${TEST_PROGRAM} exited != ${TEST_EXPECT}.\n${TEST_ERROR}")
 endif ()
 
@@ -138,8 +148,15 @@ endif ()
 # remove text from the output file
 if (TEST_FILTER)
   file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-  string (REGEX REPLACE "${TEST_FILTER}" "" TEST_STREAM "${TEST_STREAM}")
+  string (REGEX REPLACE "${TEST_FILTER}" "${TEST_FILTER_REPLACE}" TEST_STREAM "${TEST_STREAM}")
   file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
+endif ()
+
+if (TEST_REF_FILTER)
+  #message (STATUS "TEST_REF_FILTER: ${TEST_APPEND}${TEST_REF_FILTER}")
+  file (READ ${TEST_FOLDER}/${TEST_REFERENCE} TEST_STREAM)
+  STRING(REGEX REPLACE "${TEST_REF_APPEND}" "${TEST_REF_FILTER}" TEST_STREAM "${TEST_STREAM}")
+  file (WRITE ${TEST_FOLDER}/${TEST_REFERENCE} "${TEST_STREAM}")
 endif ()
 
 # compare output files to references unless this must be skipped
@@ -149,11 +166,22 @@ if (NOT TEST_SKIP_COMPARE)
     file (WRITE ${TEST_FOLDER}/${TEST_REFERENCE} "${TEST_STREAM}")
   endif ()
 
-  # now compare the output with the reference
-  execute_process (
-      COMMAND ${CMAKE_COMMAND} -E compare_files ${TEST_FOLDER}/${TEST_OUTPUT} ${TEST_FOLDER}/${TEST_REFERENCE}
-      RESULT_VARIABLE TEST_RESULT
-  )
+  if (NOT TEST_SORT_COMPARE)
+    # now compare the output with the reference
+    execute_process (
+        COMMAND ${CMAKE_COMMAND} -E compare_files ${TEST_FOLDER}/${TEST_OUTPUT} ${TEST_FOLDER}/${TEST_REFERENCE}
+        RESULT_VARIABLE TEST_RESULT
+    )
+  else ()
+    file (STRINGS ${TEST_FOLDER}/${TEST_OUTPUT} v1)
+    file (STRINGS ${TEST_FOLDER}/${TEST_REFERENCE} v2)
+    list (SORT v1)
+    list (SORT v2)
+    if (NOT v1 STREQUAL v2)
+      set(TEST_RESULT 1)
+    endif ()
+  endif ()
+
   if (NOT ${TEST_RESULT} STREQUAL 0)
     set (TEST_RESULT 0)
     file (STRINGS ${TEST_FOLDER}/${TEST_OUTPUT} test_act)
@@ -230,7 +258,7 @@ if (NOT TEST_SKIP_COMPARE)
         if (${len_ref} STREQUAL "0")
           message (STATUS "COMPARE Failed: ${TEST_FOLDER}/${TEST_ERRREF} is empty")
         endif ()
-      endif()
+      endif ()
       if (NOT ${len_act} STREQUAL ${len_ref})
         set (TEST_RESULT 1)
       endif ()

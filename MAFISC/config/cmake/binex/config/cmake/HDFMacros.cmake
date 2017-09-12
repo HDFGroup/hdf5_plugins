@@ -1,4 +1,6 @@
 #-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
 macro (SET_GLOBAL_VARIABLE name value)
   set (${name} ${value} CACHE INTERNAL "Used to pass variables between directories" FORCE)
 endmacro ()
@@ -179,7 +181,6 @@ macro (HDF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
       )
     endif ()
   endif ()
-
 endmacro ()
 
 #-------------------------------------------------------------------------------

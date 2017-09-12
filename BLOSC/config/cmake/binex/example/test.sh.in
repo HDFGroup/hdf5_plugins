@@ -40,6 +40,7 @@ DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
+ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
@@ -96,7 +97,7 @@ COPY_TESTFILES_TO_TESTDIR()
                 $CP -f $tstfile $TESTDIR
                 if [ $? -ne 0 ]; then
                     echo "Error: FAILED to copy $tstfile ."
-                
+
                     # Comment out this to CREATE expected file
                     exit $EXIT_FAILURE
                 fi
@@ -184,12 +185,12 @@ DUMPTEST() {
     # Run test.
     TESTING $DUMPER $@
     (
-      $ENVCMD $H5DUMP "$@"
+      $ENVCMD $H5DUMP --enable-error-stack -p "$@"
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
     CMP_OUTPUT $expect $actual
-    
+
     # Clean up output file
 #    rm -f $actual $actual_err
 
@@ -255,7 +256,7 @@ EXETEST h5ex_d_blosc h5ex_d_blosc.tst
 
 DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
 
-#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,1,9
+#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=32001,0,0
 
 #DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 
