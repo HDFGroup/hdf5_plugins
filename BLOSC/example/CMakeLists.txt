@@ -175,18 +175,18 @@ if (BUILD_TESTING)
   ADD_H5_TEST (h5ex_d_blosc)
 
 #UD BLOSC
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0)
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0,0)
 # ...BLOSC_BLOSCLZ
-  ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,0)
+  ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,0)
 # ...BLOSC_LZ4
-  ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,1)
+  ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,1)
 # ...BLOSC_LZ4HC
-  ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,2)
+  ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,2)
 # ...BLOSC_SNAPPY
-#  ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,0,0,3)
+#  ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,0,0,3)
 # ...BLOSC_ZLIB
-  ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,4)
+  ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,4)
 # ...BLOSC_ZSTD
-  ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32001,7,0,0,0,0,5,1,5)
+  ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,5)
 
 endif ()

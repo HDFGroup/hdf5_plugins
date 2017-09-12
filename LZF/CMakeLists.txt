@@ -53,8 +53,8 @@ else ()
   set (H5_LIB_TYPE STATIC)
 endif ()
 
-option (DISABLE_LZF_ENCODER "build the lzf library without encoding" OFF)
-if (NOT DISABLE_LZF_ENCODER)
+option (DISABLE_H5LZF_ENCODER "build the lzf library without encoding" OFF)
+if (NOT DISABLE_H5LZF_ENCODER)
   set (FILTER_DECODE_ONLY 1)
 endif ()
 
