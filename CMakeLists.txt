@@ -233,6 +233,21 @@ if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCH
   endif ()
 endif ()
 
+# ZFP filter
+option (HDF_ZFP_USE_EXTERNAL "Use External Library Building for zfp plugin" 0)
+if (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  set (HDF_ZFP_USE_EXTERNAL 1 CACHE BOOL "Use External Library Building for zfp plugin" FORCE)
+  if (HDF_ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    set (HDF_ZFP_URL ${HDF_ZFP_GIT_URL})
+    set (HDF_ZFP_BRANCH ${HDF_ZFP_GIT_BRANCH})
+  elseif (HDF_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    if (NOT TGZPATH)
+      set (TGZPATH ${HDF5PL_SOURCE_DIR})
+    endif ()
+    set (HDF_ZFP_URL ${TGZPATH}/${HDF_ZFP_TGZ_NAME})
+  endif ()
+endif ()
+
 include (CMakePackageConfigHelpers)
 
 #-----------------------------------------------------------------------------
