@@ -2,6 +2,7 @@
 # Plugins must be built SHARED
 #-------------------------------------------------------------------------------
 macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
+  string(TOLOWER ${plname} PLUGIN_NAME)
   if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (${plname}
         GIT_REPOSITORY ${${plname}_URL}
@@ -10,6 +11,8 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
         CMAKE_ARGS
             -DUSED_SHARED_LIBS:BOOL="ON"
             -DBUILD_SHARED_LIBS:BOOL="ON"
+            -D${plname}_PACKAGE_NAME:STRING="${PLUGIN_NAME}"
+            -D${plname}_ALLOW_EXTERNAL_SUPPORT:STRING=${H5PL_ALLOW_EXTERNAL_SUPPORT}
             -D${plname}_PACKAGE_EXT:STRING=${${plname}_PACKAGE_EXT}
             -D${plname}_EXTERNALLY_CONFIGURED:BOOL=OFF
             -DBUILD_TESTING:STRING=${BUILD_TESTING}
@@ -31,6 +34,8 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
         CMAKE_ARGS
             -DUSED_SHARED_LIBS:BOOL="ON"
             -DBUILD_SHARED_LIBS:BOOL="ON"
+            -D${plname}_PACKAGE_NAME:STRING="${PLUGIN_NAME}"
+            -D${plname}_ALLOW_EXTERNAL_SUPPORT:STRING=${H5PL_ALLOW_EXTERNAL_SUPPORT}
             -D${plname}_PACKAGE_EXT:STRING=${${plname}_PACKAGE_EXT}
             -D${plname}_EXTERNALLY_CONFIGURED:BOOL=OFF
             -DBUILD_TESTING:STRING=${BUILD_TESTING}
