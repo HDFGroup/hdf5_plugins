@@ -1,25 +1,29 @@
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_PL_LIBRARY plname compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+# Plugins must be built SHARED
+#-------------------------------------------------------------------------------
+macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
+  string(TOLOWER ${plname} PLUGIN_NAME)
   if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (${plname}
         GIT_REPOSITORY ${${plname}_URL}
         GIT_TAG ${${plname}_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
+            -DUSED_SHARED_LIBS:BOOL="ON"
+            -DBUILD_SHARED_LIBS:BOOL="ON"
+            -D${plname}_PACKAGE_NAME:STRING="${PLUGIN_NAME}"
+            -D${plname}_ALLOW_EXTERNAL_SUPPORT:STRING=${H5PL_ALLOW_EXTERNAL_SUPPORT}
             -D${plname}_PACKAGE_EXT:STRING=${${plname}_PACKAGE_EXT}
             -D${plname}_EXTERNALLY_CONFIGURED:BOOL=OFF
+            -DBUILD_TESTING:STRING=${BUILD_TESTING}
+            -DBUILD_EXAMPLES:STRING=${BUILD_EXAMPLES}
             -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
+            -DDISABLE_${plname}_ENCODER:BOOL=${disable_encoder}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     )
   elseif (${compress_type} MATCHES "TGZ")
@@ -28,23 +32,29 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type libtype)
         URL_MD5 ""
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
+            -DUSED_SHARED_LIBS:BOOL="ON"
+            -DBUILD_SHARED_LIBS:BOOL="ON"
+            -D${plname}_PACKAGE_NAME:STRING="${PLUGIN_NAME}"
+            -D${plname}_ALLOW_EXTERNAL_SUPPORT:STRING=${H5PL_ALLOW_EXTERNAL_SUPPORT}
             -D${plname}_PACKAGE_EXT:STRING=${${plname}_PACKAGE_EXT}
             -D${plname}_EXTERNALLY_CONFIGURED:BOOL=OFF
+            -DBUILD_TESTING:STRING=${BUILD_TESTING}
+            -DBUILD_EXAMPLES:STRING=${BUILD_EXAMPLES}
             -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
             -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
+            -DDISABLE_${plname}_ENCODER:BOOL=${disable_encoder}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
     )
   endif ()
   externalproject_get_property (${plname} BINARY_DIR SOURCE_DIR)
 
   # Create imported target ${plname}
-  add_library (${plname} ${libtype} IMPORTED)
-  H5PL_IMPORT_SET_LIB_OPTIONS (${plname} "${plname}" ${libtype} "")
+  add_library (${plname} "SHARED" IMPORTED)
+  H5PL_IMPORT_SET_LIB_OPTIONS (${plname} "${plname}" "SHARED" "")
   add_dependencies (H5PL ${plname})
 
 #  include (${BINARY_DIR}/${plname}-targets.cmake)
