@@ -144,6 +144,8 @@ endmacro ()
 macro (HDF5_SUPPORT link_hdf)
   set (CMAKE_MODULE_PATH ${HDF_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
   set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+  # plugins must use SHARED libraries
+  option (USE_SHARED_LIBS "Use Shared Libraries" ON)
 
   if (NOT HDF5_HDF5_HEADER)
     if (USE_SHARED_LIBS)
