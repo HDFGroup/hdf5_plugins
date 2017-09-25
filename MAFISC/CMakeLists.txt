@@ -4,9 +4,11 @@ project (H5MAFISC C)
 #-----------------------------------------------------------------------------
 # Basic H5MAFISC stuff here
 #-----------------------------------------------------------------------------
-include (${H5MAFISC_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
-include (${H5MAFISC_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
-BASIC_SETTINGS (H5MAFISC)
+if (NOT H5PL_RESOURCES_DIR)
+  include (${H5MAFISC_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
+  include (${H5MAFISC_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+endif ()
+BASIC_SETTINGS (${MAFISC_PACKAGE_NAME})
 
 #-----------------------------------------------------------------------------
 # Specific H5MAFISC here
@@ -39,8 +41,6 @@ set (H5MAFISC_SOVERS_RELEASE 0)
 math (EXPR H5MAFISC_SOVERS_MAJOR ${H5MAFISC_SOVERS_INTERFACE}-${H5MAFISC_SOVERS_RELEASE})
 
 #-----------------------------------------------------------------------------
-set (H5MAFISC_PACKAGE "h5mafisc")
-set (H5MAFISC_PACKAGE_NAME "h5mafisc")
 set (H5MAFISC_PACKAGE_VERSION "${H5MAFISC_VERS_MAJOR}.${H5MAFISC_VERS_MINOR}")
 set (H5MAFISC_PACKAGE_VERSION_STRING "${H5MAFISC_PACKAGE_VERSION}")
 set (H5MAFISC_PACKAGE_VERSION_MAJOR "${H5MAFISC_VERS_MAJOR}")
@@ -60,8 +60,6 @@ include (${H5MAFISC_RESOURCES_DIR}/H5MAFISCMacros.cmake)
 # Run all the CMake configuration tests for our build environment
 #-----------------------------------------------------------------------------
 include (${H5MAFISC_RESOURCES_DIR}/ConfigureChecks.cmake)
-
-#find_package(LibLZMA REQUIRED)
 
 #-----------------------------------------------------------------------------
 # HDF5 support
@@ -84,13 +82,13 @@ configure_file (${H5MAFISC_RESOURCES_DIR}/config.h.in ${H5MAFISC_BINARY_DIR}/con
 option (BUILD_MAFISC_LIBRARY_SOURCE "build the mafisc library within the plugin" OFF)
 if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
   include (ExternalProject)
-  set (H5MAFISC_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
-  set_property (CACHE H5MAFISC_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
-  if (H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
+  set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
+  if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
     option (MAFISC_USE_EXTERNAL "Use External Library Building for MAFISC" 1)
-    if (H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
       set (MAFISC_URL ${MAFISC_GIT_URL})
-    elseif (H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
       if (NOT TGZPATH)
         set (TGZPATH ${H5MAFISC_SOURCE_DIR})
       endif ()
@@ -118,8 +116,8 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
     set (H5MAFISC_INCLUDE_DIR_GEN ${MAFISC_INCLUDE_DIR})
     set (H5MAFISC_INCLUDE_DIRS ${MAFISC_INCLUDE_DIR})
   else ()
-    if (H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_MAFISC_LIBRARY (${H5MAFISC_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+      EXTERNAL_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
       set (H5MAFISC_HAVE_MAFISC_H 1)
       set (H5MAFISC_HAVE_MAFISC 1)
       message (STATUS "Filter MAFISC is built")
@@ -132,7 +130,7 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
   INCLUDE_DIRECTORIES (${H5MAFISC_INCLUDE_DIRS})
 
   if (MAFISC_FOUND)
-    PACKAGE_MAFISC_LIBRARY (${H5MAFISC_ALLOW_EXTERNAL_SUPPORT})
+    PACKAGE_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
   endif ()
 endif ()
 
@@ -146,12 +144,12 @@ if (BUILD_TESTING)
   enable_testing ()
   include (CTest)
   include (${PROJECT_SOURCE_DIR}/CTestConfig.cmake)
-  configure_file (${HDF_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
+  configure_file (${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 endif ()
 
 add_subdirectory (${H5MAFISC_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
-if (H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5MAFISC_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   if (MAFISC_FOUND AND MAFISC_USE_EXTERNAL)
     add_dependencies (${H5MAFISC_LIB_TARGET} MAFISC)
   endif ()

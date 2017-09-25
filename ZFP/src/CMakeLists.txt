@@ -11,7 +11,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 include_directories (${H5ZFP_SRC_SOURCE_DIR})
 include_directories (${H5ZFP_SRC_LIBZFP_DIR}/inc)
-include_directories (${CMAKE_BINARY_DIR})
+include_directories (${CMAKE_BINARY_DIR} ${H5ZFP_BINARY_DIR})
 include_directories (${HDF5_INCLUDE_DIR} ${ZFP_INCLUDE_DIRS})
 
 add_subdirectory (${H5ZFP_SRC_SOURCE_DIR}/libzfp ${PROJECT_BINARY_DIR}/libzfp)
@@ -28,7 +28,7 @@ target_link_libraries (${H5ZFP_LIB_TARGET} ${LINK_LIBS})
   if (WIN32)
     target_link_libraries (${H5ZFP_LIB_TARGET} "ws2_32.lib")
   endif ()
-SET_GLOBAL_VARIABLE (H5ZFP_LIBRARIES_TO_EXPORT ${H5ZFP_LIB_TARGET})
+set_global_variable (H5ZFP_LIBRARIES_TO_EXPORT ${H5ZFP_LIB_TARGET})
 H5ZFP_SET_LIB_OPTIONS (${H5ZFP_LIB_TARGET} ${H5ZFP_LIB_NAME} ${LIB_TYPE})
 
 if (BUILD_TESTING)

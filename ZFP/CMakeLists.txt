@@ -4,9 +4,11 @@ project (H5ZFP C)
 #-----------------------------------------------------------------------------
 # Basic H5ZFP stuff here
 #-----------------------------------------------------------------------------
-include (${H5ZFP_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
-include (${H5ZFP_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
-BASIC_SETTINGS (H5ZFP)
+if (NOT H5PL_RESOURCES_DIR)
+  include (${H5ZFP_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
+  include (${H5ZFP_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+endif ()
+BASIC_SETTINGS (${ZFP_PACKAGE_NAME})
 
 #-----------------------------------------------------------------------------
 # Specific H5ZFP here
@@ -39,8 +41,6 @@ set (H5ZFP_SOVERS_RELEASE 0)
 math (EXPR H5ZFP_SOVERS_MAJOR ${H5ZFP_SOVERS_INTERFACE}-${H5ZFP_SOVERS_RELEASE})
 
 #-----------------------------------------------------------------------------
-set (H5ZFP_PACKAGE "h5zfp")
-set (H5ZFP_PACKAGE_NAME "h5zfp")
 set (H5ZFP_PACKAGE_VERSION "${H5ZFP_VERS_MAJOR}.${H5ZFP_VERS_MINOR}")
 set (H5ZFP_PACKAGE_VERSION_STRING "${H5ZFP_PACKAGE_VERSION}")
 set (H5ZFP_PACKAGE_VERSION_MAJOR "${H5ZFP_VERS_MAJOR}")
@@ -61,8 +61,6 @@ include (${H5ZFP_RESOURCES_DIR}/H5ZFPMacros.cmake)
 #-----------------------------------------------------------------------------
 include (${H5ZFP_RESOURCES_DIR}/ConfigureChecks.cmake)
 
-#find_package(Libzfp REQUIRED)
-
 #-----------------------------------------------------------------------------
 # HDF5 support
 #-----------------------------------------------------------------------------
@@ -76,21 +74,18 @@ endif ()
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
-#-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
-#-----------------------------------------------------------------------------
-configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h @ONLY)
-
 option (BUILD_ZFP_LIBRARY_SOURCE "build the zfp library within the plugin" OFF)
 if (NOT BUILD_ZFP_LIBRARY_SOURCE)
   include (ExternalProject)
-  set (H5ZFP_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
-  set_property (CACHE H5ZFP_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
-  if (H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
+  set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
+  set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
+  if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
     option (ZFP_USE_EXTERNAL "Use External Library Building for ZFP" 1)
-    if (H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
       set (ZFP_URL ${ZFP_GIT_URL})
-    elseif (H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+      set (ZFP_BRANCH ${ZFP_GIT_BRANCH})
+    elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
       if (NOT TGZPATH)
         set (TGZPATH ${H5ZFP_SOURCE_DIR})
       endif ()
@@ -112,16 +107,16 @@ if (NOT BUILD_ZFP_LIBRARY_SOURCE)
     endif ()
   endif ()
   if (ZFP_FOUND)
-    set (H5ZFP_HAVE_ZFP_H 1)
-    set (H5ZFP_HAVE_ZFP 1)
-    set (H5ZFP_ZFP_HEADER "zfp.h")
-    set (H5ZFP_INCLUDE_DIR_GEN ${ZFP_INCLUDE_DIR})
-    set (H5ZFP_INCLUDE_DIRS ${ZFP_INCLUDE_DIR})
+    set (H5_HAVE_ZFP_H 1)
+    set (H5_HAVE_ZFP 1)
+    set (H5_ZFP_HEADER "zfp.h")
+    set (ZFP_INCLUDE_DIR_GEN ${ZFP_INCLUDE_DIR})
+    set (ZFP_INCLUDE_DIRS ${ZFP_INCLUDE_DIR})
   else ()
-    if (H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_ZFP_LIBRARY (${H5ZFP_ALLOW_EXTERNAL_SUPPORT} STATIC)
-      set (H5ZFP_HAVE_ZFP_H 1)
-      set (H5ZFP_HAVE_ZFP 1)
+    if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+      EXTERNAL_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      set (H5_HAVE_ZFP_H 1)
+      set (H5_HAVE_ZFP 1)
       message (STATUS "Filter ZFP is built")
     else ()
       message (FATAL_ERROR " ZFP is Required for ${H5ZFP_PACKAGE_NAME} library")
@@ -132,9 +127,14 @@ if (NOT BUILD_ZFP_LIBRARY_SOURCE)
   INCLUDE_DIRECTORIES (${H5ZFP_INCLUDE_DIRS})
 
   if (ZFP_FOUND)
-    PACKAGE_ZFP_LIBRARY (${H5ZFP_ALLOW_EXTERNAL_SUPPORT})
+    PACKAGE_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
   endif ()
 endif ()
+
+#-----------------------------------------------------------------------------
+# Generate the config.h file containing user settings needed by compilation
+#-----------------------------------------------------------------------------
+configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h @ONLY)
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -146,12 +146,12 @@ if (BUILD_TESTING)
   enable_testing ()
   include (CTest)
   include (${PROJECT_SOURCE_DIR}/CTestConfig.cmake)
-  configure_file (${HDF_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
+  configure_file (${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 endif ()
 
 add_subdirectory (${H5ZFP_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
 
-if (H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5ZFP_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   if (ZFP_FOUND AND ZFP_USE_EXTERNAL)
     add_dependencies (${H5ZFP_LIB_TARGET} ZFP)
   endif ()

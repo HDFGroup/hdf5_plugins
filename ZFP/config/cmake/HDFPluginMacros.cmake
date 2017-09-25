@@ -1,14 +1,17 @@
 #-------------------------------------------------------------------------------
 macro (BASIC_SETTINGS varname)
-  string(TOUPPER ${varname} PLUGIN_PACKAGE_NAME)
-  string(TOLOWER ${varname} PLUGIN_NAME)
+  string(TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
+  string(TOLOWER ${varname} PLUGIN_VARNAME)
+  set (H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE "h5${PLUGIN_VARNAME}")
+  set (H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME "h5${PLUGIN_VARNAME}")
+  string(TOUPPER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_PACKAGE_NAME)
+  string(TOLOWER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_NAME)
   set (CMAKE_NO_SYSTEM_FROM_IMPORTED 1)
 
   #-----------------------------------------------------------------------------
   # Define some CMake variables for use later in the project
   #-----------------------------------------------------------------------------
   set (${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR           ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/config/cmake)
-  set (HDF_RESOURCES_DIR                              ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/config/cmake)
   set (${PLUGIN_PACKAGE_NAME}_SRC_DIR                 ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/src)
 
   #-----------------------------------------------------------------------------
@@ -142,7 +145,7 @@ macro (BASIC_SETTINGS varname)
 endmacro ()
 
 macro (HDF5_SUPPORT link_hdf)
-  set (CMAKE_MODULE_PATH ${HDF_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
+  set (CMAKE_MODULE_PATH ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR} ${CMAKE_MODULE_PATH})
   set (CMAKE_POSITION_INDEPENDENT_CODE ON)
   # plugins must use SHARED libraries
   option (USE_SHARED_LIBS "Use Shared Libraries" ON)
@@ -297,7 +300,7 @@ macro (INSTALL_SUPPORT varname)
   if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
     export (
         TARGETS ${${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT} ${${PLUGIN_PACKAGE_NAME}_LIB_DEPENDENCIES}
-        FILE ${${PLUGIN_PACKAGE_NAME}_PACKAGE}$${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-targets.cmake
+        FILE ${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-targets.cmake
     )
   endif ()
 
@@ -358,19 +361,19 @@ macro (INSTALL_SUPPORT varname)
   endif ()
 
   #-----------------------------------------------------------------------------
-  # Configure the HDF5PL_Examples.cmake file and the examples
+  # Configure the H5PL_Examples.cmake file and the examples
   #-----------------------------------------------------------------------------
   configure_file (
-      ${HDF_RESOURCES_DIR}/HDF5PL_Examples.cmake.in
-      ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDF5PL_Examples.cmake @ONLY
+      ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
+      ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
   )
   install (
-      FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDF5PL_Examples.cmake
+      FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
       DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
       COMPONENT hdfdocuments
   )
   execute_process(
-       COMMAND ${CMAKE_COMMAND} -E copy_directory ${HDF_RESOURCES_DIR}/binex ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
+       COMMAND ${CMAKE_COMMAND} -E copy_directory ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/binex ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
   )
   install (
     DIRECTORY ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
