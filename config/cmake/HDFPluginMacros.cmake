@@ -74,7 +74,7 @@ macro (BASIC_SETTINGS varname)
   # Targets built within this project are exported at Install time for use
   # by other projects using Find${PLUGIN_PACKAGE_NAME}.
   #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS)
+  if (NOT ${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS AND NOT "${PLUGIN_NAME}" MATCHES "h5pl")
     set (${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS "${PLUGIN_NAME}-targets")
   endif ()
 
@@ -286,7 +286,7 @@ macro (INSTALL_SUPPORT varname)
   #-----------------------------------------------------------------------------
   # Add Target(s) to CMake Install for import into other projects
   #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
+  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED AND NOT "${PLUGIN_NAME}" MATCHES "h5pl")
     install (
         EXPORT ${${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS}
         DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}
