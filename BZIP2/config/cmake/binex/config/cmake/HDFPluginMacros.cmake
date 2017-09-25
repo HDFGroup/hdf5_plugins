@@ -57,21 +57,21 @@ macro (BASIC_SETTINGS varname)
       add_definitions (-D_BIND_TO_CURRENT_VCLIBS_VERSION=1)
       add_definitions (-D_CRT_SECURE_NO_WARNINGS)
       add_definitions (-D_CONSOLE)
-    endif (WIN32)
+    endif ()
 
     if (MSVC)
       set (CMAKE_MFC_FLAG 0)
-    endif (MSVC)
+    endif ()
 
     set (MAKE_SYSTEM)
     if (CMAKE_BUILD_TOOL MATCHES "make")
       set (MAKE_SYSTEM 1)
-    endif (CMAKE_BUILD_TOOL MATCHES "make")
+    endif ()
 
     set (CFG_INIT "/${CMAKE_CFG_INTDIR}")
     if (MAKE_SYSTEM)
       set (CFG_INIT "")
-    endif (MAKE_SYSTEM)
+    endif ()
 
     #-----------------------------------------------------------------------------
     # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -105,22 +105,22 @@ macro (BASIC_SETTINGS varname)
         set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /w")
         string (REGEX REPLACE "(^| )([/-])W[0-9]( |$)" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /w")
-      endif (MSVC)
+      endif ()
       if (WIN32)
         add_definitions (-D_CRT_SECURE_NO_WARNINGS)
-      endif (WIN32)
+      endif ()
       # Borland uses -w- to suppress warnings.
       if (BORLAND)
         set (HDF_WARNINGS_BLOCKED 1)
         set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -w-")
-      endif (BORLAND)
+      endif ()
 
       # Most compilers use -w to suppress warnings.
       if (NOT HDF_WARNINGS_BLOCKED)
         set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -w")
         set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
-      endif (NOT HDF_WARNINGS_BLOCKED)
-    endif (HDF_DISABLE_COMPILER_WARNINGS)
+      endif ()
+    endif ()
 
     #-----------------------------------------------------------------------------
     # This is in here to help some of the GCC based IDES like Eclipse

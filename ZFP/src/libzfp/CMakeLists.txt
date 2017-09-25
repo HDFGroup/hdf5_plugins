@@ -40,6 +40,6 @@ if (BUILD_ZFP_LIBRARY_SOURCE)
       ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/src/zfp.c
 
   )
-endif (BUILD_ZFP_LIBRARY_SOURCE)
+endif ()
 
 add_library (${ZFP_LIB_TARGET} OBJECT ${ZFP_SRCS})
