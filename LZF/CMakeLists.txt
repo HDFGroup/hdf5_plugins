@@ -46,7 +46,7 @@ include (${H5LZF_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+message (STATUS "H5LZF link libs: ${LINK_LIBS}")
 
 if (USE_SHARED_LIBS)
   set (H5_LIB_TYPE SHARED)

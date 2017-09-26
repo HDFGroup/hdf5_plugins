@@ -66,7 +66,7 @@ include (${H5ZFP_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+message (STATUS "H5ZFP link libs: ${LINK_LIBS}")
 
 option (DISABLE_H5ZFP_ENCODER "build the zfp library without encoding" OFF)
 if (NOT DISABLE_H5ZFP_ENCODER)

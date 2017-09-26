@@ -55,7 +55,7 @@ include (${H5BLOSC_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+message (STATUS "H5BLOSC link libs: ${LINK_LIBS}")
 
 option (DISABLE_H5BLOSC_ENCODER "build the bz2 library without encoding" OFF)
 if (NOT DISABLE_H5BLOSC_ENCODER)
