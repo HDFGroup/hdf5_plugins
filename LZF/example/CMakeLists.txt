@@ -158,9 +158,9 @@ if (BUILD_TESTING)
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
-    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "lzf_files")
   endforeach ()
-  add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
+  add_custom_target(lzf_files ALL COMMENT "Copying files needed by lzf tests" DEPENDS ${lzf_files_list})
 
   ADD_H5_TEST (h5ex_d_lzf)
 
