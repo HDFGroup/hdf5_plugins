@@ -22,7 +22,6 @@ string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_RELEASE[ \t]+([0-9]+).
         "\\1" H5BLOSC_VERS_RELEASE ${_vers_h_contents})
 string(REGEX REPLACE ".*#define[ \t]+BLOSC_PLUGIN_VERSION_STRING[ \t]+\"([-0-9A-Za-z.]+)\".*"
         "\\1" H5BLOSC_VERSION_STRING ${_vers_h_contents})
-message("Configuring for Blosc HDF5 Plugin version: " ${H5BLOSC_VERSION_STRING})
 
 set (H5BLOSC_SOVERS_MAJOR 3)
 set (H5BLOSC_SOVERS_MINOR 1)
@@ -40,6 +39,7 @@ set (H5BLOSC_PACKAGE_TARNAME "${H5BLOSC_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BLOSC_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BLOSC_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BLOSC_PACKAGE_SOVERSION "${H5BLOSC_SOVERS_MAJOR}.${H5BLOSC_SOVERS_RELEASE}.${H5BLOSC_SOVERS_MINOR}")
+message("Configuring for Blosc HDF5 Plugin version: " ${H5BLOSC_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
