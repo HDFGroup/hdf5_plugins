@@ -50,7 +50,7 @@ set (H5MAFISC_PACKAGE_TARNAME "${H5MAFISC_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5MAFISC_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5MAFISC_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5MAFISC_PACKAGE_SOVERSION "${H5MAFISC_SOVERS_MAJOR}.${H5MAFISC_SOVERS_RELEASE}.${H5MAFISC_SOVERS_MINOR}")
-message("Configuring for Blosc HDF5 Plugin version: " ${H5MAFISC_PACKAGE_STRING})
+message("Configuring for mafisc HDF5 Plugin version: " ${H5MAFISC_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -66,7 +66,7 @@ include (${H5MAFISC_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+message (STATUS "H5MAFISC link libs: ${LINK_LIBS}")
 
 option (DISABLE_H5MAFISC_ENCODER "build the mafisc library without encoding" OFF)
 if (NOT DISABLE_H5MAFISC_ENCODER)

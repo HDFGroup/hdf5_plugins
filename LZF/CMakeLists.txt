@@ -30,7 +30,7 @@ set (H5LZF_PACKAGE_TARNAME "${H5LZF_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5LZF_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5LZF_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5LZF_PACKAGE_SOVERSION "${H5LZF_SOVERS_MAJOR}.${H5LZF_SOVERS_RELEASE}.${H5LZF_SOVERS_MINOR}")
-message("Configuring for Blosc HDF5 Plugin version: " ${H5LZF_PACKAGE_STRING})
+message("Configuring for lzf HDF5 Plugin version: " ${H5LZF_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -46,7 +46,7 @@ include (${H5LZF_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+message (STATUS "H5LZF link libs: ${LINK_LIBS}")
 
 if (USE_SHARED_LIBS)
   set (H5_LIB_TYPE SHARED)

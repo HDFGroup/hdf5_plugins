@@ -30,7 +30,7 @@ set (H5BZ2_PACKAGE_TARNAME "${H5BZ2_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BZ2_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BZ2_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BZ2_PACKAGE_SOVERSION "${H5BZ2_SOVERS_MAJOR}.${H5BZ2_SOVERS_RELEASE}.${H5BZ2_SOVERS_MINOR}")
-message("Configuring for Blosc HDF5 Plugin version: " ${H5BZ2_PACKAGE_STRING})
+message("Configuring for bz2 HDF5 Plugin version: " ${H5BZ2_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -46,7 +46,7 @@ include (${H5BZ2_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+message (STATUS "H5BZ2 link libs: ${LINK_LIBS}")
 
 option (DISABLE_H5BZ2_ENCODER "build the bz2 library without encoding" OFF)
 if (NOT DISABLE_H5BZ2_ENCODER)
