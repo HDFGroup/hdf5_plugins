@@ -254,9 +254,9 @@ EXETEST h5ex_d_blosc h5ex_d_blosc.tst
 
 DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
 
-#REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=32001,0,0
+REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=32001,0,0
 
-#DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
+DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 
 #rm -f ud_convert.h5repack_layout.h5
 

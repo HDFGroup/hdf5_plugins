@@ -14,8 +14,6 @@ set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" F
 
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
-set (H5PL_PACKAGE_NAME "h5pl" CACHE STRING "Name of h5plugin package" FORCE)
-
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)" FORCE)
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
@@ -24,4 +22,61 @@ set (H5PL_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (H5PL_TGZ_NAME "h5pl.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)
 
-set (H5PL_PACKAGE_NAME "h5pl" CACHE STRING "Name of plugins package" FORCE)
+set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
+
+############################# blosc ################################################
+
+set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOSC from Github" FORCE)
+set (BLOSC_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (BLOSC_TGZ_NAME "c-blosc.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
+
+set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
+
+set (ZLIB_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/zlib.git" CACHE STRING "Use ZLIB from HDF repo" FORCE)
+set (ZLIB_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (ZLIB_TGZ_NAME "ZLib.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
+
+set (ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of ZLIB package" FORCE)
+
+############################# bzip2 ################################################
+
+set (BZ2_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/bzip2.git" CACHE STRING "Use BZ2 from HDF repository" FORCE)
+set (BZ2_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (BZ2_TGZ_NAME "BZ2.tar.gz" CACHE STRING "Use BZ2 from compressed file" FORCE)
+
+set (BZ2_PACKAGE_NAME "bz2" CACHE STRING "Name of BZ2 package" FORCE)
+
+############################# lz4 ################################################
+
+set (BUILD_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the plugin" FORCE)
+
+set (LZ4_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/lz4.git" CACHE STRING "Use LZ4 from HDF repository" FORCE)
+set (LZ4_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (LZ4_TGZ_NAME "lz4.tar.gz" CACHE STRING "Use LZ4 from compressed file" FORCE)
+
+set (LZ4_PACKAGE_NAME "lz4" CACHE STRING "Name of LZ4 package" FORCE)
+
+############################# lzf ################################################
+
+set (LZF_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/lzf.git" CACHE STRING "Use LZF from HDF repository" FORCE)
+set (LZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (LZF_TGZ_NAME "lzf.tar.gz" CACHE STRING "Use LZF from compressed file" FORCE)
+
+set (LZF_PACKAGE_NAME "lzf" CACHE STRING "Name of LZF package" FORCE)
+
+############################# mafisc ################################################
+
+set (BUILD_MAFISC_LIBRARY_SOURCE ON CACHE BOOL "build the mafisc library within the plugin" FORCE)
+
+set (MAFISC_PACKAGE_NAME "mafisc" CACHE STRING "Name of MAFISC package" FORCE)
+
+############################# zfp ################################################
+
+set (BUILD_ZFP_LIBRARY_SOURCE ON CACHE BOOL "build the zfp library within the plugin" FORCE)
+
+set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)
