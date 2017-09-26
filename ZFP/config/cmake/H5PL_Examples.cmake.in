@@ -32,7 +32,7 @@ if(NOT DEFINED INSTALLDIR)
     set(INSTALLDIR "@CMAKE_INSTALL_PREFIX@")
 endif()
 if(NOT DEFINED HDF5INSTALLDIR)
-  set(HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.8.20")
+  set(HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.11")
 endif()
 
 if(NOT DEFINED CTEST_CONFIGURATION_TYPE)
@@ -64,7 +64,7 @@ set(BUILD_OPTIONS "${BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRI
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.10.1-Source")
+#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.11.0-Source")
 #endif()
 
 ###############################################################################################################
@@ -134,7 +134,7 @@ if(CTEST_USE_TAR_SOURCE)
     file(REMOVE_RECURSE "${CTEST_SOURCE_DIRECTORY}")
     message(FATAL_ERROR "error: extract of ${CTEST_SOURCE_NAME} failed")
   endif()
-endif(CTEST_USE_TAR_SOURCE)
+endif()
 
 #-----------------------------------------------------------------------------
 ## Clear the build directory
