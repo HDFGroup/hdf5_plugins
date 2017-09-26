@@ -267,6 +267,10 @@ macro (HDF5_SUPPORT link_hdf)
     # This project is being called from within another and HDF5 is already configured
     set (HDF5_HAVE_H5PUBCONF_H 1)
     set (HDF5_HAVE_HDF5 1)
+    if (${link_hdf})
+      #plugin source needs to be linked with HDF5
+      set (LINK_LIBS ${LINK_LIBS} ${HDF5_LINK_LIBS})
+    endif ()
   endif ()
   message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
