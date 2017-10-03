@@ -35,7 +35,7 @@ RM="rm -rf"
 DIFF="diff -c"
 CMP="cmp -s"
 GREP='grep'
-CP='cp'
+CP="cp -p"  # Use -p to preserve mode,ownership,timestamps
 DIRNAME='dirname'
 LS='ls'
 AWK='awk'
@@ -45,7 +45,7 @@ ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 TESTDIR=$builddir
 PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
-PLUGIN_LIB="$FROM_DIR/libh5bzip2.so.*"
+PLUGIN_LIB="$FROM_DIR/libh5*.so.*"
 
 # Create test directories if not exists yet.
 test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
@@ -67,8 +67,18 @@ ENVCMD="env HDF5_PLUGIN_PATH=${PLUGIN_LIBDIR}"
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
-$SRC_TESTFILES/h5ex_d_pl.ddl
-$SRC_TESTFILES/h5ex_d_pl.tst
+$SRC_TESTFILES/h5ex_d_blosc.ddl
+$SRC_TESTFILES/h5ex_d_blosc.tst
+$SRC_TESTFILES/h5ex_d_bzip2.ddl
+$SRC_TESTFILES/h5ex_d_bzip2.tst
+$SRC_TESTFILES/h5ex_d_lz4.ddl
+$SRC_TESTFILES/h5ex_d_lz4.tst
+$SRC_TESTFILES/h5ex_d_lzf.ddl
+$SRC_TESTFILES/h5ex_d_lzf.tst
+$SRC_TESTFILES/h5ex_d_mafisc.ddl
+$SRC_TESTFILES/h5ex_d_mafisc.tst
+$SRC_TESTFILES/h5ex_d_zfp.ddl
+$SRC_TESTFILES/h5ex_d_zfp.tst
 $SRC_TESTFILES/h5repack_layout.h5-ud_convert.ddl
 $SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
 "
@@ -236,7 +246,7 @@ EXETEST() {
     # Run test.
     TESTING $fname
     (
-      $ENVCMD ./$fname
+      $ENVCMD `pwd`/$fname
     ) >$actual 2>$actual_err
     cat $actual_err >> $actual
 
@@ -248,13 +258,29 @@ EXETEST() {
 #########  THE TESTS   #########
 ################################
 
+echo $ENVCMD
+
 COPY_TESTFILES_TO_TESTDIR
 
-EXETEST h5ex_d_pl h5ex_d_pl.tst
+EXETEST h5ex_d_blosc h5ex_d_blosc.tst
+DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
 
-DUMPTEST h5ex_d_pl.ddl h5ex_d_pl.h5
+EXETEST h5ex_d_bzip2 h5ex_d_bzip2.tst
+DUMPTEST h5ex_d_bzip2.ddl h5ex_d_bzip2.h5
 
-REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=307,0,1,9
+EXETEST h5ex_d_lz4 h5ex_d_lz4.tst
+DUMPTEST h5ex_d_lz4.ddl h5ex_d_lz4.h5
+
+EXETEST h5ex_d_lzf h5ex_d_lzf.tst
+DUMPTEST h5ex_d_lzf.ddl h5ex_d_lzf.h5
+
+EXETEST h5ex_d_mafisc h5ex_d_mafisc.tst
+DUMPTEST h5ex_d_mafisc.ddl h5ex_d_mafisc.h5
+
+EXETEST h5ex_d_zfp h5ex_d_zfp.tst
+DUMPTEST h5ex_d_zfp.ddl h5ex_d_zfp.h5
+
+REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8
 
 DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
 
