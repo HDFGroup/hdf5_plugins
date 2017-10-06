@@ -1,6 +1,5 @@
 Objects to modify layout are...
- Apply chunked layout to all
-with dimension [4 8 ]
+Apply chunked layout to all with dimension [ 4 8 ]
 Objects to apply filter are...
  User Defined 32013
 -----------------------------------------
