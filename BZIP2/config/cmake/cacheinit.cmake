@@ -16,6 +16,7 @@ set (BZ2_GIT_BRANCH "master" CACHE STRING "" FORCE)
 set (BZ2_TGZ_NAME "BZ2.tar.gz" CACHE STRING "Use BZ2 from compressed file" FORCE)
 
 set (BZ2_PACKAGE_NAME "bz2" CACHE STRING "Name of BZ2 package" FORCE)
+set (H5BZ2_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)" FORCE)
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)

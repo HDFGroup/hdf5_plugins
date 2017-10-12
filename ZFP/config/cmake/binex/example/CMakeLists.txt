@@ -126,6 +126,8 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+              -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
@@ -160,7 +162,7 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_zfp)
 
-#UD LZ$
-#  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8)
+#UD ZFP
+  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8)
 
 endif ()

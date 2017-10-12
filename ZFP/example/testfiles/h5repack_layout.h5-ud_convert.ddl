@@ -10,8 +10,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -32,8 +32,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -54,8 +54,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -76,8 +76,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -98,8 +98,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -120,8 +120,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -142,8 +142,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT ZFP
-            PARAMS { 0 XXXX 4 0 1 2 4 8 }
+            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {

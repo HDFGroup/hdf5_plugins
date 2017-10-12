@@ -96,15 +96,15 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 20, 10 )
-         SIZE 913 (3.505:1 COMPRESSION)
+         CHUNKED ( 40, 20 )
+         SIZE 324 (9.877:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
             
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 2 4 800 5 1 2 }
+            PARAMS { 2 2 4 3200 5 1 2 }
          }
       }
       FILLVALUE {

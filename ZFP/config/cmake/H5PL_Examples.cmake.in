@@ -64,7 +64,7 @@ set(BUILD_OPTIONS "${BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRI
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.11.0-Source")
+#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.8.20-Source")
 #endif()
 
 ###############################################################################################################

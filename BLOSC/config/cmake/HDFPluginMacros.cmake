@@ -73,7 +73,7 @@ macro (BASIC_SETTINGS varname)
   # Targets built within this project are exported at Install time for use
   # by other projects using Find${PLUGIN_PACKAGE_NAME}.
   #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS)
+  if (NOT ${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS AND NOT "${PLUGIN_NAME}" MATCHES "h5pl")
     set (${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS "${PLUGIN_NAME}-targets")
   endif ()
 
@@ -266,6 +266,10 @@ macro (HDF5_SUPPORT link_hdf)
     # This project is being called from within another and HDF5 is already configured
     set (HDF5_HAVE_H5PUBCONF_H 1)
     set (HDF5_HAVE_HDF5 1)
+    if (${link_hdf})
+      #plugin source needs to be linked with HDF5
+      set (LINK_LIBS ${LINK_LIBS} ${HDF5_LINK_LIBS})
+    endif ()
   endif ()
   message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
 
@@ -285,7 +289,7 @@ macro (INSTALL_SUPPORT varname)
   #-----------------------------------------------------------------------------
   # Add Target(s) to CMake Install for import into other projects
   #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
+  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED AND NOT "${PLUGIN_NAME}" MATCHES "h5pl")
     install (
         EXPORT ${${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS}
         DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}
@@ -546,11 +550,19 @@ macro (INSTALL_SUPPORT varname)
       set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
     endif ()
 
-    set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
+    if (${PLUGIN_PACKAGE_NAME}_CPACK_ENABLE)
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
+    else ()
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ZLIB;libraries;/")
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ZLIB;headers;/")
+    endif ()
 
     set (CPACK_ALL_INSTALL_TYPES Full User)
     set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
 
+  endif ()
+
+  if (${PLUGIN_PACKAGE_NAME}_CPACK_ENABLE)
     include (CPack)
 
     cpack_add_component_group(Runtime)
@@ -564,6 +576,5 @@ macro (INSTALL_SUPPORT varname)
         GROUP Documents
         INSTALL_TYPES Full User
     )
-
   endif ()
 endmacro ()
