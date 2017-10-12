@@ -165,8 +165,8 @@ endif ()
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
 #-----------------------------------------------------------------------------
-option (BUILD_TESTING "Build h5pl Unit Testing" OFF)
-if (BUILD_TESTING)
+option (H5PL_BUILD_TESTING "Build h5pl Unit Testing" OFF)
+if (H5PL_BUILD_TESTING)
   set (DART_TESTING_TIMEOUT 1200 CACHE INTEGER
        "Timeout in seconds for each test (default 1200=20minutes)")
   enable_testing ()
@@ -178,5 +178,6 @@ endif ()
 #-----------------------------------------------------------------------------
 # Add file(s) to CMake Install
 #-----------------------------------------------------------------------------
+option (H5PL_CPACK_ENABLE "Enable the CPACK include and components" ON)
 INSTALL_SUPPORT (H5PL)
 
