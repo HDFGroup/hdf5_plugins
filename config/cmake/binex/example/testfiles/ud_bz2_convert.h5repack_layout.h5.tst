@@ -1,14 +1,14 @@
 No all objects to modify layout
 No all objects to apply filter
- </dset2> with UD filter 32001
- </dset2>...Found
+ </dset1> with UD filter 307
+ </dset1>...Found
 Making new file ...
 -----------------------------------------
  Type     Filter (Compression)     Name
 -----------------------------------------
  group                       /
- dset                        /dset1
- dset     UD   (8.719:1)     /dset2
+ dset     UD   (3.980:1)     /dset1
+ dset                        /dset2
  dset                        /dset3
  dset                        /dset4
  dset                        /dset_chunk
