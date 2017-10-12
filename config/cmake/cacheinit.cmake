@@ -6,7 +6,8 @@
 
 set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
-set (BUILD_TESTING ON CACHE BOOL "Build h5pl Unit Testing" FORCE)
+set (BUILD_TESTING ON CACHE BOOL "Build h5blosc Unit Testing" FORCE)
+set (H5PL_BUILD_TESTING ON CACHE BOOL "Enable h5pl examples" FORCE)
 
 set (BUILD_EXAMPLES ON CACHE BOOL "Build h5pl Examples" FORCE)
 
@@ -23,6 +24,7 @@ set (H5PL_GIT_BRANCH "master" CACHE STRING "" FORCE)
 set (H5PL_TGZ_NAME "h5pl.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)
 
 set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
+set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
 ############################# blosc ################################################
 

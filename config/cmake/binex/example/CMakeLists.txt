@@ -1,8 +1,13 @@
 cmake_minimum_required (VERSION 3.2.2)
-project (H5PL_EX)
+project (HDF5ZFP_EX)
 
 set (dyn_examples
-    h5ex_d_pl
+    h5ex_d_blosc
+    h5ex_d_bzip2
+    h5ex_d_lz4
+    h5ex_d_lzf
+    h5ex_d_mafisc
+    h5ex_d_zfp
 )
 
 if (USE_SHARED_LIBS)
@@ -11,7 +16,7 @@ else ()
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
 endif ()
 
-#run-time loadable pl library examples
+#run-time loadable library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_NAMING (${example} ${LIB_TYPE})
@@ -67,6 +72,8 @@ if (BUILD_TESTING)
               -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
+              -D "TEST_FILTER=PARAMS { ([0-9]) [-]?[0-9]+ ([0-9] [0-9] [0-9] [0-9] [0-9] [0-9]) }\n"
+              -D "TEST_FILTER_REPLACE=PARAMS { \\1 XXXX \\2 }\n"
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
@@ -78,7 +85,7 @@ if (BUILD_TESTING)
     endif ()
   ENDMACRO ()
 
-  MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
+  MACRO (ADD_H5_UD_TEST testname resultcode resultfile deptest)
     # Remove any output file left over from previous test run
     add_test (
         NAME H5PL_UD-${testname}-clearall-objects
@@ -90,21 +97,25 @@ if (BUILD_TESTING)
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
     )
-    if (NOT "${last_test}" STREQUAL "")
-      set_tests_properties (H5PL_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+    if (NOT "${deptest}" STREQUAL "NONE")
+      set_tests_properties (H5PL_UD-${testname}-clearall-objects PROPERTIES DEPENDS H5PL_UD-${deptest})
     endif ()
-    set (last_test "H5PL_UD-${testname}-clearall-objects")
     if (WIN32)
       set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
     else ()
       set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
     if (HDF5_BUILD_TOOLS)
+      if ("${deptest}" STREQUAL "NONE")
+        set (testfile ${resultfile})
+      else ()
+        set (testfile out-${deptest}.${resultfile})
+      endif ()
       add_test (
           NAME H5PL_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_REPACK_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
+              -D "TEST_ARGS:STRING=--enable-error-stack;${ARGN};${PROJECT_BINARY_DIR}/${testfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
@@ -113,15 +124,19 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5PL_UD-${testname} PROPERTIES DEPENDS ${last_test})
-      endif ()
-      set (last_test "H5PL_UD-${testname}")
+      set_tests_properties (H5PL_UD-${testname} PROPERTIES DEPENDS H5PL_UD-${testname}-clearall-objects)
+      set (deptest "H5PL_UD-${testname}")
+    endif ()
+  ENDMACRO ()
+
+  MACRO (ADD_H5_UD_VERIFY testname resultcode resultfile deptest)
+    # Remove any output file left over from previous test run
+    if (HDF5_BUILD_TOOLS)
       add_test (
-          NAME H5PL_UD-h5dump-${testname}
+          NAME H5PL_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
+              -D "TEST_ARGS:STRING=--enable-error-stack;-pH;out-${deptest}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
@@ -130,11 +145,11 @@ if (BUILD_TESTING)
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5PL_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+        set_tests_properties (H5PL_UD-${testname} PROPERTIES DEPENDS H5PL_UD-${deptest})
       endif ()
-      set (last_test "H5PL_UD-h5dump-${testname}")
+      set (last_test "H5PL_UD-${testname}")
     endif ()
-  endmacro ()
+  ENDMACRO ()
 
   # --------------------------------------------------------------------
   # Copy all the HDF5 files from the source directory into the test directory
@@ -143,20 +158,42 @@ if (BUILD_TESTING)
       h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
-      h5ex_d_pl.ddl
-      h5ex_d_pl.tst
-      h5repack_layout.h5-ud_convert.ddl
+      h5repack_layout.h5-ud_pl_convert.ddl
+      h5repack_layout.h5-ud_pl_lz4_convert.ddl
+      h5repack_layout.h5-ud_pl_blosc_convert.ddl
+      h5repack_layout.h5-ud_pl_bz2_convert.ddl
       ud_convert.h5repack_layout.h5.tst
+      ud_blosc_convert.h5repack_layout.h5.tst
   )
 
+  foreach (h5_file ${dyn_examples})
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.tst" "${PROJECT_BINARY_DIR}/${h5_file}.tst" "example_files")
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.ddl" "${PROJECT_BINARY_DIR}/${h5_file}.ddl" "example_files")
+  endforeach ()
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
   endforeach ()
+  if (WIN32 AND MSVC_VERSION LESS 1900)
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.wddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
+  endif()
   add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
-  ADD_H5_TEST (h5ex_d_pl)
+  foreach (h5_file ${dyn_examples})
+    ADD_H5_TEST (${h5_file})
+  endforeach ()
 
-#UD BZIP2
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,0,1,9)
+#UD BZ2$
+  ADD_H5_UD_TEST (ud_bz2_convert 0 h5repack_layout.h5 NONE -v -f /dset1:UD=307,0,1,9)
+  ADD_H5_UD_VERIFY (ud_pl_bz2_convert 0 h5repack_layout.h5 ud_bz2_convert)
+#UD BLOSC$
+  ADD_H5_UD_TEST (ud_blosc_convert 0 h5repack_layout.h5 ud_bz2_convert -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0)
+  ADD_H5_UD_VERIFY (ud_pl_blosc_convert 0 h5repack_layout.h5 ud_blosc_convert)
+#UD LZ4$
+  ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3 -l CHUNK=4x8)
+  ADD_H5_UD_VERIFY (ud_pl_lz4_convert 0 h5repack_layout.h5 ud_lz4_convert)
+#UD MAFISC$
+  ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=4x8)
+#UD VERIFY
+  ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
 
 endif ()
