@@ -16,6 +16,7 @@ set (BLOSC_GIT_BRANCH "master" CACHE STRING "" FORCE)
 set (BLOSC_TGZ_NAME "c-blosc.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
 
 set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
+set (H5BLOSC_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
 set (ZLIB_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/zlib.git" CACHE STRING "Use ZLIB from HDF repo" FORCE)
 set (ZLIB_GIT_BRANCH "master" CACHE STRING "" FORCE)

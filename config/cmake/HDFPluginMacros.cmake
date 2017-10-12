@@ -12,7 +12,6 @@ macro (BASIC_SETTINGS varname)
   # Define some CMake variables for use later in the project
   #-----------------------------------------------------------------------------
   set (${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR           ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/config/cmake)
-  set (${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR                              ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/config/cmake)
   set (${PLUGIN_PACKAGE_NAME}_SRC_DIR                 ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/src)
 
   #-----------------------------------------------------------------------------
@@ -368,24 +367,26 @@ macro (INSTALL_SUPPORT varname)
   #-----------------------------------------------------------------------------
   # Configure the H5PL_Examples.cmake file and the examples
   #-----------------------------------------------------------------------------
-  configure_file (
-      ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
-      ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
-  )
-  install (
-      FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
+  if (${PLUGIN_PACKAGE_NAME}_BUILD_TESTING)
+    configure_file (
+        ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
+        ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
+    )
+    install (
+        FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
+        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+        COMPONENT hdfdocuments
+    )
+    execute_process(
+         COMMAND ${CMAKE_COMMAND} -E copy_directory ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/binex ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
+    )
+    install (
+      DIRECTORY ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
       DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+      USE_SOURCE_PERMISSIONS
       COMPONENT hdfdocuments
-  )
-  execute_process(
-       COMMAND ${CMAKE_COMMAND} -E copy_directory ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/binex ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
-  )
-  install (
-    DIRECTORY ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
-    DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
-    USE_SOURCE_PERMISSIONS
-    COMPONENT hdfdocuments
-  )
+    )
+  endif ()
 
   #-----------------------------------------------------------------------------
   # Configure the README.txt file for the binary package
@@ -486,7 +487,7 @@ macro (INSTALL_SUPPORT varname)
 #
 #    This image must be 493 by 58 pixels.
 #
-#   .. variable:: CPACK_WIX_UI_DIALOG
+#   .. variable:: CPACK_WIX_UI_DIALOGSUPPORT
 #
 #    Background bitmap used on the welcome and completion dialogs.
 #
@@ -551,11 +552,19 @@ macro (INSTALL_SUPPORT varname)
       set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
     endif ()
 
-    set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
+    if (${PLUGIN_PACKAGE_NAME}_CPACK_ENABLE)
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
+    else ()
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ZLIB;libraries;/")
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ZLIB;headers;/")
+    endif ()
 
     set (CPACK_ALL_INSTALL_TYPES Full User)
     set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
 
+  endif ()
+
+  if (${PLUGIN_PACKAGE_NAME}_CPACK_ENABLE)
     include (CPack)
 
     cpack_add_component_group(Runtime)
@@ -569,6 +578,5 @@ macro (INSTALL_SUPPORT varname)
         GROUP Documents
         INSTALL_TYPES Full User
     )
-
   endif ()
 endmacro ()

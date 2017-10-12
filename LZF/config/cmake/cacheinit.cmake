@@ -16,6 +16,7 @@ set (LZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
 set (LZF_TGZ_NAME "lzf.tar.gz" CACHE STRING "Use LZF from compressed file" FORCE)
 
 set (LZF_PACKAGE_NAME "lzf" CACHE STRING "Name of LZF package" FORCE)
+set (H5LZF_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)" FORCE)
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)

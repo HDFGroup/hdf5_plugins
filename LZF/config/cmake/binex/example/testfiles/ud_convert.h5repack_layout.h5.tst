@@ -1,16 +1,16 @@
-Objects to modify layout are...
- Apply chunked layout to all
-with dimension [4 8 ]
-Objects to apply filter are...
+All objects to modify layout are...
+ Apply chunked layout to allwith dimension [ 4 8 ]
+All objects to apply filter are...
  User Defined 32000
+Making new file ...
 -----------------------------------------
  Type     Filter (Compression)     Name
 -----------------------------------------
  group                       /
- dset     UD   (40.506:1)     /dset1
- dset     UD   (40.506:1)     /dset2
- dset     UD   (40.506:1)     /dset3
- dset     UD   (40.506:1)     /dset4
- dset     UD   (40.506:1)     /dset_chunk
- dset     UD   (40.506:1)     /dset_compact
- dset     UD   (40.506:1)     /dset_contiguous
+ dset     UD   (0.955:1)     /dset1
+ dset     UD   (0.955:1)     /dset2
+ dset     UD   (0.955:1)     /dset3
+ dset     UD   (0.955:1)     /dset4
+ dset     UD   (0.955:1)     /dset_chunk
+ dset     UD   (0.955:1)     /dset_compact
+ dset     UD   (0.955:1)     /dset_contiguous
