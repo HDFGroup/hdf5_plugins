@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.2.2)
-project (HDF5ZFP_EX)
+project (HDF5PL_EX)
 
 set (dyn_examples
     h5ex_d_blosc
@@ -163,7 +163,10 @@ if (BUILD_TESTING)
       h5repack_layout.h5-ud_pl_blosc_convert.ddl
       h5repack_layout.h5-ud_pl_bz2_convert.ddl
       ud_convert.h5repack_layout.h5.tst
+      ud_bz2_convert.h5repack_layout.h5.tst
       ud_blosc_convert.h5repack_layout.h5.tst
+      ud_lz4_convert.h5repack_layout.h5.tst
+      ud_mafisc_convert.h5repack_layout.h5.tst
   )
 
   foreach (h5_file ${dyn_examples})
