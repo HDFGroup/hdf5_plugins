@@ -23,15 +23,20 @@ H5CC=@H5CC@
 RM=rm -f
 CP=cp
 
-noinst_PROGRAMS = h5ex_d_pl
+noinst_PROGRAMS = h5ex_d_blosc h5ex_d_bzip2 h5ex_d_lz4 h5ex_d_lzf h5ex_d_mafisc h5ex_d_zfp
 
-EXTRA_DIST = testfiles/h5ex_d_pl.tst testfiles/h5ex_d_pl.ddl test.sh
+EXTRA_DIST = testfiles/h5ex_d_blosc.tst testfiles/h5ex_d_blosc.ddl \
+	testfiles/h5ex_d_bzip2.tst testfiles/h5ex_d_bzip2.ddl \
+	testfiles/h5ex_d_lz4.tst testfiles/h5ex_d_lz4.ddl \
+	testfiles/h5ex_d_lzf.tst testfiles/h5ex_d_lzf.ddl \
+	testfiles/h5ex_d_mafisc.tst testfiles/h5ex_d_mafisc.ddl \
+	testfiles/h5ex_d_zfp.tst testfiles/h5ex_d_zfp.ddl test.sh
 EXTRA_PROG = $(noinst_PROGRAMS)
 
 TESTS_ENVIRONMENT = sh
 TEST_SCRIPT = test.sh
 
-SCRIPT_DEPEND=h5ex_d_pl$(EXEEXT)
+SCRIPT_DEPEND=h5ex_d_blosc$(EXEEXT) h5ex_d_bzip2$(EXEEXT) h5ex_d_lz4$(EXEEXT) h5ex_d_lzf$(EXEEXT) h5ex_d_mafisc$(EXEEXT) h5ex_d_zfp$(EXEEXT)
 
 TESTS = $(TEST_PROG) $(TEST_SCRIPT)
 
@@ -43,4 +48,4 @@ CLEANFILES=*.h5 tmp.test tmp.out
 DISTCLEANFILES=test.sh
 
 $(EXTRA_PROG): $(H5CC)
-    $(H5CC) $(H5CCFLAGS) $(CFLAGS) -o $@ $(srcdir)/$@.c;
+  $(H5CC) $(H5CCFLAGS) $(CFLAGS) -o $@ $(srcdir)/$@.c;
