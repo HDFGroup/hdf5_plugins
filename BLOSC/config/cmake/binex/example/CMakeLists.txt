@@ -23,7 +23,7 @@ foreach (example ${dyn_examples})
 endforeach ()
 
 if (BUILD_TESTING)
-  MACRO (ADD_H5_TEST testname)
+  macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
         COMMAND    ${CMAKE_COMMAND}
@@ -76,9 +76,9 @@ if (BUILD_TESTING)
         set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
     endif ()
-  ENDMACRO ()
+  endmacro ()
 
-  MACRO (ADD_H5_UD_TEST testname resultcode resultfile)
+  macro (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
         NAME H5BLOSC_UD-${testname}-clearall-objects
