@@ -28,7 +28,7 @@ foreach (example ${dyn_examples})
 endforeach ()
 
 if (BUILD_TESTING)
-  MACRO (ADD_H5_TEST testname)
+  macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
         COMMAND    ${CMAKE_COMMAND}
@@ -83,9 +83,9 @@ if (BUILD_TESTING)
         set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
     endif ()
-  ENDMACRO ()
+  endmacro ()
 
-  MACRO (ADD_H5_UD_TEST testname resultcode resultfile deptest)
+  macro (ADD_H5_UD_TEST testname resultcode resultfile deptest)
     # Remove any output file left over from previous test run
     add_test (
         NAME H5PL_UD-${testname}-clearall-objects
@@ -127,13 +127,13 @@ if (BUILD_TESTING)
       set_tests_properties (H5PL_UD-${testname} PROPERTIES DEPENDS H5PL_UD-${testname}-clearall-objects)
       set (deptest "H5PL_UD-${testname}")
     endif ()
-  ENDMACRO ()
+  endmacro ()
 
-  MACRO (ADD_H5_UD_VERIFY testname resultcode resultfile deptest)
+  macro (ADD_H5_UD_VERIFY testname resultcode resultfile deptest)
     # Remove any output file left over from previous test run
     if (HDF5_BUILD_TOOLS)
       add_test (
-          NAME H5PL_UD-${testname}
+          NAME H5PL_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=--enable-error-stack;-pH;out-${deptest}.${resultfile}"
@@ -145,11 +145,11 @@ if (BUILD_TESTING)
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5PL_UD-${testname} PROPERTIES DEPENDS H5PL_UD-${deptest})
+        set_tests_properties (H5PL_UD-h5dump-${testname} PROPERTIES DEPENDS H5PL_UD-${deptest})
       endif ()
-      set (last_test "H5PL_UD-${testname}")
+      set (last_test "H5PL_UD-h5dump-${testname}")
     endif ()
-  ENDMACRO ()
+  endmacro ()
 
   # --------------------------------------------------------------------
   # Copy all the HDF5 files from the source directory into the test directory
