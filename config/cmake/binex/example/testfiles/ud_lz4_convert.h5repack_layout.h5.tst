@@ -1,7 +1,9 @@
 No all objects to modify layout
+ </dset1> with chunk size 4 8 
 No all objects to apply filter
  </dset3> with UD filter 32004
  </dset3>...Found
+ </dset1>...Found
 Making new file ...
 -----------------------------------------
  Type     Filter (Compression)     Name

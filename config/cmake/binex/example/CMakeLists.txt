@@ -171,15 +171,14 @@ if (BUILD_TESTING)
 
   foreach (h5_file ${dyn_examples})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.tst" "${PROJECT_BINARY_DIR}/${h5_file}.tst" "example_files")
-    if (WIN32 AND MSVC_VERSION LESS 1900 AND ${h5_file} MATCHES "h5ex_d_zfp")
-      HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.wddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
-    else ()
-      HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.ddl" "${PROJECT_BINARY_DIR}/${h5_file}.ddl" "example_files")
-    endif()
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.ddl" "${PROJECT_BINARY_DIR}/${h5_file}.ddl" "example_files")
   endforeach ()
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
   endforeach ()
+  if (WIN32 AND MSVC_VERSION LESS 1900)
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.wddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
+  endif()
   add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
   foreach (h5_file ${dyn_examples})
@@ -193,10 +192,10 @@ if (BUILD_TESTING)
   ADD_H5_UD_TEST (ud_blosc_convert 0 h5repack_layout.h5 ud_bz2_convert -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0)
   ADD_H5_UD_VERIFY (ud_pl_blosc_convert 0 h5repack_layout.h5 ud_blosc_convert)
 #UD LZ4$
-  ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3)
+  ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8)
   ADD_H5_UD_VERIFY (ud_pl_lz4_convert 0 h5repack_layout.h5 ud_lz4_convert)
 #UD MAFISC$
-  ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0)
+  ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
 #UD VERIFY
   ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
 
