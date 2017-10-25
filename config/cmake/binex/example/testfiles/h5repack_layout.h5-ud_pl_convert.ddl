@@ -4,8 +4,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         CHUNKED ( 10, 10 )
+         SIZE 1523 (2.101:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -27,15 +27,15 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 367 (8.719:1 COMPRESSION)
+         CHUNKED ( 10, 10 )
+         SIZE 1174 (2.726:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
             
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 2 4 3200 5 1 0 }
+            PARAMS { 2 2 4 400 5 1 0 }
          }
       }
       FILLVALUE {
@@ -50,8 +50,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 7480 (0.428:1 COMPRESSION)
+         CHUNKED ( 10, 10 )
+         SIZE 7584 (0.422:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -73,14 +73,14 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
+         CHUNKED ( 10, 10 )
          SIZE 3200 (1.000:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            PARAMS { 5242992 91252346 1879048500 -2081423358 }
+            PARAMS { 5242992 91252346 -1879048044 -2081423360 }
          }
       }
       FILLVALUE {
@@ -95,7 +95,7 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 20, 10 )
+         CHUNKED ( 10, 10 )
          SIZE 3200
       }
       FILTERS {
@@ -113,7 +113,7 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         COMPACT
+         CHUNKED ( 10, 10 )
          SIZE 3200
       }
       FILTERS {
@@ -124,16 +124,15 @@ GROUP "/" {
          VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
-         H5D_ALLOC_TIME_EARLY
+         H5D_ALLOC_TIME_INCR
       }
    }
    DATASET "dset_contiguous" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CONTIGUOUS
+         CHUNKED ( 10, 10 )
          SIZE 3200
-         OFFSET 36216
       }
       FILTERS {
          NONE
@@ -143,7 +142,7 @@ GROUP "/" {
          VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
-         H5D_ALLOC_TIME_LATE
+         H5D_ALLOC_TIME_INCR
       }
    }
 }
