@@ -4,8 +4,8 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
-         CHUNKED ( 40, 20 )
-         SIZE 804 (3.980:1 COMPRESSION)
+         CHUNKED ( 4, 8 )
+         SIZE 2505 (1.277:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -75,7 +75,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 21368
+         OFFSET 23873
       }
       FILTERS {
          NONE
@@ -130,7 +130,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 33056
+         OFFSET 35209
       }
       FILTERS {
          NONE

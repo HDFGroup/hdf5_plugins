@@ -193,10 +193,10 @@ if (BUILD_TESTING)
   ADD_H5_UD_TEST (ud_blosc_convert 0 h5repack_layout.h5 ud_bz2_convert -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0)
   ADD_H5_UD_VERIFY (ud_pl_blosc_convert 0 h5repack_layout.h5 ud_blosc_convert)
 #UD LZ4$
-  ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3)
+  ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8)
   ADD_H5_UD_VERIFY (ud_pl_lz4_convert 0 h5repack_layout.h5 ud_lz4_convert)
 #UD MAFISC$
-  ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0)
+  ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
 #UD VERIFY
   ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
 
