@@ -1,5 +1,5 @@
 ************************************************************************
-* Build and Install HDFPL Examples with CMake                           *
+* Build and Install HDF5PL Examples with CMake                          *
 ************************************************************************
 
 Notes: This short instruction is written for users who want to quickly build
@@ -30,7 +30,7 @@ I. Preconditions
 
    1. We suggest you obtain the latest CMake for windows from the Kitware
       web site. The HDFPL product requires a minimum CMake version
-      of 3.1.0.
+      of 3.3.2.
 
    2. You have installed the HDF5 library built with CMake, by executing
       the HDF Install Utility (the *.exe file in the binary package for
@@ -45,21 +45,31 @@ I. Preconditions
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
 
-   4. Created separate source and build directories.
+   4. Set the environment variable HDF5_DIR to the installed location of
+      the config files for HDF5. On Windows:
+            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.8.x/lib/plugin
+
+   5. Set the runtime path to the installed location of the library files
+      for HDF5. On Windows:
+            PATH=C:/Program Files/HDF_Group/HDF5/1.8.x/lib:C:/Program Files/HDF_Group/HDF5/1.8.x/lib/plugin
+      On linux:
+            LD_LIBRARY_PATH=<Installation>/HDF_Group/HDF5/1.8.x/lib;<Installation>/HDF_Group/HDF5/1.8.x/lib/plugin
+
+   6. Created separate source and build directories.
       (CMake commands are executed in the build directory)
 
 
 
 ========================================================================
-II. Building HDF5 Examples with CMake
+II. Building HDF5 Plugin Examples with CMake
 ========================================================================
 
-Go through these steps to build HDF5 applications with CMake.
+Go through these steps to build HDF5 Plugin applications with CMake.
 
    1. Run CMake
    2. Configure the cache settings
-   3. Build HDF5 Examples
-   4. Test HDF5 Examples.
+   3. Build HDF5 Plugin Examples
+   4. Test HDF5 Plugin Examples.
 
 These steps are described in more detail below.
 
@@ -130,9 +140,9 @@ These steps are described in more detail below.
 
            cmake -G "Visual Studio 10" -DBUILD_TESTING:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON ..
 
-   3. Build HDFPL examples
+   3. Build HDF5 Plugin examples
 
-      On Windows, you can build HDFPL applications using either the Visual Studio Environment
+      On Windows, you can build HDF5 Plugin applications using either the Visual Studio Environment
       or the command line. The command line is normally used on linux, Unix, and Mac.
 
       To build from the command line, navigate to your build directory and
@@ -148,7 +158,7 @@ These steps are described in more detail below.
            file in your build directory. Be sure to select either Debug or
            Release and build the solution.
 
-   4. Test HDFPL Examples.
+   4. Test HDF5 Plugin Examples.
 
       To test the build, navigate to your build directory and execute:
 
