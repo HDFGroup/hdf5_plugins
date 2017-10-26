@@ -405,6 +405,20 @@ macro (INSTALL_SUPPORT varname)
     find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
   endif ()
 
+
+  if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    if (CMAKE_HOST_UNIX)
+      set (CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/HDF_Group/${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME}/${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION}"
+        CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+    else ()
+      GetDefaultWindowsPrefixBase(CMAKE_GENERIC_PROGRAM_FILES)
+      set (CMAKE_INSTALL_PREFIX
+        "${CMAKE_GENERIC_PROGRAM_FILES}/HDF_Group/${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME}/${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION}"
+        CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+      set (CMAKE_GENERIC_PROGRAM_FILES)
+    endif ()
+  endif ()
+
   #-----------------------------------------------------------------------------
   # Set the cpack variables
   #-----------------------------------------------------------------------------
@@ -424,7 +438,12 @@ macro (INSTALL_SUPPORT varname)
     set (CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
     set (CPACK_PACKAGE_RELOCATABLE TRUE)
     set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PLUGIN_NAME} Installation")
-    set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
+    if (H5PL_OVERRIDE_VERSION)
+      string(TOUPPER ${HDF5_PACKAGE_NAME} PLUGIN_HDF5_PACKAGE_NAME)
+      set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${PLUGIN_HDF5_PACKAGE_NAME}/${H5PL_OVERRIDE_VERSION}")
+    else ()
+      set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
+    endif ()
 
     set (CPACK_GENERATOR "TGZ")
     if (WIN32)
