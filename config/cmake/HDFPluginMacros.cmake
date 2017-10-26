@@ -284,85 +284,12 @@ macro (INSTALL_SUPPORT varname)
   string(TOUPPER ${varname} PLUGIN_PACKAGE_NAME)
   string(TOLOWER ${varname} PLUGIN_NAME)
 
-  include (CMakePackageConfigHelpers)
-
-  #-----------------------------------------------------------------------------
-  # Add Target(s) to CMake Install for import into other projects
-  #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED AND NOT "${PLUGIN_NAME}" MATCHES "h5pl")
-    install (
-        EXPORT ${${PLUGIN_PACKAGE_NAME}_EXPORTED_TARGETS}
-        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}
-        FILE ${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-targets.cmake
-        COMPONENT configinstall
-    )
-  endif ()
-
-  #-----------------------------------------------------------------------------
-  # Export all exported targets to the build tree for use by parent project
-  #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
-    export (
-        TARGETS ${${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT} ${${PLUGIN_PACKAGE_NAME}_LIB_DEPENDENCIES}
-        FILE ${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-targets.cmake
-    )
-  endif ()
-
   #-----------------------------------------------------------------------------
   # Set variables needed for installation
   #-----------------------------------------------------------------------------
   set (${PLUGIN_PACKAGE_NAME}_VERSION_STRING ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION})
   set (${PLUGIN_PACKAGE_NAME}_VERSION_MAJOR  ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MAJOR})
   set (${PLUGIN_PACKAGE_NAME}_VERSION_MINOR  ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MINOR})
-
-  #-----------------------------------------------------------------------------
-  # Configure the ${PLUGIN_NAME}-config.cmake file for the build directory
-  #-----------------------------------------------------------------------------
-  set(INCLUDE_INSTALL_DIR ${${PLUGIN_PACKAGE_NAME}_INSTALL_INCLUDE_DIR} )
-  set(SHARE_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}" )
-  set(CURRENT_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}" )
-  configure_package_config_file (
-      ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/${PLUGIN_NAME}-config.cmake.in
-      "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-config.cmake"
-      INSTALL_DESTINATION "${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}"
-      PATH_VARS INCLUDE_INSTALL_DIR SHARE_INSTALL_DIR CURRENT_BUILD_DIR
-      INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-  )
-
-  #-----------------------------------------------------------------------------
-  # Configure the ${PLUGIN_NAME}-config.cmake file for the install directory
-  #-----------------------------------------------------------------------------
-  set(INCLUDE_INSTALL_DIR ${${PLUGIN_PACKAGE_NAME}_INSTALL_INCLUDE_DIR} )
-  set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}" )
-  set(CURRENT_BUILD_DIR "${CMAKE_INSTALL_PREFIX}" )
-  configure_package_config_file (
-      ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/${PLUGIN_NAME}-config.cmake.in
-      "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-config.cmake"
-      INSTALL_DESTINATION "${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}"
-      PATH_VARS INCLUDE_INSTALL_DIR SHARE_INSTALL_DIR CURRENT_BUILD_DIR
-  )
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
-    install (
-        FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-config.cmake
-        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}
-        COMPONENT configinstall
-    )
-  endif ()
-
-  #-----------------------------------------------------------------------------
-  # Configure the ${PLUGIN_NAME}-config-version.cmake file for the install directory
-  #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
-    configure_file (
-        ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/${PLUGIN_NAME}-config-version.cmake.in
-        ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-config-version.cmake @ONLY
-    )
-    install (
-        FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${${PLUGIN_PACKAGE_NAME}_PACKAGE}${${PLUGIN_PACKAGE_NAME}_PACKAGE_EXT}-config-version.cmake
-        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR}
-        COMPONENT configinstall
-    )
-  endif ()
 
   #-----------------------------------------------------------------------------
   # Configure the H5PL_Examples.cmake file and the examples
@@ -439,7 +366,8 @@ macro (INSTALL_SUPPORT varname)
     set (CPACK_PACKAGE_RELOCATABLE TRUE)
     set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PLUGIN_NAME} Installation")
     if (H5PL_OVERRIDE_VERSION)
-      set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${HDF5_PACKAGE_NAME}/${H5PL_OVERRIDE_VERSION}")
+      string(TOUPPER ${HDF5_PACKAGE_NAME} PLUGIN_HDF5_PACKAGE_NAME)
+      set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${PLUGIN_HDF5_PACKAGE_NAME}/${H5PL_OVERRIDE_VERSION}")
     else ()
       set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
     endif ()
