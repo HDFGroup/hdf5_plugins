@@ -26,15 +26,34 @@ On linux, the installer should be executed in the location to install the plugin
 
 After Installation
 ===========================================================================
-You must supply the location of the plugins by setting the HDF5_PLUGIN_PATH
-    environment variable.
-    In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
-    be set "ON" in order to build the example and run the tests.
-Example:
-    set(ENV{HDF5_DIR} "/temp/hdf5/share/cmake/hdf5")
-    set(ENV{LZ4_DIR} "/temp/lz4/share/cmake/LZ4")
-    set(ENV{LD_LIBRARY_PATH} "/temp/lz4/lib:/temp/hdf5/lib")
-    set(ADD_BUILD_OPTIONS "-DBUILD_EXAMPLES:BOOL=ON -DBUILD_TESTING:BOOL=ON")
+Installed a HDF5 library built with CMake. Normally the plugins are installed
+    with the HDF5 library.
+
+Copy the following dir and file from the share dir in the H5PL INSTALL location
+   to your working dir:
+       HDFPLExamples
+       H5PL_Examples.cmake
+
+Execute the ctest script:
+        ctest -S H5PL_Examples.cmake -C Release -VV -O test.log
+
+------------------------------------------------------------------------------
+
+If you do not use the ctest script, you must supply the following environment
+    variables:
+        HDF5_DIR
+        HDF5_PLUGIN_PATH
+        LD_LIBRARY_PATH
+    and make and cd into a build folder:
+    and execute:
+        cmake -C ../HDFPLExamples/config/cmake/cacheinit.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release -G "Unix Makefiles" \
+            ../HDFPLExamples
+    and execute:
+         cmake --build . --config Release
+    and execute:
+         ctest . -C Release
+
 ===========================================================================
 
 Documentation for this release can be found at the following URL:
