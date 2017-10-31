@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.2.2)
-project (HDF5LZ4_EX)
+project (HDFPL_EX)
 
 set (dyn_examples
     h5ex_d_lz4
@@ -14,11 +14,12 @@ endif ()
 #run-time loadable lz4 library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
+  target_include_directories(${example} PRIVATE ${HDFPL_INCLUDE_DIRS})
   TARGET_NAMING (${example} ${LIB_TYPE})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
-  target_link_libraries (${example} ${LINK_LIBS})
+  target_link_libraries (${example} PRIVATE ${LINK_LIBS})
   if (NOT WIN32)
-    target_link_libraries (${example} dl)
+    target_link_libraries (${example} PRIVATE dl)
   endif ()
 endforeach ()
 

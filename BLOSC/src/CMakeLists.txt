@@ -9,9 +9,10 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-include_directories (${H5BLOSC_SRC_SOURCE_DIR})
-include_directories (${CMAKE_BINARY_DIR})
-include_directories (${HDF5_INCLUDE_DIR})
+set(H5BLOSC_INCLUDE_DIRS ${H5BLOSC_INCLUDE_DIRS}
+    ${HDF5_INCLUDE_DIR} ${CMAKE_BINARY_DIR}
+    ${H5BLOSC_SRC_SOURCE_DIR}
+)
 
 #-----------------------------------------------------------------------------
 # Define H5BLOSC Library
@@ -20,8 +21,9 @@ set (H5BLOSC_SRCS
     ${H5BLOSC_SRC_SOURCE_DIR}/H5Zblosc.c
 )
 
-add_library (${H5BLOSC_LIB_TARGET} SHARED ${H5BLOSC_SRCS})
-target_link_libraries (${H5BLOSC_LIB_TARGET} ${LINK_LIBS})
+add_library (${H5BLOSC_LIB_TARGET} MODULE ${H5BLOSC_SRCS})
+target_include_directories(${H5BLOSC_LIB_TARGET} PRIVATE ${H5BLOSC_INCLUDE_DIRS})
+target_link_libraries (${H5BLOSC_LIB_TARGET} PRIVATE ${LINK_LIBS})
 set_global_variable (H5BLOSC_LIBRARIES_TO_EXPORT ${H5BLOSC_LIB_TARGET})
 H5BLOSC_SET_LIB_OPTIONS (${H5BLOSC_LIB_TARGET} ${H5BLOSC_LIB_NAME} ${LIB_TYPE})
 
