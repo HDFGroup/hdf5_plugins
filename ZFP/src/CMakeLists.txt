@@ -9,10 +9,13 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-include_directories (${H5ZFP_SRC_SOURCE_DIR})
-include_directories (${H5ZFP_SRC_LIBZFP_DIR}/inc)
-include_directories (${CMAKE_BINARY_DIR} ${H5ZFP_BINARY_DIR})
-include_directories (${HDF5_INCLUDE_DIR} ${ZFP_INCLUDE_DIRS})
+set(H5ZFP_INCLUDE_DIRS ${H5ZFP_INCLUDE_DIRS}
+    ${HDF5_INCLUDE_DIR} ${CMAKE_BINARY_DIR}
+    ${H5ZFP_SRC_SOURCE_DIR}
+    ${H5ZFP_SRC_LIBZFP_DIR}/inc
+    ${H5ZFP_BINARY_DIR}
+    ${ZFP_INCLUDE_DIRS})
+)
 
 add_subdirectory (${H5ZFP_SRC_SOURCE_DIR}/libzfp ${PROJECT_BINARY_DIR}/libzfp)
 
@@ -23,10 +26,11 @@ set (H5ZFP_SRCS
     ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp.c
 )
 
-add_library (${H5ZFP_LIB_TARGET} ${LIB_TYPE} ${H5ZFP_SRCS} $<TARGET_OBJECTS:${ZFP_LIB_TARGET}>)
-target_link_libraries (${H5ZFP_LIB_TARGET} ${LINK_LIBS})
+add_library (${H5ZFP_LIB_TARGET} MODULE ${H5ZFP_SRCS} $<TARGET_OBJECTS:${ZFP_LIB_TARGET}>)
+target_include_directories(${H5ZFP_LIB_TARGET} PRIVATE ${H5ZFP_INCLUDE_DIRS})
+target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE ${LINK_LIBS})
   if (WIN32)
-    target_link_libraries (${H5ZFP_LIB_TARGET} "ws2_32.lib")
+    target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE "ws2_32.lib")
   endif ()
 set_global_variable (H5ZFP_LIBRARIES_TO_EXPORT ${H5ZFP_LIB_TARGET})
 H5ZFP_SET_LIB_OPTIONS (${H5ZFP_LIB_TARGET} ${H5ZFP_LIB_NAME} ${LIB_TYPE})

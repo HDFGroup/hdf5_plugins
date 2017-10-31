@@ -4,8 +4,10 @@ project (H5MAFISC_SRC_LIBLZMA C)
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-INCLUDE_DIRECTORIES (${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR})
-INCLUDE_DIRECTORIES (${CMAKE_BINARY_DIR})
+set(H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
+    ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
+)
 
 #-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below
@@ -15,7 +17,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS} -DHAVE_CONFIG_H)
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-INCLUDE_DIRECTORIES (
+set(H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/api
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/common
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check
@@ -258,3 +260,5 @@ if (WIN32)
 endif ()
 
 add_library (${LZMA_LIB_TARGET} OBJECT ${LZMA_SRCS})
+target_include_directories(${LZMA_LIB_TARGET} PRIVATE ${H5MAFISC_SRC_INCLUDE_DIRS})
+
