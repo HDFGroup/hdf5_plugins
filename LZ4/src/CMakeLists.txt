@@ -11,7 +11,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 set(H5LZ4_INCLUDE_DIRS ${H5LZ4_INCLUDE_DIRS}
     ${HDF5_INCLUDE_DIR} ${CMAKE_BINARY_DIR}
-    ${H5LZ4_SRC_SOURCE_DIR}
+    ${H5LZ4_SRC_SOURCE_DIR}/lib
     ${LZ4_INCLUDE_DIRS}
 )
 
