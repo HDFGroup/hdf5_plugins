@@ -179,12 +179,6 @@ macro (PLUGIN_README_PROPERTIES pkg_name)
     set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
   endif ()
 
-  if (BUILD_SHARED_LIBS)
-    set (LIB_TYPE "Static and Shared")
-  else ()
-    set (LIB_TYPE "Static")
-  endif ()
-
   configure_file (
       ${${pkg_name}_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY

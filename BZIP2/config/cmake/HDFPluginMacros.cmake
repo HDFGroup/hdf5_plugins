@@ -85,16 +85,11 @@ macro (BASIC_SETTINGS varname)
   set_global_variable (${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT "")
 
   #-----------------------------------------------------------------------------
-  # Option to Build Shared/Static libs, only shared is allowed
+  # Plugins are MODULEs thatmust be built as Shared libs
   #-----------------------------------------------------------------------------
-  option (BUILD_SHARED_LIBS "Build Shared Libraries" ON)
+  set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
   set (LIB_TYPE SHARED)
-  if (BUILD_SHARED_LIBS)
-    set (LIB_TYPE SHARED)
-    add_definitions (-D${PLUGIN_PACKAGE_NAME}_BUILT_AS_DYNAMIC_LIB)
-  else ()
-    message (FATAL_ERROR " ${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME} library must be built as a shared library")
-  endif ()
+  add_definitions (-D${PLUGIN_PACKAGE_NAME}_BUILT_AS_DYNAMIC_LIB)
 
   if (MSVC)
     set (CMAKE_MFC_FLAG 0)

@@ -4,20 +4,16 @@ project (H5ZFP_SRC_LIBZFP C)
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-INCLUDE_DIRECTORIES (${H5ZFP_SRC_LIBZFP_SOURCE_DIR})
-INCLUDE_DIRECTORIES (${CMAKE_BINARY_DIR})
+set(H5ZFP_SRC_INCLUDE_DIRS ${H5ZFP_SRC_INCLUDE_DIRS}
+    ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}
+    ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/inc
+    ${H5ZFP_BINARY_DIR}
+)
 
 #-----------------------------------------------------------------------------
 # Apply Definitions to compiler in this directory and below
 #-----------------------------------------------------------------------------
 add_definitions (${HDF5_EXTRA_C_FLAGS} -DHAVE_CONFIG_H -DBIT_STREAM_WORD_TYPE=uint8)
-
-#-----------------------------------------------------------------------------
-# Setup include Directories
-#-----------------------------------------------------------------------------
-INCLUDE_DIRECTORIES (
-    ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/inc
-)
 
 #-----------------------------------------------------------------------------
 # Define H5ZFP Library
@@ -43,3 +39,5 @@ if (BUILD_ZFP_LIBRARY_SOURCE)
 endif ()
 
 add_library (${ZFP_LIB_TARGET} OBJECT ${ZFP_SRCS})
+target_include_directories(${ZFP_LIB_TARGET} PRIVATE ${H5ZFP_SRC_INCLUDE_DIRS})
+
