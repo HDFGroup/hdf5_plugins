@@ -114,7 +114,6 @@ These steps are described in more detail below.
 
         <options> is:
             * BUILD_TESTING:BOOL=ON
-            * BUILD_SHARED_LIBS:BOOL=[ON | OFF]
 
    2. Configure the cache settings
 
@@ -138,7 +137,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
-           cmake -G "Visual Studio 10" -DBUILD_TESTING:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON ..
+           cmake -G "Visual Studio 10" -DBUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Plugin examples
 
