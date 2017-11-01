@@ -9,9 +9,11 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-include_directories (${H5LZF_SRC_SOURCE_DIR})
-include_directories (${CMAKE_BINARY_DIR})
-include_directories (${HDF5_INCLUDE_DIR} ${LZF_INCLUDE_DIRS})
+set(H5LZF_INCLUDE_DIRS ${H5LZF_INCLUDE_DIRS}
+    ${HDF5_INCLUDE_DIR} ${H5LZF_BINARY_DIR}
+    ${H5LZF_SRC_SOURCE_DIR}
+    ${LZF_INCLUDE_DIRS}
+)
 
 #-----------------------------------------------------------------------------
 # Define H5LZF Library
@@ -20,9 +22,10 @@ set (H5LZF_SRCS
     ${H5LZF_SRC_SOURCE_DIR}/H5Zlzf.c
 )
 
-add_library (${H5LZF_LIB_TARGET} ${LIB_TYPE} ${H5LZF_SRCS})
+add_library (${H5LZF_LIB_TARGET} MODULE ${H5LZF_SRCS})
+target_include_directories(${H5LZF_LIB_TARGET} PRIVATE ${H5LZF_INCLUDE_DIRS})
 #set_property (TARGET ${H5LZF_LIB_TARGET} APPEND PROPERTY COMPILE_DEFINITIONS H5PY_LZF_DEBUG)
-target_link_libraries (${H5LZF_LIB_TARGET} ${LINK_LIBS})
+target_link_libraries (${H5LZF_LIB_TARGET} PRIVATE ${LINK_LIBS})
 set_global_variable (H5LZF_LIBRARIES_TO_EXPORT ${H5LZF_LIB_TARGET})
 H5LZF_SET_LIB_OPTIONS (${H5LZF_LIB_TARGET} ${H5LZF_LIB_NAME} ${LIB_TYPE})
 

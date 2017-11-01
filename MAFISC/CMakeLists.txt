@@ -73,8 +73,6 @@ if (NOT DISABLE_H5MAFISC_ENCODER)
   set (FILTER_DECODE_ONLY 1)
 endif ()
 
-INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
-
 #-----------------------------------------------------------------------------
 # Generate the config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
@@ -128,7 +126,6 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
   endif ()
   message (STATUS "mafisc found: INC=${MAFISC_INCLUDE_DIR} TOOLS=${MAFISC_LIBRARIES}")
   set (LINK_LIBS ${LINK_LIBS} ${MAFISC_LIBRARIES})
-  INCLUDE_DIRECTORIES (${H5MAFISC_INCLUDE_DIRS})
 
   if (MAFISC_FOUND)
     PACKAGE_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
