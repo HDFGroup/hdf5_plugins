@@ -10,7 +10,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set(H5MAFISC_INCLUDE_DIRS ${H5MAFISC_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${CMAKE_BINARY_DIR}
+    ${HDF5_INCLUDE_DIR}
     ${H5MAFISC_SRC_SOURCE_DIR}
     ${H5MAFISC_SRC_LIBLZMA_DIR}/api
     ${H5MAFISC_BINARY_DIR}

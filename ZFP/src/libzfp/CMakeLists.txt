@@ -7,7 +7,7 @@ project (H5ZFP_SRC_LIBZFP C)
 set(H5ZFP_SRC_INCLUDE_DIRS ${H5ZFP_SRC_INCLUDE_DIRS}
     ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}
     ${H5ZFP_SRC_LIBZFP_SOURCE_DIR}/inc
-    ${CMAKE_BINARY_DIR}
+    ${H5ZFP_BINARY_DIR}
 )
 
 #-----------------------------------------------------------------------------

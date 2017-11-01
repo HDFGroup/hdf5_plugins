@@ -6,7 +6,7 @@ project (H5MAFISC_SRC_LIBLZMA C)
 #-----------------------------------------------------------------------------
 set(H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}
-    ${CMAKE_BINARY_DIR}
+    ${H5MAFISC_BINARY_DIR}
 )
 
 #-----------------------------------------------------------------------------
