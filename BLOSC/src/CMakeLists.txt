@@ -10,7 +10,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set(H5BLOSC_INCLUDE_DIRS ${H5BLOSC_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${CMAKE_BINARY_DIR}
+    ${HDF5_INCLUDE_DIR} ${H5BLOSC_BINARY_DIR}
     ${H5BLOSC_SRC_SOURCE_DIR}
 )
 

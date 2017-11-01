@@ -10,7 +10,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set(H5ZFP_INCLUDE_DIRS ${H5ZFP_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${CMAKE_BINARY_DIR}
+    ${HDF5_INCLUDE_DIR}
     ${H5ZFP_SRC_SOURCE_DIR}
     ${H5ZFP_SRC_LIBZFP_DIR}/inc
     ${H5ZFP_BINARY_DIR}
