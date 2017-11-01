@@ -9,9 +9,11 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-include_directories (${H5BZ2_SRC_SOURCE_DIR})
-include_directories (${CMAKE_BINARY_DIR})
-include_directories (${HDF5_INCLUDE_DIR} ${BZ2_INCLUDE_DIRS})
+set(H5BZ2_INCLUDE_DIRS ${H5BZ2_INCLUDE_DIRS}
+    ${HDF5_INCLUDE_DIR} ${H5BZ2_BINARY_DIR}
+    ${H5BZ2_SRC_SOURCE_DIR}
+    ${BZ2_INCLUDE_DIRS}
+)
 
 #-----------------------------------------------------------------------------
 # Define H5BZ2 Library
@@ -20,8 +22,9 @@ set (H5BZ2_SRCS
     ${H5BZ2_SRC_SOURCE_DIR}/H5Zbzip2.c
 )
 
-add_library (${H5BZ2_LIB_TARGET} ${LIB_TYPE} ${H5BZ2_SRCS})
-target_link_libraries (${H5BZ2_LIB_TARGET} ${LINK_LIBS})
+add_library (${H5BZ2_LIB_TARGET} MODULE ${H5BZ2_SRCS})
+target_include_directories(${H5BZ2_LIB_TARGET} PRIVATE ${H5BZ2_INCLUDE_DIRS})
+target_link_libraries (${H5BZ2_LIB_TARGET} PRIVATE ${LINK_LIBS})
 set_global_variable (H5BZ2_LIBRARIES_TO_EXPORT ${H5BZ2_LIB_TARGET})
 H5BZ2_SET_LIB_OPTIONS (${H5BZ2_LIB_TARGET} ${H5BZ2_LIB_NAME} ${LIB_TYPE})
 

@@ -53,8 +53,6 @@ if (NOT DISABLE_H5BZ2_ENCODER)
   set (FILTER_DECODE_ONLY 1)
 endif ()
 
-INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
-
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
@@ -100,7 +98,6 @@ else ()
 endif ()
 message (STATUS "bz2 found: INC=${BZ2_INCLUDE_DIR} LIBS=${BZ2_LIBRARIES}")
 set (LINK_LIBS ${LINK_LIBS} ${BZ2_LIBRARIES})
-INCLUDE_DIRECTORIES (${BZ2_INCLUDE_DIRS})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
