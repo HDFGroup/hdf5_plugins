@@ -169,18 +169,6 @@ macro (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
         set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5BLOSC_PACKAGE_SOVERSION})
     endif ()
   endif ()
-
-  #-- Apple Specific install_name for libraries
-  if (APPLE)
-    option (H5BLOSC_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
-    if (H5BLOSC_BUILD_WITH_INSTALL_NAME)
-      set_target_properties(${libtarget} PROPERTIES
-          LINK_FLAGS "-current_version ${H5BLOSC_PACKAGE_VERSION} -compatibility_version ${H5BLOSC_PACKAGE_VERSION}"
-          INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-          BUILD_WITH_INSTALL_RPATH ${H5BLOSC_BUILD_WITH_INSTALL_NAME}
-      )
-    endif ()
-  endif ()
 endmacro ()
 
 #-------------------------------------------------------------------------------

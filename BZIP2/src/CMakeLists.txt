@@ -26,7 +26,7 @@ add_library (${H5BZ2_LIB_TARGET} MODULE ${H5BZ2_SRCS})
 target_include_directories(${H5BZ2_LIB_TARGET} PRIVATE ${H5BZ2_INCLUDE_DIRS})
 target_link_libraries (${H5BZ2_LIB_TARGET} PRIVATE ${LINK_LIBS})
 set_global_variable (H5BZ2_LIBRARIES_TO_EXPORT ${H5BZ2_LIB_TARGET})
-H5BZ2_SET_LIB_OPTIONS (${H5BZ2_LIB_TARGET} ${H5BZ2_LIB_NAME} ${LIB_TYPE})
+H5BZ2_SET_LIB_OPTIONS (${H5BZ2_LIB_TARGET} ${H5BZ2_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------
