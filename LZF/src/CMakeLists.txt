@@ -27,7 +27,7 @@ target_include_directories(${H5LZF_LIB_TARGET} PRIVATE ${H5LZF_INCLUDE_DIRS})
 #set_property (TARGET ${H5LZF_LIB_TARGET} APPEND PROPERTY COMPILE_DEFINITIONS H5PY_LZF_DEBUG)
 target_link_libraries (${H5LZF_LIB_TARGET} PRIVATE ${LINK_LIBS})
 set_global_variable (H5LZF_LIBRARIES_TO_EXPORT ${H5LZF_LIB_TARGET})
-H5LZF_SET_LIB_OPTIONS (${H5LZF_LIB_TARGET} ${H5LZF_LIB_NAME} ${LIB_TYPE})
+H5LZF_SET_LIB_OPTIONS (${H5LZF_LIB_TARGET} ${H5LZF_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------

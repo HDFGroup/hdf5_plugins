@@ -33,7 +33,7 @@ target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE ${LINK_LIBS})
     target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE "ws2_32.lib")
   endif ()
 set_global_variable (H5ZFP_LIBRARIES_TO_EXPORT ${H5ZFP_LIB_TARGET})
-H5ZFP_SET_LIB_OPTIONS (${H5ZFP_LIB_TARGET} ${H5ZFP_LIB_NAME} ${LIB_TYPE})
+H5ZFP_SET_LIB_OPTIONS (${H5ZFP_LIB_TARGET} ${H5ZFP_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------
