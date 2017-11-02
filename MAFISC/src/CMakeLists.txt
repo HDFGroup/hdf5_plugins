@@ -47,7 +47,7 @@ target_link_libraries (${H5MAFISC_LIB_TARGET} PRIVATE ${LINK_LIBS})
     target_link_libraries (${H5MAFISC_LIB_TARGET} PRIVATE "ws2_32.lib")
   endif ()
 set_global_variable (H5MAFISC_LIBRARIES_TO_EXPORT ${H5MAFISC_LIB_TARGET})
-H5MAFISC_SET_LIB_OPTIONS (${H5MAFISC_LIB_TARGET} ${H5MAFISC_LIB_NAME} ${LIB_TYPE})
+H5MAFISC_SET_LIB_OPTIONS (${H5MAFISC_LIB_TARGET} ${H5MAFISC_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------

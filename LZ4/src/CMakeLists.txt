@@ -43,7 +43,7 @@ target_link_libraries (${H5LZ4_LIB_TARGET} PRIVATE ${LINK_LIBS})
     target_link_libraries (${H5LZ4_LIB_TARGET} PRIVATE "ws2_32.lib")
   endif ()
 set_global_variable (H5LZ4_LIBRARIES_TO_EXPORT ${H5LZ4_LIB_TARGET})
-H5LZ4_SET_LIB_OPTIONS (${H5LZ4_LIB_TARGET} ${H5LZ4_LIB_NAME} ${LIB_TYPE})
+H5LZ4_SET_LIB_OPTIONS (${H5LZ4_LIB_TARGET} ${H5LZ4_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------
