@@ -84,7 +84,7 @@ macro (BASIC_SETTINGS varname)
     endif ()
 
     #-----------------------------------------------------------------------------
-    # Plugins are MODULEs thatmust be built as Shared libs
+    # Plugins are MODULEs that must be built as Shared libs
     #-----------------------------------------------------------------------------
     set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
     set (LIB_TYPE SHARED)
