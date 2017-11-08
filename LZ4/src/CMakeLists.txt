@@ -9,9 +9,11 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-include_directories (${H5LZ4_SRC_SOURCE_DIR})
-include_directories (${CMAKE_BINARY_DIR})
-include_directories (${HDF5_INCLUDE_DIR} ${LZ4_INCLUDE_DIRS})
+set(H5LZ4_INCLUDE_DIRS ${H5LZ4_INCLUDE_DIRS}
+    ${HDF5_INCLUDE_DIR} ${LZ4_BINARY_DIR}
+    ${H5LZ4_SRC_SOURCE_DIR}/lib
+    ${LZ4_INCLUDE_DIRS}
+)
 
 #-----------------------------------------------------------------------------
 # Define H5LZ4 Library
@@ -21,20 +23,27 @@ set (H5LZ4_SRCS
 )
 if (BUILD_LZ4_LIBRARY_SOURCE)
   set (H5LZ4_SRCS ${H5LZ4_SRCS}
-      ${H5LZ4_SRC_SOURCE_DIR}/lz4.c
-      ${H5LZ4_SRC_SOURCE_DIR}/lz4.h
-      ${H5LZ4_SRC_SOURCE_DIR}/lz4hc.c
-      ${H5LZ4_SRC_SOURCE_DIR}/lz4hc.h
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4.c
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4.h
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4hc.c
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4hc.h
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4opt.h
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame.c
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame.h
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame_static.h
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/xxhash.c
+      ${H5LZ4_SRC_SOURCE_DIR}/lib/xxhash.h
   )
 endif ()
 
-add_library (${H5LZ4_LIB_TARGET} ${LIB_TYPE} ${H5LZ4_SRCS})
-target_link_libraries (${H5LZ4_LIB_TARGET} ${LINK_LIBS})
+add_library (${H5LZ4_LIB_TARGET} MODULE ${H5LZ4_SRCS})
+target_include_directories(${H5LZ4_LIB_TARGET} PRIVATE ${H5LZ4_INCLUDE_DIRS})
+target_link_libraries (${H5LZ4_LIB_TARGET} PRIVATE ${LINK_LIBS})
   if (WIN32)
-    target_link_libraries (${H5LZ4_LIB_TARGET} "ws2_32.lib")
+    target_link_libraries (${H5LZ4_LIB_TARGET} PRIVATE "ws2_32.lib")
   endif ()
 set_global_variable (H5LZ4_LIBRARIES_TO_EXPORT ${H5LZ4_LIB_TARGET})
-H5LZ4_SET_LIB_OPTIONS (${H5LZ4_LIB_TARGET} ${H5LZ4_LIB_NAME} ${LIB_TYPE})
+H5LZ4_SET_LIB_OPTIONS (${H5LZ4_LIB_TARGET} ${H5LZ4_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------

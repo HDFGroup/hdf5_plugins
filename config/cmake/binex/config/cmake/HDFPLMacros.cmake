@@ -16,16 +16,4 @@ macro (H5_SET_LIB_OPTIONS libtarget libname libtype)
   endif ()
   HDF_SET_LIB_OPTIONS (${libtarget} ${LIB_OUT_NAME} ${libtype})
 
-  #-- Apple Specific install_name for libraries
-  if (APPLE)
-    option (HDF5_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
-    if (HDF5_BUILD_WITH_INSTALL_NAME)
-      set_target_properties (${libtarget} PROPERTIES
-          LINK_FLAGS "-current_version ${HDF5_PACKAGE_VERSION} -compatibility_version ${HDF5_PACKAGE_VERSION}"
-          INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-          BUILD_WITH_INSTALL_RPATH ${HDF5_BUILD_WITH_INSTALL_NAME}
-      )
-    endif ()
-  endif ()
-
 endmacro ()
