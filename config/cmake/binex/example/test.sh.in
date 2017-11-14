@@ -43,8 +43,8 @@ AWK='awk'
 ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
 
 TESTDIR=$builddir
-PLUGIN_LIBDIR=plugins
 FROM_DIR=`pwd`/../src/.libs
+PLUGIN_LIBDIR="$FROM_DIR/lib/plugins"
 PLUGIN_LIB="$FROM_DIR/libh5*.so.*"
 
 # Create test directories if not exists yet.
@@ -79,8 +79,15 @@ $SRC_TESTFILES/h5ex_d_mafisc.ddl
 $SRC_TESTFILES/h5ex_d_mafisc.tst
 $SRC_TESTFILES/h5ex_d_zfp.ddl
 $SRC_TESTFILES/h5ex_d_zfp.tst
-$SRC_TESTFILES/h5repack_layout.h5-ud_convert.ddl
+$SRC_TESTFILES/h5repack_layout.h5-ud_pl_convert.ddl
+$SRC_TESTFILES/h5repack_layout.h5-ud_pl_lz4_convert.ddl
+$SRC_TESTFILES/h5repack_layout.h5-ud_pl_blosc_convert.ddl
+$SRC_TESTFILES/h5repack_layout.h5-ud_pl_bz2_convert.ddl
 $SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
+$SRC_TESTFILES/ud_bz2_convert.h5repack_layout.h5.tst
+$SRC_TESTFILES/ud_blosc_convert.h5repack_layout.h5.tst
+$SRC_TESTFILES/ud_lz4_convert.h5repack_layout.h5.tst
+$SRC_TESTFILES/ud_mafisc_convert.h5repack_layout.h5.tst
 "
 
 #
@@ -280,9 +287,17 @@ DUMPTEST h5ex_d_mafisc.ddl h5ex_d_mafisc.h5
 EXETEST h5ex_d_zfp h5ex_d_zfp.tst
 DUMPTEST h5ex_d_zfp.ddl h5ex_d_zfp.h5
 
-REPACKTEST h5repack_layout.h5 out-ud_convert.h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8
+REPACKTEST h5repack_layout.h5 out-ud_bz2_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset1:UD=307,0,1,9
+DUMPTEST h5repack_layout.h5-ud_pl_bz2_convert.ddl --enable-error-stack -pH out-ud_bz2_convert.h5repack_layout.h5
 
-DUMPTEST h5repack_layout.h5-ud_convert.ddl -pH out-ud_convert.h5repack_layout.h5
+REPACKTEST h5repack_layout.h5 out-ud_blosc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0
+DUMPTEST h5repack_layout.h5-ud_pl_blosc_convert.ddl --enable-error-stack -pH out-ud_blosc_convert.h5repack_layout.h5
+
+REPACKTEST h5repack_layout.h5 out-ud_lz4_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8
+DUMPTEST h5repack_layout.h5-ud_pl_lz4_convert.ddl --enable-error-stack -pH out-ud_lz4_convert.h5repack_layout.h5
+
+REPACKTEST h5repack_layout.h5 out-ud_mafisc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10
+DUMPTEST h5repack_layout.h5-ud_pl_convert.ddl --enable-error-stack -pH out-ud_mafisc_convert.h5repack_layout.h5
 
 #rm -f ud_convert.h5repack_layout.h5
 
