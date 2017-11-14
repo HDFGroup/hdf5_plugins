@@ -85,6 +85,10 @@ main (void)
 
     status = H5Pset_filter (dcpl_id, H5Z_FILTER_MAFISC, H5Z_FLAG_MANDATORY, nelmts, cd_values);
     if (status < 0) goto done;
+    if (status == 0) {
+        printf ("H5Pset_filter - not found.\n");
+        goto done;
+    }
 
     /*
      * Check that filter is registered with the library now.
@@ -96,6 +100,10 @@ main (void)
         if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) &&
                 (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) )
             printf ("mafisc filter is available for encoding and decoding.\n");
+    }
+    else {
+        printf ("H5Zfilter_avail - not found.\n");
+        goto done;
     }
     status = H5Pset_chunk (dcpl_id, 2, chunk);
     if (status < 0) printf ("failed to set chunk.\n");
