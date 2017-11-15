@@ -85,10 +85,6 @@ main (void)
 
     status = H5Pset_filter (dcpl_id, H5Z_FILTER_BLOSC, H5Z_FLAG_OPTIONAL, nelmts, cd_values);
     if (status < 0) goto done;
-    if (status == 0) {
-        printf ("H5Pset_filter - not found.\n");
-        goto done;
-    }
 
     /*
      * Check that filter is registered with the library now.
