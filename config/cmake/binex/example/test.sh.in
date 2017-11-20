@@ -220,7 +220,7 @@ DUMPTEST1() {
     shift
 
     # Run test.
-    TESTING $DUMPER $@
+    TESTING H5DUMP $@
     (
       $ENVCMD $H5DUMP --enable-error-stack -p "$@"
     ) >$actual 2>$actual_err
@@ -231,7 +231,7 @@ DUMPTEST1() {
     STDOUT_FILTER $actual
 
     # Extract file name, line number, version and thread IDs because they may be different
-    sed -e 's/{ \([0-9]\) [-]?[0-9]* \(([0-9] [0-9] [0-9] [0-9] [0-9] [0-9])\) }/{ \1 XXXX \2 }/' \
+    sed -e 's/{ \([0-9]\) \([-]*[0-9]*\) \([0-9] [0-9] [0-9] [0-9] [0-9] [0-9]\) }/{ \1 XXXX \3 }/' \
      $actual > $actual_ext
 
     CMP_OUTPUT $expect $actual_ext
@@ -240,7 +240,8 @@ DUMPTEST1() {
 #    rm -f $actual $actual_err
 }
 
-REPACKTEST()
+#first in the sequence
+REPACKTEST0()
 {
     infile=$1
     outfile=$2
@@ -251,7 +252,7 @@ REPACKTEST()
     shift
 
     # Run test.
-    TESTING $H5REPACK $@
+    TESTING H5REPACK $@
     (
         $ENVCMD $H5REPACK "$@" $infile "out-$outfile"
     ) >$actual 2>$actual_err
@@ -266,6 +267,71 @@ REPACKTEST()
         echo " PASSED"
 
         CMP_OUTPUT $expect $actual
+    fi
+#    rm -f $actual $actual_err
+}
+
+REPACKTEST()
+{
+    infile=$1
+    outfile=$2
+    expect="$2.tst"
+    actual="$2.out1"
+    actual_err="$2.err1"
+    shift
+    shift
+
+    # Run test.
+    TESTING H5REPACK $@
+    (
+        $ENVCMD $H5REPACK "$@" "out-$infile" "out-$outfile"
+    ) >$actual 2>$actual_err
+    RET=$?
+    STDOUT_FILTER $actual
+    cat $actual_err >> $actual
+
+     if [ $RET != 0 ] ; then
+        echo "*FAILED*"
+        nerrors="`expr $nerrors + 1`"
+    else
+        echo " PASSED"
+
+        CMP_OUTPUT $expect $actual
+    fi
+#    rm -f $actual $actual_err
+}
+
+REPACKTEST1()
+{
+    infile=$1
+    outfile=$2
+    expect="$2.tst"
+    actual="$2.out1"
+    actual_ext="$2.ext"
+    actual_err="$2.err1"
+    shift
+    shift
+
+    # Run test.
+    TESTING H5REPACK $@
+    (
+        $ENVCMD $H5REPACK "$@" "out-$infile" "out-$outfile"
+    ) >$actual 2>$actual_err
+    RET=$?
+    STDOUT_FILTER $actual
+    cat $actual_err >> $actual
+
+    # Extract file name, line number, version and thread IDs because they may be different
+    sed -e 's/PARAMS { \(\([0-9]\)\) \([-]?[0-9]*\) \(([0-9] [0-9] [0-9] [0-9] [0-9] [0-9])\) }/PARAMS { \1 XXXX \3 }/' \
+     $actual > $actual_ext
+
+     if [ $RET != 0 ] ; then
+        echo "*FAILED*"
+        nerrors="`expr $nerrors + 1`"
+     else
+        echo " PASSED"
+
+        CMP_OUTPUT $expect $actual_ext
     fi
 #    rm -f $actual $actual_err
 }
@@ -308,10 +374,8 @@ EXETEST1() {
     STDOUT_FILTER $actual
 
     # Extract file name, line number, version and thread IDs because they may be different
-    sed -e 's/{ \([0-9]\) [-]?[0-9]* \(([0-9] [0-9] [0-9] [0-9] [0-9] [0-9])\) }/{ \1 XXXX \2 }/' \
+    sed -e 's/PARAMS { \(\([0-9]\)\) \([-]?[0-9]*\) \(([0-9] [0-9] [0-9] [0-9] [0-9] [0-9])\) }/PARAMS { \1 XXXX \3 }/' \
      $actual > $actual_ext
-
-    cat $actual_err >> $actual_ext
 
     CMP_OUTPUT $expect $actual_ext
 #    rm -f $actual $actual_err
@@ -343,16 +407,16 @@ DUMPTEST1 h5ex_d_mafisc.ddl h5ex_d_mafisc.h5
 EXETEST h5ex_d_zfp h5ex_d_zfp.tst
 DUMPTEST h5ex_d_zfp.ddl h5ex_d_zfp.h5
 
-REPACKTEST h5repack_layout.h5 ud_bz2_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset1:UD=307,0,1,9
+REPACKTEST0 h5repack_layout.h5 ud_bz2_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset1:UD=307,0,1,9
 DUMPTEST h5repack_layout.h5-ud_pl_bz2_convert.ddl --enable-error-stack -pH out-ud_bz2_convert.h5repack_layout.h5
 
-REPACKTEST h5repack_layout.h5 ud_blosc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0
+REPACKTEST ud_bz2_convert.h5repack_layout.h5 ud_blosc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0
 DUMPTEST h5repack_layout.h5-ud_pl_blosc_convert.ddl --enable-error-stack -pH out-ud_blosc_convert.h5repack_layout.h5
 
-REPACKTEST h5repack_layout.h5 ud_lz4_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8
+REPACKTEST ud_blosc_convert.h5repack_layout.h5 ud_lz4_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8
 DUMPTEST h5repack_layout.h5-ud_pl_lz4_convert.ddl --enable-error-stack -pH out-ud_lz4_convert.h5repack_layout.h5
 
-REPACKTES1T h5repack_layout.h5 ud_mafisc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10
+REPACKTEST1 ud_lz4_convert.h5repack_layout.h5 ud_mafisc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10
 DUMPTEST h5repack_layout.h5-ud_pl_convert.ddl --enable-error-stack -pH out-ud_mafisc_convert.h5repack_layout.h5
 
 #rm -f ud_convert.h5repack_layout.h5
