@@ -97,6 +97,10 @@ main (void)
                 (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) )
             printf ("lzf filter is available for encoding and decoding.\n");
     }
+    else {
+        printf ("H5Zfilter_avail - not found.\n");
+        goto done;
+    }
     status = H5Pset_chunk (dcpl_id, 2, chunk);
     if (status < 0) printf ("failed to set chunk.\n");
 
