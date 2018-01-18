@@ -151,11 +151,14 @@ if (BUILD_TESTING)
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
       h5repack_layout.h5
+      mesh.h5
   )
   set (LIST_OTHER_TEST_FILES
       h5ex_d_zfp.tst
       h5repack_layout.h5-ud_convert.ddl
       ud_convert.h5repack_layout.h5.tst
+      mesh.h5-ud_mesh_convert.ddl
+      ud_mesh_convert.mesh.h5.tst
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
@@ -172,5 +175,18 @@ if (BUILD_TESTING)
 
 #UD ZFP
   ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8)
+#UD ZFP accuracy mode
+  ADD_H5_UD_TEST (ud_mesh_convert 0 mesh.h5 --enable-error-stack -v -f UD=32013,0,6,3,0,3539053052,1062232653,0,0
+         -l X,Y,Z,Indexes:CHUNK=217
+         -l Indexes2:CHUNK=1517
+         -l Pressure,Pressure2,Pressure3:CHUNK=10x20x5
+         -l Pressure_2D:CHUNK=10x20
+         -l Stress,Velocity,Stress2,Velocity2,Stress3,Velocity3:CHUNK=11x21x1x1
+         -l VelocityZ,VelocityZ2,VelocityZ3:CHUNK=11x21x1
+         -l XY:CHUNK=651x1
+         -l XYZ:CHUNK=217x1
+         -l XYZ2:CHUNK=1617x1
+         -l XYZ3:CHUNK=33x1
+  )
 
 endif ()
