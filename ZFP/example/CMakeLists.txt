@@ -146,6 +146,72 @@ if (BUILD_TESTING)
     endif ()
   endmacro ()
 
+  macro (ADD_H5_UD_MASK_TEST testname resultcode resultfile)
+    # Remove any output file left over from previous test run
+    add_test (
+        NAME H5ZFP_UD-${testname}-clearall-objects
+        COMMAND    ${CMAKE_COMMAND}
+            -E remove
+            out-${testname}.${resultfile}
+            ${testname}.${resultfile}.out
+            ${testname}.${resultfile}.out.err
+            ${resultfile}-${testname}.out
+            ${resultfile}-${testname}.out.err
+    )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5ZFP_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+    endif ()
+    set (last_test "H5ZFP_UD-${testname}-clearall-objects")
+    if (WIN32)
+      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+    else ()
+      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+    endif ()
+    if (HDF5_BUILD_TOOLS)
+      add_test (
+          NAME H5ZFP_UD-${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=${HDF5_REPACK_EXECUTABLE}"
+              -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=${resultcode}"
+              -D "TEST_MASK_ERROR=true"
+              -D "TEST_ERRREF=${testname}.${resultfile}.err"
+              -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
+              -D "TEST_OUTPUT=${testname}.${resultfile}.out"
+              -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5ZFP_RESOURCES_DIR}/runTest.cmake"
+      )
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5ZFP_UD-${testname} PROPERTIES DEPENDS ${last_test})
+      endif ()
+      set (last_test "H5ZFP_UD-${testname}")
+      add_test (
+          NAME H5ZFP_UD-h5dump-${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_OUTPUT=${resultfile}-${testname}.out"
+              -D "TEST_EXPECT=${resultcode}"
+              -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+              -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5ZFP_RESOURCES_DIR}/runTest.cmake"
+      )
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5ZFP_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
+      endif ()
+      set (last_test "H5ZFP_UD-h5dump-${testname}")
+    endif ()
+  endmacro ()
+
   # --------------------------------------------------------------------
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
@@ -159,6 +225,7 @@ if (BUILD_TESTING)
       ud_convert.h5repack_layout.h5.tst
       mesh.h5-ud_mesh_convert.ddl
       ud_mesh_convert.mesh.h5.tst
+      ud_mesh_convert.mesh.h5.err
   )
 
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
@@ -176,7 +243,7 @@ if (BUILD_TESTING)
 #UD ZFP
   ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8)
 #UD ZFP accuracy mode
-  ADD_H5_UD_TEST (ud_mesh_convert 0 mesh.h5 --enable-error-stack -v -f UD=32013,0,6,3,0,3539053052,1062232653,0,0
+  ADD_H5_UD_MASK_TEST (ud_mesh_convert 0 mesh.h5 --enable-error-stack -v -f UD=32013,0,6,3,0,3539053052,1062232653,0,0
          -l X,Y,Z,Indexes:CHUNK=217
          -l Indexes2:CHUNK=1517
          -l Pressure,Pressure2,Pressure3:CHUNK=10x20x5
