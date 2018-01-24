@@ -156,7 +156,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -179,7 +178,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -221,7 +219,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -244,7 +241,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -267,7 +263,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -290,7 +285,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -313,7 +307,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -336,7 +329,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -397,7 +389,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
@@ -420,7 +411,6 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
-            
             PARAMS { XXXX }
          }
       }
