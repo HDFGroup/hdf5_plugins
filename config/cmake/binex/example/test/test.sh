@@ -13,13 +13,24 @@
 # http://hdfgroup.org/HDF5/doc/Copyright.html.  If you do not have
 # access to either file, you may request a copy from help@hdfgroup.org.
 
-srcdir=@srcdir@
-builddir=@builddir@
+srcdir=..
+builddir=.
 verbose=yes
 nerrors=0
 
+#Run h5redeploy 
+(cd ../../../../bin;./h5redeploy -force)
+
 # HDF5 compile commands, assuming they are in your $PATH.
-H5CC=@H5CC@
+H5CC=../../../../bin/h5cc
+LD_LIBRARY_PATH=../../../../lib
+export LD_LIBRARY_PATH
+
+if ! test -f $H5CC; then
+    echo "Set paths for H5CC and LD_LIBRARY_PATH in test.sh"
+    echo "h5cc was not found at $H5CC"
+    exit $EXIT_FAILURE
+fi
 
 case $H5CC in
 */*)    H5DUMP=`echo $H5CC | sed -e 's/\/[^/]*$/\/h5dump/'`;
@@ -40,19 +51,11 @@ DIRNAME='dirname'
 LS='ls'
 AWK='awk'
 
-ENVCMD="env HDF5_PLUGIN_PATH=`pwd`/../src/.libs"
+# setup plugin path
+ENVCMD="env HDF5_PLUGIN_PATH=$LD_LIBRARY_PATH/plugin"
 
 TESTDIR=$builddir
-FROM_DIR=`pwd`/../src/.libs
-PLUGIN_LIBDIR="$FROM_DIR/lib/plugin"
-PLUGIN_LIB="$PLUGIN_LIBDIR/libh5*.so"
 
-# Create test directories if not exists yet.
-test -d $PLUGIN_LIBDIR || mkdir -p $PLUGIN_LIBDIR
-if [ $? != 0 ]; then
-    echo "Failed to create test directory($PLUGIN_LIBDIR)"
-    exit $EXIT_FAILURE
-fi
 
 $H5CC -shlib $srcdir/h5ex_d_blosc.c -o h5ex_d_blosc
 $H5CC -shlib $srcdir/h5ex_d_bzip2.c -o h5ex_d_bzip2
@@ -61,8 +64,6 @@ $H5CC -shlib $srcdir/h5ex_d_lzf.c -o h5ex_d_lzf
 $H5CC -shlib $srcdir/h5ex_d_mafisc.c -o h5ex_d_mafisc
 $H5CC -shlib $srcdir/h5ex_d_zfp.c -o h5ex_d_zfp
 
-# setup plugin path
-ENVCMD="env HDF5_PLUGIN_PATH=${PLUGIN_LIBDIR}"
 
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
