@@ -33,7 +33,7 @@ I. Preconditions
       of 3.3.2.
 
    2. You have installed the HDF5 library built with CMake, by executing
-      the HDF Install Utility (the *.exe file in the binary package for
+      the HDF Install Utility (the *.msi file in the binary package for
       Windows). If you are using a Windows platform, you can obtain a
       pre-built Windows binary from The HDF Group's website at
       www.hdfgroup.org.
@@ -45,8 +45,8 @@ I. Preconditions
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
 
-   4. Set the environment variable HDF5_DIR to the installed location of
-      the config files for HDF5. On Windows:
+   4. Set the environment variable HDF5_PLUGIN_PATH to the installed location of
+      the library files for HDFPL. On Windows:
             HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.8.x/lib/plugin
 
    5. Set the runtime path to the installed location of the library files
@@ -102,15 +102,12 @@ These steps are described in more detail below.
             * Unix Makefiles
             * Visual Studio 11
             * Visual Studio 11 Win64
-            * Visual Studio 10
-            * Visual Studio 10 Win64
-            * Visual Studio 6
-            * Visual Studio 7
-            * Visual Studio 7 .NET 2003
-            * Visual Studio 8 2005
-            * Visual Studio 8 2005 Win64
-            * Visual Studio 9 2008
-            * Visual Studio 9 2008 Win64
+            * Visual Studio 12 2013
+            * Visual Studio 12 2013 Win64
+            * Visual Studio 14 2015
+            * Visual Studio 14 2015 Win64
+            * Visual Studio 15 2017
+            * Visual Studio 15 2017 Win64
 
         <options> is:
             * BUILD_TESTING:BOOL=ON
@@ -119,7 +116,7 @@ These steps are described in more detail below.
 
       2.1  Visual CMake users, click the Configure button. If this is the first time you are
            running cmake-gui in this directory, you will be prompted for the
-           generator you wish to use (for example on Windows, Visual Studio 10).
+           generator you wish to use (for example on Windows, Visual Studio 14 2015 Win64).
            CMake will read in the CMakeLists.txt files from the source directory and
            display options for the HDFPL project. After the first configure you
            can adjust the cache settings and/or specify locations of other programs.
@@ -137,7 +134,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
-           cmake -G "Visual Studio 10" -DBUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 14  2015 Win64" -DBUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Plugin examples
 

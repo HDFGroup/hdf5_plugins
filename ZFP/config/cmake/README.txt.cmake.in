@@ -24,7 +24,7 @@ On linux, the installer should be executed in the location to install the plugin
 2. Follow prompts
 ===========================================================================
 
-After Installation
+After Installation Test using CMake
 ===========================================================================
 Installed a HDF5 library built with CMake. Normally the plugins are installed
     with the HDF5 library.
