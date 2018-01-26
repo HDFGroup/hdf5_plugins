@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.2.2 FATAL_ERROR)
 # Execute from a command line:
 #     ctest -S H5PL_Examples.cmake,OPTION=VALUE -C Release -VV -O test.log
 ###############################################################################################################
+# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.11/lib/plugin,
+#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.11
+#     ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
+###############################################################################################################
 
 set(CTEST_CMAKE_GENERATOR "@CMAKE_GENERATOR@")
 if("@CMAKE_GENERATOR_TOOLSET@")
@@ -12,6 +16,7 @@ endif()
 set(CTEST_DASHBOARD_ROOT ${CTEST_SCRIPT_DIRECTORY})
 
 # handle input parameters to script.
+#HDF5INSTALLDIR - HDF5 library root folder
 #INSTALLDIR - HDF5 plugin root folder
 #CTEST_CONFIGURATION_TYPE - Release, Debug, RelWithDebInfo
 #CTEST_SOURCE_NAME - name of source folder; HDFPLExamples
@@ -28,11 +33,11 @@ if(DEFINED CTEST_SCRIPT_ARG)
     endforeach()
 endif()
 
-if(NOT DEFINED INSTALLDIR)
-    set(INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.8.21")
-endif()
 if(NOT DEFINED HDF5INSTALLDIR)
   set(HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.8.21")
+endif()
+if(NOT DEFINED INSTALLDIR)
+    set(INSTALLDIR "${HDF5INSTALLDIR}")
 endif()
 
 if(NOT DEFINED CTEST_CONFIGURATION_TYPE)
