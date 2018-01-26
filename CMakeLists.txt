@@ -7,6 +7,8 @@ PROJECT ( H5PL C )
 include (${H5PL_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
 include (${H5PL_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
 
+SET_HDF_BUILD_TYPE()
+
 set (H5PL_EXPORTED_TARGETS "")
 
 BASIC_SETTINGS (${PL_PACKAGE_NAME})

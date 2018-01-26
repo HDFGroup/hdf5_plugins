@@ -10,7 +10,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }
@@ -33,7 +32,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }
@@ -56,7 +54,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }
@@ -79,7 +76,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }
@@ -102,7 +98,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }
@@ -125,7 +120,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }
@@ -148,7 +142,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 3200 5 1 4 }
          }

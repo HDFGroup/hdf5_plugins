@@ -32,6 +32,8 @@ macro (BASIC_SETTINGS varname)
     include (${H5PL_RESOURCES_DIR}/HDFMacros.cmake)
     include (${H5PL_RESOURCES_DIR}/HDFPLMacros.cmake)
 
+    SET_HDF_BUILD_TYPE()
+
     #-----------------------------------------------------------------------------
     # Setup output Directories
     #-----------------------------------------------------------------------------
@@ -84,7 +86,7 @@ macro (BASIC_SETTINGS varname)
     endif ()
 
     #-----------------------------------------------------------------------------
-    # Plugins are MODULEs thatmust be built as Shared libs
+    # Plugins are MODULEs that must be built as Shared libs
     #-----------------------------------------------------------------------------
     set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
     set (LIB_TYPE SHARED)

@@ -10,7 +10,6 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
             PARAMS { 2 2 4 128 4 1 2 }
          }
