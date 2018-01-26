@@ -7,7 +7,7 @@
    package. In Silo, the ZFP library is embedded inside a C struct
    to avoid pollution of the global namespace as well as collision
    with any other implementation of ZFP a Silo executable may be
-   linked with. Calls to ZFP lib methods are preface with 'Z ' 
+   linked with. Calls to ZFP lib methods are preface with 'Z '
    and calls to bitstream methods with 'B ' as in
 
        Z zfp_stream_open(...);
@@ -35,7 +35,7 @@
 #include "zfp.h"
 #include "bitstream.h"
 #define Z
-#define B 
+#define B
 #endif /* ] AS_SILO_BUILTIN */
 
 #include "H5Zzfp_plugin.h"
@@ -76,16 +76,20 @@ static herr_t H5Z_zfp_set_local(hid_t dcpl_id, hid_t type_id, hid_t space_id);
 const H5Z_class2_t H5Z_ZFP[1] = {{
 
     H5Z_CLASS_T_VERS,       /* H5Z_class_t version          */
-    H5Z_FILTER_ZFP,         /* Filter id number             */
-    1,                      /* encoder_present flag         */
+    (H5Z_filter_t)(H5Z_FILTER_ZFP),         /* Filter id number             */
+#ifdef FILTER_DECODE_ONLY
+    0,                   /* encoder_present flag (false is not available) */
+#else
+    1,                   /* encoder_present flag (set to true) */
+#endif
     1,                      /* decoder_present flag         */
     "H5Z-ZFP"               /* Filter name for debugging    */
     "-" H5Z_FILTER_ZFP_VERSION_STR
     " (ZFP-" ZFP_VERSION_STR ") "
     "github.com/LLNL/H5Z-ZFP",
-    H5Z_zfp_can_apply,      /* The "can apply" callback     */
-    H5Z_zfp_set_local,      /* The "set local" callback     */
-    H5Z_filter_zfp,         /* The actual filter function   */
+    (H5Z_can_apply_func_t)(H5Z_zfp_can_apply),      /* The "can apply" callback     */
+    (H5Z_set_local_func_t)(H5Z_zfp_set_local),      /* The "set local" callback     */
+    (H5Z_func_t)(H5Z_filter_zfp),         /* The actual filter function   */
 
 }};
 
@@ -139,7 +143,7 @@ static void H5Z_zfp_init(void)
 
 static htri_t
 H5Z_zfp_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
-{   
+{
     static char const *_funcname_ = "H5Z_zfp_can_apply";
     int ndims, ndims_used = 0;
     size_t i, dsize;
@@ -207,7 +211,7 @@ done:
 
 static herr_t
 H5Z_zfp_set_local(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
-{   
+{
     static char const *_funcname_ = "H5Z_zfp_set_local";
     int i, ndims, ndims_used = 0;
     size_t dsize, hdr_bits, hdr_bytes;
@@ -291,7 +295,7 @@ H5Z_zfp_set_local(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
             H5Pset_zfp_expert_cdata(ZFP_MIN_BITS, ZFP_MAX_BITS, ZFP_MAX_PREC, ZFP_MIN_EXP, mem_cd_nelmts, mem_cd_values);
         }
     }
-        
+
     /* Into hdr_cd_values, we encode ZFP library and H5Z-ZFP plugin version info at
        entry 0 and use remaining entries as a tiny buffer to write ZFP native header. */
     hdr_cd_values[0] = (unsigned int) ((ZFP_VERSION_NO<<16) | H5Z_FILTER_ZFP_VERSION_NO);
@@ -550,18 +554,18 @@ H5Z_filter_zfp(unsigned int flags, size_t cd_nelmts,
         if (!status)
             H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_CANTFILTER, 0, "decompression failed");
 
-	/* ZFP is an endian-independent format. It will produce correct endian-ness
-           during decompress regardless of endian-ness differences between reader 
+    /* ZFP is an endian-independent format. It will produce correct endian-ness
+           during decompress regardless of endian-ness differences between reader
            and writer. However, the HDF5 library will not be expecting that. So,
            we need to undue the correct endian-ness here. We use HDF5's built-in
            byte-swapping here. Because we know we need only to endian-swap,
            we treat the data as unsigned. */
         if (swap != H5T_ORDER_NONE)
         {
-            hid_t src = dsize == 4 ? H5T_STD_U32BE : H5T_STD_U64BE; 
+            hid_t src = dsize == 4 ? H5T_STD_U32BE : H5T_STD_U64BE;
             hid_t dst = dsize == 4 ? H5T_NATIVE_UINT32 : H5T_NATIVE_UINT64;
             if (swap == H5T_ORDER_BE)
-                src = dsize == 4 ? H5T_STD_U32LE : H5T_STD_U64LE; 
+                src = dsize == 4 ? H5T_STD_U32LE : H5T_STD_U64LE;
             if (H5Tconvert(src, dst, bsize/dsize, newbuf, 0, H5P_DEFAULT) < 0)
                 H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "endian-UN-swap failed");
         }
@@ -569,7 +573,7 @@ H5Z_filter_zfp(unsigned int flags, size_t cd_nelmts,
         free(*buf);
         *buf = newbuf;
         newbuf = 0;
-        *buf_size = bsize; 
+        *buf_size = bsize;
         retval = bsize;
     }
     else /* compression */

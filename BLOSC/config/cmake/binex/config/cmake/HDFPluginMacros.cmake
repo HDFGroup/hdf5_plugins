@@ -32,6 +32,8 @@ macro (BASIC_SETTINGS varname)
     include (${H5PL_RESOURCES_DIR}/HDFMacros.cmake)
     include (${H5PL_RESOURCES_DIR}/HDFPLMacros.cmake)
 
+    SET_HDF_BUILD_TYPE()
+
     #-----------------------------------------------------------------------------
     # Setup output Directories
     #-----------------------------------------------------------------------------
