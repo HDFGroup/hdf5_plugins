@@ -14,7 +14,6 @@ endif ()
 #run-time loadable lz4 library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
-  TARGET_NAMING (${example} ${LIB_TYPE})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
   target_link_libraries (${example} PRIVATE ${HDF5_LINK_LIBS})
   if (NOT WIN32)

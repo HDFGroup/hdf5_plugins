@@ -1,4 +1,36 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
+
 #-------------------------------------------------------------------------------
+macro (SET_HDF_BUILD_TYPE)
+  get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+  if(_isMultiConfig)
+    set(HDF_CFG_NAME ${CTEST_CONFIGURATION_TYPE})
+    set(HDF_BUILD_TYPE ${CMAKE_CFG_INTDIR})
+    set(HDF_CFG_BUILD_TYPE \${CMAKE_INSTALL_CONFIG_NAME})
+  else()
+    set(HDF_CFG_BUILD_TYPE ".")
+    if(CMAKE_BUILD_TYPE)
+      set(HDF_CFG_NAME ${CMAKE_BUILD_TYPE})
+      set(HDF_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+    else()
+      set(HDF_CFG_NAME "Release")
+      set(HDF_BUILD_TYPE "Release")
+    endif()
+  endif()
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+  endif()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (SET_GLOBAL_VARIABLE name value)
@@ -33,13 +65,6 @@ macro (IDE_SOURCE_PROPERTIES SOURCE_PATH HEADERS SOURCES)
   #set_property (SOURCE ${HEADERS}
   #       PROPERTY MACOSX_PACKAGE_LOCATION Headers/${NAME}
   #)
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (TARGET_NAMING libtarget libtype)
-  if (${libtype} MATCHES "SHARED")
-    set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}${ARGN}")
-  endif ()
 endmacro ()
 
 #-------------------------------------------------------------------------------
@@ -79,30 +104,36 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (HDF_SET_LIB_OPTIONS libtarget libname libtype)
+  if (WIN32)
+    set (LIB_DEBUG_SUFFIX "_D")
+  else ()
+    set (LIB_DEBUG_SUFFIX "_debug")
+  endif ()
   if (${libtype} MATCHES "SHARED")
-    if (WIN32)
-      set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}_D")
-    else ()
-      set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}_debug")
-    endif ()
+    set (LIB_RELEASE_NAME "${libname}")
+    set (LIB_DEBUG_NAME "${libname}${LIB_DEBUG_SUFFIX}")
   else ()
     if (WIN32)
       set (LIB_RELEASE_NAME "lib${libname}")
-      set (LIB_DEBUG_NAME "lib${libname}_D")
+      set (LIB_DEBUG_NAME "lib${libname}${LIB_DEBUG_SUFFIX}")
     else ()
       set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}_debug")
+      set (LIB_DEBUG_NAME "${libname}${LIB_DEBUG_SUFFIX}")
     endif ()
   endif ()
 
   set_target_properties (${libtarget}
       PROPERTIES
-      OUTPUT_NAME_DEBUG          ${LIB_DEBUG_NAME}
-      OUTPUT_NAME_RELEASE        ${LIB_RELEASE_NAME}
-      OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
-      OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
+         OUTPUT_NAME
+               ${LIB_RELEASE_NAME}
+         OUTPUT_NAME_DEBUG
+               ${LIB_DEBUG_NAME}
+         OUTPUT_NAME_RELEASE
+               ${LIB_RELEASE_NAME}
+         OUTPUT_NAME_MINSIZEREL
+               ${LIB_RELEASE_NAME}
+         OUTPUT_NAME_RELWITHDEBINFO
+               ${LIB_RELEASE_NAME}
   )
   if (${libtype} MATCHES "STATIC")
     if (WIN32)
@@ -125,61 +156,6 @@ macro (HDF_SET_LIB_OPTIONS libtarget libname libtype)
         IMPORT_PREFIX ""
         PREFIX ""
     )
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (HDF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
-  HDF_SET_LIB_OPTIONS (${libtarget} ${libname} ${libtype})
-
-  if (${importtype} MATCHES "IMPORT")
-    set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
-  endif ()
-  if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    set (IMPORT_LIB_NAME ${LIB_DEBUG_NAME})
-  else ()
-    set (IMPORT_LIB_NAME ${LIB_RELEASE_NAME})
-  endif ()
-
-  if (${libtype} MATCHES "SHARED")
-    if (WIN32)
-      if (MINGW)
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${IMPORT_LIB_NAME}.lib"
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-      else ()
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_IMPORT_LIBRARY_SUFFIX}"
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-      endif ()
-    else ()
-      if (CYGWIN)
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_IMPORT_LIBRARY_SUFFIX}"
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-      else ()
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-            IMPORTED_SONAME "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}.${libversion}"
-            SOVERSION "${libversion}"
-        )
-      endif ()
-    endif ()
-  else ()
-    if (WIN32 AND NOT MINGW)
-      set_target_properties (${libtarget} PROPERTIES
-          IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${IMPORT_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-          IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-      )
-    else ()
-      set_target_properties (${libtarget} PROPERTIES
-          IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_STATIC_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-          IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-      )
-    endif ()
   endif ()
 endmacro ()
 

@@ -1,4 +1,36 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
+
 #-------------------------------------------------------------------------------
+macro (SET_HDF_BUILD_TYPE)
+  get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+  if(_isMultiConfig)
+    set(HDF_CFG_NAME ${CTEST_CONFIGURATION_TYPE})
+    set(HDF_BUILD_TYPE ${CMAKE_CFG_INTDIR})
+    set(HDF_CFG_BUILD_TYPE \${CMAKE_INSTALL_CONFIG_NAME})
+  else()
+    set(HDF_CFG_BUILD_TYPE ".")
+    if(CMAKE_BUILD_TYPE)
+      set(HDF_CFG_NAME ${CMAKE_BUILD_TYPE})
+      set(HDF_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+    else()
+      set(HDF_CFG_NAME "Release")
+      set(HDF_BUILD_TYPE "Release")
+    endif()
+  endif()
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+  endif()
+endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (SET_GLOBAL_VARIABLE name value)
@@ -33,13 +65,6 @@ macro (IDE_SOURCE_PROPERTIES SOURCE_PATH HEADERS SOURCES)
   #set_property (SOURCE ${HEADERS}
   #       PROPERTY MACOSX_PACKAGE_LOCATION Headers/${NAME}
   #)
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (TARGET_NAMING libtarget libtype)
-  if (${libtype} MATCHES "SHARED")
-    set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}${ARGN}")
-  endif ()
 endmacro ()
 
 #-------------------------------------------------------------------------------
@@ -79,31 +104,49 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
+  if (WIN32)
+    set (LIB_DEBUG_SUFFIX "_D")
+  else ()
+    set (LIB_DEBUG_SUFFIX "_debug")
+  endif ()
   if (${libtype} MATCHES "SHARED")
-    if (WIN32)
-      set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}_D")
-    else ()
-      set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}_debug")
-    endif ()
+    set (LIB_RELEASE_NAME "${libname}")
+    set (LIB_DEBUG_NAME "${libname}${LIB_DEBUG_SUFFIX}")
   else ()
     if (WIN32)
       set (LIB_RELEASE_NAME "lib${libname}")
-      set (LIB_DEBUG_NAME "lib${libname}_D")
+      set (LIB_DEBUG_NAME "lib${libname}${LIB_DEBUG_SUFFIX}")
     else ()
       set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}_debug")
+      set (LIB_DEBUG_NAME "${libname}${LIB_DEBUG_SUFFIX}")
     endif ()
   endif ()
 
   set_target_properties (${libtarget}
       PROPERTIES
-      OUTPUT_NAME_DEBUG          ${LIB_DEBUG_NAME}
-      OUTPUT_NAME_RELEASE        ${LIB_RELEASE_NAME}
-      OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
-      OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
+         OUTPUT_NAME
+               ${LIB_RELEASE_NAME}
+         OUTPUT_NAME_DEBUG
+               ${LIB_DEBUG_NAME}
+         OUTPUT_NAME_RELEASE
+               ${LIB_RELEASE_NAME}
+         OUTPUT_NAME_MINSIZEREL
+               ${LIB_RELEASE_NAME}
+         OUTPUT_NAME_RELWITHDEBINFO
+               ${LIB_RELEASE_NAME}
   )
+  if (${libtype} MATCHES "STATIC")
+    if (WIN32)
+      set_target_properties (${libtarget}
+          PROPERTIES
+          COMPILE_PDB_NAME_DEBUG          ${LIB_DEBUG_NAME}
+          COMPILE_PDB_NAME_RELEASE        ${LIB_RELEASE_NAME}
+          COMPILE_PDB_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
+          COMPILE_PDB_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
+          COMPILE_PDB_OUTPUT_DIRECTORY    "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+      )
+    endif ()
+  endif ()
 
   #----- Use MSVC Naming conventions for Shared Libraries
   if (MINGW AND ${libtype} MATCHES "SHARED")
@@ -153,19 +196,30 @@ macro (PLUGIN_README_PROPERTIES pkg_name)
     elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.3")
       set (BINARY_PLATFORM "${BINARY_PLATFORM} 10")
     endif ()
-    set (BINARY_PLATFORM "${BINARY_PLATFORM} ${MSVC_C_ARCHITECTURE_ID}")
-    if (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2010")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "15.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2008")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "17.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2012")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "18.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2013")
-    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "19.*")
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2015")
-    else ()
-      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
+    if (CMAKE_C_COMPILER_ID MATCHES "Intel")
+      set (BINARY_PLATFORM "${BINARY_PLATFORM} Intel")
+      if (${CMAKE_C_COMPILER_VERSION} MATCHES "^17.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using Intel 17")
+      else ()
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using Intel ${CMAKE_C_COMPILER_VERSION}")
+      endif ()
+    elseif (CMAKE_C_COMPILER_ID MATCHES "MSVC")
+      set (BINARY_PLATFORM "${BINARY_PLATFORM} ${MSVC_C_ARCHITECTURE_ID}")
+      if (${CMAKE_C_COMPILER_VERSION} MATCHES "^16.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2010")
+      elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^15.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2008")
+      elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^17.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2012")
+      elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^18.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2013")
+      elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2015")
+      elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^20.*")
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2017")
+      else ()
+        set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
+      endif ()
     endif ()
   elseif (APPLE)
     set (BINARY_EXAMPLE_ENDING "tar.gz")
