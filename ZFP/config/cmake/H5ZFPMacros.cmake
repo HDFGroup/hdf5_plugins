@@ -138,13 +138,6 @@ macro (IDE_SOURCE_PROPERTIES SOURCE_PATH HEADERS SOURCES)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (TARGET_NAMING libtarget libtype)
-  if (${libtype} MATCHES "SHARED")
-    set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}${ARGN}")
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
 macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
   if (WIN32 AND MSVC)
     get_target_property (target_type ${libtarget} TYPE)
