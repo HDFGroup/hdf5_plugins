@@ -1,16 +1,14 @@
-set (H5ZFP_PREFIX "H5")
-
 #-----------------------------------------------------------------------------
 # Include all the necessary files for macros
 #-----------------------------------------------------------------------------
-include (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
-include (${CMAKE_ROOT}/Modules/CheckIncludeFile.cmake)
-include (${CMAKE_ROOT}/Modules/CheckIncludeFileCXX.cmake)
-include (${CMAKE_ROOT}/Modules/CheckIncludeFiles.cmake)
-include (${CMAKE_ROOT}/Modules/CheckLibraryExists.cmake)
-include (${CMAKE_ROOT}/Modules/CheckSymbolExists.cmake)
-include (${CMAKE_ROOT}/Modules/CheckTypeSize.cmake)
-include (${CMAKE_ROOT}/Modules/CheckVariableExists.cmake)
+include (CheckFunctionExists)
+include (CheckIncludeFile)
+include (CheckIncludeFileCXX)
+include (CheckIncludeFiles)
+include (CheckLibraryExists)
+include (CheckSymbolExists)
+include (CheckTypeSize)
+include (CheckVariableExists)
 
 #-----------------------------------------------------------------------------
 # The ZFP filter options
@@ -109,12 +107,12 @@ endif ()
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set (${H5ZFP_PREFIX}_HAVE_DARWIN 1)
+    set (HAVE_DARWIN 1)
 endif ()
 
 # Check for Solaris
 if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
-    set (${H5ZFP_PREFIX}_HAVE_SOLARIS 1)
+    set (HAVE_SOLARIS 1)
 endif ()
 
 #-----------------------------------------------------------------------------
@@ -122,12 +120,12 @@ endif ()
 # does, it appends library to the list.
 #-----------------------------------------------------------------------------
 set (LINK_LIBS "")
-MACRO (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
+macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
   CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
   if (${VARIABLE})
     set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
   endif ()
-ENDMACRO ()
+endmacro ()
 
 # ----------------------------------------------------------------------
 # WINDOWS Hard code Values
@@ -146,7 +144,7 @@ if (WIN32)
     set (WINDOWS 1)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
     if (MSVC)
-      set (${H5ZFP_PREFIX}_HAVE_VISUAL_STUDIO 1)
+      set (HAVE_VISUAL_STUDIO 1)
     endif ()
   endif ()
 endif ()
@@ -156,16 +154,10 @@ if (WINDOWS)
   set (HAVE_SYS_STAT_H 1)
   set (HAVE_SYS_TYPES_H 1)
   set (HAVE_LIBM 1)
-  set (HAVE_STRDUP 1)
   set (HAVE_SYSTEM 1)
-  set (HAVE_LONGJMP 1)
   if (NOT MINGW)
     set (HAVE_GETHOSTNAME 1)
   endif ()
-  set (HAVE_FUNCTION 1)
-  set (GETTIMEOFDAY_GIVES_TZ 1)
-  set (HAVE_TIMEZONE 1)
-  set (HAVE_GETTIMEOFDAY 1)
   if (MINGW)
     set (HAVE_WINSOCK2_H 1)
   endif ()
@@ -182,6 +174,7 @@ endif ()
 #-----------------------------------------------------------------------------
 if (NOT WINDOWS)
   CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
+  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
   CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
   CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
 endif ()
@@ -197,9 +190,9 @@ if (WINDOWS)
   set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
 endif ()
 
-# For other other specific tests, use this MACRO.
-MACRO (H5ZFP_FUNCTION_TEST OTHER_TEST)
-  if ("${OTHER_TEST}" MATCHES "^${OTHER_TEST}$")
+# For other specific tests, use this MACRO.
+macro (H5ZFP_FUNCTION_TEST OTHER_TEST)
+  if (NOT DEFINED ${OTHER_TEST})
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
     set (OTHER_TEST_ADD_LIBRARIES)
     if (CMAKE_REQUIRED_LIBRARIES)
@@ -211,10 +204,8 @@ MACRO (H5ZFP_FUNCTION_TEST OTHER_TEST)
     endforeach ()
 
     foreach (def
-        HAVE_SYS_TIME_H
         HAVE_UNISTD_H
         HAVE_SYS_TYPES_H
-        HAVE_SYS_SOCKET_H
     )
       if ("${${def}}")
         set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
@@ -230,7 +221,7 @@ MACRO (H5ZFP_FUNCTION_TEST OTHER_TEST)
     #message (STATUS "Performing ${OTHER_TEST}")
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
-        ${H5ZFP_RESOURCES_DIR}/H5ZFPTests.c
+        ${H5ZFP_RESOURCES_DIR}/H5PLTests.c
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
         "${OTHER_TEST_ADD_LIBRARIES}"
         OUTPUT_VARIABLE OUTPUT
@@ -247,7 +238,7 @@ MACRO (H5ZFP_FUNCTION_TEST OTHER_TEST)
       )
     endif ()
   endif ()
-ENDMACRO ()
+endmacro ()
 
 H5ZFP_FUNCTION_TEST (STDC_HEADERS)
 
@@ -256,17 +247,16 @@ H5ZFP_FUNCTION_TEST (STDC_HEADERS)
 #-----------------------------------------------------------------------------
 # Check IF header file exists and add it to the list.
 #-----------------------------------------------------------------------------
-MACRO (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
+macro (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
   CHECK_INCLUDE_FILES ("${USE_INCLUDES};${FILE}" ${VARIABLE})
   if (${VARIABLE})
     set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
   endif ()
-ENDMACRO ()
+endmacro ()
 
 #-----------------------------------------------------------------------------
 #  Check for the existence of certain header files
 #-----------------------------------------------------------------------------
-CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
 CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      HAVE_SYS_STAT_H)
 CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     HAVE_SYS_TYPES_H)
 CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
@@ -275,6 +265,7 @@ CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
 # introduced in MSVC 2013.
 CHECK_INCLUDE_FILE_CONCAT ("stdbool.h"       HAVE_STDBOOL_H)
 CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
+CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
 
 # IF the c compiler found stdint, check the C++ as well. On some systems this
 # file will be found by C but not C++, only do this test IF the C++ compiler
@@ -302,7 +293,6 @@ endif ()
 CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
 CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
 CHECK_INCLUDE_FILE_CONCAT ("strings.h"       HAVE_STRINGS_H)
-CHECK_INCLUDE_FILE_CONCAT ("time.h"          HAVE_TIME_H)
 CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        HAVE_STDLIB_H)
 CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
 CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
@@ -319,39 +309,21 @@ set (LINUX_LFS 0)
 set (H5ZFP_EXTRA_C_FLAGS)
 set (H5ZFP_EXTRA_FLAGS)
 if (NOT WINDOWS)
-  if (NOT ${H5ZFP_PREFIX}_HAVE_SOLARIS)
+  if (NOT HAVE_SOLARIS)
   # Linux Specific flags
-  # This was originally defined as _POSIX_SOURCE which was updated to
-  # _POSIX_C_SOURCE=199506L to expose a greater amount of POSIX
-  # functionality so clock_gettime and CLOCK_MONOTONIC are defined
-  # correctly.
-  # POSIX feature information can be found in the gcc manual at:
-  # http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
-  set (H5ZFP_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=199506L)
-  # _BSD_SOURCE deprecated in GLIBC >= 2.20
-  try_run (HAVE_DEFAULT_SOURCE_RUN HAVE_DEFAULT_SOURCE_COMPILE
-        ${CMAKE_BINARY_DIR}
-        ${H5ZFP_RESOURCES_DIR}/H5ZFPTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DHAVE_DEFAULT_SOURCE
-        OUTPUT_VARIABLE OUTPUT
-    )
-  if (HAVE_DEFAULT_SOURCE_COMPILE AND HAVE_DEFAULT_SOURCE_RUN)
-    set (H5ZFP_EXTRA_FLAGS -D_DEFAULT_SOURCE)
-  else ()
-    set (H5ZFP_EXTRA_FLAGS -D_BSD_SOURCE)
-  endif ()
+  set (H5ZFP_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
 
   option (H5ZFP_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
   if (H5ZFP_ENABLE_LARGE_FILE)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
-        ${H5ZFP_RESOURCES_DIR}/H5ZFPTests.c
+        ${H5ZFP_RESOURCES_DIR}/H5PLTests.c
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
         OUTPUT_VARIABLE OUTPUT
     )
     if (TEST_LFS_WORKS_COMPILE)
-      if (TEST_LFS_WORKS_RUN  MATCHES 0)
+      if (TEST_LFS_WORKS_RUN MATCHES 0)
         set (TEST_LFS_WORKS 1 CACHE INTERNAL ${msg})
         set (LARGEFILE 1)
         set (H5ZFP_EXTRA_FLAGS ${H5ZFP_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
@@ -379,12 +351,13 @@ add_definitions (${H5ZFP_EXTRA_FLAGS})
 #-----------------------------------------------------------------------------
 # Check for some functions that are used
 #
+CHECK_FUNCTION_EXISTS (vprintf               HAVE_VPRINTF)
+CHECK_FUNCTION_EXISTS (_doprnt               HAVE_DOPRNT)
+CHECK_FUNCTION_EXISTS (memset                HAVE_MEMSET)
+
 if (NOT WINDOWS)
   foreach (test
       HAVE_ATTRIBUTE
-      HAVE_C99_FUNC
-      HAVE_FUNCTION
-      HAVE_C99_DESIGNATED_INITIALIZER
       SYSTEM_SCOPE_THREADS
       CXX_HAVE_OFFSETOF
   )
