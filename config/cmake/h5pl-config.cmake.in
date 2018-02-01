@@ -33,7 +33,7 @@ set (${H5PL_PACKAGE_NAME}_VERSION_MINOR  @H5PL_VERSION_MINOR@)
 # project which has already built h5pl as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5PL_PACKAGE@")
-  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5PL_PACKAGE@@H5PL_PACKAGE_EXT@-targets.cmake)
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5PL_PACKAGE@/@H5PL_PACKAGE@@H5PL_PACKAGE_EXT@-targets.cmake)
   set (H5PL_LIBRARIES "@H5PL_LIBRARIES_TO_EXPORT@")
 endif ()
 
