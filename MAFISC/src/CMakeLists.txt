@@ -17,7 +17,7 @@ set(H5MAFISC_INCLUDE_DIRS ${H5MAFISC_INCLUDE_DIRS}
     ${MAFISC_INCLUDE_DIR}
 )
 
-add_subdirectory (${H5MAFISC_SRC_SOURCE_DIR}/liblzma ${PROJECT_BINARY_DIR}/liblzma)
+add_subdirectory (liblzma)
 
 #-----------------------------------------------------------------------------
 # Define H5MAFISC Library

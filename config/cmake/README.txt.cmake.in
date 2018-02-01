@@ -19,14 +19,22 @@ The contents of this directory are:
 
 Installation
 ===========================================================================
-On linux, the installer should be executed in the location to install the plugin.
+The customary location for the plugins is under the hdf5 libraries location.
+   The plugins depend on the environment variable, HDF5_PLUGIN_PATH, and can
+   be installed into any location.
+On linux, the installer should be executed in the location to install the
+   plugin. The plugins will install into the location:
+            <current dir>/HDF_Group/HDF5/1.10.2/lib/plugin
+On Windows, the installer will default to the same location as the hdf5 installer:
+   C:/Program Files/HDF_Group/HDF5/1.10.2 and into the /lib/plugin dir.
 1. Execute @H5PL_PACKAGE_NAME@-@H5PL_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
 2. Follow prompts
 ===========================================================================
 
-After Installation Test using CMake
+After Installation, Test using CMake
 ===========================================================================
-Installed a HDF5 library built with CMake. Normally the plugins are installed
+The HDF5 Plugins examples expect a HDF5 library built with CMake, but can be
+    used with an autotools built binary. Normally the plugins are installed
     with the HDF5 library.
 
 Copy the following dir and file from the share dir in the H5PL INSTALL location
@@ -35,8 +43,18 @@ Copy the following dir and file from the share dir in the H5PL INSTALL location
        H5PL_Examples.cmake
 
 Execute the ctest script:
-        ctest -S H5PL_Examples.cmake -C Release -VV -O test.log
-
+  ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
+    where <hdf5 root location> has the following dirs;
+    on windows:
+         ------bin
+         ------include
+         ------lib
+         ------cmake
+    on linux:
+         ------bin
+         ------include
+         ------lib
+         ------share
 ------------------------------------------------------------------------------
 
 If you do not use the ctest script, you must supply the following environment
@@ -53,6 +71,31 @@ If you do not use the ctest script, you must supply the following environment
          cmake --build . --config Release
     and execute:
          ctest . -C Release
+
+===========================================================================
+
+After Installation, Test using h5cc on linux
+===========================================================================
+The compression library assumes that HDF5 is installed to the directory
+pointed to by the environment variable HDF5_HOME, e.g. HDF5_HOME=/usr/local/hdf5.
+
+It can be installed in user space or admin space, as long as this variable is
+defined properly.
+
+The installed version of HDF5 must have been built with ‐‐enable‐static=no in
+order to force the hdf5 tools to use dynamic linking, which is required by the plugin.
+
+By default, HDF5 looks for plugins to be installed in $HDF5_HOME/lib/plugin.
+Be sure to copy the shared plugins libraries (*.so files) from this install
+to the $HDF5_HOME/lib/plugin folder.
+
+Copy the following dir from the share dir in the H5PL INSTALL location
+   to your working dir:
+       HDFPLExamples
+
+Change your working dir to the HDFPLExamples/example/test folder.
+
+Execute the test.sh script.
 
 ===========================================================================
 

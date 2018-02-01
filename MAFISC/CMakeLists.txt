@@ -145,7 +145,7 @@ if (BUILD_TESTING)
   configure_file (${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 endif ()
 
-add_subdirectory (${H5MAFISC_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+add_subdirectory (src)
 
 if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   if (MAFISC_FOUND AND MAFISC_USE_EXTERNAL)
@@ -155,7 +155,7 @@ endif ()
 
 option (BUILD_EXAMPLES "Build h5mafisc Examples" OFF)
 if (BUILD_EXAMPLES)
-  add_subdirectory (${H5MAFISC_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)
+  add_subdirectory (example)
 endif ()
 
 #-----------------------------------------------------------------------------
