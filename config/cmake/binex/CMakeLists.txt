@@ -33,4 +33,4 @@ endif ()
 #-----------------------------------------------------------------------------
 # Build examples
 #-----------------------------------------------------------------------------
-add_subdirectory (${PROJECT_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)
+add_subdirectory (example)
