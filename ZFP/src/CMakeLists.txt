@@ -17,7 +17,7 @@ set(H5ZFP_INCLUDE_DIRS ${H5ZFP_INCLUDE_DIRS}
     ${ZFP_INCLUDE_DIRS}
 )
 
-add_subdirectory (${H5ZFP_SRC_SOURCE_DIR}/libzfp ${PROJECT_BINARY_DIR}/libzfp)
+add_subdirectory (libzfp)
 
 #-----------------------------------------------------------------------------
 # Define H5ZFP Library

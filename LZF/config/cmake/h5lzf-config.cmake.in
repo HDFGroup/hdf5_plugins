@@ -33,7 +33,7 @@ set (${H5LZF_PACKAGE_NAME}_VERSION_MINOR  @H5LZF_VERSION_MINOR@)
 # project which has already built h5lzf as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5LZF_PACKAGE@")
-  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5LZF_PACKAGE@@H5LZF_PACKAGE_EXT@-targets.cmake)
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5LZF_PACKAGE@/@H5LZF_PACKAGE@@H5LZF_PACKAGE_EXT@-targets.cmake)
 endif ()
 
 # Handle default component(static) :
