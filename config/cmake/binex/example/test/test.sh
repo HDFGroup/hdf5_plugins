@@ -18,16 +18,14 @@ builddir=.
 verbose=yes
 nerrors=0
 
-#Run h5redeploy 
-(cd ../../../../bin;./h5redeploy -force)
-
 # HDF5 compile commands, assuming they are in your $PATH.
-H5CC=../../../../bin/h5cc
-LD_LIBRARY_PATH=../../../../lib
+H5CC=$HDF5_HOME/bin/h5cc
+LD_LIBRARY_PATH=$HDF5_HOME/lib
 export LD_LIBRARY_PATH
 
 if ! test -f $H5CC; then
     echo "Set paths for H5CC and LD_LIBRARY_PATH in test.sh"
+    echo "Set environment variable HDF5_HOME to the hdf5 install dir"
     echo "h5cc was not found at $H5CC"
     exit $EXIT_FAILURE
 fi
