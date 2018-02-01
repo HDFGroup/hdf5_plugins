@@ -34,7 +34,7 @@ if(DEFINED CTEST_SCRIPT_ARG)
 endif()
 
 if(NOT DEFINED HDF5INSTALLDIR)
-  set(HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.11")
+  set(HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.10.2")
 endif()
 if(NOT DEFINED INSTALLDIR)
     set(INSTALLDIR "${HDF5INSTALLDIR}")
@@ -69,7 +69,7 @@ set(BUILD_OPTIONS "${BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRI
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.11-Source")
+#  set(CTEST_USE_TAR_SOURCE "HDFPLExamples-1.10.2-Source")
 #endif()
 
 ###############################################################################################################
