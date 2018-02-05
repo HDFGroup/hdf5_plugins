@@ -245,7 +245,7 @@ macro (H5MAFISC_FUNCTION_TEST OTHER_TEST)
   endif ()
 endmacro ()
 
-H5BLOSC_FUNCTION_TEST (STDC_HEADERS)
+H5MAFISC_FUNCTION_TEST (STDC_HEADERS)
 
 #-----------------------------------------------------------------------------
 
