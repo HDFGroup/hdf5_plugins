@@ -157,16 +157,29 @@ macro (H5BLOSC_SET_LIB_OPTIONS libtarget defaultlibname libtype)
   HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
 
   if (${libtype} MATCHES "SHARED")
+    set (LIB_PACKAGE_SOVERSION ${H5BLOSC_SOVERS_MAJOR})
     if (WIN32)
-      set (LIBH5BLOSC_VERSION ${H5BLOSC_PACKAGE_VERSION_MAJOR})
+      set (LIB_VERSION ${H5BLOSC_PACKAGE_VERSION_MAJOR})
     else ()
-      set (LIBH5BLOSC_VERSION ${H5BLOSC_PACKAGE_VERSION})
+      set (LIB_VERSION ${H5BLOSC_PACKAGE_SOVERSION})
     endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${LIBH5BLOSC_VERSION})
+    set_target_properties (${libtarget} PROPERTIES VERSION ${LIB_VERSION})
     if (WIN32)
-        set (${libname} "${libname}-${H5BLOSC_PACKAGE_SOVERSION}")
+        set (${libname} "${libname}-${LIB_PACKAGE_SOVERSION}")
     else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${H5BLOSC_PACKAGE_SOVERSION})
+        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_PACKAGE_SOVERSION})
+    endif ()
+  endif ()
+
+  #-- Apple Specific install_name for libraries
+  if (APPLE)
+    option (H5BLOSC_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
+    if (H5BLOSC_BUILD_WITH_INSTALL_NAME)
+      set_target_properties(${libtarget} PROPERTIES
+          LINK_FLAGS "-current_version ${H5BLOSC_PACKAGE_VERSION} -compatibility_version ${H5BLOSC_PACKAGE_VERSION}"
+          INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
+          BUILD_WITH_INSTALL_RPATH ${H5BLOSC_BUILD_WITH_INSTALL_NAME}
+      )
     endif ()
   endif ()
 endmacro ()
