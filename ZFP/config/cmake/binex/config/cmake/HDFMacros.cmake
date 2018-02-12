@@ -103,7 +103,7 @@ macro (INSTALL_PROGRAM_PDB progtarget targetdestination targetcomponent)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (HDF_SET_LIB_OPTIONS libtarget libname libtype)
+macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
   if (WIN32)
     set (LIB_DEBUG_SUFFIX "_D")
   else ()

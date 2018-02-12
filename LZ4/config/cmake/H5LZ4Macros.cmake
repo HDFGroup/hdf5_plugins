@@ -46,7 +46,7 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
 
   # Create imported target LZ4
   add_library (lz4 ${libtype} IMPORTED)
-  H5LZ4_IMPORT_SET_LIB_OPTIONS (lz4 "lz4" ${libtype} "")
+  HDF_IMPORT_SET_LIB_OPTIONS (lz4 "lz4" ${libtype} "")
   add_dependencies (LZ4 lz4)
 
 #  include (${BINARY_DIR}/LZ4-targets.cmake)
@@ -68,93 +68,5 @@ macro (PACKAGE_LZ4_LIBRARY compress_type)
   set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lz4.h)
   if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
     add_dependencies (LZ4-GenHeader-Copy LZ4)
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (H5LZ4_SET_LIB_OPTIONS libtarget defaultlibname libtype)
-  set (libname "${defaultlibname}")
-  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
-
-  if (${libtype} MATCHES "SHARED")
-    set (LIB_PACKAGE_SOVERSION ${H5LZ4_SOVERS_MAJOR})
-    if (WIN32)
-      set (LIB_VERSION ${H5LZ4_PACKAGE_VERSION_MAJOR})
-    else ()
-      set (LIB_VERSION ${H5LZ4_PACKAGE_VERSION})
-    endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${LIB_VERSION})
-    if (WIN32)
-        set (${libname} "${libname}-${LIB_PACKAGE_SOVERSION}")
-    else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_PACKAGE_SOVERSION})
-    endif ()
-  endif ()
-
-  #-- Apple Specific install_name for libraries
-  if (APPLE)
-    option (H5LZ4_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
-    if (H5LZ4_BUILD_WITH_INSTALL_NAME)
-      set_target_properties(${libtarget} PROPERTIES
-          LINK_FLAGS "-current_version ${H5LZ4_PACKAGE_VERSION} -compatibility_version ${H5LZ4_PACKAGE_VERSION}"
-          INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-          BUILD_WITH_INSTALL_RPATH ${H5LZ4_BUILD_WITH_INSTALL_NAME}
-      )
-    endif ()
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (H5LZ4_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
-  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
-
-  if (${importtype} MATCHES "IMPORT")
-    set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
-  endif ()
-  if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    set (IMPORT_LIB_NAME ${LIB_DEBUG_NAME})
-  else ()
-    set (IMPORT_LIB_NAME ${LIB_RELEASE_NAME})
-  endif ()
-
-  if (${libtype} MATCHES "SHARED")
-    if (WIN32)
-      if (MINGW)
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${IMPORT_LIB_NAME}.lib"
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-      else ()
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_IMPORT_LIBRARY_SUFFIX}"
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-      endif ()
-    else ()
-      if (CYGWIN)
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_IMPLIB "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_IMPORT_LIBRARY_SUFFIX}"
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_IMPORT_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        )
-      else ()
-        set_target_properties (${libtarget} PROPERTIES
-            IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
-            IMPORTED_SONAME "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}.${libversion}"
-            SOVERSION "${libversion}"
-        )
-      endif ()
-    endif ()
-  else ()
-    if (WIN32 AND NOT MINGW)
-      set_target_properties (${libtarget} PROPERTIES
-          IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${IMPORT_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-          IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-      )
-    else ()
-      set_target_properties (${libtarget} PROPERTIES
-          IMPORTED_LOCATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_STATIC_LIBRARY_PREFIX}${IMPORT_LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}"
-          IMPORTED_LINK_INTERFACE_LANGUAGES "C"
-      )
-    endif ()
   endif ()
 endmacro ()

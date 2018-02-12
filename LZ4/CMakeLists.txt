@@ -63,7 +63,8 @@ if (NOT BUILD_LZ4_LIBRARY_SOURCE)
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
     option (LZ4_USE_EXTERNAL "Use External Library Building for LZ4" 1)
     if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
-      set (LZ4_URL ${LZ4_GIT_URL})
+      set (LZ4_URL ${LZ4_GIT_URL} CACHE STRING "Path to lz4 git repository")
+      set (LZ4_BRANCH ${LZ4_GIT_BRANCH})
     elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
       if (NOT TGZPATH)
         set (TGZPATH ${H5LZ4_SOURCE_DIR})
@@ -123,7 +124,7 @@ if (BUILD_TESTING)
   configure_file (${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 endif ()
 
-add_subdirectory (${H5LZ4_SOURCE_DIR}/src ${PROJECT_BINARY_DIR}/src)
+add_subdirectory (src)
 
 if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
   if (LZ4_FOUND AND LZ4_USE_EXTERNAL)
@@ -133,7 +134,7 @@ endif ()
 
 option (BUILD_EXAMPLES "Build h5lz4 Examples" OFF)
 if (BUILD_EXAMPLES)
-  add_subdirectory (${H5LZ4_SOURCE_DIR}/example ${PROJECT_BINARY_DIR}/example)
+  add_subdirectory (example)
 endif ()
 
 #-----------------------------------------------------------------------------

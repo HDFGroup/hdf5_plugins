@@ -34,6 +34,7 @@ set (${H5LZ4_PACKAGE_NAME}_VERSION_MINOR  @H5LZ4_VERSION_MINOR@)
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5LZ4_PACKAGE@")
   include (@PACKAGE_SHARE_INSTALL_DIR@/@H5LZ4_PACKAGE@/@H5LZ4_PACKAGE@@H5LZ4_PACKAGE_EXT@-targets.cmake)
+  set (H5LZ4_LIBRARIES "@H5LZ4_LIBRARIES_TO_EXPORT@")
 endif ()
 
 # Handle default component(static) :
