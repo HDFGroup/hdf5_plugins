@@ -7,6 +7,8 @@ project (H5BLOSC C)
 if (NOT H5PL_RESOURCES_DIR)
   include (${H5BLOSC_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
   include (${H5BLOSC_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+
+  SET_HDF_BUILD_TYPE()
 endif ()
 BASIC_SETTINGS (${BLOSC_PACKAGE_NAME})
 

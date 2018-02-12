@@ -7,6 +7,8 @@ project (H5ZFP C CXX)
 if (NOT H5PL_RESOURCES_DIR)
   include (${H5ZFP_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
   include (${H5ZFP_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+
+  SET_HDF_BUILD_TYPE()
 endif ()
 BASIC_SETTINGS (${ZFP_PACKAGE_NAME})
 

@@ -7,6 +7,8 @@ project (H5LZ4 C)
 if (NOT H5PL_RESOURCES_DIR)
   include (${H5LZ4_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
   include (${H5LZ4_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+
+  SET_HDF_BUILD_TYPE()
 endif ()
 BASIC_SETTINGS (${LZ4_PACKAGE_NAME})
 
