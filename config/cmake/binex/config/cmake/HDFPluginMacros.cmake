@@ -30,7 +30,6 @@ macro (BASIC_SETTINGS varname)
     # Include some macros for reusable code
     #-----------------------------------------------------------------------------
     include (${H5PL_RESOURCES_DIR}/HDFMacros.cmake)
-    include (${H5PL_RESOURCES_DIR}/HDFPLMacros.cmake)
 
     SET_HDF_BUILD_TYPE()
 
