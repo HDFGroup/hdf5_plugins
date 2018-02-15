@@ -25,7 +25,7 @@ add_library (${H5BLOSC_LIB_TARGET} MODULE ${H5BLOSC_SRCS})
 target_include_directories(${H5BLOSC_LIB_TARGET} PRIVATE ${H5BLOSC_INCLUDE_DIRS})
 target_link_libraries (${H5BLOSC_LIB_TARGET} PRIVATE ${LINK_LIBS})
 set_global_variable (H5BLOSC_LIBRARIES_TO_EXPORT ${H5BLOSC_LIB_TARGET})
-H5BLOSC_SET_LIB_OPTIONS (${H5BLOSC_LIB_TARGET} ${H5BLOSC_LIB_NAME} MODULE)
+HDF_SET_LIB_VERSIONS ("H5BLOSC" ${H5BLOSC_LIB_TARGET} ${H5BLOSC_LIB_NAME} MODULE)
 
 if (BUILD_TESTING)
   #-----------------------------------------------------------------------------
