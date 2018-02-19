@@ -79,6 +79,9 @@ set (MAFISC_PACKAGE_NAME "mafisc" CACHE STRING "Name of MAFISC package" FORCE)
 
 ############################# zfp ################################################
 
-set (BUILD_ZFP_LIBRARY_SOURCE ON CACHE BOOL "build the zfp library within the plugin" FORCE)
+set (ZFP_GIT_URL "https://github.com/LLNL/zfp.git" CACHE STRING "Use ZFP from Github" FORCE)
+set (ZFP_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (ZFP_TGZ_NAME "zfp.tar.gz" CACHE STRING "Use ZFP from compressed file" FORCE)
 
 set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)

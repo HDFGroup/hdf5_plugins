@@ -52,14 +52,11 @@ Making new file ...
  group                       /
  dset     UD   (0.889:1)     /DxDy
  dset     UD   (1.333:1)     /DxDyDz
- warning: could not create dataset </Indexes>. Applying original settings
- dset                        /Indexes
- warning: could not create dataset </Indexes2>. Applying original settings
- dset                        /Indexes2
+ dset     UD   (2.578:1)     /Indexes
+ dset     UD   (2.270:1)     /Indexes2
  dset     UD   (12.000:1)    /Origin
  dset     UD   (8.000:1)     /Origin2
- warning: could not create dataset </Pressure>. Applying original settings
- dset                        /Pressure
+ dset     UD   (24.242:1)    /Pressure
  dset     UD   (7.722:1)     /Pressure2
  dset     UD   (7.722:1)     /Pressure3
  warning: could not create dataset </Pressure_2D>. Applying original settings
@@ -72,8 +69,7 @@ Making new file ...
  dset     UD   (10.662:1)    /Velocity3
  warning: could not create dataset </VelocityX_2D>. Applying original settings
  dset                        /VelocityX_2D
- warning: could not create dataset </VelocityZ>. Applying original settings
- dset                        /VelocityZ
+ dset     UD   (9.935:1)     /VelocityZ
  dset     UD   (3.638:1)     /VelocityZ2
  dset     UD   (3.638:1)     /VelocityZ3
  dset     UD   (2.052:1)     /X
