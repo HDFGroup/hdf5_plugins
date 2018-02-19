@@ -80,7 +80,7 @@ endif ()
 #-----------------------------------------------------------------------------
 configure_file (${H5MAFISC_RESOURCES_DIR}/config.h.in ${H5MAFISC_BINARY_DIR}/config.h @ONLY)
 
-option (BUILD_MAFISC_LIBRARY_SOURCE "build the mafisc library within the plugin" OFF)
+option (BUILD_MAFISC_LIBRARY_SOURCE "build the mafisc library within the plugin" ON)
 if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
   include (ExternalProject)
   set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
