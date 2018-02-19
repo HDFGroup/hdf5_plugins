@@ -57,7 +57,7 @@ endif ()
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
-option (BUILD_LZ4_LIBRARY_SOURCE "build the lz4 library within the plugin" OFF)
+option (BUILD_LZ4_LIBRARY_SOURCE "build the lz4 library within the plugin" ON)
 if (NOT BUILD_LZ4_LIBRARY_SOURCE)
   include (ExternalProject)
   set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")

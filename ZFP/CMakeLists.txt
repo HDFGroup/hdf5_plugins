@@ -75,7 +75,7 @@ if (NOT DISABLE_H5ZFP_ENCODER)
   set (FILTER_DECODE_ONLY 1)
 endif ()
 
-option (BUILD_ZFP_LIBRARY_SOURCE "build the zfp library within the plugin" OFF)
+option (BUILD_ZFP_LIBRARY_SOURCE "build the zfp library within the plugin" ON)
 if (NOT BUILD_ZFP_LIBRARY_SOURCE)
   include (ExternalProject)
   option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
