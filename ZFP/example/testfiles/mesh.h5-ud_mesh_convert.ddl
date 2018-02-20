@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -48,38 +48,44 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 7161 ) / ( 7161 ) }
       STORAGE_LAYOUT {
-         CONTIGUOUS
-         SIZE 28644
-         OFFSET 8184
+         CHUNKED ( 217 )
+         SIZE 11113 (2.578:1 COMPRESSION)
       }
       FILTERS {
-         NONE
+         USER_DEFINED_FILTER {
+            FILTER_ID 32013
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
+         }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
          VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
-         H5D_ALLOC_TIME_LATE
+         H5D_ALLOC_TIME_INCR
       }
    }
    DATASET "Indexes2" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 4851 ) / ( 4851 ) }
       STORAGE_LAYOUT {
-         CONTIGUOUS
-         SIZE 19404
-         OFFSET 38876
+         CHUNKED ( 1517 )
+         SIZE 8549 (2.270:1 COMPRESSION)
       }
       FILTERS {
-         NONE
+         USER_DEFINED_FILTER {
+            FILTER_ID 32013
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
+         }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
          VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
-         H5D_ALLOC_TIME_LATE
+         H5D_ALLOC_TIME_INCR
       }
    }
    DATASET "Origin" {
@@ -92,7 +98,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -114,7 +120,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -130,19 +136,22 @@ GROUP "/" {
       DATATYPE  H5T_STD_U32LE
       DATASPACE  SIMPLE { ( 10, 20, 30 ) / ( 10, 20, 30 ) }
       STORAGE_LAYOUT {
-         CONTIGUOUS
-         SIZE 24000
-         OFFSET 62472
+         CHUNKED ( 10, 20, 5 )
+         SIZE 990 (24.242:1 COMPRESSION)
       }
       FILTERS {
-         NONE
+         USER_DEFINED_FILTER {
+            FILTER_ID 32013
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
+         }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
          VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
-         H5D_ALLOC_TIME_LATE
+         H5D_ALLOC_TIME_INCR
       }
    }
    DATASET "Pressure2" {
@@ -155,7 +164,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -177,7 +186,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -195,7 +204,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 600
-         OFFSET 99216
+         OFFSET 54449
       }
       FILTERS {
          NONE
@@ -218,7 +227,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -240,7 +249,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -262,7 +271,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -284,7 +293,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -306,7 +315,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -328,7 +337,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -346,7 +355,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 651
-         OFFSET 216096
+         OFFSET 171792
       }
       FILTERS {
          NONE
@@ -363,19 +372,22 @@ GROUP "/" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 11, 21, 31 ) / ( 11, 21, 31 ) }
       STORAGE_LAYOUT {
-         CONTIGUOUS
-         SIZE 28644
-         OFFSET 218898
+         CHUNKED ( 11, 21, 1 )
+         SIZE 2883 (9.935:1 COMPRESSION)
       }
       FILTERS {
-         NONE
+         USER_DEFINED_FILTER {
+            FILTER_ID 32013
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
+            PARAMS { XXXX }
+         }
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
          VALUE  H5D_FILL_VALUE_DEFAULT
       }
       ALLOCATION_TIME {
-         H5D_ALLOC_TIME_LATE
+         H5D_ALLOC_TIME_INCR
       }
    }
    DATASET "VelocityZ2" {
@@ -388,7 +400,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -410,7 +422,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -432,7 +444,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -454,7 +466,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -476,7 +488,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -498,7 +510,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -520,7 +532,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -542,7 +554,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -564,7 +576,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -586,7 +598,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -608,7 +620,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -630,7 +642,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }

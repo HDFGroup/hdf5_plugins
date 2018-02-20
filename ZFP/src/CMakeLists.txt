@@ -12,13 +12,9 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 set(H5ZFP_INCLUDE_DIRS ${H5ZFP_INCLUDE_DIRS}
     ${HDF5_INCLUDE_DIR}
     ${H5ZFP_SRC_SOURCE_DIR}
-    ${H5ZFP_SRC_LIBZFP_DIR}/inc
     ${H5ZFP_BINARY_DIR}
     ${ZFP_INCLUDE_DIRS}
 )
-
-add_subdirectory (libzfp)
-
 #-----------------------------------------------------------------------------
 # Define H5ZFP Library
 #-----------------------------------------------------------------------------
@@ -26,7 +22,7 @@ set (H5ZFP_SRCS
     ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp.c
 )
 
-add_library (${H5ZFP_LIB_TARGET} MODULE ${H5ZFP_SRCS} $<TARGET_OBJECTS:${ZFP_LIB_TARGET}>)
+add_library (${H5ZFP_LIB_TARGET} MODULE ${H5ZFP_SRCS})
 target_include_directories(${H5ZFP_LIB_TARGET} PRIVATE ${H5ZFP_INCLUDE_DIRS})
 target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE ${LINK_LIBS})
   if (WIN32)
