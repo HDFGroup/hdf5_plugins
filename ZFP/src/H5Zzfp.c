@@ -77,16 +77,20 @@ static herr_t H5Z_zfp_set_local(hid_t dcpl_id, hid_t type_id, hid_t space_id);
 const H5Z_class2_t H5Z_ZFP[1] = {{
 
     H5Z_CLASS_T_VERS,       /* H5Z_class_t version          */
-    H5Z_FILTER_ZFP,         /* Filter id number             */
-    1,                      /* encoder_present flag         */
+    (H5Z_filter_t)(H5Z_FILTER_ZFP),         /* Filter id number             */
+#ifdef FILTER_DECODE_ONLY
+    0,                   /* encoder_present flag (false is not available) */
+#else
+    1,                   /* encoder_present flag (set to true) */
+#endif
     1,                      /* decoder_present flag         */
     "H5Z-ZFP"               /* Filter name for debugging    */
     "-" H5Z_FILTER_ZFP_VERSION_STR
     " (ZFP-" ZFP_VERSION_STR ") "
     "github.com/LLNL/H5Z-ZFP",
-    H5Z_zfp_can_apply,      /* The "can apply" callback     */
-    H5Z_zfp_set_local,      /* The "set local" callback     */
-    H5Z_filter_zfp,         /* The actual filter function   */
+    (H5Z_can_apply_func_t)(H5Z_zfp_can_apply),      /* The "can apply" callback     */
+    (H5Z_set_local_func_t)(H5Z_zfp_set_local),      /* The "set local" callback     */
+    (H5Z_func_t)(H5Z_filter_zfp),         /* The actual filter function   */
 
 }};
 
