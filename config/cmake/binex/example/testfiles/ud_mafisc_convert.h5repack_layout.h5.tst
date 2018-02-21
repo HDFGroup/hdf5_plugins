@@ -11,7 +11,7 @@ Making new file ...
  dset                        /dset1
  dset                        /dset2
  dset                        /dset3
- dset     UD   (1.000:1)     /dset4
+ dset     UD   (5.797:1)     /dset4
  dset                        /dset_chunk
  dset                        /dset_compact
  dset                        /dset_contiguous

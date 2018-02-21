@@ -10,7 +10,10 @@ set (BUILD_EXAMPLES ON CACHE BOOL "Build h5zfp Examples" FORCE)
 
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
-set (BUILD_ZFP_LIBRARY_SOURCE ON CACHE BOOL "build the zfp library within the plugin" FORCE)
+set (ZFP_GIT_URL "https://github.com/LLNL/zfp.git" CACHE STRING "Use ZFP from Github" FORCE)
+set (ZFP_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (ZFP_TGZ_NAME "zfp.tar.gz" CACHE STRING "Use ZFP from compressed file" FORCE)
 
 set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)
 set (H5ZFP_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
