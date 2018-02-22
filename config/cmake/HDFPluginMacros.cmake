@@ -317,6 +317,16 @@ macro (INSTALL_SUPPORT varname)
     PLUGIN_README_PROPERTIES (${PLUGIN_PACKAGE_NAME})
 
     #-----------------------------------------------------------------------------
+    # Add Document File(s) to CMake Install
+    #-----------------------------------------------------------------------------
+    install (
+        FILES
+            ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/docs/PluginLibraries.txt
+        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+        COMPONENT hdfdocuments
+    )
+
+    #-----------------------------------------------------------------------------
     # Check for Installation Utilities
     #-----------------------------------------------------------------------------
     if (WIN32)
