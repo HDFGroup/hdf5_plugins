@@ -10,6 +10,6 @@ Making new file ...
  dset     UD   (9.816:1)     /dset2
  dset     UD   (9.816:1)     /dset3
  dset     UD   (9.816:1)     /dset4
- dset     UD   (9.816:1)     /dset_chunk
+ dset     UD   (3.143:1)     /dset_chunk
  dset     UD   (9.816:1)     /dset_compact
  dset     UD   (9.816:1)     /dset_contiguous
