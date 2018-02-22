@@ -1,0 +1,295 @@
+The Compression Plugin Project
+==============================
+
+The HDF Group Registered Third-Party Filters (Compression) webpage:
+        https://support.hdfgroup.org/services/contributions.html
+
+This is a list of filters included into the Compression Plugin Library
+    and some parameter settings pulled from the corresponding filter
+    compression reference  sites.
+
+
+BZIP2 Filter
+=================================
+Filter ID: 307
+
+Filter Description:
+    bzip2 is a freely available, patent free, high-quality data
+    compressor. It typically compresses files to within 10% to
+    15% of the best available techniques (the PPM family of
+    statistical compressors), whilst being around twice as fast
+    at compression and six times faster at decompression.
+
+Links:
+    http://www.bzip.org
+    http://www.pytables.org
+
+Contact Information:
+    Francesc Alted
+    Email: faltet at pytables dot org
+
+--------------------------------------------
+Compression Library Included: bzip2/libbzip2 version 1.0.6
+
+Plugin cd_value option
+--------------------------------------------
+This filter has one optional value, compression block size. The value
+is a number from 1 to 9 in units of 100K bytes. The default is 9.
+
+Common h5repack parameter: UD=307,0,1,9
+.................................
+
+LZF Filter
+=================================
+Filter ID: 32000
+
+Filter Description:
+    The LZF filter is an alternative DEFLATE-style compressor for
+    HDF5 datasets, using the free LZF library by Marc Alexander Lehmann.
+    Its main benefit over the built-in HDF5 DEFLATE filter is speed;
+    in memory-to-memory operation as part of the filter pipeline, it
+    typically compresses 3x-5x faster than DEFLATE, and decompresses
+    2x faster, while maintaining 50% to 90% of the DEFLATE compression
+    ratio. LZF can be used to compress any data type, and requires no
+    compile-time or run-time configuration. The filter is written in C
+    and can be included directly in C or C++ applications; it has no
+    external dependencies. The license is 3-clause BSD (virtually
+    unrestricted, including commercial applications).
+
+    More information, downloads, and benchmarks, are available at:
+    http://h5py.org/lzf/.
+
+Additional Information:
+    The LZF filter was developed as part of the h5py project, which implements a general-purpose interface to HDF5 from Python.
+
+Links:
+    The h5py homepage: http://h5py.org
+    The LZF library homepage: http://home.schmorp.de/marc/liblzf.html
+
+Contact Information:
+    Andrew Collette
+    Web: http://h5py.org
+
+--------------------------------------------
+Compression Library Included: liblzf 3.6, lzf API version 1.5
+
+Plugin cd_value option
+--------------------------------------------
+This has 3 values, which are reserved for use by the filter. These
+correspond to;
+    Filter revision number
+    LZF compression filter version number
+    Pre-computed chunk size in bytes
+
+Common h5repack parameter: UD=32000,1,3,0,0,0
+.................................
+
+BLOSC Filter
+=================================
+Filter ID: 32001
+
+Filter Description:
+    Blosc is a high performance compressor optimized for binary data.
+    It has been designed to compress data very fast, at the expense
+    of achieving lesser compression ratios than, say, zlib+shuffle.
+    It is mainly meant to not introduce a significant delay when
+    dealing with data that is stored in high-performance I/O systems
+    (like large RAID cabinets, or even the OS filesystem memory cache).
+
+    It uses advanced cache-efficient techniques to reduce activity on
+    the memory bus as much as possible. It also leverages SIMD (SSE2)
+    and multi-threading capabilities present in nowadays multi-core
+    processors so as to accelerate the compression/decompression
+    process to a maximum.
+
+Links:
+    http://blosc.org/
+    http://www.pytables.org
+
+Contact Information:
+    Francesc Alted
+    Email: faltet at pytables dot org
+
+--------------------------------------------
+Compression Library Included: c-blosc version 1.11.1
+
+Plugin cd_value option
+--------------------------------------------
+This has 7 values, the first 4 are reserved for use by the filter. The
+    last 3 are optional.
+    The 4 reserved values correspond to;
+        Filter revision number
+        LZF compression filter version number
+        The datatype size
+        Pre-computed chunk size in bytes
+
+    The optional parameters, which are position dependent:
+        The compression level:
+            0 (no compression) through 9 (maximum compression)
+        Shuffle
+            no shuffle:        0
+            byte-wise shuffle: 1
+            bit-wise shuffle:  2
+        The Blosc compressor used, default is zstd
+            BLOSCLZ: 0
+            LZ4:     1
+            LZ4HC:   2
+            SNAPPY:  3
+            ZLIB:    4
+            ZSTD:    5
+
+Common h5repack parameters
+    default: UD=32001,0,0
+    BLOSCLZ: UD=32001,0,7,0,0,0,0,5,1,0
+    LZ4:     UD=32001,0,7,0,0,0,0,5,1,1
+    LZ4HC:   UD=32001,0,7,0,0,0,0,5,1,2
+    SNAPPY:  UD=32001,0,7,0,0,0,0,5,1,3
+    ZLIB:    UD=32001,0,7,0,0,0,0,5,1,4
+    ZSTD:    UD=32001,0,7,0,0,0,0,5,1,5
+.................................
+
+MAFISC Filter
+=================================
+Filter ID: 32002
+
+Filter Description:
+    This compressing filter exploits the multidimensionality and
+    smoothness characterizing many scientific data sets. It adaptively
+    applies some filters to preprocess the data and uses lzma as the
+    actual compression step. It significantly outperforms pure lzma
+    compression on most datasets.
+
+    The software is currently under a rather unrestrictive two clause BSD style license.
+
+Links:
+    http://wr.informatik.uni-hamburg.de/research/projects/icomex/mafisc
+
+Contact Information:
+    Nathanael Huebbe
+    Email: nathanael.huebbe @ informatik dot uni-hamburg dot de
+
+--------------------------------------------
+Compression Library Included: liblzma 16.04
+
+Plugin cd_value option
+--------------------------------------------
+This has 7+ values;
+    The first is required:
+        version:       0
+    The rest are reserved:
+        datasetId:     Random number
+        dataTypeSize:  in bytes
+        isFloat:       1, if the datatype is a float type
+        byteOrderIsLE: Same as H5T_order_t
+            H5T_ORDER_LE    = 0, little endian
+            H5T_ORDER_BE    = 1, bit endian
+            H5T_ORDER_VAX   = 2, VAX mixed endian
+            H5T_ORDER_MIXED = 3, Compound type with mixed member orders
+            H5T_ORDER_NONE  = 4  no particular order (strings, bits,..)
+        rank:          Dimension of a chunk
+    The last values depend on the rank:
+        dimSizes[]:    Size of first dimension (the size of the chunk!)
+                       through size of last dimension
+
+Default h5repack parameter: UD=32002,0,1,0
+.................................
+
+LZ4 Filter
+=================================
+Filter ID: 32004
+
+Filter Description:
+    LZ4 is a very fast lossless compression algorithm, providing
+    compression speed at 300 MB/s per core, scalable with multi-cores
+    CPU. It also features an extremely fast decoder, with speeds up
+    and beyond 1GB/s per core, typically reaching RAM speed limits
+    on multi-core systems. For a format description of the LZ4
+    compression filter in HDF5, see HDF5_LZ4.pdf.
+
+Links:
+    LZ4 Algorithm:   https://github.com/nexusformat/HDF5-External-Filter-Plugins/tree/master/LZ4
+
+Contact Information:
+    Michael Rissi (Dectris Ltd.)
+    Email: michael dot rissi at dectris dot com
+
+--------------------------------------------
+Compression Library Included: liblz4 version 1.8.0
+
+Plugin cd_value option
+--------------------------------------------
+This has 1 optional value;
+    Block Size: default, 1GB. LZ4 needs blocks < 1.9GB
+
+Default h5repack parameter: UD=32004,0,0
+.................................
+
+ZFP Filter
+=================================
+Filter Id: 32013
+
+Filter Description:
+    zfp is a BSD licensed open source C++ library for compressed
+    floating-point arrays that support very high throughput read
+    and write random access. zfp was designed to achieve high
+    compression ratios and therefore uses lossy but optionally
+    error-bounded compression. Although bit-for-bit lossless
+    compression is not always possible, zfp is usually accurate
+    to within machine epsilon in near-lossless mode, and is often
+    orders of magnitude more accurate and faster than other lossy
+    compressors.
+
+    This plugin supports all 4 modes of the ZFP compression library,
+    rate, accuracy, precision and expert. It supports 1, 2 and 3
+    dimensional datasets of single and double precision integer and
+    floating point data. It can be applied to HDF5 datasets of more
+    than 3 dimensions as long as no more than 3 dimensions of the
+    chunking are of size greater than 1.
+
+Link to the filter:
+    https://github.com/LLNL/H5Z-ZFP
+
+For more information see: http://computation.llnl.gov/projects/floating-point-compression/
+
+Contact Information:
+    Mark Miller
+    Email: miller86 at llnl dot gov
+
+    Peter Lindstrom
+    Email: pl at llnl dot gov
+
+--------------------------------------------
+Compression Library Included: libzfp version 0.5.2
+
+Plugin cd_value option
+--------------------------------------------
+This has 6 initial values (the filter will transform them). The first
+value determines the function of the other 5;
+    mode:
+        rate = 1
+        precision = 2
+        accuracy = 3
+        expert =4
+
+    ZFP mode
+        rate:       0  rateA    rateB    0        0
+        precision:  0  prec     unused   0        0
+        accuracy:   0  accA     accB     0        0
+        expert:     0  minbits  maxbits  maxprec  minexp
+
+Accuracy mode, 3 floating point high/low interger values
+    Accuracy - accA       - accB
+    ----------------------------------
+        1       0           1072693248
+        0.1     2576980378  1069128089
+        0.01    1202590843  1065646817
+        0.001   3539053052  1062232653
+        0.0001  3944497965  1058682594
+        1e-8    3794832442  1044740494
+        1e-11   3782829205  1034288511
+
+Default h5repack parameter: UD=32013,1,0,0
+Accuracy 0.001 mode:        UD=32013,0,6,3,0,3539053052,1062232653,0,0
+.................................
+
+
