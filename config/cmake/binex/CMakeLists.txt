@@ -12,7 +12,6 @@ BASIC_SETTINGS (H5PLExamples)
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
 
-set (${H5PL_INCLUDE_DIRS} ${HDF5_INCLUDE_DIR})
 message (STATUS "HDF5 link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
