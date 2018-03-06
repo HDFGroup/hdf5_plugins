@@ -14,7 +14,7 @@ endif ()
 #run-time loadable lzf library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
-  target_include_directories(${example} PRIVATE ${HDFPL_INCLUDE_DIRS})
+  target_include_directories(${example} PRIVATE ${H5PL_INCLUDE_DIRS})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
   target_link_libraries (${example} PRIVATE ${LINK_LIBS})
   if (NOT WIN32)
