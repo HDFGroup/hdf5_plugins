@@ -50,11 +50,33 @@ if (BUILD_TESTING)
     endif ()
     if (DISABLE_H5PL_ENCODER)
       add_test (
+          NAME ${testname}-ERR_COPY
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.err" "${PROJECT_BINARY_DIR}/${testname}.err"
+      )
+      set_tests_properties (${testname}-ERR_COPY PROPERTIES DEPENDS ${testname}-clearall)
+      add_test (
+          NAME ${testname}-ERR
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=1"
+              -D "TEST_MASK_ERROR=true"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.err"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+      )
+      set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-ERR_COPY)
+      add_test (
           NAME ${testname}
           COMMAND "${CMAKE_COMMAND}"
               -E copy_if_different
               "${PROJECT_SOURCE_DIR}/testfiles/${testname}.h5" "${PROJECT_BINARY_DIR}/${testname}.h5"
       )
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-ERR)
     else ()
       add_test (
           NAME ${testname}
@@ -68,9 +90,6 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-    endif ()
-    if (NOT "${last_test}" STREQUAL "")
-      set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
     endif ()
     set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
@@ -88,9 +107,8 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
-      endif ()
+      set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
 
@@ -109,6 +127,7 @@ if (BUILD_TESTING)
     if (NOT "${deptest}" STREQUAL "NONE")
       set_tests_properties (H5PL_UD-${testname}-clearall-objects PROPERTIES DEPENDS H5PL_UD-${deptest})
     endif ()
+    set (last_test "H5PL_UD-${testname}-clearall-objects")
     if (WIN32)
       set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
     else ()
