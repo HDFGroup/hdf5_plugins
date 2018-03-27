@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.2.2 FATAL_ERROR)
 # Execute from a command line:
 #     ctest -S H5PL_Examples.cmake,OPTION=VALUE -C Release -VV -O test.log
 ###############################################################################################################
-# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.11/lib/plugin,
-#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.11
+# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.10.2/lib/plugin,
+#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.10.2
 #     ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
 ###############################################################################################################
 
