@@ -43,18 +43,27 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    add_test (
-        NAME ${testname}
-        COMMAND "${CMAKE_COMMAND}"
-            -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-            -D "TEST_ARGS:STRING=${ARGN}"
-            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-            -D "TEST_EXPECT=0"
-            -D "TEST_OUTPUT=${testname}.out"
-            -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-            -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
-    )
+    if (DISABLE_H5PL_ENCODER)
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.h5" "${PROJECT_BINARY_DIR}/${testname}.h5"
+      )
+    else ()
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=0"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+      )
+    endif ()
     if (NOT "${last_test}" STREQUAL "")
       set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
     endif ()
@@ -156,7 +165,9 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_lzf)
 
-#UD LZ$
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32000,1,3,0,0,0 -l CHUNK=4x8)
+  if (NOT DISABLE_H5PL_ENCODER)
+    #UD LZ$
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32000,1,3,0,0,0 -l CHUNK=4x8)
+  endif ()
 
 endif ()
