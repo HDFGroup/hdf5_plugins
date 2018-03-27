@@ -42,20 +42,29 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    add_test (
-        NAME ${testname}
-        COMMAND "${CMAKE_COMMAND}"
-            -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-            -D "TEST_ARGS:STRING=${ARGN}"
-            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-            -D "TEST_EXPECT=0"
-            -D "TEST_OUTPUT=${testname}.out"
-            -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-            -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-            -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-            -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
-    )
+    if (DISABLE_H5BLOSC_ENCODER)
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.h5" "${PROJECT_BINARY_DIR}/${testname}.h5"
+      )
+    else ()
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=0"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
+      )
+    endif ()
     if (NOT "${last_test}" STREQUAL "")
       set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
     endif ()
@@ -173,19 +182,20 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_blosc)
 
-#UD BLOSC
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0,0)
-# ...BLOSC_BLOSCLZ
-  ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,0)
-# ...BLOSC_LZ4
-  ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,1)
-# ...BLOSC_LZ4HC
-  ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,2)
-# ...BLOSC_SNAPPY
-#  ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,0,0,3)
-# ...BLOSC_ZLIB
-  ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,4)
-# ...BLOSC_ZSTD
-  ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,5)
-
+  if (NOT DISABLE_H5BLOSC_ENCODER)
+    # ...UD BLOSC
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32001,0,0)
+    # ...BLOSC_BLOSCLZ
+    ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,0)
+    # ...BLOSC_LZ4
+    ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,1)
+    # ...BLOSC_LZ4HC
+    ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,2)
+    # ...BLOSC_SNAPPY
+    # ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,0,0,3)
+    # ...BLOSC_ZLIB
+    ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,4)
+    # ...BLOSC_ZSTD
+    ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32001,0,7,0,0,0,0,5,1,5)
+  endif ()
 endif ()

@@ -50,11 +50,6 @@ include (${H5LZ4_RESOURCES_DIR}/ConfigureChecks.cmake)
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5LZ4 link libs: ${LINK_LIBS}")
 
-option (DISABLE_H5LZ4_ENCODER "build the lz4 library without encoding" OFF)
-if (NOT DISABLE_H5LZ4_ENCODER)
-  set (FILTER_DECODE_ONLY 1)
-endif ()
-
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
 option (BUILD_LZ4_LIBRARY_SOURCE "build the lz4 library within the plugin" ON)

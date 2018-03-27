@@ -42,20 +42,29 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    add_test (
-        NAME ${testname}
-        COMMAND "${CMAKE_COMMAND}"
-            -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-            -D "TEST_ARGS:STRING=${ARGN}"
-            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-            -D "TEST_EXPECT=0"
-            -D "TEST_OUTPUT=${testname}.out"
-            -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-            -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-            -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-            -P "${H5LZ4_RESOURCES_DIR}/runTest.cmake"
-    )
+    if (DISABLE_H5LZ4_ENCODER)
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.h5" "${PROJECT_BINARY_DIR}/${testname}.h5"
+      )
+    else ()
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=0"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5LZ4_RESOURCES_DIR}/runTest.cmake"
+      )
+    endif ()
     if (NOT "${last_test}" STREQUAL "")
       set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
     endif ()
@@ -163,7 +172,9 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_lz4)
 
-#UD LZ4
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,0,1,3 -l CHUNK=4x8)
+  if (NOT DISABLE_H5LZ4_ENCODER)
+    #UD LZ4
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,0,1,3 -l CHUNK=4x8)
+  endif ()
 
 endif ()
