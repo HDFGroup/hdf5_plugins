@@ -42,22 +42,53 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    add_test (
-        NAME ${testname}
-        COMMAND "${CMAKE_COMMAND}"
-            -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-            -D "TEST_ARGS:STRING=${ARGN}"
-            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-            -D "TEST_EXPECT=0"
-            -D "TEST_OUTPUT=${testname}.out"
-            -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-            -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-            -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-            -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
-    )
-    if (NOT "${last_test}" STREQUAL "")
-      set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
+    if (DISABLE_H5BZ2_ENCODER)
+      add_test (
+          NAME ${testname}-ERR_COPY
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.err" "${PROJECT_BINARY_DIR}/${testname}.err"
+      )
+      set_tests_properties (${testname}-ERR_COPY PROPERTIES DEPENDS ${testname}-clearall)
+      add_test (
+          NAME ${testname}-ERR
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=1"
+              -D "TEST_MASK_ERROR=true"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.err"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
+      )
+      set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-ERR_COPY)
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.h5" "${PROJECT_BINARY_DIR}/${testname}.h5"
+      )
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-ERR)
+    else ()
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=0"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
+      )
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
     endif ()
     set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
@@ -118,10 +149,7 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
       )
-      if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5BZ2_UD-${testname} PROPERTIES DEPENDS ${last_test})
-      endif ()
-      set (last_test "H5BZ2_UD-${testname}")
+      set_tests_properties (H5BZ2_UD-${testname} PROPERTIES DEPENDS H5BZ2_UD-${testname}-clearall-objects)
       add_test (
           NAME H5BZ2_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -136,9 +164,7 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BZ2_RESOURCES_DIR}/runTest.cmake"
       )
-      if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5BZ2_UD-h5dump-${testname} PROPERTIES DEPENDS ${last_test})
-      endif ()
+      set_tests_properties (H5BZ2_UD-h5dump-${testname} PROPERTIES DEPENDS H5BZ2_UD-${testname})
       set (last_test "H5BZ2_UD-h5dump-${testname}")
     endif ()
   endmacro ()
@@ -163,7 +189,9 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_bzip2)
 
-#UD BZIP2
-  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,0,1,9)
+  if (NOT DISABLE_H5BZ2_ENCODER)
+    #UD BZIP2
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,0,1,9)
+  endif ()
 
 endif ()

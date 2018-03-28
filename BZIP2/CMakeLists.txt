@@ -50,11 +50,6 @@ include (${H5BZ2_RESOURCES_DIR}/ConfigureChecks.cmake)
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5BZ2 link libs: ${LINK_LIBS}")
 
-option (DISABLE_H5BZ2_ENCODER "build the bz2 library without encoding" OFF)
-if (NOT DISABLE_H5BZ2_ENCODER)
-  set (FILTER_DECODE_ONLY 1)
-endif ()
-
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)

@@ -126,8 +126,8 @@ macro (BASIC_SETTINGS varname)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
   endif ()
 
-  option (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER "build the ${PLUGIN_NAME} library without encoding" OFF)
-  if (NOT DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER)
+  option (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER "build the ${PLUGIN_NAME} library without encoding" ${DISABLE_H5PL_ENCODER})
+  if (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER)
     set (FILTER_DECODE_ONLY 1)
   endif ()
 

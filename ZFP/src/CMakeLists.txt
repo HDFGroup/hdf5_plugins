@@ -23,11 +23,14 @@ set (H5ZFP_SRCS
 )
 
 add_library (${H5ZFP_LIB_TARGET} MODULE ${H5ZFP_SRCS})
+if (DISABLE_H5BZ2_ENCODER)
+  set_target_properties(${H5ZFP_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
+endif ()
 target_include_directories(${H5ZFP_LIB_TARGET} PRIVATE ${H5ZFP_INCLUDE_DIRS})
 target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE ${LINK_LIBS})
-  if (WIN32)
-    target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE "ws2_32.lib")
-  endif ()
+if (WIN32)
+  target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE "ws2_32.lib")
+endif ()
 set_global_variable (H5ZFP_LIBRARIES_TO_EXPORT ${H5ZFP_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5ZFP" ${H5ZFP_LIB_TARGET} ${H5ZFP_LIB_NAME} MODULE)
 
