@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.2.2 FATAL_ERROR)
 # Execute from a command line:
 #     ctest -S H5PL_Examples.cmake,OPTION=VALUE -C Release -VV -O test.log
 ###############################################################################################################
-# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.11/lib/plugin,
-#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.11
+# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.8.21/lib/plugin,
+#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.8.21
 #     ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
 ###############################################################################################################
 
@@ -96,6 +96,8 @@ if(${CDASH_LOCAL})
 endif()
 set(BUILD_OPTIONS "${BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE_NAME@")
 set(ENV{HDF5_PLUGIN_PATH} "${HDF5_PLUGIN_ROOT}")
+
+set(BUILD_OPTIONS "${BUILD_OPTIONS} -DDISABLE_H5PL_ENCODER:BOOL=@DISABLE_H5PL_ENCODER@")
 
 ###############################################################################################################
 # For any comments please contact cdashhelp@hdfgroup.org

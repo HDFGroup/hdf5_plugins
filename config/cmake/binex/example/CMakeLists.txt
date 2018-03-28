@@ -48,20 +48,48 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    add_test (
-        NAME ${testname}
-        COMMAND "${CMAKE_COMMAND}"
-            -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-            -D "TEST_ARGS:STRING=${ARGN}"
-            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-            -D "TEST_EXPECT=0"
-            -D "TEST_OUTPUT=${testname}.out"
-            -D "TEST_REFERENCE=${testname}.tst"
-            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-            -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
-    )
-    if (NOT "${last_test}" STREQUAL "")
-      set_tests_properties (${testname} PROPERTIES DEPENDS ${last_test})
+    if (DISABLE_H5PL_ENCODER)
+      add_test (
+          NAME ${testname}-ERR_COPY
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.err" "${PROJECT_BINARY_DIR}/${testname}.err"
+      )
+      set_tests_properties (${testname}-ERR_COPY PROPERTIES DEPENDS ${testname}-clearall)
+      add_test (
+          NAME ${testname}-ERR
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=1"
+              -D "TEST_MASK_ERROR=true"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.err"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+      )
+      set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-ERR_COPY)
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -E copy_if_different
+              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.h5" "${PROJECT_BINARY_DIR}/${testname}.h5"
+      )
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-ERR)
+    else ()
+      add_test (
+          NAME ${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
+              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=0"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${testname}.tst"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+      )
     endif ()
     set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
@@ -79,9 +107,8 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
-      endif ()
+      set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
 
@@ -100,6 +127,7 @@ if (BUILD_TESTING)
     if (NOT "${deptest}" STREQUAL "NONE")
       set_tests_properties (H5PL_UD-${testname}-clearall-objects PROPERTIES DEPENDS H5PL_UD-${deptest})
     endif ()
+    set (last_test "H5PL_UD-${testname}-clearall-objects")
     if (WIN32)
       set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
     else ()
@@ -186,18 +214,20 @@ if (BUILD_TESTING)
     ADD_H5_TEST (${h5_file})
   endforeach ()
 
-#UD BZ2$
-  ADD_H5_UD_TEST (ud_bz2_convert 0 h5repack_layout.h5 NONE -v -f /dset1:UD=307,0,1,9)
-  ADD_H5_UD_VERIFY (ud_pl_bz2_convert 0 h5repack_layout.h5 ud_bz2_convert)
-#UD BLOSC$
-  ADD_H5_UD_TEST (ud_blosc_convert 0 h5repack_layout.h5 ud_bz2_convert -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0)
-  ADD_H5_UD_VERIFY (ud_pl_blosc_convert 0 h5repack_layout.h5 ud_blosc_convert)
-#UD LZ4$
-  ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8)
-  ADD_H5_UD_VERIFY (ud_pl_lz4_convert 0 h5repack_layout.h5 ud_lz4_convert)
-#UD MAFISC$
-  ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
-#UD VERIFY
-  ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
+  if (NOT DISABLE_H5PL_ENCODER)
+    #UD BZ2$
+    ADD_H5_UD_TEST (ud_bz2_convert 0 h5repack_layout.h5 NONE -v -f /dset1:UD=307,0,1,9)
+    ADD_H5_UD_VERIFY (ud_pl_bz2_convert 0 h5repack_layout.h5 ud_bz2_convert)
+    #UD BLOSC$
+    ADD_H5_UD_TEST (ud_blosc_convert 0 h5repack_layout.h5 ud_bz2_convert -v -f /dset2:UD=32001,0,7,0,0,0,0,5,1,0)
+    ADD_H5_UD_VERIFY (ud_pl_blosc_convert 0 h5repack_layout.h5 ud_blosc_convert)
+    #UD LZ4$
+    ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8)
+    ADD_H5_UD_VERIFY (ud_pl_lz4_convert 0 h5repack_layout.h5 ud_lz4_convert)
+    #UD MAFISC$
+    ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
+    #UD VERIFY
+    ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
+  endif ()
 
 endif ()
