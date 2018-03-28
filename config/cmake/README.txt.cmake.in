@@ -10,6 +10,7 @@ It was built with the following options:
     -- @LIB_TYPE@ H5PL tools
     -- @LIB_TYPE@ PL @PL_VERSION_STRING@
     -- @LIB_TYPE@ HDF5 @HDF5_VERSION_STRING@
+    -- FILTER DECODE ONLY @DISABLE_H5PL_ENCODER@
 
 The contents of this directory are:
 

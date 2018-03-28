@@ -127,7 +127,7 @@ macro (BASIC_SETTINGS varname)
   endif ()
 
   option (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER "build the ${PLUGIN_NAME} library without encoding" OFF)
-  if (NOT DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER)
+  if (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER)
     set (FILTER_DECODE_ONLY 1)
   endif ()
 
