@@ -90,6 +90,7 @@ if (BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
+      set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
     endif ()
     set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
