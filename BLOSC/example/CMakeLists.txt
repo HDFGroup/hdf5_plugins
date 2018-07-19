@@ -106,7 +106,9 @@ if (BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BLOSC_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      if (NOT "${last_test}" STREQUAL "")
+        set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
+      endif ()
       set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()

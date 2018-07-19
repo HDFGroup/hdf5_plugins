@@ -373,7 +373,7 @@ AC_MSG_CHECKING([if h5fc was compiled with Fortran 2003 enabled])
 if (${FC} -showconfig 2>&1 | grep 'Fortran 2003 Compiler: yes') > /dev/null; then
   HAVE_FORTRAN_2003="yes"
 fi
-echo $HAVE_FORTRAN_2003 
+echo $HAVE_FORTRAN_2003
 
 ## Check if we have Fortran 2003 and Intel compiler; Intel does not work with RECURSIVE used by h5ex_g_traverse.f90
 ## The example will not be built when Intel compiler is used (EIP 2011/10/14)
@@ -388,7 +388,7 @@ if test "X$HAVE_FORTRAN_2003" = "Xyes"; then
     echo "no"
   else
     echo "yes"
-  fi 
+  fi
 fi
 ## End check if we have Fortran 2003 and Intel compiler.
 
@@ -398,7 +398,7 @@ AM_CONDITIONAL([FORTRAN_2003_NOTINTEL_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003
 LT_OUTPUT
 
 ## Set subdirectories
-AC_CONFIG_FILES([makefile src/makefile example/makefile example/test.sh])
+AC_CONFIG_FILES([makefile src/makefile])
 
 ## Configure
 AC_OUTPUT
