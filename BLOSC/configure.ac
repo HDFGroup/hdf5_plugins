@@ -167,7 +167,7 @@ AC_ARG_WITH([fnord],
 
 ## ----------------------------------------------------------------------
 ## Is the blosc library present? It has a header file `blosc.h' and a library
-## `-lblosc' and their locations might be specified with the `--with-blosclib' 
+## `-lblosc' and their locations might be specified with the `--with-blosclib'
 ## command-line switch. The value is an include path and/or a library path.
 ## If the library path is specified then it must be preceded by a comma.
 ##
@@ -369,7 +369,7 @@ AM_CONDITIONAL(H5BLOSC, test "$PLUGIN_H5BLOSC")
 LT_OUTPUT
 
 ## Set subdirectories
-AC_CONFIG_FILES([makefile src/makefile example/makefile example/test.sh])
+AC_CONFIG_FILES([makefile src/makefile])
 
 ## Configure
 AC_OUTPUT

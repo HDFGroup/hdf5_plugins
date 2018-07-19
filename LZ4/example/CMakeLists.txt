@@ -109,6 +109,7 @@ if (BUILD_TESTING)
       if (NOT "${last_test}" STREQUAL "")
         set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${last_test})
       endif ()
+      set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
 
