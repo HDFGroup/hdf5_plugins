@@ -43,7 +43,7 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (DISABLE_H5LZF_ENCODER)
+    if (DISABLE_H5PL_ENCODER)
       add_test (
           NAME ${testname}-ERR_COPY
           COMMAND "${CMAKE_COMMAND}"
@@ -179,7 +179,7 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_lzf)
 
-  if (NOT DISABLE_H5LZF_ENCODER)
+  if (NOT DISABLE_H5PL_ENCODER)
     #UD LZ$
     ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32000,1,3,0,0,0 -l CHUNK=4x8)
   endif ()
