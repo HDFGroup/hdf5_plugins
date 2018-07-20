@@ -43,7 +43,7 @@ if (BUILD_TESTING)
     else ()
       set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (DISABLE_H5BZ2_ENCODER)
+    if (DISABLE_H5PL_ENCODER)
       add_test (
           NAME ${testname}-ERR_COPY
           COMMAND "${CMAKE_COMMAND}"
@@ -179,7 +179,7 @@ if (BUILD_TESTING)
 
   ADD_H5_TEST (h5ex_d_bzip2)
 
-  if (NOT DISABLE_H5BZ2_ENCODER)
+  if (NOT DISABLE_H5PL_ENCODER)
     #UD BZIP2
     ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,0,1,9)
   endif ()
