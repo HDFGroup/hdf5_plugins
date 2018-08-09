@@ -5,12 +5,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -27,12 +27,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -49,12 +49,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -71,12 +71,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -93,12 +93,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -115,12 +115,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
@@ -137,12 +137,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 408 (7.843:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.7.0 (ZFP-0.5.0) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }
