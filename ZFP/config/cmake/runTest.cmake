@@ -263,12 +263,20 @@ if (NOT TEST_SKIP_COMPARE)
         set (TEST_RESULT 1)
       endif ()
     endif ()
-
-    message (STATUS "COMPARE Result: ${TEST_RESULT}")
-
     # again, if return value is !=0 scream and shout
     if (NOT ${TEST_RESULT} STREQUAL 0)
       message (FATAL_ERROR "Failed: The error output of ${TEST_OUTPUT}.err did not match ${TEST_ERRREF}")
+    endif ()
+    message (STATUS "COMPARE Result: ${TEST_RESULT}")
+  endif ()
+else ()
+  if (GREP_ERRREF)
+    file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_STREAM)
+    string (REGEX MATCH "${GREP_ERRREF}" TEST_MATCH ${TEST_STREAM})
+    string (LENGTH "${TEST_MATCH}" TEST_RESULT)
+    # again, if return value is ==0 scream and shout
+    if (${TEST_RESULT} STREQUAL 0)
+      message (FATAL_ERROR "Failed: The error output of ${TEST_OUTPUT}.err did not contain ${TEST_FILTER}")
     endif ()
   endif ()
 endif ()
