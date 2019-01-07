@@ -40,6 +40,51 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
 endif ()
 
 #-----------------------------------------------------------------------------
+# Check IF header file exists and add it to the list.
+#-----------------------------------------------------------------------------
+macro (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
+  CHECK_INCLUDE_FILES ("${USE_INCLUDES};${FILE}" ${VARIABLE})
+  if (${VARIABLE})
+    set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
+  endif ()
+endmacro ()
+
+#-----------------------------------------------------------------------------
+#  Check for the existence of certain header files
+#-----------------------------------------------------------------------------
+CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      HAVE_SYS_STAT_H)
+CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
+CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
+CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
+
+# IF the c compiler found stdint, check the C++ as well. On some systems this
+# file will be found by C but not C++, only do this test IF the C++ compiler
+# has been initialized (e.g. the project also includes some c++)
+if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
+  CHECK_INCLUDE_FILE_CXX ("stdint.h" HAVE_STDINT_H_CXX)
+  if (NOT HAVE_STDINT_H_CXX)
+    set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
+    set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
+  endif ()
+endif ()
+
+# Windows
+CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
+if (NOT CYGWIN)
+  CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      HAVE_WINSOCK_H)
+endif ()
+
+CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
+CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
+CHECK_INCLUDE_FILE_CONCAT ("strings.h"       HAVE_STRINGS_H)
+CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        HAVE_STDLIB_H)
+CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
+CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
+CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
+CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
+
+#-----------------------------------------------------------------------------
 # This MACRO checks IF the symbol exists in the library and IF it
 # does, it appends library to the list.
 #-----------------------------------------------------------------------------
@@ -63,7 +108,7 @@ if (WIN32)
     set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
   endif ()
   set (HAVE_WIN32_API 1)
-  set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
+  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
   if (NOT UNIX AND NOT MINGW)
     set (WINDOWS 1)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
@@ -106,9 +151,6 @@ endif ()
 # UCB (BSD) compatibility library
 CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
 
-# For other tests to use the same libraries
-set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
-
 set (USE_INCLUDES "")
 if (WINDOWS)
   set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
@@ -123,8 +165,8 @@ macro (H5BZ2_FUNCTION_TEST OTHER_TEST)
   if (NOT DEFINED ${OTHER_TEST})
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
     set (OTHER_TEST_ADD_LIBRARIES)
-    if (CMAKE_REQUIRED_LIBRARIES)
-      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
+    if (LINK_LIBS)
+      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${LINK_LIBS}")
     endif ()
 
     foreach (def ${H5BZ2_EXTRA_TEST_DEFINITIONS})
@@ -171,51 +213,6 @@ endmacro ()
 H5BZ2_FUNCTION_TEST (STDC_HEADERS)
 
 #-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
-# Check IF header file exists and add it to the list.
-#-----------------------------------------------------------------------------
-macro (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
-  CHECK_INCLUDE_FILES ("${USE_INCLUDES};${FILE}" ${VARIABLE})
-  if (${VARIABLE})
-    set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
-  endif ()
-endmacro ()
-
-#-----------------------------------------------------------------------------
-#  Check for the existence of certain header files
-#-----------------------------------------------------------------------------
-CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      HAVE_SYS_STAT_H)
-CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
-CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
-CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
-
-# IF the c compiler found stdint, check the C++ as well. On some systems this
-# file will be found by C but not C++, only do this test IF the C++ compiler
-# has been initialized (e.g. the project also includes some c++)
-if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
-  CHECK_INCLUDE_FILE_CXX ("stdint.h" HAVE_STDINT_H_CXX)
-  if (NOT HAVE_STDINT_H_CXX)
-    set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
-    set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
-  endif ()
-endif ()
-
-# Windows
-CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
-if (NOT CYGWIN)
-  CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      HAVE_WINSOCK_H)
-endif ()
-
-CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
-CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
-CHECK_INCLUDE_FILE_CONCAT ("strings.h"       HAVE_STRINGS_H)
-CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        HAVE_STDLIB_H)
-CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
-CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
-CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
-CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 
 #-----------------------------------------------------------------------------
 #  Check for large file support
