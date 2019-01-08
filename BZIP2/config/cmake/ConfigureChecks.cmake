@@ -39,6 +39,10 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
     set (HAVE_SOLARIS 1)
 endif ()
 
+if (NOT WINDOWS)
+  TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
+endif ()
+
 #-----------------------------------------------------------------------------
 # Check IF header file exists and add it to the list.
 #-----------------------------------------------------------------------------
@@ -154,10 +158,6 @@ CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
 set (USE_INCLUDES "")
 if (WINDOWS)
   set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
-endif ()
-
-if (NOT WINDOWS)
-  TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
 endif ()
 
 # For other specific tests, use this MACRO.
