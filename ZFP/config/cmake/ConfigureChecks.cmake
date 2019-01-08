@@ -116,135 +116,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
 endif ()
 
 #-----------------------------------------------------------------------------
-# This MACRO checks IF the symbol exists in the library and IF it
-# does, it appends library to the list.
-#-----------------------------------------------------------------------------
-set (LINK_LIBS "")
-macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
-  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
-  if (${VARIABLE})
-    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
-  endif ()
-endmacro ()
-
-# ----------------------------------------------------------------------
-# WINDOWS Hard code Values
-# ----------------------------------------------------------------------
-
-set (WINDOWS)
-if (WIN32)
-  if (MINGW)
-    set (HAVE_MINGW 1)
-    set (WINDOWS 1) # MinGW tries to imitate Windows
-    set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
-  endif ()
-  set (HAVE_WIN32_API 1)
-  set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
-  if (NOT UNIX AND NOT MINGW)
-    set (WINDOWS 1)
-    set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
-    if (MSVC)
-      set (HAVE_VISUAL_STUDIO 1)
-    endif ()
-  endif ()
-endif ()
-
-if (WINDOWS)
-  set (HAVE_STDDEF_H 1)
-  set (HAVE_SYS_STAT_H 1)
-  set (HAVE_SYS_TYPES_H 1)
-  set (HAVE_LIBM 1)
-  set (HAVE_SYSTEM 1)
-  if (NOT MINGW)
-    set (HAVE_GETHOSTNAME 1)
-  endif ()
-  if (MINGW)
-    set (HAVE_WINSOCK2_H 1)
-  endif ()
-  set (HAVE_LIBWS2_32 1)
-  set (HAVE_LIBWSOCK32 1)
-endif ()
-
-# ----------------------------------------------------------------------
-# END of WINDOWS Hard code Values
-# ----------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
-#  Check for the math library "m"
-#-----------------------------------------------------------------------------
-if (NOT WINDOWS)
-  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
-  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
-  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
-  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
-endif ()
-
-# UCB (BSD) compatibility library
-CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
-
-# For other tests to use the same libraries
-set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
-
-set (USE_INCLUDES "")
-if (WINDOWS)
-  set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
-endif ()
-
-# For other specific tests, use this MACRO.
-macro (H5ZFP_FUNCTION_TEST OTHER_TEST)
-  if (NOT DEFINED ${OTHER_TEST})
-    set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
-    set (OTHER_TEST_ADD_LIBRARIES)
-    if (CMAKE_REQUIRED_LIBRARIES)
-      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
-    endif ()
-
-    foreach (def ${H5ZFP_EXTRA_TEST_DEFINITIONS})
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
-    endforeach ()
-
-    foreach (def
-        HAVE_UNISTD_H
-        HAVE_SYS_TYPES_H
-    )
-      if ("${${def}}")
-        set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif ()
-    endforeach ()
-
-    if (LARGEFILE)
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS
-          "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
-      )
-    endif ()
-
-    #message (STATUS "Performing ${OTHER_TEST}")
-    try_compile (${OTHER_TEST}
-        ${CMAKE_BINARY_DIR}
-        ${H5ZFP_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-        "${OTHER_TEST_ADD_LIBRARIES}"
-        OUTPUT_VARIABLE OUTPUT
-    )
-    if (${OTHER_TEST})
-      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
-      message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
-    else ()
-      message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
-      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
-          "${OUTPUT}\n"
-      )
-    endif ()
-  endif ()
-endmacro ()
-
-H5ZFP_FUNCTION_TEST (STDC_HEADERS)
-
-#-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
 # Check IF header file exists and add it to the list.
 #-----------------------------------------------------------------------------
 macro (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
@@ -298,6 +169,132 @@ CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
 CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
 CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
 CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
+
+#-----------------------------------------------------------------------------
+# This MACRO checks IF the symbol exists in the library and IF it
+# does, it appends library to the list.
+#-----------------------------------------------------------------------------
+set (LINK_LIBS "")
+macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
+  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
+  if (${VARIABLE})
+    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
+  endif ()
+endmacro ()
+
+# ----------------------------------------------------------------------
+# WINDOWS Hard code Values
+# ----------------------------------------------------------------------
+
+set (WINDOWS)
+if (WIN32)
+  if (MINGW)
+    set (HAVE_MINGW 1)
+    set (WINDOWS 1) # MinGW tries to imitate Windows
+    set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
+  endif ()
+  set (HAVE_WIN32_API 1)
+  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
+  if (NOT UNIX AND NOT MINGW)
+    set (WINDOWS 1)
+    set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
+    if (MSVC)
+      set (HAVE_VISUAL_STUDIO 1)
+    endif ()
+  endif ()
+endif ()
+
+if (WINDOWS)
+  set (HAVE_STDDEF_H 1)
+  set (HAVE_SYS_STAT_H 1)
+  set (HAVE_SYS_TYPES_H 1)
+  set (HAVE_LIBM 1)
+  set (HAVE_SYSTEM 1)
+  if (NOT MINGW)
+    set (HAVE_GETHOSTNAME 1)
+  endif ()
+  if (MINGW)
+    set (HAVE_WINSOCK2_H 1)
+  endif ()
+  set (HAVE_LIBWS2_32 1)
+  set (HAVE_LIBWSOCK32 1)
+endif ()
+
+# ----------------------------------------------------------------------
+# END of WINDOWS Hard code Values
+# ----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+#  Check for the math library "m"
+#-----------------------------------------------------------------------------
+if (NOT WINDOWS)
+  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
+  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
+  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
+  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
+endif ()
+
+# UCB (BSD) compatibility library
+CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
+
+set (USE_INCLUDES "")
+if (WINDOWS)
+  set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
+endif ()
+
+# For other specific tests, use this MACRO.
+macro (H5ZFP_FUNCTION_TEST OTHER_TEST)
+  if (NOT DEFINED ${OTHER_TEST})
+    set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
+    set (OTHER_TEST_ADD_LIBRARIES)
+    if (LINK_LIBS)
+      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${LINK_LIBS}")
+    endif ()
+
+    foreach (def ${H5ZFP_EXTRA_TEST_DEFINITIONS})
+      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
+    endforeach ()
+
+    foreach (def
+        HAVE_UNISTD_H
+        HAVE_SYS_TYPES_H
+    )
+      if ("${${def}}")
+        set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
+      endif ()
+    endforeach ()
+
+    if (LARGEFILE)
+      set (MACRO_CHECK_FUNCTION_DEFINITIONS
+          "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
+      )
+    endif ()
+
+    #message (STATUS "Performing ${OTHER_TEST}")
+    try_compile (${OTHER_TEST}
+        ${CMAKE_BINARY_DIR}
+        ${H5ZFP_RESOURCES_DIR}/H5PLTests.c
+        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
+        "${OTHER_TEST_ADD_LIBRARIES}"
+        OUTPUT_VARIABLE OUTPUT
+    )
+    if (${OTHER_TEST})
+      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
+      message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
+    else ()
+      message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
+      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
+      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+          "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
+          "${OUTPUT}\n"
+      )
+    endif ()
+  endif ()
+endmacro ()
+
+H5ZFP_FUNCTION_TEST (STDC_HEADERS)
+
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 #  Check for large file support
