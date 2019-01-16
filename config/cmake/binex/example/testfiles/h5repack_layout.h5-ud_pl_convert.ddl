@@ -27,7 +27,7 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 10, 10 )
-         SIZE 1174 (2.726:1 COMPRESSION)
+         SIZE 1150 (2.783:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -76,8 +76,8 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.2) github.com/LLNL/H5Z-ZFP
-            PARAMS { 5374080 91252346 -1879048044 -2081423360 }
+            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.4) github.com/LLNL/H5Z-ZFP
+            PARAMS { 5505152 91252346 -1879048044 -1048576 -528154624 493487 }
          }
       }
       FILLVALUE {
