@@ -50,13 +50,6 @@ if (BUILD_TESTING)
     endif ()
     if (DISABLE_H5PL_ENCODER)
       add_test (
-          NAME ${testname}-ERR_COPY
-          COMMAND "${CMAKE_COMMAND}"
-              -E copy_if_different
-              "${PROJECT_SOURCE_DIR}/testfiles/${testname}.err" "${PROJECT_BINARY_DIR}/${testname}.err"
-      )
-      set_tests_properties (${testname}-ERR_COPY PROPERTIES DEPENDS ${testname}-clearall)
-      add_test (
           NAME ${testname}-ERR
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
@@ -65,11 +58,14 @@ if (BUILD_TESTING)
               -D "TEST_EXPECT=1"
               -D "TEST_MASK_ERROR=true"
               -D "TEST_OUTPUT=${testname}.out"
-              -D "TEST_REFERENCE=${testname}.err"
+              -D "TEST_REFERENCE=${testname}.tst"
+              -D "TEST_SKIP_COMPARE=1"
+              -D "TEST_ERRREF=1"
+              -D "GREP_ERRREF=Filter present but encoding disabled"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-ERR_COPY)
+      set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-clearall)
       add_test (
           NAME ${testname}
           COMMAND "${CMAKE_COMMAND}"
