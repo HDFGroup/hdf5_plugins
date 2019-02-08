@@ -369,7 +369,7 @@ AM_CONDITIONAL(H5ZFP, test "$PLUGIN_H5ZFP")
 LT_OUTPUT
 
 ## Set subdirectories
-AC_CONFIG_FILES([makefile src/makefile example/makefile example/test.sh])
+AC_CONFIG_FILES([makefile src/makefile])
 
 ## Configure
 AC_OUTPUT

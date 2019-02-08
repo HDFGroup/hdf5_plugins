@@ -3,7 +3,6 @@
 #-----------------------------------------------------------------------------
 include (CheckFunctionExists)
 include (CheckIncludeFile)
-include (CheckIncludeFileCXX)
 include (CheckIncludeFiles)
 include (CheckLibraryExists)
 include (CheckSymbolExists)
@@ -140,7 +139,7 @@ if (WIN32)
     set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
   endif ()
   set (HAVE_WIN32_API 1)
-  set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
+  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
   if (NOT UNIX AND NOT MINGW)
     set (WINDOWS 1)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
@@ -170,84 +169,9 @@ endif ()
 # END of WINDOWS Hard code Values
 # ----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------------
-#  Check for the math library "m"
-#-----------------------------------------------------------------------------
 if (NOT WINDOWS)
-  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
-  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
-  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
-  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
+  TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
 endif ()
-
-# UCB (BSD) compatibility library
-CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
-
-# For other tests to use the same libraries
-set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
-
-set (USE_INCLUDES "")
-if (WINDOWS)
-  set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
-endif ()
-
-if (NOT WINDOWS)
-  TEST_BIG_ENDIAN (${HDF_PREFIX}_WORDS_BIGENDIAN)
-endif ()
-
-# For other other specific tests, use this MACRO.
-macro (H5MAFISC_FUNCTION_TEST OTHER_TEST)
-  if (NOT DEFINED ${OTHER_TEST})
-    set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
-    set (OTHER_TEST_ADD_LIBRARIES)
-    if (CMAKE_REQUIRED_LIBRARIES)
-      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
-    endif ()
-
-    foreach (def ${H5MAFISC_EXTRA_TEST_DEFINITIONS})
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
-    endforeach ()
-
-    foreach (def
-        HAVE_UNISTD_H
-        HAVE_SYS_TYPES_H
-    )
-      if ("${${def}}")
-        set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif ()
-    endforeach ()
-
-    if (LARGEFILE)
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS
-          "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
-      )
-    endif ()
-
-    #message (STATUS "Performing ${OTHER_TEST}")
-    try_compile (${OTHER_TEST}
-        ${CMAKE_BINARY_DIR}
-        ${H5MAFISC_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-        "${OTHER_TEST_ADD_LIBRARIES}"
-        OUTPUT_VARIABLE OUTPUT
-    )
-    if (${OTHER_TEST})
-      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
-      message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
-    else ()
-      message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
-      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
-          "${OUTPUT}\n"
-      )
-    endif ()
-  endif ()
-endmacro ()
-
-H5MAFISC_FUNCTION_TEST (STDC_HEADERS)
-
-#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # Check IF header file exists and add it to the list.
@@ -311,54 +235,6 @@ CHECK_INCLUDE_FILE_CONCAT ("sys/byteorder.h" HAVE_SYS_BYTEORDER_H)
 CHECK_INCLUDE_FILE_CONCAT ("sys/param.h"     HAVE_SYS_PARAM_H)
 
 #-----------------------------------------------------------------------------
-#  Check for large file support
-#-----------------------------------------------------------------------------
-
-# The linux-lfs option is deprecated.
-set (LINUX_LFS 0)
-
-set (H5MAFISC_EXTRA_C_FLAGS)
-set (H5MAFISC_EXTRA_FLAGS)
-if (NOT WINDOWS)
-  if (NOT HAVE_SOLARIS)
-  # Linux Specific flags
-  set (H5MAFISC_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
-
-  option (H5MAFISC_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (H5MAFISC_ENABLE_LARGE_FILE)
-    set (msg "Performing TEST_LFS_WORKS")
-    try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
-        ${CMAKE_BINARY_DIR}
-        ${H5MAFISC_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
-        OUTPUT_VARIABLE OUTPUT
-    )
-    if (TEST_LFS_WORKS_COMPILE)
-      if (TEST_LFS_WORKS_RUN MATCHES 0)
-        set (TEST_LFS_WORKS 1 CACHE INTERNAL ${msg})
-        set (LARGEFILE 1)
-        set (H5MAFISC_EXTRA_FLAGS ${H5MAFISC_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
-        message (STATUS "${msg}... yes")
-      else ()
-        set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
-        message (STATUS "${msg}... no")
-        file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-              "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
-        )
-      endif ()
-    else ()
-      set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
-      message (STATUS "${msg}... no")
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Test TEST_LFS_WORKS Compile failed with the following output:\n ${OUTPUT}\n"
-      )
-    endif ()
-  endif ()
-  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${H5MAFISC_EXTRA_FLAGS})
-  endif ()
-endif ()
-
-#-----------------------------------------------------------------------------
 # Extra C99 types
 #-----------------------------------------------------------------------------
 
@@ -377,12 +253,126 @@ macro (HDF_CHECK_TYPE_SIZE type var)
 endmacro ()
 
 # _Bool type support
-CHECK_INCLUDE_FILE_CONCAT (stdbool.h    HAVE_STDBOOL_H)
 if (HAVE_STDBOOL_H)
   set (CMAKE_EXTRA_INCLUDE_FILES stdbool.h)
   HDF_CHECK_TYPE_SIZE (bool         SIZEOF_BOOL)
 else ()
   HDF_CHECK_TYPE_SIZE (_Bool        SIZEOF_BOOL)
+endif ()
+
+#-----------------------------------------------------------------------------
+#  Check for the math library "m"
+#-----------------------------------------------------------------------------
+if (NOT WINDOWS)
+  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
+  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
+  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
+  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
+endif ()
+
+# UCB (BSD) compatibility library
+CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
+
+set (USE_INCLUDES "")
+if (WINDOWS)
+  set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
+endif ()
+
+# For other other specific tests, use this MACRO.
+macro (H5MAFISC_FUNCTION_TEST OTHER_TEST)
+  if (NOT DEFINED ${OTHER_TEST})
+    set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
+
+    foreach (def ${H5MAFISC_EXTRA_TEST_DEFINITIONS})
+      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
+    endforeach ()
+
+    foreach (def
+        HAVE_UNISTD_H
+        HAVE_SYS_TYPES_H
+    )
+      if ("${${def}}")
+        set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
+      endif ()
+    endforeach ()
+
+    if (LARGEFILE)
+      set (MACRO_CHECK_FUNCTION_DEFINITIONS
+          "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
+      )
+    endif ()
+
+    #message (STATUS "Performing ${OTHER_TEST}")
+    try_compile (${OTHER_TEST}
+        ${CMAKE_BINARY_DIR}
+        ${H5MAFISC_RESOURCES_DIR}/H5PLTests.c
+        COMPILE_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS}"
+        LINK_LIBRARIES "${LINK_LIBS}"
+        OUTPUT_VARIABLE OUTPUT
+    )
+    if (${OTHER_TEST})
+      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
+      message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
+    else ()
+      message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
+      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
+      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+          "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
+          "${OUTPUT}\n"
+      )
+    endif ()
+  endif ()
+endmacro ()
+
+H5MAFISC_FUNCTION_TEST (STDC_HEADERS)
+
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+#  Check for large file support
+#-----------------------------------------------------------------------------
+
+# The linux-lfs option is deprecated.
+set (LINUX_LFS 0)
+
+set (H5MAFISC_EXTRA_C_FLAGS)
+set (H5MAFISC_EXTRA_FLAGS)
+if (NOT WINDOWS)
+  if (NOT HAVE_SOLARIS)
+  # Linux Specific flags
+  set (H5MAFISC_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
+
+  option (H5MAFISC_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
+  if (H5MAFISC_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
+    set (msg "Performing TEST_LFS_WORKS")
+    try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
+        ${CMAKE_BINARY_DIR}
+        ${H5MAFISC_RESOURCES_DIR}/H5PLTests.c
+        COMPILE_DEFINITIONS "-DTEST_LFS_WORKS"
+    )
+    if (TEST_LFS_WORKS_COMPILE)
+      if (TEST_LFS_WORKS_RUN MATCHES 0)
+        set (TEST_LFS_WORKS 1 CACHE INTERNAL ${msg})
+        set (LARGEFILE 1)
+        set (H5MAFISC_EXTRA_FLAGS ${H5MAFISC_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
+        message (STATUS "${msg}... yes")
+      else ()
+        set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
+        message (STATUS "${msg}... no")
+        file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+              "Test TEST_LFS_WORKS Run failed with the following exit code:\n ${TEST_LFS_WORKS_RUN}\n"
+        )
+      endif ()
+    else ()
+      set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
+      message (STATUS "${msg}... no")
+      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+          "Test TEST_LFS_WORKS Compile failed\n"
+      )
+    endif ()
+  endif ()
+  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${H5MAFISC_EXTRA_FLAGS})
+  endif ()
 endif ()
 
 add_definitions (${H5MAFISC_EXTRA_FLAGS})
@@ -397,7 +387,6 @@ if (NOT WINDOWS)
   foreach (test
       HAVE_ATTRIBUTE
       SYSTEM_SCOPE_THREADS
-      CXX_HAVE_OFFSETOF
   )
     H5MAFISC_FUNCTION_TEST (${test})
   endforeach ()

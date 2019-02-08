@@ -3,16 +3,12 @@
 #-----------------------------------------------------------------------------
 include (CheckFunctionExists)
 include (CheckIncludeFile)
-include (CheckIncludeFileCXX)
 include (CheckIncludeFiles)
 include (CheckLibraryExists)
 include (CheckSymbolExists)
 include (CheckTypeSize)
 include (CheckVariableExists)
 include (TestBigEndian)
-if (CMAKE_CXX_COMPILER AND CMAKE_CXX_COMPILER_LOADED)
-  include (TestForSTDNamespace)
-endif ()
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -63,7 +59,7 @@ if (WIN32)
     set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
   endif ()
   set (HAVE_WIN32_API 1)
-  set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
+  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
   if (NOT UNIX AND NOT MINGW)
     set (WINDOWS 1)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
@@ -93,84 +89,9 @@ endif ()
 # END of WINDOWS Hard code Values
 # ----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------------
-#  Check for the math library "m"
-#-----------------------------------------------------------------------------
-if (NOT WINDOWS)
-  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
-  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
-  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
-  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
-endif ()
-
-# UCB (BSD) compatibility library
-CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
-
-# For other tests to use the same libraries
-set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${LINK_LIBS})
-
-set (USE_INCLUDES "")
-if (WINDOWS)
-  set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
-endif ()
-
 if (NOT WINDOWS)
   TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
 endif ()
-
-# For other specific tests, use this MACRO.
-macro (H5BZ2_FUNCTION_TEST OTHER_TEST)
-  if (NOT DEFINED ${OTHER_TEST})
-    set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
-    set (OTHER_TEST_ADD_LIBRARIES)
-    if (CMAKE_REQUIRED_LIBRARIES)
-      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
-    endif ()
-
-    foreach (def ${H5BZ2_EXTRA_TEST_DEFINITIONS})
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
-    endforeach ()
-
-    foreach (def
-        HAVE_UNISTD_H
-        HAVE_SYS_TYPES_H
-    )
-      if ("${${def}}")
-        set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
-      endif ()
-    endforeach ()
-
-    if (LARGEFILE)
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS
-          "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
-      )
-    endif ()
-
-    #message (STATUS "Performing ${OTHER_TEST}")
-    try_compile (${OTHER_TEST}
-        ${CMAKE_BINARY_DIR}
-        ${H5BZ2_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-        "${OTHER_TEST_ADD_LIBRARIES}"
-        OUTPUT_VARIABLE OUTPUT
-    )
-    if (${OTHER_TEST})
-      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
-      message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
-    else ()
-      message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
-      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
-          "${OUTPUT}\n"
-      )
-    endif ()
-  endif ()
-endmacro ()
-
-H5BZ2_FUNCTION_TEST (STDC_HEADERS)
-
-#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 # Check IF header file exists and add it to the list.
@@ -217,6 +138,75 @@ CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
 CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
 CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 
+
+#-----------------------------------------------------------------------------
+#  Check for the math library "m"
+#-----------------------------------------------------------------------------
+if (NOT WINDOWS)
+  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
+  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
+  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
+  CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
+endif ()
+
+# UCB (BSD) compatibility library
+CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
+
+set (USE_INCLUDES "")
+if (WINDOWS)
+  set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
+endif ()
+
+# For other specific tests, use this MACRO.
+macro (H5BZ2_FUNCTION_TEST OTHER_TEST)
+  if (NOT DEFINED ${OTHER_TEST})
+    set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
+
+    foreach (def ${H5BZ2_EXTRA_TEST_DEFINITIONS})
+      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
+    endforeach ()
+
+    foreach (def
+        HAVE_UNISTD_H
+        HAVE_SYS_TYPES_H
+    )
+      if ("${${def}}")
+        set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}")
+      endif ()
+    endforeach ()
+
+    if (LARGEFILE)
+      set (MACRO_CHECK_FUNCTION_DEFINITIONS
+          "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
+      )
+    endif ()
+
+    #message (STATUS "Performing ${OTHER_TEST}")
+    try_compile (${OTHER_TEST}
+        ${CMAKE_BINARY_DIR}
+        ${H5BZ2_RESOURCES_DIR}/H5PLTests.c
+        COMPILE_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS}"
+        LINK_LIBRARIES "${LINK_LIBS}"
+        OUTPUT_VARIABLE OUTPUT
+    )
+    if (${OTHER_TEST})
+      set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
+      message (STATUS "Performing Other Test ${OTHER_TEST} - Success")
+    else ()
+      message (STATUS "Performing Other Test ${OTHER_TEST} - Failed")
+      set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
+      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+          "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
+          "${OUTPUT}\n"
+      )
+    endif ()
+  endif ()
+endmacro ()
+
+H5BZ2_FUNCTION_TEST (STDC_HEADERS)
+
+#-----------------------------------------------------------------------------
+
 #-----------------------------------------------------------------------------
 #  Check for large file support
 #-----------------------------------------------------------------------------
@@ -232,13 +222,12 @@ if (NOT WINDOWS)
   set (H5BZ2_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
 
   option (H5BZ2_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (H5BZ2_ENABLE_LARGE_FILE)
+  if (H5BZ2_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
         ${H5BZ2_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
-        OUTPUT_VARIABLE OUTPUT
+        COMPILE_DEFINITIONS "-DTEST_LFS_WORKS"
     )
     if (TEST_LFS_WORKS_COMPILE)
       if (TEST_LFS_WORKS_RUN MATCHES 0)
@@ -250,14 +239,14 @@ if (NOT WINDOWS)
         set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
         message (STATUS "${msg}... no")
         file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-              "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
+              "Test TEST_LFS_WORKS Run failed with the following exit code:\n ${TEST_LFS_WORKS_RUN}\n"
         )
       endif ()
     else ()
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Test TEST_LFS_WORKS Compile failed with the following output:\n ${OUTPUT}\n"
+          "Test TEST_LFS_WORKS Compile failed\n"
       )
     endif ()
   endif ()
@@ -277,7 +266,6 @@ if (NOT WINDOWS)
   foreach (test
       HAVE_ATTRIBUTE
       SYSTEM_SCOPE_THREADS
-      CXX_HAVE_OFFSETOF
   )
     H5BZ2_FUNCTION_TEST (${test})
   endforeach ()
