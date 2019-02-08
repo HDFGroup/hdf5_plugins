@@ -24,6 +24,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (BLOSC
@@ -44,6 +45,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (BLOSC BINARY_DIR SOURCE_DIR)
@@ -52,7 +54,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
 # Create imported target blosc_static
   add_library(blosc ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (blosc "blosc" ${libtype} "")
-  add_dependencies (BLOSC blosc)
+  add_dependencies (blosc BLOSC)
   set (BLOSC_LIBRARY "blosc")
 
   set (BLOSC_INCLUDE_DIR_GEN "${BINARY_DIR}")
@@ -98,6 +100,7 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (ZLIB
@@ -116,6 +119,7 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (ZLIB BINARY_DIR SOURCE_DIR)
@@ -129,7 +133,7 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
 # Create imported target zlib-static
   add_library(zlib ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (zlib ${ZLIB_LIB_NAME} ${libtype} "")
-  add_dependencies (ZLIB zlib)
+  add_dependencies (zlib ZLIB)
   set (ZLIB_STATIC_LIBRARY "zlib")
 
   set (ZLIB_INCLUDE_DIR_GEN "${BINARY_DIR}")

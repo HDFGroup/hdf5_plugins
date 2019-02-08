@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.2.2)
-PROJECT ( H5PL C )
+cmake_minimum_required(VERSION 3.10)
+project (H5PL C)
 
 #-----------------------------------------------------------------------------
 # Basic H5PL stuff here

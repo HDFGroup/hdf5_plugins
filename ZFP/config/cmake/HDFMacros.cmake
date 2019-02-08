@@ -203,7 +203,7 @@ macro (HDF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
   if (${importtype} MATCHES "IMPORT")
     set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
   endif ()
-  if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+  if (${HDF_CFG_NAME} MATCHES "Debug")
     set (IMPORT_LIB_NAME ${LIB_DEBUG_NAME})
   else ()
     set (IMPORT_LIB_NAME ${LIB_RELEASE_NAME})
@@ -252,19 +252,15 @@ macro (HDF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (TARGET_C_PROPERTIES wintarget libtype addcompileflags addlinkflags)
-  if (MSVC)
-    TARGET_MSVC_PROPERTIES (${wintarget} ${libtype} "${addcompileflags} ${WIN_COMPILE_FLAGS}" "${addlinkflags} ${WIN_LINK_FLAGS}")
-  else ()
-    set_target_properties (${wintarget} PROPERTIES COMPILE_FLAGS "${addcompileflags}" LINK_FLAGS "${addlinkflags}")
-  endif ()
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (TARGET_MSVC_PROPERTIES wintarget libtype addcompileflags addlinkflags)
-  if (MSVC)
-    set_target_properties (${wintarget} PROPERTIES COMPILE_FLAGS "${addcompileflags}" LINK_FLAGS "${addlinkflags}")
-  endif ()
+macro (TARGET_C_PROPERTIES wintarget libtype)
+  target_compile_options(${wintarget} PRIVATE
+      $<$<C_COMPILER_ID:MSVC>:${WIN_COMPILE_FLAGS}>
+      $<$<CXX_COMPILER_ID:MSVC>:${WIN_COMPILE_FLAGS}>
+  )
+  target_link_libraries(${wintarget} INTERFACE
+      $<$<C_COMPILER_ID:MSVC>:${WIN_LINK_FLAGS}>
+      $<$<CXX_COMPILER_ID:MSVC>:${WIN_LINK_FLAGS}>
+  )
 endmacro ()
 
 #-----------------------------------------------------------------------------
@@ -317,7 +313,7 @@ macro (PLUGIN_README_PROPERTIES pkg_name)
     endif ()
   elseif (APPLE)
     set (BINARY_EXAMPLE_ENDING "tar.gz")
-    set (BINARY_INSTALL_ENDING "dmg")
+    set (BINARY_INSTALL_ENDING "sh") # if packaging changes - use dmg
     set (BINARY_PLATFORM "${BINARY_PLATFORM} ${CMAKE_SYSTEM_VERSION} ${CMAKE_SYSTEM_PROCESSOR}")
     set (BINARY_PLATFORM "${BINARY_PLATFORM}, using ${CMAKE_C_COMPILER_ID} C ${CMAKE_C_COMPILER_VERSION}")
   else ()
@@ -342,3 +338,101 @@ macro (HDFTEST_COPY_FILE src dest target)
     )
     list (APPEND ${target}_list "${dest}")
 endmacro ()
+
+macro (HDF_DIR_PATHS package_prefix)
+  if (APPLE)
+    option (${package_prefix}_BUILD_FRAMEWORKS "TRUE to build as frameworks libraries, FALSE to build according to BUILD_SHARED_LIBS" FALSE)
+  endif ()
+
+  if (NOT ${package_prefix}_INSTALL_BIN_DIR)
+    set (${package_prefix}_INSTALL_BIN_DIR bin)
+  endif ()
+  if (NOT ${package_prefix}_INSTALL_LIB_DIR)
+    if (APPLE)
+      if (${package_prefix}_BUILD_FRAMEWORKS)
+        set (${package_prefix}_INSTALL_JAR_DIR ../Java)
+      else ()
+        set (${package_prefix}_INSTALL_JAR_DIR lib)
+      endif ()
+      set (${package_prefix}_INSTALL_FMWK_DIR ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+    else ()
+      set (${package_prefix}_INSTALL_JAR_DIR lib)
+    endif ()
+    set (${package_prefix}_INSTALL_LIB_DIR lib)
+  endif ()
+  if (NOT ${package_prefix}_INSTALL_INCLUDE_DIR)
+    set (${package_prefix}_INSTALL_INCLUDE_DIR include)
+  endif ()
+  if (NOT ${package_prefix}_INSTALL_DATA_DIR)
+    if (NOT WIN32)
+      if (APPLE)
+        if (${package_prefix}_BUILD_FRAMEWORKS)
+          set (${package_prefix}_INSTALL_EXTRA_DIR ../SharedSupport)
+        else ()
+          set (${package_prefix}_INSTALL_EXTRA_DIR share)
+        endif ()
+        set (${package_prefix}_INSTALL_FWRK_DIR ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+      endif ()
+      set (${package_prefix}_INSTALL_DATA_DIR share)
+      set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
+    else ()
+      set (${package_prefix}_INSTALL_DATA_DIR ".")
+      set (${package_prefix}_INSTALL_CMAKE_DIR cmake)
+    endif ()
+  endif ()
+
+  set (CMAKE_SKIP_BUILD_RPATH  FALSE)
+  set (CMAKE_INSTALL_RPATH_USE_LINK_PATH  FALSE)
+  set (CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+  if (APPLE)
+    set (CMAKE_INSTALL_NAME_DIR "@rpath")
+    set (CMAKE_INSTALL_RPATH
+        "@executable_path/../${${package_prefix}_INSTALL_LIB_DIR}"
+        "@executable_path/"
+        "@loader_path/../${${package_prefix}_INSTALL_LIB_DIR}"
+        "@loader_path/"
+    )
+  else ()
+    set (CMAKE_INSTALL_RPATH "\$ORIGIN/../${${package_prefix}_INSTALL_LIB_DIR}:\$ORIGIN/")
+  endif ()
+
+  if (DEFINED ADDITIONAL_CMAKE_PREFIX_PATH AND EXISTS "${ADDITIONAL_CMAKE_PREFIX_PATH}")
+    set (CMAKE_PREFIX_PATH ${ADDITIONAL_CMAKE_PREFIX_PATH} ${CMAKE_PREFIX_PATH})
+  endif ()
+
+  SET_HDF_BUILD_TYPE()
+
+#-----------------------------------------------------------------------------
+# Setup output Directories
+#-----------------------------------------------------------------------------
+  if (NOT ${package_prefix}_EXTERNALLY_CONFIGURED)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables."
+    )
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Libraries"
+    )
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
+    )
+    set (CMAKE_Fortran_MODULE_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all fortran modules."
+    )
+    get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+    if(_isMultiConfig)
+      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
+      set (CMAKE_PDB_OUTPUT_DIRECTORY
+          ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all pdb files."
+      )
+    else ()
+      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    endif ()
+  else ()
+    # if we are externally configured, but the project uses old cmake scripts
+    # this may not be set and utilities like H5detect will fail
+    if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+      set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
+    endif ()
+  endif ()
+endmacro ()
+

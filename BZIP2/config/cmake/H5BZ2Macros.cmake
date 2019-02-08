@@ -22,6 +22,7 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (BZ2
@@ -40,6 +41,7 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (BZ2 BINARY_DIR SOURCE_DIR)
@@ -47,7 +49,7 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type libtype)
   # Create imported target BZ2
   add_library (bz2 ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (bz2 "bz2" ${libtype} "")
-  add_dependencies (BZ2 bz2)
+  add_dependencies (bz2 BZ2)
 
 #  include (${BINARY_DIR}/BZ2-targets.cmake)
   set (BZ2_LIBRARY "bz2")
