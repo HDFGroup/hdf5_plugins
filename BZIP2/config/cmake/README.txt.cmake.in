@@ -1,11 +1,11 @@
 @H5BZ2_PACKAGE_NAME@ version @H5BZ2_PACKAGE_VERSION_STRING@
 ------------------------------------------------------------------------------
 
-This directory contains the binary (release) distribution of 
-@H5BZ2_PACKAGE_NAME@-@H5BZ2_PACKAGE_VERSION_MAJOR@ that was compiled on; 
-    @BINARY_PLATFORM@. 
- 
-It was built with the following options: 
+This directory contains the binary (release) distribution of
+@H5BZ2_PACKAGE_NAME@-@H5BZ2_PACKAGE_VERSION_MAJOR@ that was compiled on;
+    @BINARY_PLATFORM@.
+
+It was built with the following options:
     -- @LIB_TYPE@ C libraries
     -- @LIB_TYPE@ H5BZ2 tools
     -- @H5_LIB_TYPE@ BZIP2 @BZ2_VERSION_STRING@

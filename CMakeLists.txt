@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.2.2)
-PROJECT ( H5PL C )
+cmake_minimum_required(VERSION 3.10)
+project (H5PL C)
 
 #-----------------------------------------------------------------------------
 # Basic H5PL stuff here
@@ -15,7 +15,7 @@ BASIC_SETTINGS (${PL_PACKAGE_NAME})
 
 set (H5PL_VERS_MAJOR "1")
 set (H5PL_VERS_MINOR "8")
-set (H5PL_VERS_RELEASE "0")
+set (H5PL_VERS_RELEASE "21")
 set (H5PL_OVERRIDE_VERSION "1.8.21")
 
 set (H5PL_SOVERS_MAJOR 1)

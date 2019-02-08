@@ -4,6 +4,9 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
     set (BUILD_EXT_SHARED_LIBS "ON")
   else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
+    if (WIN32)
+      set (ZFP_LIBRARY_PREFIX "lib")
+    endif ()
   endif ()
   if (${compress_type} MATCHES "GIT")
     EXTERNALPROJECT_ADD (ZFP
@@ -17,6 +20,7 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
             -DBUILD_UTILITIES:BOOL=OFF
             -DBUILD_TESTING:BOOL=OFF
             -DZFP_BIT_STREAM_WORD_SIZE=8
+            -DZFP_LIBRARY_PREFIX:STRING=${ZFP_LIBRARY_PREFIX}
             -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -25,6 +29,7 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (ZFP
@@ -38,6 +43,7 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
             -DBUILD_UTILITIES:BOOL=OFF
             -DBUILD_TESTING:BOOL=OFF
             -DZFP_BIT_STREAM_WORD_SIZE=8
+            -DZFP_LIBRARY_PREFIX:STRING=${ZFP_LIBRARY_PREFIX}
             -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
             -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
             -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
@@ -46,6 +52,7 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (ZFP BINARY_DIR SOURCE_DIR)
@@ -53,7 +60,7 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
   # Create imported target ZFP
   add_library (${ZFP_LIB_TARGET} ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (${ZFP_LIB_TARGET} "zfp" ${libtype} "")
-  add_dependencies (ZFP ${ZFP_LIB_TARGET})
+  add_dependencies (${ZFP_LIB_TARGET} ZFP)
 
 #  include (${BINARY_DIR}/ZFP-targets.cmake)
   set (ZFP_LIBRARY "zfp")
