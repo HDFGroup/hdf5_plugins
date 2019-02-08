@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 3.2.2)
-project (H5ZFP C CXX)
+cmake_minimum_required (VERSION 3.10)
+project (H5ZFP C)
 
 #-----------------------------------------------------------------------------
 # Basic H5ZFP stuff here
