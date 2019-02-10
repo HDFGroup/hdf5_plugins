@@ -3,7 +3,6 @@
 #-----------------------------------------------------------------------------
 include (CheckFunctionExists)
 include (CheckIncludeFile)
-include (CheckIncludeFileCXX)
 include (CheckIncludeFiles)
 include (CheckLibraryExists)
 include (CheckSymbolExists)
@@ -116,6 +115,60 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
     set (HAVE_SOLARIS 1)
 endif ()
 
+#-----------------------------------------------------------------------------
+# This MACRO checks IF the symbol exists in the library and IF it
+# does, it appends library to the list.
+#-----------------------------------------------------------------------------
+set (LINK_LIBS "")
+macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
+  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
+  if (${VARIABLE})
+    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
+  endif ()
+endmacro ()
+
+# ----------------------------------------------------------------------
+# WINDOWS Hard code Values
+# ----------------------------------------------------------------------
+
+set (WINDOWS)
+if (WIN32)
+  if (MINGW)
+    set (HAVE_MINGW 1)
+    set (WINDOWS 1) # MinGW tries to imitate Windows
+    set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
+  endif ()
+  set (HAVE_WIN32_API 1)
+  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
+  if (NOT UNIX AND NOT MINGW)
+    set (WINDOWS 1)
+    set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
+    if (MSVC)
+      set (HAVE_VISUAL_STUDIO 1)
+    endif ()
+  endif ()
+endif ()
+
+if (WINDOWS)
+  set (HAVE_STDDEF_H 1)
+  set (HAVE_SYS_STAT_H 1)
+  set (HAVE_SYS_TYPES_H 1)
+  set (HAVE_LIBM 1)
+  set (HAVE_SYSTEM 1)
+  if (NOT MINGW)
+    set (HAVE_GETHOSTNAME 1)
+  endif ()
+  if (MINGW)
+    set (HAVE_WINSOCK2_H 1)
+  endif ()
+  set (HAVE_LIBWS2_32 1)
+  set (HAVE_LIBWSOCK32 1)
+endif ()
+
+# ----------------------------------------------------------------------
+# END of WINDOWS Hard code Values
+# ----------------------------------------------------------------------
+
 if (NOT WINDOWS)
   TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
 endif ()
@@ -200,67 +253,12 @@ macro (HDF_CHECK_TYPE_SIZE type var)
 endmacro ()
 
 # _Bool type support
-CHECK_INCLUDE_FILE_CONCAT (stdbool.h    HAVE_STDBOOL_H)
 if (HAVE_STDBOOL_H)
   set (CMAKE_EXTRA_INCLUDE_FILES stdbool.h)
   HDF_CHECK_TYPE_SIZE (bool         SIZEOF_BOOL)
 else ()
   HDF_CHECK_TYPE_SIZE (_Bool        SIZEOF_BOOL)
 endif ()
-
-#-----------------------------------------------------------------------------
-# This MACRO checks IF the symbol exists in the library and IF it
-# does, it appends library to the list.
-#-----------------------------------------------------------------------------
-set (LINK_LIBS "")
-macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
-  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
-  if (${VARIABLE})
-    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
-  endif ()
-endmacro ()
-
-# ----------------------------------------------------------------------
-# WINDOWS Hard code Values
-# ----------------------------------------------------------------------
-
-set (WINDOWS)
-if (WIN32)
-  if (MINGW)
-    set (HAVE_MINGW 1)
-    set (WINDOWS 1) # MinGW tries to imitate Windows
-    set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
-  endif ()
-  set (HAVE_WIN32_API 1)
-  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
-  if (NOT UNIX AND NOT MINGW)
-    set (WINDOWS 1)
-    set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
-    if (MSVC)
-      set (HAVE_VISUAL_STUDIO 1)
-    endif ()
-  endif ()
-endif ()
-
-if (WINDOWS)
-  set (HAVE_STDDEF_H 1)
-  set (HAVE_SYS_STAT_H 1)
-  set (HAVE_SYS_TYPES_H 1)
-  set (HAVE_LIBM 1)
-  set (HAVE_SYSTEM 1)
-  if (NOT MINGW)
-    set (HAVE_GETHOSTNAME 1)
-  endif ()
-  if (MINGW)
-    set (HAVE_WINSOCK2_H 1)
-  endif ()
-  set (HAVE_LIBWS2_32 1)
-  set (HAVE_LIBWSOCK32 1)
-endif ()
-
-# ----------------------------------------------------------------------
-# END of WINDOWS Hard code Values
-# ----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 #  Check for the math library "m"
@@ -284,10 +282,6 @@ endif ()
 macro (H5MAFISC_FUNCTION_TEST OTHER_TEST)
   if (NOT DEFINED ${OTHER_TEST})
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
-    set (OTHER_TEST_ADD_LIBRARIES)
-    if (LINK_LIBS)
-      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${LINK_LIBS}")
-    endif ()
 
     foreach (def ${H5MAFISC_EXTRA_TEST_DEFINITIONS})
       set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
@@ -312,8 +306,8 @@ macro (H5MAFISC_FUNCTION_TEST OTHER_TEST)
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5MAFISC_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-        "${OTHER_TEST_ADD_LIBRARIES}"
+        COMPILE_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS}"
+        LINK_LIBRARIES "${LINK_LIBS}"
         OUTPUT_VARIABLE OUTPUT
     )
     if (${OTHER_TEST})
@@ -349,13 +343,12 @@ if (NOT WINDOWS)
   set (H5MAFISC_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
 
   option (H5MAFISC_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (H5MAFISC_ENABLE_LARGE_FILE)
+  if (H5MAFISC_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
         ${H5MAFISC_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
-        OUTPUT_VARIABLE OUTPUT
+        COMPILE_DEFINITIONS "-DTEST_LFS_WORKS"
     )
     if (TEST_LFS_WORKS_COMPILE)
       if (TEST_LFS_WORKS_RUN MATCHES 0)
@@ -367,14 +360,14 @@ if (NOT WINDOWS)
         set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
         message (STATUS "${msg}... no")
         file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-              "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
+              "Test TEST_LFS_WORKS Run failed with the following exit code:\n ${TEST_LFS_WORKS_RUN}\n"
         )
       endif ()
     else ()
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Test TEST_LFS_WORKS Compile failed with the following output:\n ${OUTPUT}\n"
+          "Test TEST_LFS_WORKS Compile failed\n"
       )
     endif ()
   endif ()
@@ -394,7 +387,6 @@ if (NOT WINDOWS)
   foreach (test
       HAVE_ATTRIBUTE
       SYSTEM_SCOPE_THREADS
-      CXX_HAVE_OFFSETOF
   )
     H5MAFISC_FUNCTION_TEST (${test})
   endforeach ()

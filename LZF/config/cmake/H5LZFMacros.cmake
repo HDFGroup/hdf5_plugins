@@ -21,6 +21,7 @@ macro (EXTERNAL_LZF_LIBRARY compress_type libtype)
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (LZF
@@ -38,6 +39,7 @@ macro (EXTERNAL_LZF_LIBRARY compress_type libtype)
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (LZF BINARY_DIR SOURCE_DIR)
@@ -45,7 +47,7 @@ macro (EXTERNAL_LZF_LIBRARY compress_type libtype)
   # Create imported target LZF
   add_library (lzf ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (lzf "lzf" ${libtype} "")
-  add_dependencies (LZF lzf)
+  add_dependencies (lzf LZF)
 
 #  include (${BINARY_DIR}/LZF-targets.cmake)
   set (LZF_LIBRARY "lzf")

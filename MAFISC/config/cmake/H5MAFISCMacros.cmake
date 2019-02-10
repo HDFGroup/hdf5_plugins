@@ -22,6 +22,7 @@ macro (EXTERNAL_MAFISC_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (MAFISC
@@ -40,6 +41,7 @@ macro (EXTERNAL_MAFISC_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (MAFISC BINARY_DIR SOURCE_DIR)
@@ -47,7 +49,7 @@ macro (EXTERNAL_MAFISC_LIBRARY compress_type libtype)
   # Create imported target MAFISC
   add_library (mafisc ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (mafisc "mafisc" ${libtype} "")
-  add_dependencies (MAFISC mafisc)
+  add_dependencies (mafisc MAFISC)
 
 #  include (${BINARY_DIR}/MAFISC-targets.cmake)
   set (MAFISC_LIBRARY "mafisc")

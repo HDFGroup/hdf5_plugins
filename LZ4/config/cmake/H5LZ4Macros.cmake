@@ -22,6 +22,7 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
     EXTERNALPROJECT_ADD (LZ4
@@ -40,6 +41,7 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
   externalproject_get_property (LZ4 BINARY_DIR SOURCE_DIR)
@@ -47,7 +49,7 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
   # Create imported target LZ4
   add_library (lz4 ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (lz4 "lz4" ${libtype} "")
-  add_dependencies (LZ4 lz4)
+  add_dependencies (lz4 LZ4)
 
 #  include (${BINARY_DIR}/LZ4-targets.cmake)
   set (LZ4_LIBRARY "lz4")
