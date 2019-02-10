@@ -3,16 +3,12 @@
 #-----------------------------------------------------------------------------
 include (CheckFunctionExists)
 include (CheckIncludeFile)
-include (CheckIncludeFileCXX)
 include (CheckIncludeFiles)
 include (CheckLibraryExists)
 include (CheckSymbolExists)
 include (CheckTypeSize)
 include (CheckVariableExists)
 include (TestBigEndian)
-if (CMAKE_CXX_COMPILER AND CMAKE_CXX_COMPILER_LOADED)
-  include (TestForSTDNamespace)
-endif ()
 
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
@@ -38,51 +34,6 @@ endif ()
 if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
     set (HAVE_SOLARIS 1)
 endif ()
-
-#-----------------------------------------------------------------------------
-# Check IF header file exists and add it to the list.
-#-----------------------------------------------------------------------------
-macro (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
-  CHECK_INCLUDE_FILES ("${USE_INCLUDES};${FILE}" ${VARIABLE})
-  if (${VARIABLE})
-    set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
-  endif ()
-endmacro ()
-
-#-----------------------------------------------------------------------------
-#  Check for the existence of certain header files
-#-----------------------------------------------------------------------------
-CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      HAVE_SYS_STAT_H)
-CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
-CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
-CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
-
-# IF the c compiler found stdint, check the C++ as well. On some systems this
-# file will be found by C but not C++, only do this test IF the C++ compiler
-# has been initialized (e.g. the project also includes some c++)
-if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
-  CHECK_INCLUDE_FILE_CXX ("stdint.h" HAVE_STDINT_H_CXX)
-  if (NOT HAVE_STDINT_H_CXX)
-    set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
-    set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
-  endif ()
-endif ()
-
-# Windows
-CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
-if (NOT CYGWIN)
-  CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      HAVE_WINSOCK_H)
-endif ()
-
-CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
-CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
-CHECK_INCLUDE_FILE_CONCAT ("strings.h"       HAVE_STRINGS_H)
-CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        HAVE_STDLIB_H)
-CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
-CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
-CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
-CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 
 #-----------------------------------------------------------------------------
 # This MACRO checks IF the symbol exists in the library and IF it
@@ -138,6 +89,55 @@ endif ()
 # END of WINDOWS Hard code Values
 # ----------------------------------------------------------------------
 
+if (NOT WINDOWS)
+  TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
+endif ()
+
+#-----------------------------------------------------------------------------
+# Check IF header file exists and add it to the list.
+#-----------------------------------------------------------------------------
+macro (CHECK_INCLUDE_FILE_CONCAT FILE VARIABLE)
+  CHECK_INCLUDE_FILES ("${USE_INCLUDES};${FILE}" ${VARIABLE})
+  if (${VARIABLE})
+    set (USE_INCLUDES ${USE_INCLUDES} ${FILE})
+  endif ()
+endmacro ()
+
+#-----------------------------------------------------------------------------
+#  Check for the existence of certain header files
+#-----------------------------------------------------------------------------
+CHECK_INCLUDE_FILE_CONCAT ("sys/stat.h"      HAVE_SYS_STAT_H)
+CHECK_INCLUDE_FILE_CONCAT ("sys/types.h"     HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
+CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
+CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
+
+# IF the c compiler found stdint, check the C++ as well. On some systems this
+# file will be found by C but not C++, only do this test IF the C++ compiler
+# has been initialized (e.g. the project also includes some c++)
+if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
+  CHECK_INCLUDE_FILE_CXX ("stdint.h" HAVE_STDINT_H_CXX)
+  if (NOT HAVE_STDINT_H_CXX)
+    set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
+    set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
+  endif ()
+endif ()
+
+# Windows
+CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
+if (NOT CYGWIN)
+  CHECK_INCLUDE_FILE_CONCAT ("winsock2.h"      HAVE_WINSOCK_H)
+endif ()
+
+CHECK_INCLUDE_FILE_CONCAT ("pthread.h"       HAVE_PTHREAD_H)
+CHECK_INCLUDE_FILE_CONCAT ("string.h"        HAVE_STRING_H)
+CHECK_INCLUDE_FILE_CONCAT ("strings.h"       HAVE_STRINGS_H)
+CHECK_INCLUDE_FILE_CONCAT ("stdlib.h"        HAVE_STDLIB_H)
+CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
+CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
+CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
+CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
+
 #-----------------------------------------------------------------------------
 #  Check for the math library "m"
 #-----------------------------------------------------------------------------
@@ -156,18 +156,10 @@ if (WINDOWS)
   set (USE_INCLUDES ${USE_INCLUDES} "windows.h")
 endif ()
 
-if (NOT WINDOWS)
-  TEST_BIG_ENDIAN (WORDS_BIGENDIAN)
-endif ()
-
 # For other specific tests, use this MACRO.
 macro (H5LZF_FUNCTION_TEST OTHER_TEST)
   if (NOT DEFINED ${OTHER_TEST})
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
-    set (OTHER_TEST_ADD_LIBRARIES)
-    if (LINK_LIBS)
-      set (OTHER_TEST_ADD_LIBRARIES "-DLINK_LIBRARIES:STRING=${LINK_LIBS}")
-    endif ()
 
     foreach (def ${H5LZF_EXTRA_TEST_DEFINITIONS})
       set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
@@ -192,8 +184,8 @@ macro (H5LZF_FUNCTION_TEST OTHER_TEST)
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5LZF_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-        "${OTHER_TEST_ADD_LIBRARIES}"
+        COMPILE_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS}"
+        LINK_LIBRARIES "${LINK_LIBS}"
         OUTPUT_VARIABLE OUTPUT
     )
     if (${OTHER_TEST})
@@ -229,13 +221,12 @@ if (NOT WINDOWS)
   set (H5LZF_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
 
   option (H5LZF_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (H5LZF_ENABLE_LARGE_FILE)
+  if (H5LZF_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
         ${H5LZF_RESOURCES_DIR}/H5PLTests.c
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=-DTEST_LFS_WORKS
-        OUTPUT_VARIABLE OUTPUT
+        COMPILE_DEFINITIONS "-DTEST_LFS_WORKS"
     )
     if (TEST_LFS_WORKS_COMPILE)
       if (TEST_LFS_WORKS_RUN MATCHES 0)
@@ -247,14 +238,14 @@ if (NOT WINDOWS)
         set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
         message (STATUS "${msg}... no")
         file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-              "Test TEST_LFS_WORKS Run failed with the following output and exit code:\n ${OUTPUT}\n"
+              "Test TEST_LFS_WORKS Run failed with the following exit code:\n ${TEST_LFS_WORKS_RUN}\n"
         )
       endif ()
     else ()
       set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
       message (STATUS "${msg}... no")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Test TEST_LFS_WORKS Compile failed with the following output:\n ${OUTPUT}\n"
+          "Test TEST_LFS_WORKS Compile failed\n"
       )
     endif ()
   endif ()
@@ -274,7 +265,6 @@ if (NOT WINDOWS)
   foreach (test
       HAVE_ATTRIBUTE
       SYSTEM_SCOPE_THREADS
-      CXX_HAVE_OFFSETOF
   )
     H5LZF_FUNCTION_TEST (${test})
   endforeach ()
