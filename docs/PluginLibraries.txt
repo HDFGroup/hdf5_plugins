@@ -224,6 +224,32 @@ This has 1 optional value;
 Default h5repack parameter: UD=32004,0,0
 .................................
 
+Bitshuffle Filter
+=================================
+Filter ID: 32008
+
+Filter Description:
+    This filter shuffles data at the bit level to improve compression.
+    CHIME uses this filter for data acquisition.
+
+Link to the filter:
+    https://github.com/kiyo-masui/bitshuffle
+
+Contact Information:
+    Kiyoshi Masui
+    Email: kiyo at physics dot ubc dot ca
+
+--------------------------------------------
+Compression Library Included: liblz4 version 1.8.0
+
+Plugin cd_value option
+--------------------------------------------
+This has 1 optional value;
+    Block Size: default, 1GB. LZ4 needs blocks < 1.9GB
+
+Default h5repack parameter: UD=32004,0,0
+.................................
+
 ZFP Filter
 =================================
 Filter Id: 32013

@@ -51,6 +51,9 @@ include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
+# Bitshuffle filter
+FILTER_OPTION (BSHUF)
+
 # BLOSC filter
 FILTER_OPTION (BLOSC)
 
@@ -74,7 +77,7 @@ FILTER_OPTION (ZFP)
 #-----------------------------------------------------------------------------
 option (H5PL_BUILD_TESTING "Build h5pl Unit Testing" OFF)
 if (H5PL_BUILD_TESTING)
-  set (DART_TESTING_TIMEOUT 1200 CACHE INTEGER
+  set (DART_TESTING_TIMEOUT 1200 CACHE STRING
        "Timeout in seconds for each test (default 1200=20minutes)")
   enable_testing ()
   include (CTest)
