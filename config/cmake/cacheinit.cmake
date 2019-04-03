@@ -26,6 +26,15 @@ set (H5PL_TGZ_NAME "h5pl.tar.gz" CACHE STRING "Use plugins from compressed file"
 set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
 set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
+############################# bitshuffle ################################################
+
+set (BSHUF_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/bitshuffle.git" CACHE STRING "Use BSHUF from HDF repository" FORCE)
+set (BSHUF_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (BSHUF_TGZ_NAME "bitshuffle.tar.gz" CACHE STRING "Use BSHUF from compressed file" FORCE)
+
+set (BSHUF_PACKAGE_NAME "bshuf" CACHE STRING "Name of BSHUF package" FORCE)
+
 ############################# blosc ################################################
 
 set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOSC from Github" FORCE)
