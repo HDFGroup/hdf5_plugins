@@ -1,17 +1,17 @@
-HDF5 "h5ex_d_lzf.h5" {
+HDF5 "h5ex_d_bshuf.h5" {
 GROUP "/" {
    DATASET "DS1" {
       DATATYPE  H5T_STD_I32LE
       DATASPACE  SIMPLE { ( 32, 64 ) / ( 32, 64 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 7749 (1.057:1 COMPRESSION)
+         SIZE 8192 (1.000:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 4 261 128 }
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
+            PARAMS { 0 3 4 0 0 0 }
          }
       }
       FILLVALUE {
