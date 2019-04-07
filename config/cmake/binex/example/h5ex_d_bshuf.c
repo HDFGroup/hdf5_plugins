@@ -2,19 +2,19 @@
  * Copyright by The HDF Group.                                               *
  * All rights reserved.                                                      *
  *                                                                           *
- * This file is part of the HDF5 bitshuffle filter plugin source.  The full  *
+ * This file is part of the HDF5 BSHUF filter plugin source.  The full         *
  * copyright notice, including terms governing use, modification, and        *
  * terms governing use, modification, and redistribution, is contained in    *
- * the file COPYING, which can be found at the root of the bitshuffle source *
- * code distribution tree.  If you do not have access to this file, you may  *
+ * the file COPYING, which can be found at the root of the BSHUF source code   *
+ * distribution tree.  If you do not have access to this file, you may       *
  * request a copy from help@hdfgroup.org.                                    *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /************************************************************
 
   This example shows how to write data and read it from a dataset
-  using bitshuffle and lzf compression.
-  bitshuffle and lzf filter is not available in HDF5.
+  using bshuf filter.
+  bshuf filter is not available in HDF5.
   The example uses a new feature available in HDF5 version 1.8.11
   to discover, load and register filters at run time.
 
@@ -83,7 +83,7 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 0, NULL);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BSHUF, H5Z_FLAG_MANDATORY, nelmts, cd_values);
     if (status < 0) goto done;
 
     /*
@@ -95,7 +95,7 @@ main (void)
         status = H5Zget_filter_info (H5Z_FILTER_BSHUF, &filter_config);
         if ( (filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) &&
                 (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED) )
-            printf ("bitshuffle filter is available for encoding and decoding.\n");
+            printf ("bshuf filter is available for encoding and decoding.\n");
     }
     else {
         printf ("H5Zfilter_avail - not found.\n");
@@ -117,7 +117,7 @@ main (void)
     /*
      * Write the data to the dataset.
      */
-    printf ("....Writing bitshuffle and lzf compressed data ................\n");
+    printf ("....Writing bshuf filtered data ................\n");
     status = H5Dwrite (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
     if (status < 0) printf ("failed to write data.\n");
 
@@ -160,7 +160,7 @@ main (void)
     if (dcpl_id < 0) goto done;
 
     /*
-     * Retrieve and print the filter id, compression level and filter's name for lzf.
+     * Retrieve and print the filter id, compression level and filter's name for bshuf.
      */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
     printf ("Filter info is available from the dataset creation property\n");
@@ -179,7 +179,7 @@ main (void)
     /*
      * Read the data using the default properties.
      */
-    printf ("....Reading bitshuffle and lzf compressed data ................\n");
+    printf ("....Reading bshuf filtered data ................\n");
     status = H5Dread (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
     if (status < 0) printf ("failed to read data.\n");
 
@@ -203,7 +203,7 @@ main (void)
      */
     avail = H5Zfilter_avail(H5Z_FILTER_BSHUF);
     if (avail)
-        printf ("bitshuffle filter is available now since H5Dread triggered loading of the filter.\n");
+        printf ("bshuf filter is available now since H5Dread triggered loading of the filter.\n");
 
     ret_value = 0;
 
