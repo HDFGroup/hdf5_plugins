@@ -133,7 +133,7 @@ configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h 
 #-----------------------------------------------------------------------------
 option (BUILD_TESTING "Build h5zfp Unit Testing" OFF)
 if (BUILD_TESTING)
-  set (DART_TESTING_TIMEOUT 1200 CACHE INTEGER
+  set (DART_TESTING_TIMEOUT 1200 CACHE STRING
        "Timeout in seconds for each test (default 1200=20minutes)")
   enable_testing ()
   include (CTest)

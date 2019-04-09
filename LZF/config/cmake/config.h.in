@@ -56,31 +56,31 @@
 #define LT_OBJDIR "@LT_OBJDIR@"
 
 /* Name of package */
-#define PACKAGE "@H5BLOSC_PACKAGE@"
+#define PACKAGE "@H5LZF_PACKAGE@"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "@H5BLOSC_PACKAGE_BUGREPORT@"
+#define PACKAGE_BUGREPORT "@H5LZF_PACKAGE_BUGREPORT@"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "@H5BLOSC_PACKAGE_NAME@"
+#define PACKAGE_NAME "@H5LZF_PACKAGE_NAME@"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "@H5BLOSC_PACKAGE_STRING@"
+#define PACKAGE_STRING "@H5LZF_PACKAGE_STRING@"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "@H5BLOSC_PACKAGE_TARNAME@"
+#define PACKAGE_TARNAME "@H5LZF_PACKAGE_TARNAME@"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL "@H5BLOSC_PACKAGE_URL@"
+#define PACKAGE_URL "@H5LZF_PACKAGE_URL@"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "@H5BLOSC_PACKAGE_VERSION@"
+#define PACKAGE_VERSION "@H5LZF_PACKAGE_VERSION@"
 
 /* Define to 1 if you have the ANSI C header files. */
 #cmakedefine STDC_HEADERS "@STDC_HEADERS@"
 
 /* Version number of package */
-#define VERSION "@H5BLOSC_VERSION@"
+#define VERSION "@H5LZF_VERSION@"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #cmakedefine const
