@@ -3,6 +3,7 @@ project (HDF5PL_EX)
 
 set (dyn_examples
     h5ex_d_blosc
+    h5ex_d_bshuf
     h5ex_d_bzip2
     h5ex_d_lz4
     h5ex_d_lzf

@@ -59,6 +59,7 @@ TESTDIR=$builddir
 
 
 $H5CC -shlib $srcdir/h5ex_d_blosc.c -o h5ex_d_blosc
+$H5CC -shlib $srcdir/h5ex_d_bshuf.c -o h5ex_d_bshuf
 $H5CC -shlib $srcdir/h5ex_d_bzip2.c -o h5ex_d_bzip2
 $H5CC -shlib $srcdir/h5ex_d_lz4.c -o h5ex_d_lz4
 $H5CC -shlib $srcdir/h5ex_d_lzf.c -o h5ex_d_lzf
@@ -71,6 +72,8 @@ LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
 $SRC_TESTFILES/h5ex_d_blosc.ddl
 $SRC_TESTFILES/h5ex_d_blosc.tst
+$SRC_TESTFILES/h5ex_d_bshuf.ddl
+$SRC_TESTFILES/h5ex_d_bshuf.tst
 $SRC_TESTFILES/h5ex_d_bzip2.ddl
 $SRC_TESTFILES/h5ex_d_bzip2.tst
 $SRC_TESTFILES/h5ex_d_lz4.ddl
@@ -393,6 +396,9 @@ COPY_TESTFILES_TO_TESTDIR
 
 EXETEST h5ex_d_blosc h5ex_d_blosc.tst
 DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
+
+EXETEST h5ex_d_bshuf h5ex_d_bshuf.tst
+DUMPTEST h5ex_d_bshuf.ddl h5ex_d_bshuf.h5
 
 EXETEST h5ex_d_bzip2 h5ex_d_bzip2.tst
 DUMPTEST h5ex_d_bzip2.ddl h5ex_d_bzip2.h5
