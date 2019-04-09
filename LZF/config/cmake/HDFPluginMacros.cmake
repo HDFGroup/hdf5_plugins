@@ -430,7 +430,7 @@ macro (INSTALL_SUPPORT varname)
         set (CPACK_BUNDLE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
         set (CPACK_BUNDLE_LOCATION "/")    # make sure CMAKE_INSTALL_PREFIX ends in /
         set (CMAKE_INSTALL_PREFIX "/${CPACK_BUNDLE_NAME}.framework/Versions/${CPACK_PACKAGE_VERSION}/${CPACK_PACKAGE_NAME}/")
-#        set (CPACK_BUNDLE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5BZ2.icns")
+#        set (CPACK_BUNDLE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5LZF.icns")
 #        set (CPACK_BUNDLE_PLIST "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/Info.plist")
         set (CPACK_APPLE_GUI_INFO_STRING "${PLUGIN_PACKAGE_NAME} Plugin Library")
         set (CPACK_APPLE_GUI_COPYRIGHT "Copyright © ???. All rights reserved.")
