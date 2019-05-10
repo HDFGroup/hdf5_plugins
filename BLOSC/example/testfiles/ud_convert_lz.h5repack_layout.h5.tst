@@ -6,10 +6,10 @@ Making new file ...
  Type     Filter (Compression)     Name
 -----------------------------------------
  group                       /
- dset     UD   (8.719:1)     /dset1
- dset     UD   (8.719:1)     /dset2
- dset     UD   (8.719:1)     /dset3
- dset     UD   (8.719:1)     /dset4
- dset     UD   (2.867:1)     /dset_chunk
- dset     UD   (8.719:1)     /dset_compact
- dset     UD   (8.719:1)     /dset_contiguous
+ dset     UD   (8.939:1)     /dset1
+ dset     UD   (8.939:1)     /dset2
+ dset     UD   (8.939:1)     /dset3
+ dset     UD   (8.939:1)     /dset4
+ dset     UD   (2.914:1)     /dset_chunk
+ dset     UD   (8.939:1)     /dset_compact
+ dset     UD   (8.939:1)     /dset_contiguous
