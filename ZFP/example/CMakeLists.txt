@@ -97,6 +97,8 @@ if (BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
+              -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+              -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
