@@ -11,7 +11,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.4) github.com/LLNL/H5Z-ZFP
-            PARAMS { 5505152 91252346 805306487 -1048576 -528154624 493487 }
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
