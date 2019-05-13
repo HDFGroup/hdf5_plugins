@@ -174,15 +174,15 @@ struct lzma_next_coder_s {
 
 /// Macro to initialize lzma_next_coder structure
 #define LZMA_NEXT_CODER_INIT \
-    { \
-        NULL, \
-        LZMA_VLI_UNKNOWN, \
-        (uintptr_t)(NULL), \
-        NULL, \
-        NULL, \
-        NULL, \
-        NULL, \
-        NULL, \
+    (lzma_next_coder){ \
+        .coder = NULL, \
+        .init = (uintptr_t)(NULL), \
+        .id = LZMA_VLI_UNKNOWN, \
+        .code = NULL, \
+        .end = NULL, \
+        .get_check = NULL, \
+        .memconfig = NULL, \
+        .update = NULL, \
     }
 
 
