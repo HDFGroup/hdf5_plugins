@@ -42,7 +42,9 @@
 #ifndef VARIABLE_FILTER_INCLUDE_GUARD
 #define VARIABLE_FILTER_INCLUDE_GUARD
 
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
 #include <stddef.h>
 //#include <netcdf.h>
 
