@@ -136,8 +136,8 @@ static void* XXH_memcpy(void* dest, const void* src, size_t size) { return memcp
 *  Basic Types
 ***************************************/
 #ifndef MEM_MODULE
-# if !defined (__VMS) && (defined (__cplusplus) || (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */) )
-#   include <stdint.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
     typedef uint8_t  BYTE;
     typedef uint16_t U16;
     typedef uint32_t U32;
@@ -529,8 +529,8 @@ XXH_PUBLIC_API XXH32_hash_t XXH32_hashFromCanonical(const XXH32_canonical_t* src
 
 #ifndef MEM_MODULE
 # define MEM_MODULE
-# if !defined (__VMS) && (defined (__cplusplus) || (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */) )
-#   include <stdint.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
     typedef uint64_t U64;
 # else
     typedef unsigned long long U64;   /* if your compiler doesn't support unsigned long long, replace by another 64-bit type here. Note that xxhash.h will also need to be updated. */

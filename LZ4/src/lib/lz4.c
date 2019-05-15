@@ -172,8 +172,8 @@
 /*-************************************
 *  Basic Types
 **************************************/
-#if defined(__cplusplus) || (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */)
-# include <stdint.h>
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
   typedef  uint8_t BYTE;
   typedef uint16_t U16;
   typedef uint32_t U32;
