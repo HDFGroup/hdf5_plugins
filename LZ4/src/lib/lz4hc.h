@@ -138,7 +138,7 @@ LZ4LIB_API int LZ4_saveDictHC (LZ4_streamHC_t* streamHCPtr, char* safeBuffer, in
 #define LZ4HC_HASH_MASK (LZ4HC_HASHTABLESIZE - 1)
 
 
-#if defined(__cplusplus) || (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */)
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
 
 typedef struct LZ4HC_CCtx_internal LZ4HC_CCtx_internal;
