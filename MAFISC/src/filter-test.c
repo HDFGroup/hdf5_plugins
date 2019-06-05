@@ -25,10 +25,45 @@
 * SUCH DAMAGE.
 */
 
+#include "config.h"
+
 #define _GNU_SOURCE
 
-#include <stdlib.h>
+#include <stdio.h>
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
+#ifdef STDC_HEADERS
+# include <stdlib.h>
+# include <stddef.h>
+#else
+# ifdef HAVE_STDLIB_H
+#  include <stdlib.h>
+# endif
+#endif
+#ifdef HAVE_STRING_H
+# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
+#  include <memory.h>
+# endif
+# include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
+# include <strings.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 #include <time.h>
+
 #include <hdf5.h>
 
 #include "mafisc.h"
@@ -41,65 +76,65 @@ const char* const testFileName = "compressed-data.h5";
 const char* const datasetName = "faked and compressed data";
 
 int filterTest(void) {
-	herr_t result;
-	hid_t file, space, dcpl, dset;
-	//Init
-	srand(42);
-	//Create a file with a compressed dataset.
+    herr_t result;
+    hid_t file, space, dcpl, dset;
+    //Init
+    srand(42);
+    //Create a file with a compressed dataset.
     file = H5Fcreate(testFileName, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     space = H5Screate_simple(3, dims, NULL);
     dcpl = H5Pcreate(H5P_DATASET_CREATE);
     if((result = H5Pset_chunk(dcpl, 3, chunk))) return result;
-	if((result = H5Pset_filter(dcpl, MAFISC_ID, H5Z_FLAG_OPTIONAL, 0, NULL))) return result;
+    if((result = H5Pset_filter(dcpl, MAFISC_ID, H5Z_FLAG_OPTIONAL, 0, NULL))) return result;
     dset = H5Dcreate2(file, datasetName, H5T_STD_I32LE, space, H5P_DEFAULT, dcpl, H5P_DEFAULT);
-	{
-		//Fake some data.
-		size_t valueCount = dims[0]*dims[1]*dims[2], i;
-		allocate(double, data, valueCount);
-		clock_t start;
-		double seconds;
-		printf("faking data...\n");
-		for(i = 0; i < valueCount; i++) data[i] = (double)i;
-		//Write it to our awesome dataset.
-		printf("writing...\n");
-		start = clock();
-		if((result = H5Dwrite (dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data))) return result;
-		seconds = ((double)(clock() - start))/CLOCKS_PER_SEC;
-		printf("\ttook %g seconds, %g MB/s.\n", seconds, valueCount*sizeof(double)/(1000000*seconds));
-		//Tidy up.
-		if((result = H5Pclose(dcpl))) return result;
-		if((result = H5Dclose(dset))) return result;
-		if((result = H5Sclose(space))) return result;
-		if((result = H5Fclose(file))) return result;
-		{
-			char* commandLine;
-			if(asprintf(&commandLine, "ls -l %s", testFileName) < 0) return -1;
-			int trash = system(commandLine);
-			if(trash & ~trash) abort();
-			free(commandLine);
-		}
-		//Clobber the fake data
-		for(i = 0; i < valueCount; i++) data[i] = (double)0;
-		//Reopen the file with the compressed dataset.
-		printf("reading...\n");
-		file = H5Fopen(testFileName, H5F_ACC_RDONLY, H5P_DEFAULT);
-		dset = H5Dopen2(file, datasetName, H5P_DEFAULT);
-		start = clock();
-		if((result = H5Dread(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data))) return result;
-		seconds = ((double)(clock() - start))/CLOCKS_PER_SEC;
-		printf("\ttook %g seconds, %g MB/s.\n", seconds, valueCount*sizeof(double)/(1000000*seconds));
-//		printDkrzFilterTimes();
-		//Check the data
-		for(i = 0; i < valueCount; i++) {
-			if(data[i] != (double)i) {	//The compiler complains about unsave float comparison, but here I want to be sure that the values are identical to the last bit.
-				fprintf(stderr, "Error: Value %li == %g\n", i, data[i]);
-				break;
-			}
-		}
-		//Tidy up.
-		if((result = H5Dclose(dset))) return result;
-		if((result = H5Fclose(file))) return result;
-		free(data);
-		return 0;
-	}
+    {
+        //Fake some data.
+        size_t valueCount = dims[0]*dims[1]*dims[2], i;
+        allocate(double, data, valueCount);
+        clock_t start;
+        double seconds;
+        printf("faking data...\n");
+        for(i = 0; i < valueCount; i++) data[i] = (double)i;
+        //Write it to our awesome dataset.
+        printf("writing...\n");
+        start = clock();
+        if((result = H5Dwrite (dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data))) return result;
+        seconds = ((double)(clock() - start))/CLOCKS_PER_SEC;
+        printf("\ttook %g seconds, %g MB/s.\n", seconds, valueCount*sizeof(double)/(1000000*seconds));
+        //Tidy up.
+        if((result = H5Pclose(dcpl))) return result;
+        if((result = H5Dclose(dset))) return result;
+        if((result = H5Sclose(space))) return result;
+        if((result = H5Fclose(file))) return result;
+        {
+            char* commandLine;
+            if(asprintf(&commandLine, "ls -l %s", testFileName) < 0) return -1;
+            int trash = system(commandLine);
+            if(trash & ~trash) abort();
+            free(commandLine);
+        }
+        //Clobber the fake data
+        for(i = 0; i < valueCount; i++) data[i] = (double)0;
+        //Reopen the file with the compressed dataset.
+        printf("reading...\n");
+        file = H5Fopen(testFileName, H5F_ACC_RDONLY, H5P_DEFAULT);
+        dset = H5Dopen2(file, datasetName, H5P_DEFAULT);
+        start = clock();
+        if((result = H5Dread(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, data))) return result;
+        seconds = ((double)(clock() - start))/CLOCKS_PER_SEC;
+        printf("\ttook %g seconds, %g MB/s.\n", seconds, valueCount*sizeof(double)/(1000000*seconds));
+//        printDkrzFilterTimes();
+        //Check the data
+        for(i = 0; i < valueCount; i++) {
+            if(data[i] != (double)i) {    //The compiler complains about unsave float comparison, but here I want to be sure that the values are identical to the last bit.
+                fprintf(stderr, "Error: Value %li == %g\n", i, data[i]);
+                break;
+            }
+        }
+        //Tidy up.
+        if((result = H5Dclose(dset))) return result;
+        if((result = H5Fclose(file))) return result;
+        free(data);
+        return 0;
+    }
 }

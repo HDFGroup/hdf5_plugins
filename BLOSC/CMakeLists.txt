@@ -59,6 +59,11 @@ include (${H5BLOSC_RESOURCES_DIR}/ConfigureChecks.cmake)
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5BLOSC link libs: ${LINK_LIBS}")
 
+#-----------------------------------------------------------------------------
+# Generate the config.h file containing user settings needed by compilation
+#-----------------------------------------------------------------------------
+configure_file (${H5BLOSC_RESOURCES_DIR}/config.h.in ${H5BLOSC_BINARY_DIR}/config.h @ONLY)
+
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if(WIN32)
     # try to use the system library

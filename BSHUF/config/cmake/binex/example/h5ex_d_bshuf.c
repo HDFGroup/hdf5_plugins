@@ -83,7 +83,7 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 0, NULL);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BSHUF, H5Z_FLAG_MANDATORY, 0, NULL);
     if (status < 0) goto done;
 
     /*
