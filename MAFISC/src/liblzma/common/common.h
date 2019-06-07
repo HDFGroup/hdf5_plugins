@@ -13,6 +13,8 @@
 #ifndef LZMA_COMMON_H
 #define LZMA_COMMON_H
 
+#include "config.h"
+
 #ifdef _MSC_VER    /* Visual Studio */
 #  define FORCE_INLINE static __forceinline
 #else
