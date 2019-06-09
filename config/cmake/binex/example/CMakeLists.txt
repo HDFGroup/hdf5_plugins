@@ -8,7 +8,6 @@ set (dyn_examples
     h5ex_d_lz4
     h5ex_d_lzf
     h5ex_d_mafisc
-    h5ex_d_zfp
 )
 
 if (USE_SHARED_LIBS)
@@ -91,7 +90,7 @@ if (BUILD_TESTING)
     endif ()
     set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
-      if (NOT FILTER_ALL)
+      if (NOT "${ARGN}" STREQUAL "FILTERALL")
         add_test (
             NAME H5DUMP-${testname}
             COMMAND "${CMAKE_COMMAND}"
@@ -228,6 +227,8 @@ if (BUILD_TESTING)
   foreach (h5_file ${dyn_examples})
     ADD_H5_TEST (${h5_file})
   endforeach ()
+  ## special filter
+  ADD_H5_TEST (h5ex_d_zfp FILTERALL)
 
   if (NOT DISABLE_H5PL_ENCODER)
     #UD BZ2$
