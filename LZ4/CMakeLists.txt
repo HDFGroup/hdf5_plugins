@@ -50,6 +50,11 @@ include (${H5LZ4_RESOURCES_DIR}/ConfigureChecks.cmake)
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5LZ4 link libs: ${LINK_LIBS}")
 
+#-----------------------------------------------------------------------------
+# Generate the config.h file containing user settings needed by compilation
+#-----------------------------------------------------------------------------
+configure_file (${H5LZ4_RESOURCES_DIR}/config.h.in ${H5LZ4_BINARY_DIR}/config.h @ONLY)
+
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
 option (BUILD_LZ4_LIBRARY_SOURCE "build the lz4 library within the plugin" ON)
