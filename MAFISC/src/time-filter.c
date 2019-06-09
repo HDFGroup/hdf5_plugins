@@ -25,55 +25,88 @@
 * SUCH DAMAGE.
 */
 
+#include "config.h"
+
 #define _GNU_SOURCE
 
-#include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
+#ifdef STDC_HEADERS
+# include <stdlib.h>
+# include <stddef.h>
+#else
+# ifdef HAVE_STDLIB_H
+#  include <stdlib.h>
+# endif
+#endif
+#ifdef HAVE_STRING_H
+# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
+#  include <memory.h>
+# endif
+# include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
+# include <strings.h>
+#endif
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#endif
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 #include <assert.h>
 
 #include "time-filter.h"
 
 TimeFilter* tf_makeWithString(const char** description) {
-	description = NULL;	//Shut up the compiler.
-	return tf_make();
+    description = NULL;    //Shut up the compiler.
+    return tf_make();
 }
 
 TimeFilter* tf_make(void) {
-//	printf("tf_make()\n");
-	TimeFilter* me = (TimeFilter*)malloc(sizeof(TimeFilter));
-	tf_init(me);
-	return me;
+//    printf("tf_make()\n");
+    TimeFilter* me = (TimeFilter*)malloc(sizeof(TimeFilter));
+    tf_init(me);
+    return me;
 }
 
 void tf_init(TimeFilter* me) {
-//	printf("tf_init()\n");
-	vf_init(&(me->super), kTimeFilterClass);
-	me->referenceBuffer = 0;
+//    printf("tf_init()\n");
+    vf_init(&(me->super), kTimeFilterClass);
+    me->referenceBuffer = 0;
 }
 
 char* tf_toString(TimeFilter* me) {
-	char* result = 0;
-	if(asprintf(&result, "%c", kFilterClassIdLetters[super()->type]) <= 0) return 0;
-	return result;
+    char* result = 0;
+    if(asprintf(&result, "%c", kFilterClassIdLetters[super()->type]) <= 0) return 0;
+    return result;
 }
 
 void tf_varPropertiesSet(TimeFilter* me) {
-//	printf("tf_varPropertiesSet()\n");
-	if(me->referenceBuffer) free(me->referenceBuffer);
-	me->referenceBuffer = calloc(super()->valueCount, super()->valueSize);	//get a zero initialized buffer
+//    printf("tf_varPropertiesSet()\n");
+    if(me->referenceBuffer) free(me->referenceBuffer);
+    me->referenceBuffer = calloc(super()->valueCount, super()->valueSize);    //get a zero initialized buffer
 }
 
 #define template(T)\
-void tf_process_##T(TimeFilter* me, const void* inputBuffer, void* outputBuffer);	/*Shut up.*/\
+void tf_process_##T(TimeFilter* me, const void* inputBuffer, void* outputBuffer);    /*Shut up.*/\
 void tf_process_##T(TimeFilter* me, const void* inputBuffer, void* outputBuffer) {\
-	int64_t i;\
-	const T *iBuf = (const T*)inputBuffer;\
-	T temp, *oBuf = (T*)outputBuffer, *rBuf = (T*)(me->referenceBuffer);\
-	for(i = (int64_t)(super()->valueCount-1); i >= 0; i--) {\
-		temp = iBuf[i];\
-		oBuf[i] = (T)(temp - rBuf[i]);\
-		rBuf[i] = temp;\
-	}\
+    int64_t i;\
+    const T *iBuf = (const T*)inputBuffer;\
+    T temp, *oBuf = (T*)outputBuffer, *rBuf = (T*)(me->referenceBuffer);\
+    for(i = (int64_t)(super()->valueCount-1); i >= 0; i--) {\
+        temp = iBuf[i];\
+        oBuf[i] = (T)(temp - rBuf[i]);\
+        rBuf[i] = temp;\
+    }\
 }
 template(int8_t)
 template(int16_t)
@@ -82,25 +115,25 @@ template(int64_t)
 #undef template
 
 void tf_process(TimeFilter* me, const void* inputBuffer, void* outputBuffer) {
-//	printf("tf_process()\n");
-	switch(super()->valueSize) {
-		case 1: tf_process_int8_t(me, inputBuffer, outputBuffer); break;
-		case 2: tf_process_int16_t(me, inputBuffer, outputBuffer); break;
-		case 4: tf_process_int32_t(me, inputBuffer, outputBuffer); break;
-		case 8: tf_process_int64_t(me, inputBuffer, outputBuffer); break;
-		default: assert(0);
-	}
+//    printf("tf_process()\n");
+    switch(super()->valueSize) {
+        case 1: tf_process_int8_t(me, inputBuffer, outputBuffer); break;
+        case 2: tf_process_int16_t(me, inputBuffer, outputBuffer); break;
+        case 4: tf_process_int32_t(me, inputBuffer, outputBuffer); break;
+        case 8: tf_process_int64_t(me, inputBuffer, outputBuffer); break;
+        default: assert(0);
+    }
 }
 
 #define template(T)\
-void tf_processReverse_##T(TimeFilter* me, const void* inputBuffer, void* outputBuffer);	/*Shut up.*/\
+void tf_processReverse_##T(TimeFilter* me, const void* inputBuffer, void* outputBuffer);    /*Shut up.*/\
 void tf_processReverse_##T(TimeFilter* me, const void* inputBuffer, void* outputBuffer) {\
-	int64_t i;\
-	const T *iBuf = (const T*)inputBuffer;\
-	T *oBuf = (T*)outputBuffer, *rBuf = (T*)(me->referenceBuffer);\
-	for(i = (int64_t)(super()->valueCount-1); i >= 0; i--) {\
-		rBuf[i] = oBuf[i] = (T)(iBuf[i] + rBuf[i]);\
-	}\
+    int64_t i;\
+    const T *iBuf = (const T*)inputBuffer;\
+    T *oBuf = (T*)outputBuffer, *rBuf = (T*)(me->referenceBuffer);\
+    for(i = (int64_t)(super()->valueCount-1); i >= 0; i--) {\
+        rBuf[i] = oBuf[i] = (T)(iBuf[i] + rBuf[i]);\
+    }\
 }
 template(int8_t)
 template(int16_t)
@@ -109,20 +142,20 @@ template(int64_t)
 #undef template
 
 void tf_processReverse(TimeFilter* me, const void* inputBuffer, void* outputBuffer) {
-//	printf("tf_process()\n");
-	switch(super()->valueSize) {
-		case 1: tf_processReverse_int8_t(me, inputBuffer, outputBuffer); break;
-		case 2: tf_processReverse_int16_t(me, inputBuffer, outputBuffer); break;
-		case 4: tf_processReverse_int32_t(me, inputBuffer, outputBuffer); break;
-		case 8: tf_processReverse_int64_t(me, inputBuffer, outputBuffer); break;
-		default: assert(0);
-	}
+//    printf("tf_process()\n");
+    switch(super()->valueSize) {
+        case 1: tf_processReverse_int8_t(me, inputBuffer, outputBuffer); break;
+        case 2: tf_processReverse_int16_t(me, inputBuffer, outputBuffer); break;
+        case 4: tf_processReverse_int32_t(me, inputBuffer, outputBuffer); break;
+        case 8: tf_processReverse_int64_t(me, inputBuffer, outputBuffer); break;
+        default: assert(0);
+    }
 }
 
 int tf_producesByteStream(TimeFilter* me) { return 0; }
 
 void tf_destroy(TimeFilter* me) {
-//	printf("tf_destroy()\n");
-	if(me->referenceBuffer) free(me->referenceBuffer);
-	vf_destroy(&(me->super));
+//    printf("tf_destroy()\n");
+    if(me->referenceBuffer) free(me->referenceBuffer);
+    vf_destroy(&(me->super));
 }
