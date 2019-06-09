@@ -91,20 +91,37 @@ if (BUILD_TESTING)
     endif ()
     set (last_test "${testname}")
     if (HDF5_BUILD_TOOLS)
-      add_test (
-          NAME H5DUMP-${testname}
-          COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
-              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-              -D "TEST_OUTPUT=${testname}.ddl.out"
-              -D "TEST_FILTER=PARAMS { ([0-9]) [-]?[0-9]+ ([0-9] [0-9] [0-9] [0-9] [0-9] [0-9]) }\n"
-              -D "TEST_FILTER_REPLACE=PARAMS { \\1 XXXX \\2 }\n"
-              -D "TEST_EXPECT=0"
-              -D "TEST_REFERENCE=${testname}.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
-      )
+      if (NOT FILTER_ALL)
+        add_test (
+            NAME H5DUMP-${testname}
+            COMMAND "${CMAKE_COMMAND}"
+               -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+                -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
+                -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+                -D "TEST_OUTPUT=${testname}.ddl.out"
+                -D "TEST_FILTER=PARAMS { ([0-9]) [-]?[0-9]+ ([0-9] [0-9] [0-9] [0-9] [0-9] [0-9]) }\n"
+                -D "TEST_FILTER_REPLACE=PARAMS { \\1 XXXX \\2 }\n"
+                -D "TEST_EXPECT=0"
+                -D "TEST_REFERENCE=${testname}.ddl"
+                -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+        )
+      else ()
+        add_test (
+            NAME H5DUMP-${testname}
+            COMMAND "${CMAKE_COMMAND}"
+                -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+                -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
+                -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+                -D "TEST_OUTPUT=${testname}.ddl.out"
+                -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+                -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+                -D "TEST_EXPECT=0"
+                -D "TEST_REFERENCE=${testname}.ddl"
+                -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+        )
+      endif ()
       set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
       set (last_test "H5DUMP-${testname}")
     endif ()
