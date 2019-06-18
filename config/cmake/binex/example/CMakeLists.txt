@@ -7,8 +7,13 @@ set (dyn_examples
     h5ex_d_bzip2
     h5ex_d_lz4
     h5ex_d_lzf
-    h5ex_d_mafisc
+    h5ex_d_jpeg
+    h5ex_d_zfp
 )
+
+if (MAFISC_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_mafisc)
+endif ()
 
 if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
@@ -17,7 +22,7 @@ else ()
 endif ()
 
 #run-time loadable library examples
-foreach (example ${dyn_examples} h5ex_d_zfp)
+foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   target_include_directories(${example} PRIVATE ${H5PL_INCLUDE_DIRS})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
@@ -240,10 +245,12 @@ if (BUILD_TESTING)
     #UD LZ4$
     ADD_H5_UD_TEST (ud_lz4_convert 0 h5repack_layout.h5 ud_blosc_convert -v -f /dset3:UD=32004,0,1,3 -l /dset1:CHUNK=4x8)
     ADD_H5_UD_VERIFY (ud_pl_lz4_convert 0 h5repack_layout.h5 ud_lz4_convert)
-    #UD MAFISC$
-    ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
-    #UD VERIFY
-    ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
+    if (MAFISC_AVAILABLE)
+      #UD MAFISC$
+      ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
+      #UD VERIFY
+      ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
+    endif ()
   endif ()
 
 endif ()
