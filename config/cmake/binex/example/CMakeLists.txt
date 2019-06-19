@@ -8,7 +8,7 @@ set (dyn_examples
     h5ex_d_lz4
     h5ex_d_lzf
     h5ex_d_jpeg
-    h5ex_d_zfp
+#    h5ex_d_zfp special test
 )
 
 if (MAFISC_AVAILABLE)
