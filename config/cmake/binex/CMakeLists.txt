@@ -32,4 +32,12 @@ endif ()
 #-----------------------------------------------------------------------------
 # Build examples
 #-----------------------------------------------------------------------------
+set (MAFISC_AVAILABLE 0)
+if (WIN32 AND MSVC_VERSION GREATER 1600)
+  # MAFISC filter
+  set (MAFISC_AVAILABLE 1)
+elseif (NOT WIN32)
+  set (MAFISC_AVAILABLE 1)
+endif ()
+
 add_subdirectory (example)
