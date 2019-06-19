@@ -28,7 +28,7 @@
 #define DATASET         "DS1"
 #define DIM0            512
 #define DIM1            1024
-#define NUM_IMAGES      10
+#define NUM_IMAGES      2
 #define JPEG_QUALITY    100
 #define CHUNK0          1
 #define CHUNK1          DIM0
@@ -60,11 +60,14 @@ main (void)
     /* Color mode (0=Mono, 1=RGB) */
     const unsigned int cd_values[4] = {JPEG_QUALITY, DIM1, DIM0, 0};     /* jpeg default level is 2 */
     unsigned int       values_out[4] = {99, 99, 99, 99};
-    unsigned char   wdata[DIM0 * DIM1 * NUM_IMAGES],          /* Write buffer */
-                    rdata[DIM0 * DIM1 * NUM_IMAGES];          /* Read buffer */
+    unsigned char   *wdata,          /* Write buffer */
+                    *rdata;          /* Read buffer */
     int             num_diff = 0;
     hsize_t         i;
     int             ret_value = 1;
+
+    wdata = (unsigned char*) malloc(sizeof(unsigned char) * data_size);
+    rdata = (unsigned char*) malloc(sizeof(unsigned char) * data_size);
 
     for(i = 0; i < data_size; i++){
         wdata[i] = i;

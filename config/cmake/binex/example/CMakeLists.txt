@@ -22,7 +22,7 @@ else ()
 endif ()
 
 #run-time loadable library examples
-foreach (example ${dyn_examples})
+foreach (example ${dyn_examples} h5ex_d_zfp)
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   target_include_directories(${example} PRIVATE ${H5PL_INCLUDE_DIRS})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
@@ -179,18 +179,35 @@ if (BUILD_TESTING)
   macro (ADD_H5_UD_VERIFY testname resultcode resultfile deptest)
     # Remove any output file left over from previous test run
     if (HDF5_BUILD_TOOLS)
-      add_test (
-          NAME H5PL_UD-h5dump-${testname}
-          COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=--enable-error-stack;-pH;out-${deptest}.${resultfile}"
-              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-              -D "TEST_OUTPUT=${resultfile}-${testname}.out"
-              -D "TEST_EXPECT=${resultcode}"
-              -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
-      )
+      if (NOT "${ARGN}" STREQUAL "FILTERALL")
+        add_test (
+            NAME H5PL_UD-h5dump-${testname}
+            COMMAND "${CMAKE_COMMAND}"
+                -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+                -D "TEST_ARGS:STRING=--enable-error-stack;-pH;out-${deptest}.${resultfile}"
+                -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+                -D "TEST_OUTPUT=${resultfile}-${testname}.out"
+                -D "TEST_EXPECT=${resultcode}"
+                -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+                -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+        )
+      else ()
+        add_test (
+            NAME H5PL_UD-h5dump-${testname}
+            COMMAND "${CMAKE_COMMAND}"
+                -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+                -D "TEST_ARGS:STRING=--enable-error-stack;-pH;out-${deptest}.${resultfile}"
+                -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+                -D "TEST_OUTPUT=${resultfile}-${testname}.out"
+                -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+                -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+                -D "TEST_EXPECT=${resultcode}"
+                -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+                -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+        )
+      endif ()
       if (NOT "${last_test}" STREQUAL "")
         set_tests_properties (H5PL_UD-h5dump-${testname} PROPERTIES DEPENDS H5PL_UD-${deptest})
       endif ()
@@ -249,7 +266,7 @@ if (BUILD_TESTING)
       #UD MAFISC$
       ADD_H5_UD_TEST (ud_mafisc_convert 0 h5repack_layout.h5 ud_lz4_convert -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10)
       #UD VERIFY
-      ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert)
+      ADD_H5_UD_VERIFY (ud_pl_convert 0 h5repack_layout.h5 ud_mafisc_convert FILTERALL)
     endif ()
   endif ()
 
