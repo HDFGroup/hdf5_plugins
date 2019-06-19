@@ -168,7 +168,7 @@ if (BUILD_TESTING)
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
-      h5repack_layout.h5
+#      h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
       h5ex_d_jpeg.ddl
