@@ -11,7 +11,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 307
             COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 9 }
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -33,7 +33,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
             COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 2 2 4 400 5 1 0 }
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -55,7 +55,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
             COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
-            PARAMS { 3 }
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
@@ -77,7 +77,7 @@ GROUP "/" {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
             COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.4) github.com/LLNL/H5Z-ZFP
-            PARAMS { 5505152 91252346 -1879048044 -1048576 -528154624 493487 }
+            PARAMS { XXXX }
          }
       }
       FILLVALUE {
