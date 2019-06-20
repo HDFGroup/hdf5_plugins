@@ -39,6 +39,48 @@ is a number from 1 to 9 in units of 100K bytes. The default is 9.
 Common h5repack parameter: UD=307,0,1,9
 .................................
 
+JPEG Filter
+=================================
+Filter ID: 32019
+
+Filter Description:
+    This is a lossy compression filter.
+    It provides a user-specified "quality factor" to control the
+    trade-off of size versus accuracy.
+--------------------------------------------
+Author
+    Mark Rivers, University of Chicago (rivers@cars.uchicago.edu)
+--------------------------------------------
+Requirements
+    libjpeg This library is available as a package for most Linux
+    distributions, and source code is available from https://www.ijg.org/.
+--------------------------------------------
+Restrictions
+    Only 8-bit unsigned data arrays are supported.
+    Arrays must be either:
+        2-D monochromatic [NumColumns, NumRows]
+        3-D RGB [3, NumColumns, NumRows]
+    Chunking must be set to the size of one entire image so the filter
+    is called once for each image.
+
+
+Using the JPEG filter in your application
+    HDF5 only supports compression for "chunked" datasets;
+    this just means that you need to call H5Pset_chunk to specify a chunk size.
+    The chunking must be set to the size of a single image for the
+    JPEG filter to work properly.
+
+    When calling H5Pset_filter for compression it must be called with
+    cd_nelmts=4 and cd_values as follows:
+
+        cd_values[0] = quality factor (1-100)
+        cd_values[1] = numColumns
+        cd_values[2] = numRows
+        cd_values[3] = 0=Mono, 1=RGB
+
+Common h5repack parameter: UD=32019,0,4,q,c,r,t
+.................................
+
 LZF Filter
 =================================
 Filter ID: 32000
