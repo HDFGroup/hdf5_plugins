@@ -359,12 +359,12 @@ H5Z_jpeg_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
 
     /* confirm JPEG library can handle this data */
     if (!(dclass == H5T_INTEGER)) {
-        PUSH_ERR("jpeg_h5_filter", H5E_BADTYPE,"requires datatype class of H5T_FLOAT or H5T_INTEGER");
+        PUSH_ERR("jpeg_h5_filter", H5E_BADTYPE,"requires datatype class of H5T_INTEGER");
         goto done;
     }
 
     if (!(dsize == 1)) {
-        PUSH_ERR("jpeg_h5_filter", H5E_BADTYPE, "requires datatype size of 4 or 8");
+        PUSH_ERR("jpeg_h5_filter", H5E_BADTYPE, "requires datatype size of 1");
         goto done;
     }
 
