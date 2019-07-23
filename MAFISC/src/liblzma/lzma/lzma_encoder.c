@@ -456,7 +456,8 @@ length_encoder_reset(lzma_length_encoder *lencoder,
     bit_reset(lencoder->choice);
     bit_reset(lencoder->choice2);
 
-    for (size_t pos_state = 0; pos_state < num_pos_states; ++pos_state) {
+    size_t pos_state;
+    for (pos_state = 0; pos_state < num_pos_states; ++pos_state) {
         bittree_reset(lencoder->low[pos_state], LEN_LOW_BITS);
         bittree_reset(lencoder->mid[pos_state], LEN_MID_BITS);
     }
@@ -464,7 +465,7 @@ length_encoder_reset(lzma_length_encoder *lencoder,
     bittree_reset(lencoder->high, LEN_HIGH_BITS);
 
     if (!fast_mode)
-        for (size_t pos_state = 0; pos_state < num_pos_states;
+        for (pos_state = 0; pos_state < num_pos_states;
                 ++pos_state)
             length_update_prices(lencoder, pos_state);
 
@@ -487,14 +488,15 @@ lzma_lzma_encoder_reset(lzma_coder *coder, const lzma_options_lzma *options)
 
     // State
     coder->state = STATE_LIT_LIT;
-    for (size_t i = 0; i < REP_DISTANCES; ++i)
+    size_t i, j;
+    for (i = 0; i < REP_DISTANCES; ++i)
         coder->reps[i] = 0;
 
     literal_init(coder->literal, options->lc, options->lp);
 
     // Bit encoders
-    for (size_t i = 0; i < STATES; ++i) {
-        for (size_t j = 0; j <= coder->pos_mask; ++j) {
+    for (i = 0; i < STATES; ++i) {
+        for (j = 0; j <= coder->pos_mask; ++j) {
             bit_reset(coder->is_match[i][j]);
             bit_reset(coder->is_rep0_long[i][j]);
         }
@@ -505,11 +507,11 @@ lzma_lzma_encoder_reset(lzma_coder *coder, const lzma_options_lzma *options)
         bit_reset(coder->is_rep2[i]);
     }
 
-    for (size_t i = 0; i < FULL_DISTANCES - END_POS_MODEL_INDEX; ++i)
+    for (i = 0; i < FULL_DISTANCES - END_POS_MODEL_INDEX; ++i)
         bit_reset(coder->pos_special[i]);
 
     // Bit tree encoders
-    for (size_t i = 0; i < LEN_TO_POS_STATES; ++i)
+    for (i = 0; i < LEN_TO_POS_STATES; ++i)
         bittree_reset(coder->pos_slot[i], POS_SLOT_BITS);
 
     bittree_reset(coder->pos_align, ALIGN_BITS);
