@@ -40,20 +40,20 @@ I. Preconditions
 
    3. Set the environment variable HDF5_DIR to the installed location of
       the config files for HDF5. On Windows:
-            HDF5_DIR=C:/Program Files/HDF_Group/HDF5/1.11.x/cmake
+            HDF5_DIR=C:/Program Files/HDF_Group/HDF5/1.12.x/cmake
 
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
 
    4. Set the environment variable HDF5_PLUGIN_PATH to the installed location of
       the library files for HDFPL. On Windows:
-            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.11.x/lib/plugin
+            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.12.x/lib/plugin
 
    5. Set the runtime path to the installed location of the library files
       for HDF5. On Windows:
-            PATH=C:/Program Files/HDF_Group/HDF5/1.11.x/lib:C:/Program Files/HDF_Group/HDF5/1.11.x/lib/plugin
+            PATH=C:/Program Files/HDF_Group/HDF5/1.12.x/lib:C:/Program Files/HDF_Group/HDF5/1.12.x/lib/plugin
       On linux:
-            LD_LIBRARY_PATH=<Installation>/HDF_Group/HDF5/1.11.x/lib;<Installation>/HDF_Group/HDF5/1.11.x/lib/plugin
+            LD_LIBRARY_PATH=<Installation>/HDF_Group/HDF5/1.12.x/lib;<Installation>/HDF_Group/HDF5/1.12.x/lib/plugin
 
    6. Created separate source and build directories.
       (CMake commands are executed in the build directory)
