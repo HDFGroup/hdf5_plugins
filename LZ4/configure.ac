@@ -17,7 +17,7 @@
 AC_PREREQ(2.59)
 AC_INIT(H5LZ4, 0.1, help@hdfgroup.org)
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_AUX_DIR([bin])
+
 ## AM_INIT_AUTOMAKE takes a list of options that should be applied to
 ## every Makefile.am when automake is run.
 AM_INIT_AUTOMAKE([foreign serial-tests])
