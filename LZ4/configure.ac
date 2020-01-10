@@ -17,7 +17,7 @@
 AC_PREREQ(2.59)
 AC_INIT(H5LZ4, 0.1, help@hdfgroup.org)
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_AUX_DIR([bin])
+
 ## AM_INIT_AUTOMAKE takes a list of options that should be applied to
 ## every Makefile.am when automake is run.
 AM_INIT_AUTOMAKE([foreign serial-tests])
@@ -29,7 +29,6 @@ AM_MAINTAINER_MODE
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_RANLIB
 AC_PROG_INSTALL
 
 AC_CANONICAL_HOST
@@ -398,7 +397,8 @@ AM_CONDITIONAL([FORTRAN_2003_NOTINTEL_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003
 LT_OUTPUT
 
 ## Set subdirectories
-AC_CONFIG_FILES([makefile src/makefile])
+AC_CONFIG_FILES([Makefile
+        src/Makefile])
 
 ## Configure
 AC_OUTPUT
