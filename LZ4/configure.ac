@@ -29,7 +29,6 @@ AM_MAINTAINER_MODE
 
 # Checks for programs.
 AC_PROG_CC
-AC_PROG_RANLIB
 AC_PROG_INSTALL
 
 AC_CANONICAL_HOST
@@ -398,7 +397,8 @@ AM_CONDITIONAL([FORTRAN_2003_NOTINTEL_CONDITIONAL_F], [test "X$HAVE_FORTRAN_2003
 LT_OUTPUT
 
 ## Set subdirectories
-AC_CONFIG_FILES([makefile src/makefile])
+AC_CONFIG_FILES([Makefile
+        src/Makefile])
 
 ## Configure
 AC_OUTPUT
