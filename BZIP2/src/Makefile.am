@@ -16,5 +16,3 @@ plugindir = /usr/local/hdf5/lib/plugin
 plugin_LTLIBRARIES = libh5bz2.la
 libh5bz2_la_SOURCES = H5Zbzip2.c
 
-LDFLAGS = -L$(BZ2_ROOT)/lib
-LIBS = -lbz2
