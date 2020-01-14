@@ -1,32 +1,15 @@
-#
-# Copyright by The HDF Group.
-# All rights reserved.
-#
-##
-## Makefile.am
-## Run automake to generate a Makefile.in from this file.
-##
-#
-# HDF5 LZ4 Library Plugin makefile(.in)
-#
+# Copyright by The HDF Group. All rights reserved.
 
-# Shell commands used in Makefiles
-RM=rm -f
-CP=cp
+# This is the Makefile.am for the HDF5 LZ4 filter library. This allows
+# the use of LZ4 compression/decompression on HDF5 datasets.
+#
+# Allen Byrne, Ed Hartnett 1/14/19
 
-MAJOR = 0
-MINOR = 1
-VERSION = $(MAJOR).$(MINOR)
-
-AM_CPPFLAGS=-I$(HDF5_ROOT)/include -I$(LZ4_ROOT)/include
+# This is where HDF5 wants us to install plugins.
+plugindir = /usr/local/hdf5/lib/plugin
 
 # The libh5lz4 library for plugin module.
 # Build it as shared library.
-lib_LTLIBRARIES=libh5lz4.la
-libh5lz4_la_SOURCES=H5Zlz4.c
+plugin_LTLIBRARIES = libh5lz4.la
+libh5lz4_la_SOURCES = H5Zlz4.c
 
-LDFLAGS=-L$(LZ4_ROOT)/lib
-LIBS=-llz4
-
-CHECK_CLEANFILES=*.o *.so* 
-DISTCLEANFILES=*.o *.so* 
