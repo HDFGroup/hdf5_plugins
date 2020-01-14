@@ -1,6 +1,4 @@
-#
-# Copyright by The HDF Group.
-# All rights reserved.
+# Copyright by The HDF Group. All rights reserved.
 
 # This builds the main BZIP2 directory.
 
@@ -9,4 +7,4 @@
 # This directory stores libtool macros, put there by aclocal.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src
+SUBDIRS = src example
