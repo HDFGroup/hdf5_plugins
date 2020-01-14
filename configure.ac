@@ -7,14 +7,7 @@ AC_PREREQ([2.59])
 # Initialize with name, version, and support email address.
 AC_INIT([hdf5_plugins], [1.0-development], [])
 
-# Find out about the host we're building on.
-AC_CANONICAL_HOST
-AC_CANONICAL_BUILD
-
-# Find out about the target we're building for.
-AC_CANONICAL_TARGET
-
-AM_INIT_AUTOMAKE([foreign dist-zip subdir-objects])
+AM_INIT_AUTOMAKE([foreign dist-zip])
 
 # Keep libtool macros in an m4 directory.
 AC_CONFIG_MACRO_DIR([m4])
