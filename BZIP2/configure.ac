@@ -1,54 +1,55 @@
-# Copyright by The HDF Group.
-# All rights reserved.
+# Copyright by The HDF Group. All rights reserved.
 
-# Allen Byrne, Ed Hartnett
+# This is the main configure file for the BZIP2 filter, a HDF5 plugin
+# library that enables bzip2 compression/decompression as a HDF5
+# filter. This is part of the hdf5_plugin project.
 
+# Allen Byrne, Ed Hartnett 1/14/19
+
+# Initialize autoconf.
 AC_PREREQ(2.59)
 AC_INIT(H5BZ2, 0.1, help@hdfgroup.org)
+AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-## AM_INIT_AUTOMAKE takes a list of options that should be applied to
-## every Makefile.am when automake is run.
-AM_INIT_AUTOMAKE([foreign serial-tests])
-AM_CONFIG_HEADER(config.h)
+# Initialize automake.
+AM_INIT_AUTOMAKE([foreign])
 
-# Checks for programs.
+# Find C compiler.
 AC_PROG_CC
-AC_PROG_INSTALL
 
-AC_CANONICAL_HOST
+AC_PROG_INSTALL
 
 # Initialize libtool, checking for dlopen.
 LT_INIT(dlopen)
 
-## Is the bzip2 library present?
+# Is the bzip2 library and header present?
 AC_CHECK_HEADERS([bzlib.h], [], [AC_MSG_ERROR([bzlib.h is required, set CPPFLAGS.])])
-
 AC_CHECK_LIB([bz2], [BZ2_bzCompress], [], [AC_MSG_ERROR([libbz is required, set LDFLAGS.])])
 
 # We need the math library
 AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
 
+# We need the HDF5 headers and library.
 AC_CHECK_HEADERS([hdf5.h], [], [AC_MSG_ERROR([hdf5.h is required, set CPPFLAGS.])])
 AC_SEARCH_LIBS([H5Fflush], [hdf5dll hdf5], [], [AC_MSG_ERROR([libhdf5 is required, set LDFLAGS.])])
-#AC_SEARCH_LIBS([H5DSis_scale], [hdf5_hldll hdf5_hl], [], [AC_MSG_ERROR([libhdf5_hl is required, set LDFLAGS.])])
 
-## Checks for header files.
+# Check for other header files we need.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h])
 
-## Checks for typedefs, structures, and compiler characteristics.
+# Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
 
-## Checks for library functions.
+# Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memset])
 
-## Check which plugins to build, if no environmental variables are set, build
-## all.
+# Check which plugins to build, if no environmental variables are set, build
+# all.
 if test ! "$PLUGIN_H5BZ2"
 then
   PLUGIN_H5BZ2=1
