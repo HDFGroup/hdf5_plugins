@@ -18,7 +18,10 @@ LT_INIT()
 
 # If the env. variable HDF5_PLUGIN_DIR is set, or if
 # --with-hdf5-plugin-dir=<directory>, use it as a place for the large
-# (i.e. > 2 GiB) files created during the large file testing.
+# (i.e. > 2 GiB) files created during the large file testing. This is
+# necessary at the top level to provide the help message and --with
+# option. If used, the option will be passed to the subdirs, and also
+# handled by the configure in each filter subdirectory.
 AC_MSG_CHECKING([where to put HDF5 plugins])
 AC_ARG_WITH([hdf5-plugin-dir],
             [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
@@ -26,7 +29,6 @@ AC_ARG_WITH([hdf5-plugin-dir],
             [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
 HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-.}
 AC_MSG_RESULT($HDF5_PLUGIN_DIR)
-AC_SUBST([HDF5_PLUGIN_DIR])
 
 # Build the HDF5 plugins.
 AC_CONFIG_SUBDIRS([BZIP2])
