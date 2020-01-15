@@ -5,4 +5,4 @@
 # This directory stores libtool macros, put there by aclocal.
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = BZIP2 LZ4 BLOSC #BSHUF
+SUBDIRS = BZIP2 LZ4 BLOSC JPEG #BSHUF
