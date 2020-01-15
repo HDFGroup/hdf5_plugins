@@ -12,6 +12,8 @@ AC_INIT(H5JPEG, 0.1, help@hdfgroup.org)
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+AC_MSG_NOTICE([*** This is a configure for JPEG ***])
+
 # Initialize automake.
 AM_INIT_AUTOMAKE([foreign])
 
