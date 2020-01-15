@@ -21,6 +21,18 @@ AC_PROG_INSTALL
 
 LT_INIT(dlopen)
 
+# If the env. variable HDF5_PLUGIN_DIR is set, or if
+# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
+# (i.e. > 2 GiB) files created during the large file testing.
+AC_MSG_CHECKING([where to put HDF5 plugins])
+AC_ARG_WITH([hdf5-plugin-dir],
+            [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
+                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_DIR, if set)])],
+            [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
+HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-.}
+AC_MSG_RESULT($HDF5_PLUGIN_DIR)
+AC_SUBST([HDF5_PLUGIN_DIR])
+
 # Is the lz4 library present?
 AC_CHECK_HEADERS([lz4.h], [], [AC_MSG_ERROR([lz4.h is required, set CPPFLAGS.])])
 AC_CHECK_LIB([lz4], [LZ4_compress], [], [AC_MSG_ERROR([liblz4 is required, set LDFLAGS.])])
