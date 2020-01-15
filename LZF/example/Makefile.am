@@ -10,7 +10,7 @@ LDADD = ${top_builddir}/src/libh5lzf.la
 
 # Build example program and run it as a test.
 check_PROGRAMS = h5ex_d_lzf
-TESTS = h5ex_d_lzf
+#TESTS = h5ex_d_lzf
 
 # Clean up HDF5 file created by example.
 CLEANFILES = *.h5
