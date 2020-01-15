@@ -6,7 +6,7 @@
 # Allen Byrne, Ed Hartnett 1/14/19
 
 # This is where HDF5 wants us to install plugins.
-plugindir = /usr/local/hdf5/lib/plugin
+plugindir = @HDF5_PLUGIN_DIR@
 
 # The libh5lz4 library for plugin module.
 # Build it as shared library.

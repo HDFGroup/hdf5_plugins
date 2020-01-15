@@ -23,6 +23,18 @@ AC_PROG_INSTALL
 # Initialize libtool, checking for dlopen.
 LT_INIT(dlopen)
 
+# If the env. variable HDF5_PLUGIN_DIR is set, or if
+# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
+# (i.e. > 2 GiB) files created during the large file testing.
+AC_MSG_CHECKING([where to put HDF5 plugins])
+HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-'/usr/local/hdf5/lib/plugin'}
+AC_ARG_WITH([hdf5-plugin-dir],
+            [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
+                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_DIR, if set)])],
+            [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
+AC_MSG_RESULT($HDF5_PLUGIN_DIR)
+AC_SUBST([HDF5_PLUGIN_DIR])
+
 # Is the bzip2 library and header present?
 AC_CHECK_HEADERS([bzlib.h], [], [AC_MSG_ERROR([bzlib.h is required, set CPPFLAGS.])])
 AC_CHECK_LIB([bz2], [BZ2_bzCompress], [], [AC_MSG_ERROR([libbz is required, set LDFLAGS.])])
