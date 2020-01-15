@@ -33,7 +33,7 @@ AC_MSG_RESULT($HDF5_PLUGIN_DIR)
 # Build the HDF5 plugins.
 AC_CONFIG_SUBDIRS([BZIP2])
 AC_CONFIG_SUBDIRS([LZ4])
-#AC_CONFIG_SUBDIRS([BLOSC])
+AC_CONFIG_SUBDIRS([BLOSC])
 
 # These files will be created when the configure script is run.
 AC_CONFIG_FILES([Makefile
