@@ -1,6 +1,8 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This builds the main LZ4 directory.
+# This builds the main BSHUF directory. This is the bitshuffle
+# filter. It's similar to the built in HDF5 shuffle filter, but works
+# on a bit level instead of bytes.
 
 # Allen Byrne, Ed Hartnett 1/15/19
 
@@ -9,3 +11,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 # Build these subdirectories.
 SUBDIRS = src #example
+
+# This documents the bitshuffle filter.
+EXTRA_DIST = README.rst
