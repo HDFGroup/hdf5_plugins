@@ -8,11 +8,9 @@
 
 # Initialize autoconf.
 AC_PREREQ(2.59)
-AC_INIT(H5BZ2, 0.1, help@hdfgroup.org)
+AC_INIT(H5BZ2, 1.0, help@hdfgroup.org)
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
-
-AC_MSG_NOTICE([*** This is a configure for BZIP2 ***])
 
 # Initialize automake.
 AM_INIT_AUTOMAKE([foreign])
