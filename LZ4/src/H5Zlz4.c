@@ -44,8 +44,10 @@
 #if defined(_WIN32)
 #include <Winsock2.h>
 #endif
-
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+
 #include "H5PLextern.h"
 #include "lz4.h"
 
