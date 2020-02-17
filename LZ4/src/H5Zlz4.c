@@ -45,6 +45,7 @@
 #include <Winsock2.h>
 #endif
 
+#include <arpa/inet.h>
 #include "H5PLextern.h"
 #include "lz4.h"
 
@@ -239,7 +240,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
         ret_value = outSize;
 
     }
-    done:
+
     if(outBuf)
         free(outBuf);
     return ret_value;
