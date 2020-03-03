@@ -42,7 +42,7 @@
 #include <assert.h>
 
 #if defined(_WIN32)
-#include <Winsock2.h>
+#include <winsock2.h>
 #endif
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
