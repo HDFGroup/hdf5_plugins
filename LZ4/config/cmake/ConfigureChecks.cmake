@@ -137,6 +137,8 @@ CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
 CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
 CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
 CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
+CHECK_INCLUDE_FILE_CONCAT ("arpa/in.h"       HAVE_ARPA_IN_H)
+CHECK_INCLUDE_FILE_CONCAT ("netinet/in.h"    HAVE_NETINET_IN_H)
 
 #-----------------------------------------------------------------------------
 #  Check for the math library "m"
