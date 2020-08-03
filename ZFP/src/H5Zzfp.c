@@ -218,10 +218,11 @@ H5Z_zfp_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
     }
 
     if (ndims_used == 0 || ndims_used > max_ndims)
-        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
 #if ZFP_VERSION_NO < 0x0053
+        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
             "chunk must have only 1...3 non-unity dimensions");
 #else
+        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
             "chunk must have only 1...4 non-unity dimensions");
 #endif
 
