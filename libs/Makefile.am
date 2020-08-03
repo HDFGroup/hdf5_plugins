@@ -9,4 +9,4 @@
 
 # Ship these with the hdf5_plugin tarball.
 EXTRA_DIST = BZ2.tar.gz JPEG9c.tar.gz lz4.tar.gz lzma1604.7z	\
-c-blosc.tar.gz JPEG-turbo.tar.gz lzf.tar.gz zfp.tar.gz
+c-blosc.tar.gz JPEG-turbo.tar.gz lzf.tar.gz sz.tar.gz zfp.tar.gz

@@ -46,6 +46,13 @@ master_doc = 'index'
 project = u'H5Z-ZFP'
 copyright = u'2016, LLNL-CODE-707197'
 
+rst_epilog = """
+.. _ZFP: https://computation.llnl.gov/projects/floating-point-compression 
+.. _HDF5: https://support.hdfgroup.org/HDF5/doc/index.html
+.. _H5Z-ZFP: https://github.com/LLNL/H5Z-ZFP
+.. _Spack: https://spack.io
+"""
+
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
@@ -127,7 +134,7 @@ html_theme = 'default'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

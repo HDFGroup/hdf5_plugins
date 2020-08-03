@@ -13,42 +13,10 @@
 #ifndef BITSHUFFLE_INTERNALS_H
 #define BITSHUFFLE_INTERNALS_H
 
-#include "config.h"
-#include <stdio.h>
-#ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h>
-#endif
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-# include <stddef.h>
+// We assume GNU g++ defining `__cplusplus` has stdint.h
+#if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199900L) || defined(__cplusplus)
+#include <stdint.h>
 #else
-# ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-# endif
-#endif
-#ifdef HAVE_STRING_H
-# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
-#  include <memory.h>
-# endif
-# include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#ifdef HAVE_INTTYPES_H
-# include <inttypes.h>
-#endif
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#endif
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#ifndef HAVE_STDINT_H
   typedef unsigned char       uint8_t;
   typedef unsigned short      uint16_t;
   typedef unsigned int        uint32_t;
@@ -57,6 +25,7 @@
   typedef long long           int64_t;
 #endif
 
+#include <stdlib.h>
 #include "iochain.h"
 
 

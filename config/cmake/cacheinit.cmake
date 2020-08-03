@@ -60,6 +60,15 @@ set (BZ2_TGZ_NAME "BZ2.tar.gz" CACHE STRING "Use BZ2 from compressed file" FORCE
 
 set (BZ2_PACKAGE_NAME "bz2" CACHE STRING "Name of BZ2 package" FORCE)
 
+############################# fpzip ################################################
+
+set (FPZIP_GIT_URL "https://https://github.com/LLNL/fpzip" CACHE STRING "Use FPZIP from github repository" FORCE)
+set (FPZIP_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (FPZIP_TGZ_NAME "fpzip.tar.gz" CACHE STRING "Use FPZIP from compressed file" FORCE)
+
+set (FPZIP_PACKAGE_NAME "fpzip" CACHE STRING "Name of FPZIP package" FORCE)
+
 ############################# jpeg ################################################
 
 set (JPEG_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
@@ -92,9 +101,18 @@ set (LZF_PACKAGE_NAME "lzf" CACHE STRING "Name of LZF package" FORCE)
 
 ############################# mafisc ################################################
 
-set (BUILD_MAFISC_LIBRARY_SOURCE ON CACHE BOOL "build the mafisc library within the plugin" FORCE)
+#set (BUILD_MAFISC_LIBRARY_SOURCE OFF CACHE BOOL "build the mafisc library within the plugin" FORCE)
 
-set (MAFISC_PACKAGE_NAME "mafisc" CACHE STRING "Name of MAFISC package" FORCE)
+#set (MAFISC_PACKAGE_NAME "mafisc" CACHE STRING "Name of MAFISC package" FORCE)
+
+############################# sz ################################################
+
+set (SZ_GIT_URL "https://github.com/disheng222/SZ" CACHE STRING "Use SZ from github repository" FORCE)
+set (SZ_GIT_BRANCH "master" CACHE STRING "" FORCE)
+
+set (SZ_TGZ_NAME "sz.tar.gz" CACHE STRING "Use SZ from compressed file" FORCE)
+
+set (SZ_PACKAGE_NAME "sz" CACHE STRING "Name of SZ package" FORCE)
 
 ############################# zfp ################################################
 

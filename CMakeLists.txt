@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project (H5PL C)
 
 #-----------------------------------------------------------------------------
@@ -60,6 +60,9 @@ FILTER_OPTION (BLOSC)
 # BZIP2 filter
 FILTER_OPTION (BZIP2)
 
+# FPZIP filter
+#FILTER_OPTION (FPZIP)
+
 # JPEG filter
 FILTER_OPTION (JPEG)
 
@@ -69,12 +72,15 @@ FILTER_OPTION (LZ4)
 # LZF filter
 FILTER_OPTION (LZF)
 
-if (WIN32 AND MSVC_VERSION GREATER 1600)
-  # MAFISC filter
-  FILTER_OPTION (MAFISC)
-elseif (NOT WIN32)
-  FILTER_OPTION (MAFISC)
-endif ()
+#if (WIN32 AND MSVC_VERSION GREATER 1600)
+#  # MAFISC filter
+#  FILTER_OPTION (MAFISC)
+#elseif (NOT WIN32)
+#  FILTER_OPTION (MAFISC)
+#endif ()
+
+# SZ filter
+#FILTER_OPTION (SZ)
 
 # ZFP filter
 FILTER_OPTION (ZFP)
