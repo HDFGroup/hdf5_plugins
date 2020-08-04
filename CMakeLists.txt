@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project (H5PL C)
 
 #-----------------------------------------------------------------------------
@@ -52,13 +52,22 @@ set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Build
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
 # Bitshuffle filter
-FILTER_OPTION (BSHUF)
+if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+  FILTER_OPTION (BSHUF)
+endif ()
 
 # BLOSC filter
-FILTER_OPTION (BLOSC)
+if (WIN32 AND MSVC_VERSION GREATER 1600)
+  FILTER_OPTION (BLOSC)
+elseif (NOT WIN32)
+  FILTER_OPTION (BLOSC)
+endif ()
 
 # BZIP2 filter
 FILTER_OPTION (BZIP2)
+
+# FPZIP filter
+#FILTER_OPTION (FPZIP)
 
 # JPEG filter
 FILTER_OPTION (JPEG)
@@ -69,12 +78,15 @@ FILTER_OPTION (LZ4)
 # LZF filter
 FILTER_OPTION (LZF)
 
-if (WIN32 AND MSVC_VERSION GREATER 1600)
-  # MAFISC filter
-  FILTER_OPTION (MAFISC)
-elseif (NOT WIN32)
-  FILTER_OPTION (MAFISC)
-endif ()
+#if (WIN32 AND MSVC_VERSION GREATER 1600)
+#  # MAFISC filter
+#  FILTER_OPTION (MAFISC)
+#elseif (NOT WIN32)
+#  FILTER_OPTION (MAFISC)
+#endif ()
+
+# SZ filter
+#FILTER_OPTION (SZ)
 
 # ZFP filter
 FILTER_OPTION (ZFP)

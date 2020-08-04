@@ -15,14 +15,14 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `lz4' library (-llz4). */
-#undef HAVE_LIBLZ4
+/* Define to 1 if you have the `lzf' library (-llzf). */
+#undef HAVE_LIBLZF
 
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 
-/* Define to 1 if you have the <lz4.h> header file. */
-#undef HAVE_LZ4_H
+/* Define to 1 if you have the <lzf.h> header file. */
+#undef HAVE_LZF_H
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H

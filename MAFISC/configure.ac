@@ -1,7 +1,7 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This is the main configure file for the LZ4 filter, a HDF5 plugin
-# library that enables lz4 compression/decompression as a HDF5
+# This is the main configure file for the MAFISC filter, a HDF5 plugin
+# library that enables mafisc compression/decompression as a HDF5
 # filter. This is part of the hdf5_plugin project.
 
 # Allen Byrne, Ed Hartnett 1/14/19

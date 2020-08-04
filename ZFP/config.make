@@ -19,6 +19,7 @@ else ifeq ($(PWD_BASE),H5Z-ZFP)
 endif
 H5Z_ZFP_PLUGIN := $(H5Z_ZFP_BASE)/plugin
 H5Z_ZFP_VERSINFO := $(shell grep '^\#define H5Z_FILTER_ZFP_VERSION_[MP]' $(H5Z_ZFP_BASE)/H5Zzfp_plugin.h | cut -d' ' -f3 | tr '\n' '.' | cut -d'.' -f-3 2>/dev/null)
+ZFP_HAS_REVERSIBLE := $(shell grep zfp_stream_set_reversible $(ZFP_HOME)/include/zfp.h)
 
 # Detect system type
 PROCESSOR := $(shell uname -p | tr '[:upper:]' '[:lower:]')
@@ -76,53 +77,57 @@ endif
 #
 # Now, setup various flags based on compiler
 #
-ifeq ($(CC),gcc)
+ifneq ($(findstring gcc, $(CC)),)
     CFLAGS += -fPIC
     SOEXT ?= so
     SHFLAG ?= -shared
     PREPATH = -Wl,-rpath,
-else ifeq ($(CC),clang)
+else ifneq ($(findstring clang, $(CC)),)
     SOEXT ?= dylib
     SHFLAG ?= -dynamiclib
     PREPATH = -L
-else ifeq ($(CC),icc)
+else ifneq ($(findstring icc, $(CC)),)
     CFLAGS += -fpic
     SOEXT ?= so
     SHFLAG ?= -shared
     PREPATH = -Wl,-rpath,
-else ifeq ($(CC),pgcc)
+else ifneq ($(findstring pgcc, $(CC)),)
     CFLAGS += -fpic
     SOEXT ?= so
     SHFLAG ?= -shared
     PREPATH = -Wl,-rpath,
-else ifeq ($(CC),xlc_r)
+else ifneq ($(findstring xlc_r, $(CC)),)
     CFLAGS += -qpic
     SOEXT ?= so
     SHFLAG ?= -qmkshrobj
     PREPATH = -Wl,-R,
-else ifeq ($(CC),bgxlc_r)
+else ifneq ($(findstring bgxlc_r, $(CC)),)
     CFLAGS += -qpic
     SOEXT ?= so
     SHFLAG ?= -qmkshrobj
     PREPATH = -Wl,-R,
 endif
 
-ifeq ($(FC),gfortran)
+ifneq ($(findstring gfortran, $(FC)),)
     FCFLAGS += -fPIC
-else ifeq ($(FC),ifort)
+else ifneq ($(findstring ifort, $(FC)),)
     FCFLAGS += -fpic
-else ifeq ($(FC),pgf90)
+else ifneq ($(findstring pgf90, $(FC)),)
     FCFLAGS += -fpic
-else ifeq ($(FC),xlf_r)
+else ifneq ($(findstring xlf_r, $(FC)),)
     FCFLAGS += -qpic
-else ifeq ($(FC),bgxlf_r)
+else ifneq ($(findstring bgxlf_r, $(FC)),)
     FCFLAGS += -qpic
-else ifeq ($(FC),f77)
+else ifneq ($(findstring f77, $(FC)),)
 # some makefile versions set FC=f77 if FC is not set
     FC =
 endif
 
+ifeq ($(wildcard $(ZFP_HOME)/include),)
 ZFP_INC = $(ZFP_HOME)/inc
+else
+ZFP_INC = $(ZFP_HOME)/include
+endif
 ZFP_LIB = $(ZFP_HOME)/lib
 
 HDF5_INC = $(HDF5_HOME)/include
@@ -136,11 +141,11 @@ INSTALL ?= install
 
 MAKEVARS = ZFP_HOME=$(ZFP_HOME) HDF5_HOME=$(HDF5_HOME) PREFIX=$(PREFIX)
 
-#.SUFFIXES:
-#.SUFFIXES: .c .F90 .h .o .mod
+.SUFFIXES:
+.SUFFIXES: .c .F90 .h .o .mod
 
-#%.o : %.c
-#	$(CC) $< -o $@ -c $(CFLAGS) -I$(H5Z_ZFP_BASE) -I$(ZFP_INC) -I$(HDF5_INC)
+%.o : %.c
+	$(CC) $< -o $@ -c $(CFLAGS) -I$(H5Z_ZFP_BASE) -I$(ZFP_INC) -I$(HDF5_INC)
 
-#%.o %.mod : %.F90
-#	$(FC) $< -o $@ -c $(FCFLAGS) -I$(H5Z_ZFP_BASE) -I$(ZFP_INC) -I$(HDF5_INC)
+%.o %.mod : %.F90
+	$(FC) $< -o $@ -c $(FCFLAGS) -I$(H5Z_ZFP_BASE) -I$(ZFP_INC) -I$(HDF5_INC)
