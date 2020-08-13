@@ -11,18 +11,21 @@ help:
 	@echo "    make [FC=<Fortran-compiler>] CC=<C-compiler> HDF5_HOME=<path> \\"
 	@echo "    ZFP_HOME=<path> PREFIX=<path> all"
 	@echo ""
-	@echo "where 'path' is a dir whose children are inc/lib/bin subdirs."
-	@echo "Other variables (e.g. CFLAGS, LD, etc.) can be set as usual."
-	@echo "Optionally, add FC=<fortran-compiler> to include Fortran tests."
+	@echo "where <path> is a dir whose children are include/lib/bin subdirs."
+	@echo "Standard make variables (e.g. CFLAGS, LD, etc.) can be set as usual."
+	@echo "Optionally, add FC=<fortran-compiler> to include Fortran support and tests."
 	@echo ""
 	@echo "Available make targets are..."
-	@echo "    all - build everything and run tests"
+	@echo "    all - build everything"
+	@echo "    check - all + run tests"
 	@echo "    install - install compiled components"
 	@echo "    clean - clean away all derived targets"
 	@echo "    dist - create distribution tarfile"
 
 all:
 	cd src; $(MAKE) $(MAKEVARS) $@
+
+check: all install
 	cd test; $(MAKE) $(MAKEVARS) $@
 
 install:

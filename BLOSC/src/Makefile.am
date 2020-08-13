@@ -13,7 +13,7 @@ plugindir = @HDF5_PLUGIN_DIR@
 # for information regarding incrementing `-version-info`.
 libh5blosc_la_LDFLAGS = -version-info 0:0:0
 
-# The libh5lz4 library for plugin module.
+# The libh5blosc library for plugin module.
 # Build it as shared library.
 plugin_LTLIBRARIES = libh5blosc.la
 libh5blosc_la_SOURCES = H5Zblosc.c #blosc.c blosclz.c shuffle.c
