@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-0.8.0 (ZFP-0.5.4) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-1.0.1 (ZFP-0.5.5) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }

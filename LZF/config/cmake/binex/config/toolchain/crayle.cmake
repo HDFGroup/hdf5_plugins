@@ -8,6 +8,3 @@ set(CMAKE_Fortran_COMPILER ftn)
 
 # the following is used if cross-compiling
 set(CMAKE_CROSSCOMPILING_EMULATOR "")
-
-# option to use pre-generated H5Tinit.c file
-set(HDF5_USE_PREGEN OFF)
