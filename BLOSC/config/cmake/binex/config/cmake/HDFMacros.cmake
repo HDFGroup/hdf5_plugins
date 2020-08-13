@@ -82,10 +82,8 @@ macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
       set (targetfilename $<TARGET_FILE_DIR:${libtarget}>/${target_name}.pdb)
     endif ()
     install (
-      FILES
-          ${targetfilename}
-      DESTINATION
-          ${targetdestination}
+      FILES ${targetfilename}
+      DESTINATION ${targetdestination}
       CONFIGURATIONS Debug RelWithDebInfo
       COMPONENT ${targetcomponent}
       OPTIONAL
@@ -95,12 +93,9 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (INSTALL_PROGRAM_PDB progtarget targetdestination targetcomponent)
-  if (WIN32 AND MSVC)
-    install (
-      FILES
-          $<TARGET_PDB_FILE:${progtarget}>
-      DESTINATION
-          ${targetdestination}
+  if (WIN32 AND       FILES $<TARGET_PDB_FILE:${progtarget}>
+      DESTINATION ${targetdestination}
+{targetdestination}
       CONFIGURATIONS Debug RelWithDebInfo
       COMPONENT ${targetcomponent}
       OPTIONAL
@@ -119,24 +114,14 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
       set (LIB_DEBUG_NAME "lib${libname}${CMAKE_DEBUG_POSTFIX}")
     else ()
       set (LIB_RELEASE_NAME "${libname}")
-      set (LIB_DEBUG_NAME "${libname}${CMAKE_DEBUG_POSTFIX}")
-    endif ()
-  endif ()
-
-  set_target_properties (${libtarget}
-      PROPERTIES
-         OUTPUT_NAME
-               ${LIB_RELEASE_NAME}
-#         OUTPUT_NAME_DEBUG
-#               ${LIB_DEBUG_NAME}
-         OUTPUT_NAME_RELEASE
-               ${LIB_RELEASE_NAME}
-         OUTPUT_NAME_MINSIZEREL
-               ${LIB_RELEASE_NAME}
-         OUTPUT_NAME_RELWITHDEBINFO
-               ${LIB_RELEASE_NAME}
-  )
-  if (${libtype} MATCHES "STATIC")
+      set (LIB_DEBUG_NAME "${libname}${CMAKE_DE  set_target_properties (${libtarget} PROPERTIES
+      OUTPUT_NAME                ${LIB_RELEASE_NAME}
+#      OUTPUT_NAME_DEBUG          ${LIB_DEBUG_NAME}
+      OUTPUT_NAME_RELEASE        ${LIB_RELEASE_NAME}
+      OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
+      OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
+      set_target_properties (${libtarget} PROPERTIES
+type} MATCHES "STATIC")
     if (WIN32)
       set_target_properties (${libtarget}
           PROPERTIES
@@ -148,8 +133,7 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
       )
     endif ()
   endif ()
-
-  #----- Use MSVC Naming conventions for Shared Libraries
+    set_target_properties (${libtarget} PROPERTIES
   if (MINGW AND ${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget}
         PROPERTIES

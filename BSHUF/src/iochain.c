@@ -16,9 +16,8 @@
 
 void ioc_init(ioc_chain *C, const void *in_ptr_0, void *out_ptr_0) {
 #ifdef _OPENMP
-    size_t ii;
     omp_init_lock(&C->next_lock);
-    for (ii = 0; ii < IOC_SIZE; ii ++) {
+    for (size_t ii = 0; ii < IOC_SIZE; ii ++) {
         omp_init_lock(&(C->in_pl[ii].lock));
         omp_init_lock(&(C->out_pl[ii].lock));
     }
@@ -31,9 +30,8 @@ void ioc_init(ioc_chain *C, const void *in_ptr_0, void *out_ptr_0) {
 
 void ioc_destroy(ioc_chain *C) {
 #ifdef _OPENMP
-    size_t ii;
     omp_destroy_lock(&C->next_lock);
-    for (ii = 0; ii < IOC_SIZE; ii ++) {
+    for (size_t ii = 0; ii < IOC_SIZE; ii ++) {
         omp_destroy_lock(&(C->in_pl[ii].lock));
         omp_destroy_lock(&(C->out_pl[ii].lock));
     }
