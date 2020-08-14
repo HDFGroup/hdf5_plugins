@@ -50,17 +50,17 @@ endmacro ()
 # ----------------------------------------------------------------------
 # WINDOWS Hard code Values
 # ----------------------------------------------------------------------
-
 set (WINDOWS)
-if (WIN32)
-  if (MINGW)
-    set (HAVE_MINGW 1)
-    set (WINDOWS 1) # MinGW tries to imitate Windows
-    set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
-  endif ()
-  set (HAVE_WIN32_API 1)
-  set (LINK_LIBS "ws2_32.lib;wsock32.lib")
-  if (NOT UNIX AND NOT MINGW)
+
+if (MINGW)
+  set (HAVE_MINGW 1)
+  set (WINDOWS 1) # MinGW tries to imitate Windows
+  set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
+  set (HAVE_WINSOCK2_H 1)
+endif ()
+
+if (WIN32 AND NOT MINGW)
+  if (NOT UNIX)
     set (WINDOWS 1)
     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
     if (MSVC)
@@ -70,19 +70,20 @@ if (WIN32)
 endif ()
 
 if (WINDOWS)
-  set (HAVE_STDDEF_H 1)
-  set (HAVE_SYS_STAT_H 1)
-  set (HAVE_SYS_TYPES_H 1)
+  set (HDF_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
+  set (HAVE_WIN32_API 1)
   set (HAVE_LIBM 1)
+  set (HAVE_STRDUP 1)
   set (HAVE_SYSTEM 1)
+  set (HAVE_LONGJMP 1)
   if (NOT MINGW)
     set (HAVE_GETHOSTNAME 1)
+    set (HAVE_FUNCTION 1)
   endif ()
-  if (MINGW)
-    set (HAVE_WINSOCK2_H 1)
+  if (NOT UNIX AND NOT CYGWIN)
+    set (HAVE_LIBWS2_32 1)
+    set (HAVE_LIBWSOCK32 1)
   endif ()
-  set (HAVE_LIBWS2_32 1)
-  set (HAVE_LIBWSOCK32 1)
 endif ()
 
 # ----------------------------------------------------------------------
@@ -112,17 +113,6 @@ CHECK_INCLUDE_FILE_CONCAT ("stddef.h"        HAVE_STDDEF_H)
 CHECK_INCLUDE_FILE_CONCAT ("stdint.h"        HAVE_STDINT_H)
 CHECK_INCLUDE_FILE_CONCAT ("unistd.h"        HAVE_UNISTD_H)
 
-# IF the c compiler found stdint, check the C++ as well. On some systems this
-# file will be found by C but not C++, only do this test IF the C++ compiler
-# has been initialized (e.g. the project also includes some c++)
-if (HAVE_STDINT_H AND CMAKE_CXX_COMPILER_LOADED)
-  CHECK_INCLUDE_FILE_CXX ("stdint.h" HAVE_STDINT_H_CXX)
-  if (NOT HAVE_STDINT_H_CXX)
-    set (HAVE_STDINT_H "" CACHE INTERNAL "Have includes HAVE_STDINT_H")
-    set (USE_INCLUDES ${USE_INCLUDES} "stdint.h")
-  endif ()
-endif ()
-
 # Windows
 CHECK_INCLUDE_FILE_CONCAT ("io.h"            HAVE_IO_H)
 if (NOT CYGWIN)
@@ -137,19 +127,24 @@ CHECK_INCLUDE_FILE_CONCAT ("memory.h"        HAVE_MEMORY_H)
 CHECK_INCLUDE_FILE_CONCAT ("dlfcn.h"         HAVE_DLFCN_H)
 CHECK_INCLUDE_FILE_CONCAT ("fcntl.h"         HAVE_FCNTL_H)
 CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
+# _Bool type support
+CHECK_INCLUDE_FILE_CONCAT (stdbool.h    HAVE_STDBOOL_H)
 
 #-----------------------------------------------------------------------------
 #  Check for the math library "m"
 #-----------------------------------------------------------------------------
-if (NOT WINDOWS)
-  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil     HAVE_LIBM)
-  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen     HAVE_LIBDL)
-  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup  HAVE_LIBWS2_32)
+if (MINGW OR NOT WINDOWS)
+  CHECK_LIBRARY_EXISTS_CONCAT ("m" ceil                HAVE_LIBM)
+  CHECK_LIBRARY_EXISTS_CONCAT ("dl" dlopen             HAVE_LIBDL)
+  CHECK_LIBRARY_EXISTS_CONCAT ("ws2_32" WSAStartup     HAVE_LIBWS2_32)
   CHECK_LIBRARY_EXISTS_CONCAT ("wsock32" gethostbyname HAVE_LIBWSOCK32)
 endif ()
 
 # UCB (BSD) compatibility library
 CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
+
+# For other tests to use the same libraries
+set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${LINK_LIBS})
 
 set (USE_INCLUDES "")
 if (WINDOWS)
@@ -157,13 +152,9 @@ if (WINDOWS)
 endif ()
 
 # For other specific tests, use this MACRO.
-macro (H5LZ4_FUNCTION_TEST OTHER_TEST)
+macro (HDF_FUNCTION_TEST OTHER_TEST)
   if (NOT DEFINED ${OTHER_TEST})
     set (MACRO_CHECK_FUNCTION_DEFINITIONS "-D${OTHER_TEST} ${CMAKE_REQUIRED_FLAGS}")
-
-    foreach (def ${H5LZ4_EXTRA_TEST_DEFINITIONS})
-      set (MACRO_CHECK_FUNCTION_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS} -D${def}=${${def}}")
-    endforeach ()
 
     foreach (def
         HAVE_UNISTD_H
@@ -185,7 +176,7 @@ macro (H5LZ4_FUNCTION_TEST OTHER_TEST)
         ${CMAKE_BINARY_DIR}
         ${H5LZ4_RESOURCES_DIR}/H5PLTests.c
         COMPILE_DEFINITIONS "${MACRO_CHECK_FUNCTION_DEFINITIONS}"
-        LINK_LIBRARIES "${LINK_LIBS}"
+        LINK_LIBRARIES "${HDF_REQUIRED_LIBRARIES}"
         OUTPUT_VARIABLE OUTPUT
     )
     if (${OTHER_TEST})
@@ -202,9 +193,10 @@ macro (H5LZ4_FUNCTION_TEST OTHER_TEST)
   endif ()
 endmacro ()
 
-H5LZ4_FUNCTION_TEST (STDC_HEADERS)
-
 #-----------------------------------------------------------------------------
+# Check for these functions before the time headers are checked
+#-----------------------------------------------------------------------------
+HDF_FUNCTION_TEST (STDC_HEADERS)
 
 #-----------------------------------------------------------------------------
 #  Check for large file support
@@ -213,26 +205,41 @@ H5LZ4_FUNCTION_TEST (STDC_HEADERS)
 # The linux-lfs option is deprecated.
 set (LINUX_LFS 0)
 
-set (H5LZ4_EXTRA_C_FLAGS)
-set (H5LZ4_EXTRA_FLAGS)
-if (NOT WINDOWS)
-  if (NOT HAVE_SOLARIS)
+set (HDF_EXTRA_C_FLAGS)
+set (HDF_EXTRA_FLAGS)
+if (MINGW OR NOT WINDOWS)
+  # Might want to check explicitly for Linux and possibly Cygwin
+  # instead of checking for not Solaris or Darwin.
+  if (NOT HAVE_SOLARIS AND NOT HAVE_DARWIN)
   # Linux Specific flags
-  set (H5LZ4_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200112L)
+  # This was originally defined as _POSIX_SOURCE which was updated to
+  # _POSIX_C_SOURCE=199506L to expose a greater amount of POSIX
+  # functionality so clock_gettime and CLOCK_MONOTONIC are defined
+  # correctly. This was later updated to 200112L so that
+  # posix_memalign() is visible for the direct VFD code on Linux
+  # systems.
+  # POSIX feature information can be found in the gcc manual at:
+  # http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
+  set (HDF_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200809L)
 
-  option (H5LZ4_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (H5LZ4_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
+  option (HDF_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
+  if (HDF_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
     set (msg "Performing TEST_LFS_WORKS")
     try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
         ${CMAKE_BINARY_DIR}
         ${H5LZ4_RESOURCES_DIR}/H5PLTests.c
         COMPILE_DEFINITIONS "-DTEST_LFS_WORKS"
     )
+
+    # The LARGEFILE definitions were from the transition period
+    # and are probably no longer needed. The FILE_OFFSET_BITS
+    # check should be generalized for all POSIX systems as it
+    # is in the Autotools.
     if (TEST_LFS_WORKS_COMPILE)
       if (TEST_LFS_WORKS_RUN MATCHES 0)
         set (TEST_LFS_WORKS 1 CACHE INTERNAL ${msg})
         set (LARGEFILE 1)
-        set (H5LZ4_EXTRA_FLAGS ${H5LZ4_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
+        set (HDF_EXTRA_FLAGS ${HDF_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
         message (STATUS "${msg}... yes")
       else ()
         set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
@@ -249,11 +256,99 @@ if (NOT WINDOWS)
       )
     endif ()
   endif ()
-  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${H5LZ4_EXTRA_FLAGS})
+  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${HDF_EXTRA_FLAGS})
   endif ()
 endif ()
 
-add_definitions (${H5LZ4_EXTRA_FLAGS})
+#-----------------------------------------------------------------------------
+#  Check the size in bytes of all the int and float types
+#-----------------------------------------------------------------------------
+macro (HDF_CHECK_TYPE_SIZE type var)
+  set (aType ${type})
+  set (aVar  ${var})
+#  message (STATUS "Checking size of ${aType} and storing into ${aVar}")
+  CHECK_TYPE_SIZE (${aType}   ${aVar})
+  if (NOT ${aVar})
+    set (${aVar} 0 CACHE INTERNAL "SizeOf for ${aType}")
+#    message (STATUS "Size of ${aType} was NOT Found")
+  endif ()
+endmacro ()
+
+HDF_CHECK_TYPE_SIZE (char           SIZEOF_CHAR)
+HDF_CHECK_TYPE_SIZE (short          SIZEOF_SHORT)
+HDF_CHECK_TYPE_SIZE (int            SIZEOF_INT)
+HDF_CHECK_TYPE_SIZE (unsigned       SIZEOF_UNSIGNED)
+if (NOT APPLE)
+  HDF_CHECK_TYPE_SIZE (long         SIZEOF_LONG)
+endif ()
+HDF_CHECK_TYPE_SIZE ("long long"    SIZEOF_LONG_LONG)
+HDF_CHECK_TYPE_SIZE (__int64        SIZEOF___INT64)
+if (NOT SIZEOF___INT64)
+  set (SIZEOF___INT64 0)
+endif ()
+
+HDF_CHECK_TYPE_SIZE (float          SIZEOF_FLOAT)
+HDF_CHECK_TYPE_SIZE (double         SIZEOF_DOUBLE)
+HDF_CHECK_TYPE_SIZE ("long double"  SIZEOF_LONG_DOUBLE)
+
+HDF_CHECK_TYPE_SIZE (int8_t         SIZEOF_INT8_T)
+HDF_CHECK_TYPE_SIZE (uint8_t        SIZEOF_UINT8_T)
+HDF_CHECK_TYPE_SIZE (int_least8_t   SIZEOF_INT_LEAST8_T)
+HDF_CHECK_TYPE_SIZE (uint_least8_t  SIZEOF_UINT_LEAST8_T)
+HDF_CHECK_TYPE_SIZE (int_fast8_t    SIZEOF_INT_FAST8_T)
+HDF_CHECK_TYPE_SIZE (uint_fast8_t   SIZEOF_UINT_FAST8_T)
+
+HDF_CHECK_TYPE_SIZE (int16_t        SIZEOF_INT16_T)
+HDF_CHECK_TYPE_SIZE (uint16_t       SIZEOF_UINT16_T)
+HDF_CHECK_TYPE_SIZE (int_least16_t  SIZEOF_INT_LEAST16_T)
+HDF_CHECK_TYPE_SIZE (uint_least16_t SIZEOF_UINT_LEAST16_T)
+HDF_CHECK_TYPE_SIZE (int_fast16_t   SIZEOF_INT_FAST16_T)
+HDF_CHECK_TYPE_SIZE (uint_fast16_t  SIZEOF_UINT_FAST16_T)
+
+HDF_CHECK_TYPE_SIZE (int32_t        SIZEOF_INT32_T)
+HDF_CHECK_TYPE_SIZE (uint32_t       SIZEOF_UINT32_T)
+HDF_CHECK_TYPE_SIZE (int_least32_t  SIZEOF_INT_LEAST32_T)
+HDF_CHECK_TYPE_SIZE (uint_least32_t SIZEOF_UINT_LEAST32_T)
+HDF_CHECK_TYPE_SIZE (int_fast32_t   SIZEOF_INT_FAST32_T)
+HDF_CHECK_TYPE_SIZE (uint_fast32_t  SIZEOF_UINT_FAST32_T)
+
+HDF_CHECK_TYPE_SIZE (int64_t        SIZEOF_INT64_T)
+HDF_CHECK_TYPE_SIZE (uint64_t       SIZEOF_UINT64_T)
+HDF_CHECK_TYPE_SIZE (int_least64_t  SIZEOF_INT_LEAST64_T)
+HDF_CHECK_TYPE_SIZE (uint_least64_t SIZEOF_UINT_LEAST64_T)
+HDF_CHECK_TYPE_SIZE (int_fast64_t   SIZEOF_INT_FAST64_T)
+HDF_CHECK_TYPE_SIZE (uint_fast64_t  SIZEOF_UINT_FAST64_T)
+
+if (NOT APPLE)
+  HDF_CHECK_TYPE_SIZE (size_t       SIZEOF_SIZE_T)
+  HDF_CHECK_TYPE_SIZE (ssize_t      SIZEOF_SSIZE_T)
+  if (NOT SIZEOF_SSIZE_T)
+    set (SIZEOF_SSIZE_T 0)
+  endif ()
+  if (MINGW OR NOT WINDOWS)
+    HDF_CHECK_TYPE_SIZE (ptrdiff_t    SIZEOF_PTRDIFF_T)
+  endif ()
+endif ()
+
+HDF_CHECK_TYPE_SIZE (off_t          SIZEOF_OFF_T)
+HDF_CHECK_TYPE_SIZE (off64_t        SIZEOF_OFF64_T)
+if (NOT SIZEOF_OFF64_T)
+  set (SIZEOF_OFF64_T 0)
+endif ()
+HDF_CHECK_TYPE_SIZE (time_t          SIZEOF_TIME_T)
+
+#-----------------------------------------------------------------------------
+# Extra C99 types
+#-----------------------------------------------------------------------------
+
+# _Bool type support
+if (HAVE_STDBOOL_H)
+  set (CMAKE_EXTRA_INCLUDE_FILES stdbool.h)
+  HDF_CHECK_TYPE_SIZE (bool         SIZEOF_BOOL)
+else ()
+  HDF_CHECK_TYPE_SIZE (_Bool        SIZEOF_BOOL)
+endif ()
+
 #-----------------------------------------------------------------------------
 # Check for some functions that are used
 #
@@ -261,11 +356,11 @@ CHECK_FUNCTION_EXISTS (vprintf               HAVE_VPRINTF)
 CHECK_FUNCTION_EXISTS (_doprnt               HAVE_DOPRNT)
 CHECK_FUNCTION_EXISTS (memset                HAVE_MEMSET)
 
-if (NOT WINDOWS)
+if (MINGW OR NOT WINDOWS)
   foreach (test
       HAVE_ATTRIBUTE
       SYSTEM_SCOPE_THREADS
   )
-    H5LZ4_FUNCTION_TEST (${test})
+    HDF_FUNCTION_TEST (${test})
   endforeach ()
 endif ()
