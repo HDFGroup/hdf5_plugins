@@ -227,7 +227,7 @@ static size_t H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts,
         expectedSize = sizeX * sizeY;
         if (colorMode == 1) expectedSize *= 3;
         if (expectedSize != nbytes) {
-            sprintf(msg, "nbytes=%d does not match image size=%d.", nbytes, expectedSize);
+            sprintf(msg, "nbytes=%ld does not match image size=%ld.", nbytes, expectedSize);
             PUSH_ERR("jpeg_h5_filter", H5E_CALLBACK, msg);
             goto failed;
         }
