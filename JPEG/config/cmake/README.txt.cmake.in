@@ -1,11 +1,11 @@
 @H5JPEG_PACKAGE_NAME@ version @H5JPEG_PACKAGE_VERSION_STRING@
 ------------------------------------------------------------------------------
 
-This directory contains the binary (release) distribution of 
-@H5JPEG_PACKAGE_NAME@-@H5JPEG_PACKAGE_VERSION_MAJOR@ that was compiled on; 
-    @BINARY_PLATFORM@. 
- 
-It was built with the following options: 
+This directory contains the binary (release) distribution of
+@H5JPEG_PACKAGE_NAME@-@H5JPEG_PACKAGE_VERSION_MAJOR@ that was compiled on;
+    @BINARY_PLATFORM@.
+
+It was built with the following options:
     -- @LIB_TYPE@ C libraries
     -- @LIB_TYPE@ H5JPEG tools
     -- @H5_LIB_TYPE@ JPEG @JPEG_VERSION_STRING@
