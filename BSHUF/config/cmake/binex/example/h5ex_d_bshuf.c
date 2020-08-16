@@ -13,7 +13,7 @@
 /************************************************************
 
   This example shows how to write data and read it from a dataset
-  using bshuf compression.
+  using bshuf filter.
   bshuf filter is not available in HDF5.
   The example uses a new feature available in HDF5 version 1.8.11
   to discover, load and register filters at run time.
@@ -83,7 +83,7 @@ main (void)
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
 
-    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BSHUF, H5Z_FLAG_MANDATORY, 0, NULL);
+    status = H5Pset_filter (dcpl_id, H5Z_FILTER_BSHUF, H5Z_FLAG_MANDATORY, nelmts, cd_values);
     if (status < 0) goto done;
 
     /*
@@ -117,7 +117,7 @@ main (void)
     /*
      * Write the data to the dataset.
      */
-    printf ("....Writing bshuf compressed data ................\n");
+    printf ("....Writing bshuf filtered data ................\n");
     status = H5Dwrite (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
     if (status < 0) printf ("failed to write data.\n");
 
@@ -179,7 +179,7 @@ main (void)
     /*
      * Read the data using the default properties.
      */
-    printf ("....Reading bshuf compressed data ................\n");
+    printf ("....Reading bshuf filtered data ................\n");
     status = H5Dread (dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
     if (status < 0) printf ("failed to read data.\n");
 
