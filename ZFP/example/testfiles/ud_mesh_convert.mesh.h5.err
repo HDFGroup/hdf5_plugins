@@ -32,10 +32,10 @@ HDF5-DIAG: Error detected in HDF5 (version (number)) thread (IDs):
   #010: (file name) line (number) in H5Z_can_apply(): unable to apply filter
     major: Data filters
     minor: Error from filter 'can apply' callback
-  #011: (file name) line (number) in H5Z_prepare_prelude_callback_dcpl(): unable to apply filter
+  #011: (file name) line (number) in H5Z__prepare_prelude_callback_dcpl(): unable to apply filter
     major: Data filters
     minor: Error from filter 'can apply' callback
-  #012: (file name) line (number) in H5Z_prelude_callback(): filter parameters not appropriate
+  #012: (file name) line (number) in H5Z__prelude_callback(): filter parameters not appropriate
     major: Data filters
     minor: Error from filter 'can apply' callback
   #013: (file name) line (number) in H5Z_zfp_can_apply(): requires datatype size of 4 or 8
@@ -75,10 +75,10 @@ HDF5-DIAG: Error detected in HDF5 (version (number)) thread (IDs):
   #010: (file name) line (number) in H5Z_can_apply(): unable to apply filter
     major: Data filters
     minor: Error from filter 'can apply' callback
-  #011: (file name) line (number) in H5Z_prepare_prelude_callback_dcpl(): unable to apply filter
+  #011: (file name) line (number) in H5Z__prepare_prelude_callback_dcpl(): unable to apply filter
     major: Data filters
     minor: Error from filter 'can apply' callback
-  #012: (file name) line (number) in H5Z_prelude_callback(): filter parameters not appropriate
+  #012: (file name) line (number) in H5Z__prelude_callback(): filter parameters not appropriate
     major: Data filters
     minor: Error from filter 'can apply' callback
   #013: (file name) line (number) in H5Z_zfp_can_apply(): requires datatype size of 4 or 8
