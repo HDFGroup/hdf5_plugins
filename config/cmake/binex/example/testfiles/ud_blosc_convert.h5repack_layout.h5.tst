@@ -8,7 +8,7 @@ Making new file ...
 -----------------------------------------
  group                       /
  dset                        /dset1
- dset     UD   (9.040:1)     /dset2
+ dset     UD   (8.719:1)     /dset2
  dset                        /dset3
  dset                        /dset4
  dset                        /dset_chunk
