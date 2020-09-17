@@ -12,12 +12,13 @@
 
 void freeTopLevelTableWideInterval(struct TopLevelTableWideInterval* topTable)
 {
-	for(int i=topTable->topIndex-topTable->baseIndex; i>=0; i--)
-	{
-		struct SubLevelTableWideInterval* processingSubTable = &topTable->subTables[i];
-		free(processingSubTable->table);
-	}
-	free(topTable->subTables);
+    int i;
+    for(i=topTable->topIndex-topTable->baseIndex; i>=0; i--)
+    {
+        struct SubLevelTableWideInterval* processingSubTable = &topTable->subTables[i];
+        free(processingSubTable->table);
+    }
+    free(topTable->subTables);
 }
 
 uint16_t MLCTWI_GetExpoIndex(double value){
@@ -61,11 +62,12 @@ void MultiLevelCacheTableWideIntervalBuild(struct TopLevelTableWideInterval* top
     topTable->subTables = (struct SubLevelTableWideInterval*)malloc(sizeof(struct SubLevelTableWideInterval) * subTableCount);
     memset(topTable->subTables, 0, sizeof(struct SubLevelTableWideInterval) * subTableCount);
 
-    for(int i=topTable->topIndex-topTable->baseIndex; i>=0; i--){
+    int i,j;
+    for(i=topTable->topIndex-topTable->baseIndex; i>=0; i--){
         struct SubLevelTableWideInterval* processingSubTable = &topTable->subTables[i];
 
         uint32_t maxIndex = 0;
-        for(int j=0; j<bits; j++){
+        for(j=0; j<bits; j++){
             maxIndex += 1 << j;
         }
         processingSubTable->topIndex = maxIndex;
@@ -117,7 +119,8 @@ uint32_t MultiLevelCacheTableWideIntervalGetIndex(double value, struct TopLevelT
 }
 
 void MultiLevelCacheTableWideIntervalFree(struct TopLevelTableWideInterval* table){
-    for(int i=0; i<table->topIndex - table->baseIndex + 1; i++){
+    int i;
+    for(i=0; i<table->topIndex - table->baseIndex + 1; i++){
         free(table->subTables[i].table);
     }
     free(table->subTables);

@@ -64,28 +64,32 @@ void CacheTableBuild(double * table, int count, double smallest, double largest,
 
     /*
     uint32_t fillInPos = 0;
-    for(int i=0; i<count; i++){
-        if(i == 0){
+    int ii;
+    for(ii=0; ii<count; ii++){
+        if(ii == 0){
             continue;
         }
-        uint32_t index = CacheTableGetIndex((float)table[i], bits) - baseIndex;
-        g_InverseTable[index] = i;
+        uint32_t index = CacheTableGetIndex((float)table[ii], bits) - baseIndex;
+        g_InverseTable[index] = ii;
         if(index > fillInPos){
-            for(int j=fillInPos; j<index; j++){
-                g_InverseTable[j] = g_InverseTable[index];
+            int jj;
+            for(jj=fillInPos; jj<index; jj++){
+                g_InverseTable[jj] = g_InverseTable[index];
             }
         }
         fillInPos = index + 1;
     }
      */
-    for(int i=count-1; i>0; i--){
-        uint32_t upperIndex = CacheTableGetIndex((float)table[i]*(1+precision), bits);
-        uint32_t lowerIndex = CacheTableGetIndex((float)table[i]/(1+precision), bits);
-        for(uint32_t j = lowerIndex; j<=upperIndex; j++){
-            if(j<baseIndex || j >topIndex){
+    int iii;
+    for(iii=count-1; iii>0; iii--){
+        uint32_t upperIndex = CacheTableGetIndex((float)table[iii]*(1+precision), bits);
+        uint32_t lowerIndex = CacheTableGetIndex((float)table[iii]/(1+precision), bits);
+        uint32_t uj;
+        for(uj = lowerIndex; uj<=upperIndex; uj++){
+            if(uj<baseIndex || uj >topIndex){
                 continue;
             }
-            g_InverseTable[j-baseIndex] = i;
+            g_InverseTable[uj-baseIndex] = iii;
         }
     }
 

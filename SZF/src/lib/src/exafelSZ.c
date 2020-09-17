@@ -7,7 +7,7 @@ extern "C" {
 void exafelSZ_params_process(exafelSZ_params*pr, size_t panels, size_t rows, size_t cols){
   pr->binnedRows=(rows+pr->binSize-1)/pr->binSize;
   pr->binnedCols=(cols+pr->binSize-1)/pr->binSize;
-  
+
   pr->peakRadius=(pr->peakSize-1)/2;
 }
 
@@ -26,7 +26,7 @@ void exafelSZ_params_checkDecomp(exafelSZ_params*pr, size_t panels, size_t rows,
   if(!(pr->peakSize%2)){
     printf("ERROR: peakSize = %d cannot be even. It must be odd!\n",(int)pr->peakSize);
     assert(0);
-  }  
+  }
   //if(nEvents<1 || panels<1 || rows<1 || cols<1){
   if(panels<1 || rows<1 || cols<1){
     printf("ERROR: Something wrong with the following:\n");
@@ -69,13 +69,13 @@ void exafelSZ_params_print(){
 //*********************************************************************************
 
 //Index Calculator
-static inline size_t calcIdx_4D(int i3, int i2, int i1, int i0, int size2, int size1, int size0){ 
+static inline size_t calcIdx_4D(int i3, int i2, int i1, int i0, int size2, int size1, int size0){
   return i0+size0*(i1+size1*(i2+size2*i3));
 }
-static inline size_t calcIdx_3D(int i2, int i1, int i0, int size1, int size0){ 
+static inline size_t calcIdx_3D(int i2, int i1, int i0, int size1, int size0){
   return i0+size0*(i1+size1*i2);
 }
-static inline size_t calcIdx_2D(int i1, int i0, int size0){ 
+static inline size_t calcIdx_2D(int i1, int i0, int size0){
   return i0+size0*i1;
 }
 
@@ -86,17 +86,17 @@ unsigned char * exafelSZ_Compress(void* _pr,
 {
   float *origData=(float*)_origData;
   exafelSZ_params *pr=(exafelSZ_params*)_pr;
-  
-  exafelSZ_params_process(pr, panels, rows, cols); 
-  exafelSZ_params_checkDecomp(pr, panels, rows, cols); 
-  
+
+  exafelSZ_params_process(pr, panels, rows, cols);
+  exafelSZ_params_checkDecomp(pr, panels, rows, cols);
+
   uint8_t *roiM=(uint8_t*)malloc(nEvents*panels*rows*cols) ;
   float *roiData=(float*)malloc(nEvents*panels*rows*cols*sizeof(float)) ;
   float *binnedData=(float*)malloc(nEvents*panels*pr->binnedRows*pr->binnedCols*sizeof(float)) ;
   //float *binnedData=(float*)malloc(nEvents*panels*rows*cols*sizeof(float)) ;
-  
+
   size_t e,p,r,c,pk,ri,ci,br,bc,roii,bi;
-  
+
   //Generate the ROI mask: NOTE: 0 means affirmative in ROI mask! This comes from the python scripts!
   //First, initialize with calibration panel:
   for(e=0;e<nEvents;e++){ //Event
@@ -124,7 +124,7 @@ unsigned char * exafelSZ_Compress(void* _pr,
       peaksBytePos+=2;
       uint16_t c_=*(uint16_t*)(&pr->peaks[peaksBytePos]); //Col for the current peak
       peaksBytePos+=2;
-      
+
       if(p_>=panels){
         printf("ERROR: Peak coordinate out of bounds: Panel=%d, Valid range: 0,%d\n",(int)p_,(int)panels-1);
         assert(0);
@@ -137,7 +137,7 @@ unsigned char * exafelSZ_Compress(void* _pr,
         printf("ERROR: Peak coordinate out of bounds: Col=%d, Valid range: 0,%d\n",(int)c_,(int)cols-1);
         assert(0);
       }
-      
+
       for(ri=r_-pr->peakRadius;ri<=r_+pr->peakRadius;ri++){  //ri: row index. Just a temporary variable.
         for(ci=c_-pr->peakRadius;ci<=c_+pr->peakRadius;ci++){  //ci: column index. Just a temporary variable.
           if(ri<rows && ci<cols){  //Check whether inside bounds or not
@@ -147,7 +147,7 @@ unsigned char * exafelSZ_Compress(void* _pr,
       }
     }
   }
-  
+
   //Save ROI:
   uint64_t roiSavedCount=0;
   for(e=0;e<nEvents;e++){ //Event
@@ -158,14 +158,14 @@ unsigned char * exafelSZ_Compress(void* _pr,
             roiData[roiSavedCount]=origData[calcIdx_4D(e,p,r,c,panels,rows,cols)];
             roiSavedCount++;
           }
-          
+
           //AMG: Replace ROI and RONI pixels with avg values!
-          
+
         }
       }
     }
   }
-  
+
   //Binning:
   for(e=0;e<nEvents;e++){ //Event
     for(p=0;p<panels;p++){  //Panel
@@ -187,10 +187,10 @@ unsigned char * exafelSZ_Compress(void* _pr,
     }
   }
 
-  //Additional compression using SZ:    
+  //Additional compression using SZ:
   size_t szCompressedSize=0;
   unsigned char* szComp;
-   
+
   switch(pr->szDim){
     case 1:
       // szComp=sz_compress_3D(binnedData, 0, 0, nEvents * panels * pr->binnedRows * pr->binnedCols, pr->tolerance, szCompressedSize); //1D
@@ -208,8 +208,8 @@ unsigned char * exafelSZ_Compress(void* _pr,
       printf("ERROR: Wrong szDim : %d It must be 1,2 or 3.\n",(int)pr->szDim);
       assert(0);
   }
-  
-  /*      
+
+  /*
   Compressed buffer format: (Types are indicated in parenthesis)
     WRITE: nPeaksTotal(uint64_t) (Total number of peaks in this batch)
     for(e=0;e<nEvents;e++){  (e for "event")
@@ -220,21 +220,21 @@ unsigned char * exafelSZ_Compress(void* _pr,
        }
     }
     WRITE: roiSavedCount  (uint64_t) (How many pixels there are in the ROI data.)
-       (roiSavedCount is the same # as # of 0's in ROI mask.) 
+       (roiSavedCount is the same # as # of 0's in ROI mask.)
        (NOTE:0 means affirmative in ROI mask!)
     for(roii=0;roii<roiSavedCount;roii++){  (roii for "ROI data index")
       WRITE: ROI_data[roii]  (float, 32-bit)
     }
     WRITE: szCompressedSize  (uint64_t) (Compressed data size from SZ.)
     WRITE: szComp (unsigned char x SZ_compressed_buffer_size)  (Compressed data from SZ.)
-    
+
     NOTE: Calibration panel is not saved. It should be handled by the user.
-    
+
     SUMMARY:
     nPeaksTotal : 8 bytes : (1 x uint64_t)
     peaks : (8 x nEvents + nPeaksTotal x 3 x 2) bytes : (nEvents x (nPeaks + nPeaks x 3 x uint16_t))
     roiSavedCount : 8 Bytes : (1 x uint64_t)
-    ROI_data : roiSavedCount x 4 : roiSavedCount x float 
+    ROI_data : roiSavedCount x 4 : roiSavedCount x float
     szCompressedSize : 8 : uint64_t
     szComp : szComp x 1 : szComp x (unsigned char)
   */
@@ -242,7 +242,7 @@ unsigned char * exafelSZ_Compress(void* _pr,
   //compressedBuffer=new uint8_t[(*compressedSize)];
   uint8_t * compressedBuffer=(uint8_t*)malloc(*compressedSize);
   uint64_t bytePos;
-  
+
   bytePos=0;
   //*(uint64_t*)(&compressedBuffer[bytePos])=nEvents;
   //bytePos+=8;
@@ -255,13 +255,13 @@ unsigned char * exafelSZ_Compress(void* _pr,
   //printf("\nCOMPRESS:\n");
   //printf("nPeaksTotal=%d\n",nPeaksTotal);
   //printf("bytePos=%d\n",bytePos);
-  
+
   peaksBytePos=0;
   for(e=0;e<nEvents;e++){
     uint64_t nPeaks=*(uint64_t*)(&pr->peaks[peaksBytePos]);
     peaksBytePos+=8;
     //peaksBytePos+=8;//Skip the second one. This is due to the error in Python!
-    
+
     *(uint64_t*)(&compressedBuffer[bytePos])=nPeaks;
     bytePos+=8;
     for(pk=0;pk<nPeaks;pk++){
@@ -270,7 +270,7 @@ unsigned char * exafelSZ_Compress(void* _pr,
       peaksBytePos+=2;
       *(uint16_t*)(&compressedBuffer[bytePos])=*(uint16_t*)(&pr->peaks[peaksBytePos]); //Row for the current peak
       bytePos+=2;
-      peaksBytePos+=2;      
+      peaksBytePos+=2;
       *(uint16_t*)(&compressedBuffer[bytePos])=*(uint16_t*)(&pr->peaks[peaksBytePos]); //Column for the current peak
       bytePos+=2;
       peaksBytePos+=2;
@@ -310,12 +310,12 @@ unsigned char * exafelSZ_Compress(void* _pr,
   // cout<<"bytePos="<<bytePos<<endl;
   //printf("szComp\n");
   //printf("bytePos=%d\n",bytePos);
-  
+
   if(bytePos!=(*compressedSize)){
     printf("ERROR: bytePos = %ld != %ld = compressedSize\n",(long)bytePos,(long)compressedSize);
     assert(0);
   }
-  
+
   free(szComp);
   free(roiM);
   free(roiData);
@@ -323,7 +323,7 @@ unsigned char * exafelSZ_Compress(void* _pr,
   // delete [] roiM;
   // delete [] roiData;
   // delete [] binnedData;
-  
+
   return compressedBuffer;
 }
 
@@ -331,30 +331,30 @@ void* exafelSZ_Decompress(void *_pr,
                          unsigned char*_compressedBuffer,
                          size_t nEvents, size_t panels, size_t rows, size_t cols,
                          size_t compressedSize)
-{ 
+{
   uint8_t *compressedBuffer=(uint8_t *)_compressedBuffer;
   exafelSZ_params *pr=(exafelSZ_params *)_pr;
-  exafelSZ_params_process(pr, panels, rows, cols); 
-  exafelSZ_params_checkDecomp(pr, panels, rows, cols); 
-  
+  exafelSZ_params_process(pr, panels, rows, cols);
+  exafelSZ_params_checkDecomp(pr, panels, rows, cols);
+
   float *decompressedBuffer=(float*)malloc(nEvents*panels*rows*cols*sizeof(float));
-  
+
   uint8_t *roiM=(uint8_t*)malloc(nEvents*panels*rows*cols);
   size_t e,p,r,c,pk,ri,ci,br,bc;
-  
-  
+
+
   /*
   Compressed Data Layout:
   nPeaksTotal : 8 bytes : (1 x uint64_t)
   peaks : (8 x nEvents + nPeaksTotal x 3 x 2) bytes : (nEvents x (nPeaks + nPeaks x 3 x uint16_t))
   roiSavedCount : 8 Bytes : (1 x uint64_t)
-  ROI_data : roiSavedCount x 4 : roiSavedCount x float 
+  ROI_data : roiSavedCount x 4 : roiSavedCount x float
   szCompressedSize : 8 : uint64_t
   szComp : szComp x 1 : szComp x (unsigned char)
   */
   uint64_t bytePos=0;
   uint64_t nPeaksTotal=*(uint64_t*)(&compressedBuffer[bytePos]);
-  bytePos += 8; 
+  bytePos += 8;
   // cout<<endl;
   // cout<<"DECOMPRESS:"<<endl;
   // cout<<"nPeaksTotal="<<nPeaksTotal<<endl;
@@ -362,21 +362,21 @@ void* exafelSZ_Decompress(void *_pr,
   //printf("\nDECOMPRESS:\n");
   //printf("nPeaksTotal=%d\n",nPeaksTotal);
   //printf("bytePos=%d\n",bytePos);
-  
+
   uint8_t *peaks=(uint8_t*)(&compressedBuffer[bytePos]);
   bytePos += (8 * nEvents + nPeaksTotal * 3 * 2);
   // cout<<"peaks"<<endl;
   // cout<<"bytePos="<<bytePos<<endl;
   //printf("peaks\n");
   //printf("bytePos=%d\n",bytePos);
-  
+
   uint64_t roiSavedCount=*(uint64_t*)(&compressedBuffer[bytePos]);
   bytePos+=8;
   // cout<<"roiSavedCount="<<roiSavedCount<<endl;
   // cout<<"bytePos="<<bytePos<<endl;
   //printf("roiSavedCount=%d\n",roiSavedCount);
   //printf("bytePos=%d\n",bytePos);
-  
+
   // cout<<"roiData"<<endl;
   float *roiData=(float*)(&compressedBuffer[bytePos]);
   bytePos+=(roiSavedCount*4);
@@ -385,14 +385,14 @@ void* exafelSZ_Decompress(void *_pr,
   // }
   // cout<<"bytePos="<<bytePos<<endl;
   //printf("bytePos=%d\n",bytePos);
-  
+
   uint64_t szCompressedSize=*(uint64_t*)(&compressedBuffer[bytePos]);
   bytePos+=8;
   // cout<<"szCompressedSize="<<szCompressedSize<<endl;
   // cout<<"bytePos="<<bytePos<<endl;
   //printf("szCompressedSize=%d\n",szCompressedSize);
   //printf("bytePos=%d\n",bytePos);
-  
+
   unsigned char *szComp=(unsigned char*)(&compressedBuffer[bytePos]);
   bytePos+=szCompressedSize;
   // cout<<"szComp"<<endl;
@@ -400,9 +400,9 @@ void* exafelSZ_Decompress(void *_pr,
   // cout<<endl;
   //printf("szComp\n");
   //printf("bytePos=%d\n\n",bytePos);
-  
+
   //We should have inputs ready by now. Now process them:
-  
+
   //Generate the ROI mask: NOTE: 0 means affirmative in ROI mask! This comes from the python scripts!
   //First, initialize with calibration panel:
   for(e=0;e<nEvents;e++){ //Event
@@ -428,7 +428,7 @@ void* exafelSZ_Decompress(void *_pr,
   for(e=0;e<nEvents;e++){ //Event
     uint64_t nPeaks=*(uint64_t*)(&peaks[peaksBytePos]);
     peaksBytePos+=8;
-    
+
     for(pk=0;pk<nPeaks;pk++){
       uint16_t p_=*(uint16_t*)(&peaks[peaksBytePos]); //Panel for the current peak
       peaksBytePos+=2;
@@ -436,7 +436,7 @@ void* exafelSZ_Decompress(void *_pr,
       peaksBytePos+=2;
       uint16_t c_=*(uint16_t*)(&peaks[peaksBytePos]); //Col for the current peak
       peaksBytePos+=2;
-      
+
       if(p_<0 || p_>=panels){
         printf("ERROR: Peak coordinate out of bounds: Panel=%d, Valid range: 0,%d\n",(int)p_,(int)panels-1);
         assert(0);
@@ -449,7 +449,7 @@ void* exafelSZ_Decompress(void *_pr,
         printf("ERROR: Peak coordinate out of bounds: Col=%d, Valid range: 0,%d\n",(int)c_,(int)cols-1);
         assert(0);
       }
-      
+
       for(ri=r_-pr->peakRadius;ri<=r_+pr->peakRadius;ri++){  //ri: row index. Just a temporary variable.
         for(ci=c_-pr->peakRadius;ci<=c_+pr->peakRadius;ci++){  //ci: column index. Just a temporary variable.
           if(ri>=0 && ri<rows && ci>=0 && ci<cols){  //Check whether inside bounds or not
@@ -459,7 +459,7 @@ void* exafelSZ_Decompress(void *_pr,
       }
     }
   }
-  
+
   //De-compress using SZ:
   float* szDecomp;
   size_t _szCompressedSize=szCompressedSize;
@@ -477,15 +477,17 @@ void* exafelSZ_Decompress(void *_pr,
       printf("ERROR: Wrong szDim : %d It must be 1,2 or 3.\n",(int)pr->szDim);
       assert(0);
   }
-  //szDecomp=(void*)malloc(nEvents*panels*rows*cols*sizeof(float));
-  
-  // double max_err = 0;
-  // for(int i=0; i<nEvents * panels * pr->binnedRows * pr->binnedCols; i++){
-    // double err = fabs(szDecomp[i]-binnedData[i]);
-    // if(err > max_err) max_err = err;
-  // }
-  // cout << "Max err = \t\t\t" << max_err << endl;
-  
+  /*
+   szDecomp=(void*)malloc(nEvents*panels*rows*cols*sizeof(float));
+
+   double max_err = 0;
+    int ii;
+   for(ii=0; ii<nEvents * panels * pr->binnedRows * pr->binnedCols; ii++){
+     double err = fabs(szDecomp[i]-binnedData[ii]);
+     if(err > max_err) max_err = err;
+   }
+   cout << "Max err = \t\t\t" << max_err << endl;
+  */
 
   //De-binning:
   for(e=0;e<nEvents;e++)//Event
@@ -510,7 +512,7 @@ void* exafelSZ_Decompress(void *_pr,
   // delete [] roiM;
   free(roiM);
   free(szDecomp);
-  
+
   return ((void*)decompressedBuffer);
 }
 
