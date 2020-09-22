@@ -10,11 +10,11 @@
 #ifndef _ArithmeticCoding_H
 #define _ArithmeticCoding_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdio.h>
 
 #define ONE_FOURTH (0x40000000000) //44 bits are absolutely enough to deal with a large dataset (support at most 16TB per process)
 #define ONE_HALF (0x80000000000)
@@ -30,10 +30,10 @@ typedef struct Prob {
 
 typedef struct AriCoder
 {
-	int numOfRealStates; //the # real states menas the number of states after the optimization of # intervals
-	int numOfValidStates; //the # valid states means the number of non-zero frequency cells (some states/codes actually didn't appear)
-	size_t total_frequency;	
-	Prob* cumulative_frequency; //used to encode data more efficiencly
+    int numOfRealStates; //the # real states menas the number of states after the optimization of # intervals
+    int numOfValidStates; //the # valid states means the number of non-zero frequency cells (some states/codes actually didn't appear)
+    size_t total_frequency;
+    Prob* cumulative_frequency; //used to encode data more efficiencly
 } AriCoder;
 
 void output_bit_1(unsigned int* buf);

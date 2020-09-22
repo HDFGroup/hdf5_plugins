@@ -9,16 +9,9 @@
  */
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include <math.h>
-#include "sz.h"
-#include "CompressElement.h"
-#include "DynamicByteArray.h"
-#include "DynamicIntArray.h"
-#include "TightDataPointStorageF.h"
+
+
 #include "sz_float.h"
 #include "sz_float_pwr.h"
 #include "zlib.h"
@@ -1782,7 +1775,9 @@ size_t dataLength, double absErrBound, double relBoundRatio, double pwrErrRatio,
         free_TightDataPointStorageF(tdps);
 }
 
-#include <stdbool.h>
+#ifdef HAVE_STDBOOL_H
+# include <stdbool.h>
+#endif
 
 void SZ_compress_args_float_NoCkRngeNoGzip_1D_pwr_pre_log(unsigned char** newByteData, float *oriData, double pwrErrRatio, size_t dataLength, size_t *outSize, float min, float max){
 

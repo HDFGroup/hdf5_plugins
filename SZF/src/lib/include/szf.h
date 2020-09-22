@@ -10,11 +10,11 @@
 #ifndef _SZF_H
 #define _SZF_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdio.h>
 
 //szf.c
 void sz_init_c_(char *configFile,int *len,int *ierr);

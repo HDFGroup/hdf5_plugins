@@ -150,11 +150,6 @@ endif ()
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5ZFP link libs: ${LINK_LIBS}")
 
-#-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
-#-----------------------------------------------------------------------------
-configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h @ONLY)
-
 include (ExternalProject)
 option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
@@ -209,9 +204,9 @@ if (ZFP_FOUND)
 endif ()
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the zfp_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/zfp_config.h @ONLY)
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

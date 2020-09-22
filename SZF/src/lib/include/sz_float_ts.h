@@ -6,10 +6,11 @@
  *  (C) 2016 by Mathematics and Computer Science (MCS), Argonne National Laboratory.
  *      See COPYRIGHT in top-level directory.
  */
-#include "TightDataPointStorageF.h"
 
 #ifndef _SZ_Float_TS_H
 #define _SZ_Float_TS_H
+
+#include "dataCompression.h"
 
 #ifdef __cplusplus
 extern "C" {

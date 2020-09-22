@@ -10,13 +10,18 @@
 #ifndef _DataCompression_H
 #define _DataCompression_H
 
+#include "CompressElement.h"
+#include "DynamicByteArray.h"
+#include "DynamicIntArray.h"
+#include "DynamicDoubleArray.h"
+#include "DynamicFloatArray.h"
+#include "TightDataPointStorageD.h"
+#include "TightDataPointStorageF.h"
+#include "TightDataPointStorageI.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "sz.h"
-#include <stdio.h>
-#include <stdbool.h>
 
 #define computeMinMax(data) \
         for(i=1;i<size;i++)\
@@ -66,17 +71,17 @@ void compressUInt16Value(uint16_t tgtValue, uint16_t minValue, int byteSize, uns
 void compressUInt32Value(uint32_t tgtValue, uint32_t minValue, int byteSize, unsigned char* bytes);
 void compressUInt64Value(uint64_t tgtValue, uint64_t minValue, int byteSize, unsigned char* bytes);
 
-void compressSingleFloatValue(FloatValueCompressElement *vce, float tgtValue, float precision, float medianValue, 
-		int reqLength, int reqBytesLength, int resiBitsLength);
+void compressSingleFloatValue(FloatValueCompressElement *vce, float tgtValue, float precision, float medianValue,
+        int reqLength, int reqBytesLength, int resiBitsLength);
 void compressSingleFloatValue_MSST19(FloatValueCompressElement *vce, float tgtValue, float precision, int reqLength, int reqBytesLength, int resiBitsLength);
-void compressSingleDoubleValue(DoubleValueCompressElement *vce, double tgtValue, double precision, double medianValue, 
-		int reqLength, int reqBytesLength, int resiBitsLength);
+void compressSingleDoubleValue(DoubleValueCompressElement *vce, double tgtValue, double precision, double medianValue,
+        int reqLength, int reqBytesLength, int resiBitsLength);
 void compressSingleDoubleValue_MSST19(DoubleValueCompressElement *vce, double tgtValue, double precision, int reqLength, int reqBytesLength, int resiBitsLength);
-                              
+
 int compIdenticalLeadingBytesCount_double(unsigned char* preBytes, unsigned char* curBytes);
 int compIdenticalLeadingBytesCount_float(unsigned char* preBytes, unsigned char* curBytes);
-void addExactData(DynamicByteArray *exactMidByteArray, DynamicIntArray *exactLeadNumArray, 
-		DynamicIntArray *resiBitArray, LossyCompressionElement *lce);
+void addExactData(DynamicByteArray *exactMidByteArray, DynamicIntArray *exactLeadNumArray,
+        DynamicIntArray *resiBitArray, LossyCompressionElement *lce);
 
 int getPredictionCoefficients(int layers, int dimension, int **coeff_array, int *status);
 
@@ -85,13 +90,13 @@ int computeBlockEdgeSize_2D(int segmentSize);
 int initRandomAccessBytes(unsigned char* raBytes);
 
 int generateLossyCoefficients_float(float* oriData, double precision, size_t nbEle, int* reqBytesLength, int* resiBitsLength, float* medianValue, float* decData);
-int compressExactDataArray_float(float* oriData, double precision, size_t nbEle, unsigned char** leadArray, unsigned char** midArray, unsigned char** resiArray, 
+int compressExactDataArray_float(float* oriData, double precision, size_t nbEle, unsigned char** leadArray, unsigned char** midArray, unsigned char** resiArray,
 int reqLength, int reqBytesLength, int resiBitsLength, float medianValue);
 
 void decompressExactDataArray_float(unsigned char* leadNum, unsigned char* exactMidBytes, unsigned char* residualMidBits, size_t nbEle, int reqLength, float medianValue, float** decData);
 
 int generateLossyCoefficients_double(double* oriData, double precision, size_t nbEle, int* reqBytesLength, int* resiBitsLength, double* medianValue, double* decData);
-int compressExactDataArray_double(double* oriData, double precision, size_t nbEle, unsigned char** leadArray, unsigned char** midArray, unsigned char** resiArray, 
+int compressExactDataArray_double(double* oriData, double precision, size_t nbEle, unsigned char** leadArray, unsigned char** midArray, unsigned char** resiArray,
 int reqLength, int reqBytesLength, int resiBitsLength, double medianValue);
 
 void decompressExactDataArray_double(unsigned char* leadNum, unsigned char* exactMidBytes, unsigned char* residualMidBits, size_t nbEle, int reqLength, double medianValue, double** decData);

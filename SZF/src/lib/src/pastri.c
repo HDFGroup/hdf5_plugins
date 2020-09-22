@@ -1,17 +1,18 @@
-#include "pastri.h"
+
+#include "sz.h"
 #include "pastriD.h"
 #include "pastriF.h"
 
 void SZ_pastriReadParameters(char paramsFilename[512],pastri_params *paramsPtr){
   FILE *paramsF;
   paramsF=fopen(paramsFilename,"r");
-  
+
   if(paramsF==NULL){
     printf("ERROR: Parameters file cannot be opened.\n");
     printf("Filename: %s\n",paramsFilename);
     assert(0);
   }
-  
+
   fscanf(paramsF,"%d %d %d %d %lf %d %d",&paramsPtr->bf[0],&paramsPtr->bf[1],&paramsPtr->bf[2],&paramsPtr->bf[3],&paramsPtr->originalEb,&paramsPtr->dataSize,&paramsPtr->numBlocks);
   //printf("Params: %d %d %d %d %.3e %d\n",paramsPtr->bf[0],paramsPtr->bf[1],paramsPtr->bf[2],paramsPtr->bf[3],paramsPtr->originalEb,paramsPtr->numBlocks);
   fclose(paramsF);
@@ -35,10 +36,10 @@ void SZ_pastriCompressBatch(pastri_params *p,unsigned char *originalBuf, unsigne
   int bytes; //bytes for this block
   int i;
   size_t bytePos=0; //Current byte pos in the outBuf
-  
+
   memcpy(*compressedBufP, p, sizeof(pastri_params));
   bytePos+=sizeof(pastri_params);
-  
+
   for(i=0;i<p->numBlocks;i++){
     if(p->dataSize==8){
       pastri_double_Compress(originalBuf + (i*p->bSize*p->dataSize),p,(*compressedBufP) + bytePos,&bytes);
@@ -53,21 +54,21 @@ void SZ_pastriCompressBatch(pastri_params *p,unsigned char *originalBuf, unsigne
 }
 
 void SZ_pastriDecompressBatch(unsigned char*compressedBuf, pastri_params *p, unsigned char** decompressedBufP ,size_t *decompressedBytes){
-  int bytePos=0; //Current byte pos in the outBuf 
+  int bytePos=0; //Current byte pos in the outBuf
   memcpy(p, compressedBuf, sizeof(pastri_params));
-  bytePos+=sizeof(pastri_params);	
-	
-  (*decompressedBufP) = (unsigned char*)malloc(p->numBlocks*p->bSize*p->dataSize*sizeof(char)); 
+  bytePos+=sizeof(pastri_params);
+
+  (*decompressedBufP) = (unsigned char*)malloc(p->numBlocks*p->bSize*p->dataSize*sizeof(char));
   int bytes; //bytes for this block
   int i;
-  
+
   for(i=0;i<p->numBlocks;i++){
     if(p->dataSize==8){
       pastri_double_Decompress(compressedBuf + bytePos,p->dataSize,p,(*decompressedBufP) + (i*p->bSize*p->dataSize),&bytes);
     }else if(p->dataSize==4){
       pastri_float_Decompress(compressedBuf + bytePos,p->dataSize,p,(*decompressedBufP) + (i*p->bSize*p->dataSize),&bytes);
     }
-          
+
     bytePos += bytes;
     //printf("bytes:%d\n",bytes);
   }
@@ -75,7 +76,7 @@ void SZ_pastriDecompressBatch(unsigned char*compressedBuf, pastri_params *p, uns
   *decompressedBytes=p->numBlocks*p->bSize*p->dataSize;
 }
 
-void SZ_pastriCheckBatch(pastri_params *p,unsigned char*originalBuf,unsigned char*decompressedBuf){        
+void SZ_pastriCheckBatch(pastri_params *p,unsigned char*originalBuf,unsigned char*decompressedBuf){
   int i;
   for(i=0;i<p->numBlocks;i++){
     if(p->dataSize==8){

@@ -51,9 +51,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5BSHUF link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the bshuf_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5BSHUF_RESOURCES_DIR}/config.h.in ${H5BSHUF_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5BSHUF_RESOURCES_DIR}/config.h.in ${H5BSHUF_BINARY_DIR}/bshuf_config.h @ONLY)
 
 include (ExternalProject)
 option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")

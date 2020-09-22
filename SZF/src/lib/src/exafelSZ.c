@@ -1,8 +1,10 @@
+
+#include "sz.h"
+#include "exafelSZ.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "sz.h"
 
 void exafelSZ_params_process(exafelSZ_params*pr, size_t panels, size_t rows, size_t cols){
   pr->binnedRows=(rows+pr->binSize-1)/pr->binSize;

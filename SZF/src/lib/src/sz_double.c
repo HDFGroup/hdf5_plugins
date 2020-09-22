@@ -7,25 +7,19 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include <math.h>
-#include "sz.h"
-#include "CompressElement.h"
-#include "DynamicByteArray.h"
-#include "DynamicIntArray.h"
-#include "TightDataPointStorageD.h"
+
+
 #include "sz_double.h"
 #include "sz_double_pwr.h"
 #include "szd_double.h"
 #include "szd_double_pwr.h"
+#include "sz_double_ts.h"
+#include "TypeManager.h"
 #include "zlib.h"
 #include "rw.h"
-#include "sz_double_ts.h"
 #include "utility.h"
+#include "callZlib.h"
 #include "CacheTable.h"
 #include "MultiLevelCacheTableWideInterval.h"
 

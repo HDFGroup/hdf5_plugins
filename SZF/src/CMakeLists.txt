@@ -139,7 +139,7 @@ if (BUILD_SZF_LIBRARY_SOURCE)
       ${H5SZF_SZ_INC_DIR}/MultiLevelCacheTable.h
       ${H5SZF_SZ_INC_DIR}/MultiLevelCacheTableWideInterval.h
       ${H5SZF_SZ_INC_DIR}/CacheTable.h
-      ${H5SZF_SZ_INC_DIR}/defines.h
+      ${H5SZF_SZ_INC_DIR}/sz_defines.h
       ${H5SZF_SZ_INC_DIR}/CompressElement.h
       ${H5SZF_SZ_INC_DIR}/DynamicDoubleArray.h
       ${H5SZF_SZ_INC_DIR}/rw.h

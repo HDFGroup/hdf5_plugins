@@ -10,6 +10,8 @@
 #ifndef _SZD_Double_PWR_H
 #define _SZD_Double_PWR_H
 
+#include "dataCompression.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -10,14 +10,14 @@
 #ifndef _CallZlib_H
 #define _CallZlib_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//#define SZ_ZLIB_BUFFER_SIZE 1048576	
+//#define SZ_ZLIB_BUFFER_SIZE 1048576
 #define SZ_ZLIB_BUFFER_SIZE 65536
-
-#include <stdio.h>
 
 int isZlibFormat(unsigned char magic1, unsigned char magic2);
 

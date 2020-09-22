@@ -10,13 +10,12 @@
 #ifndef SZ_MASTER_CACHETABLE_H
 #define SZ_MASTER_CACHETABLE_H
 
+#include "sz.h"
+#include <math.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "stdio.h"
-#include "stdint.h"
-#include <math.h>
 
 extern double* g_CacheTable;
 extern uint32_t * g_InverseTable;

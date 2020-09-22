@@ -7,10 +7,10 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdint.h>
-
 #ifndef _CompressElement_H
 #define _CompressElement_H
+
+#include "sz.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,31 +18,31 @@ extern "C" {
 
 typedef struct DoubleValueCompressElement
 {
-	double data;
-	long curValue;
-	unsigned char curBytes[8]; //big_endian
-	int reqBytesLength;
-	int resiBitsLength;
+    double data;
+    long curValue;
+    unsigned char curBytes[8]; //big_endian
+    int reqBytesLength;
+    int resiBitsLength;
 } DoubleValueCompressElement;
 
 typedef struct FloatValueCompressElement
 {
-	float data;
-	int curValue;
-	unsigned char curBytes[4]; //big_endian
-	int reqBytesLength;
-	int resiBitsLength;
+    float data;
+    int curValue;
+    unsigned char curBytes[4]; //big_endian
+    int reqBytesLength;
+    int resiBitsLength;
 } FloatValueCompressElement;
 
 typedef struct LossyCompressionElement
 {
-	int leadingZeroBytes; //0,1,2,or 3
-	unsigned char integerMidBytes[8];
-	int integerMidBytes_Length; //they are mid_bits actually
-	//char curBytes[8];
-	//int curBytes_Length; //4 for single_precision or 8 for double_precision	
-	int resMidBitsLength;
-	int residualMidBits;
+    int leadingZeroBytes; //0,1,2,or 3
+    unsigned char integerMidBytes[8];
+    int integerMidBytes_Length; //they are mid_bits actually
+    //char curBytes[8];
+    //int curBytes_Length; //4 for single_precision or 8 for double_precision
+    int resMidBitsLength;
+    int residualMidBits;
 } LossyCompressionElement;
 
 char* decompressGroupIDArray(unsigned char* bytes, size_t dataLength);
@@ -61,12 +61,12 @@ int validPrediction_float(float minErr, float precision);
 double* generateGroupErrBounds(int errorBoundMode, double realPrecision, double pwrErrBound);
 int generateGroupMaxIntervalCount(double* groupErrBounds);
 
-void new_LossyCompressionElement(LossyCompressionElement *lce, int leadingNum, unsigned char* intMidBytes, 
-		int intMidBytes_Length, int resiMidBitsLength, int resiBits);
-void updateLossyCompElement_Double(unsigned char* curBytes, unsigned char* preBytes, 
-		int reqBytesLength, int resiBitsLength,  LossyCompressionElement *lce);
-void updateLossyCompElement_Float(unsigned char* curBytes, unsigned char* preBytes, 
-		int reqBytesLength, int resiBitsLength,  LossyCompressionElement *lce);
+void new_LossyCompressionElement(LossyCompressionElement *lce, int leadingNum, unsigned char* intMidBytes,
+        int intMidBytes_Length, int resiMidBitsLength, int resiBits);
+void updateLossyCompElement_Double(unsigned char* curBytes, unsigned char* preBytes,
+        int reqBytesLength, int resiBitsLength,  LossyCompressionElement *lce);
+void updateLossyCompElement_Float(unsigned char* curBytes, unsigned char* preBytes,
+        int reqBytesLength, int resiBitsLength,  LossyCompressionElement *lce);
 
 #ifdef __cplusplus
 }

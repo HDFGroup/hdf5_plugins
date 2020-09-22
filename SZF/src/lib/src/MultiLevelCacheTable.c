@@ -7,10 +7,6 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdint.h>
-#include <memory.h>
-#include <stdlib.h>
-#include "stdio.h"
 #include "MultiLevelCacheTable.h"
 
 uint8_t MLCT_GetExpoIndex(float value){

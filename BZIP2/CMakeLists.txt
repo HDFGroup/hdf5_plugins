@@ -51,9 +51,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5BZ2 link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the bzip_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5BZ2_RESOURCES_DIR}/config.h.in ${H5BZ2_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5BZ2_RESOURCES_DIR}/config.h.in ${H5BZ2_BINARY_DIR}/bzip_config.h @ONLY)
 
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")

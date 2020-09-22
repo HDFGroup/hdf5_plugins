@@ -10,14 +10,11 @@
 #ifndef _MULTILEVELCACHETABLE_H
 #define _MULTILEVELCACHETABLE_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
-#include <memory.h>
-#include <stdlib.h>
-#include "stdio.h"
 
 typedef struct SubLevelTable{
     uint32_t baseIndex;

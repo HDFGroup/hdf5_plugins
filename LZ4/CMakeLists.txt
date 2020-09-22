@@ -51,9 +51,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5LZ4 link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the lz4_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5LZ4_RESOURCES_DIR}/config.h.in ${H5LZ4_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5LZ4_RESOURCES_DIR}/config.h.in ${H5LZ4_BINARY_DIR}/lz4_config.h @ONLY)
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 

@@ -6,10 +6,11 @@
  *  (C) 2016 by Mathematics and Computer Science (MCS), Argonne National Laboratory.
  *      See COPYRIGHT in top-level directory.
  */
-#include "TightDataPointStorageD.h"
 
 #ifndef _SZ_Double_TS_H
 #define _SZ_Double_TS_H
+
+#include "dataCompression.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -10,16 +10,17 @@
 #ifndef _DynamicByteArray_H
 #define _DynamicByteArray_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>
 typedef struct DynamicByteArray
-{	
-	unsigned char* array;
-	size_t size;
-	size_t capacity;
+{
+    unsigned char* array;
+    size_t size;
+    size_t capacity;
 } DynamicByteArray;
 
 void new_DBA(DynamicByteArray **dba, size_t cap);

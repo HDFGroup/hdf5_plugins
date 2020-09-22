@@ -7,15 +7,13 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef _SZ_OMP_H
+#define _SZ_OMP_H
+
+#include "sz.h"
 #ifdef _OPENMP
 #include "omp.h"
 #endif
-#include "sz.h"
-
-#ifndef _SZ_OMP_H
-#define _SZ_OMP_H
 
 #ifdef __cplusplus
 extern "C" {

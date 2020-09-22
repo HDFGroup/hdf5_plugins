@@ -11,14 +11,11 @@
 #ifndef _MULTILEVELCACHETABLEWIDEINTERVAL_H
 #define _MULTILEVELCACHETABLEWIDEINTERVAL_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
-#include <memory.h>
-#include <stdlib.h>
-#include "stdio.h"
 
 typedef struct SubLevelTableWideInterval{
     uint64_t baseIndex;

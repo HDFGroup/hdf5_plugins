@@ -7,11 +7,8 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "Huffman.h"
-#include "sz.h"
+
+#include "dataCompression.h"
 
 
 HuffmanTree* createHuffmanTree(int stateNum)

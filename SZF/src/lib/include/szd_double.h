@@ -10,11 +10,11 @@
 #ifndef _SZD_Double_H
 #define _SZD_Double_H
 
+#include "dataCompression.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "TightDataPointStorageD.h"
 
 void decompressDataSeries_double_1D(double** data, size_t dataSeriesLength, double* hist_data, TightDataPointStorageD* tdps);
 void decompressDataSeries_double_2D(double** data, size_t r1, size_t r2, double* hist_data, TightDataPointStorageD* tdps);

@@ -10,11 +10,11 @@
 #ifndef _SZD_UInt8_H
 #define _SZD_UInt8_H
 
+#include "dataCompression.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "TightDataPointStorageI.h"
 
 #define SZ_UINT8_MIN 0
 #define SZ_UINT8_MAX 255

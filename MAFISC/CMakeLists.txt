@@ -151,9 +151,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5MAFISC link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the mafisc_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5MAFISC_RESOURCES_DIR}/config.h.in ${H5MAFISC_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5MAFISC_RESOURCES_DIR}/config.h.in ${H5MAFISC_BINARY_DIR}/mafisc_config.h @ONLY)
 
 option (BUILD_MAFISC_LIBRARY_SOURCE "build the mafisc library within the plugin" ON)
 if (NOT BUILD_MAFISC_LIBRARY_SOURCE)

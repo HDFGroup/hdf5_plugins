@@ -10,12 +10,12 @@
 #ifndef _TypeManager_H
 #define _TypeManager_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>
-#include <stdint.h>
 
 //TypeManager.c
 size_t convertIntArray2ByteArray_fast_1b(unsigned char* intArray, size_t intArrayLength, unsigned char **result);

@@ -10,16 +10,17 @@
 #ifndef _DynamicFloatArray_H
 #define _DynamicFloatArray_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>
 typedef struct DynamicFloatArray
-{	
-	float* array;
-	size_t size;
-	size_t capacity;
+{
+    float* array;
+    size_t size;
+    size_t capacity;
 } DynamicFloatArray;
 
 void new_DFA(DynamicFloatArray **dfa, size_t cap);

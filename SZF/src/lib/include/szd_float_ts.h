@@ -10,11 +10,11 @@
 #ifndef _SZD_Float_TS_H
 #define _SZD_Float_TS_H
 
+#include "dataCompression.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "TightDataPointStorageF.h"
 
 void decompressDataSeries_float_1D_ts(float** data, size_t dataSeriesLength, float* hist_data, TightDataPointStorageF* tdps);
 

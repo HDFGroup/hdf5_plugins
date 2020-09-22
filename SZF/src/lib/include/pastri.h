@@ -8,8 +8,8 @@
 //Possible improvement: Get rid of writing/reading some of the indexes to in/out buffers
 //Possible improvement: Get rid of all debug stuff, including Makefile debug flags
 //Possible improvement: Get rid of "compressedBytes"
-//Possible improvement: SparseCompressed, ECQBits=2: 1's and -1's can be represented by just 0 and 1, instead 10 and 11. 
-//Possible improvement: SparseCompressed, ECQBits>2: Again: 1: 10, -1:11, Others: 0XX...XX 
+//Possible improvement: SparseCompressed, ECQBits=2: 1's and -1's can be represented by just 0 and 1, instead 10 and 11.
+//Possible improvement: SparseCompressed, ECQBits>2: Again: 1: 10, -1:11, Others: 0XX...XX
 //Possible improvement: WriteBitsFast: maybe remove some masks?
 //Possible improvement: WriteBitsFast: Get rid of multiple calls!
 //Possible improvement: UCSparse: Indexes use 64 bits. It can be lowered to _1DIdxBits
@@ -20,10 +20,6 @@
 #ifndef PASTRI_H
 #define PASTRI_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
 #include <math.h>
 #include <assert.h> //Just for debugging purposes!
 
@@ -41,10 +37,10 @@
 //#define DEBUG 1 //Debug switch
 
 //#define BOOKKEEPINGBITS 0 //Currently unused
-//#define BOOKKEEPINGBITS 120 //Includes: mode, indexOffsets, compressedBytes, Pb_, ECQBits_ (8+64+32+8+8) 
+//#define BOOKKEEPINGBITS 120 //Includes: mode, indexOffsets, compressedBytes, Pb_, ECQBits_ (8+64+32+8+8)
 //BOOKKEEPINGBITS is defined here, because if P & S is going to be used, they appear just after the bookkeeping part.
 //This allows us to write P and S directly onto using outBuf.
-  
+
 
 // IMPORTANT NOTE:
 //Read/Write up to 56 bits.
@@ -57,19 +53,19 @@
 typedef struct pastri_params{
   double originalEb; //Error Bound entered by the user
   double usedEb; //Error Bound used during compression/deceompression
-  
+
   int numBlocks; //Number of blocks to be compressed
   int dataSize; //8(=Double) or 4(=Float)
-  
+
   int bf[4]; //Orbital types (basis function types). Typically in range [0,3]
   int idxRange[4];  //Ranges of indexes. idxRange[i]=(bf[i]+1)*(bf[i]+2)/2;
-  
+
   int sbSize; //=idxRange[2]*idxRange[3];
   int sbNum;  //=idxRange[0]*idxRange[1];
   int bSize; //=sbSize*sbNum;
-  
+
   //uint16_t idxOffset[4]; //Index offset values. No longer used.
-  
+
 }pastri_params;
 
 //Block-specific stuff:
@@ -116,7 +112,7 @@ void SZ_pastriDecompressBatch(unsigned char*compressedBuf, pastri_params *p, uns
 //First, parameters are read from compressedBuf and written into p.
 //Then, decompressedBufP is allocated and populated by the decompressed data. Decompressed size is written into decompressedBytes.
 
-void SZ_pastriCheckBatch(pastri_params *p,unsigned char*originalBuf,unsigned char*decompressedBuf); 
+void SZ_pastriCheckBatch(pastri_params *p,unsigned char*originalBuf,unsigned char*decompressedBuf);
 //INPUTS: p, originalBuf, decompressedBuf
 //OUTPUTS: None (Just some on-screen messages)
 //Compares originalBuf with decompressedBuf. Checks whether the absolute error condition is satisfied or not.

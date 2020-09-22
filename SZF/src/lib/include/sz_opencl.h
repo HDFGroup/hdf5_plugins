@@ -6,9 +6,11 @@ extern "C" {
 #ifndef SZ_OPENCL_H
 #define SZ_OPENCL_H
 
-#include<stddef.h>
+#ifdef H5_HAVE_STDDEF_H
+#   include <stddef.h>
+#endif
 
-	//opaque pointer for opencl state
+    //opaque pointer for opencl state
   struct sz_opencl_state;
 
   /**
@@ -24,38 +26,38 @@ extern "C" {
    */
   int sz_opencl_init(struct sz_opencl_state** state);
 
-	/**
-	 * deinitializes an opencl state
-	 *
-	 * \param[in] state the sz opencl state
-	 * \return SZ_SCES
-	 */
+    /**
+    * deinitializes an opencl state
+    *
+    * \param[in] state the sz opencl state
+    * \return SZ_SCES
+    */
   int sz_opencl_release(struct sz_opencl_state** state);
 
-	/**
-	 * returns a human readable error message for the last error recieved by state
-	 *
-	 * \param[in] state the sz opencl state
-	 * \return a pointer to a string that describes the error
-	 */
-	const char* sz_opencl_error_msg(struct sz_opencl_state* state);
+    /**
+    * returns a human readable error message for the last error recieved by state
+    *
+    * \param[in] state the sz opencl state
+    * \return a pointer to a string that describes the error
+    */
+    const char* sz_opencl_error_msg(struct sz_opencl_state* state);
 
 
-	/**
-	 * returns a numeric code for the last error recieved by state
-	 *
-	 * \param[in] state the sz opencl state
-	 * \return the numeric error code
-	 */
+    /**
+    * returns a numeric code for the last error recieved by state
+    *
+    * \param[in] state the sz opencl state
+    * \return the numeric error code
+    */
   int sz_opencl_error_code(struct sz_opencl_state* state);
 
-	/**
-	 * confirms that the sz opencl state is ready to use by performing a vector addition
-	 *
-	 * \param[in] state the sz opencl state
-	 * \return SZ_SCES if the opencl implementation is functioning
-	 */
-	int sz_opencl_check(struct sz_opencl_state*);
+    /**
+    * confirms that the sz opencl state is ready to use by performing a vector addition
+    *
+    * \param[in] state the sz opencl state
+    * \return SZ_SCES if the opencl implementation is functioning
+    */
+    int sz_opencl_check(struct sz_opencl_state*);
 
   unsigned char* sz_compress_float3d_opencl(float* data, size_t r1, size_t r2, size_t r3, double, size_t* out_size);
 

@@ -10,11 +10,11 @@
 #ifndef _SZD_Int64_H
 #define _SZD_Int64_H
 
+#include "dataCompression.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "TightDataPointStorageI.h"
 
 void decompressDataSeries_int64_1D(int64_t** data, size_t dataSeriesLength, TightDataPointStorageI* tdps);
 void decompressDataSeries_int64_2D(int64_t** data, size_t r1, size_t r2, TightDataPointStorageI* tdps);

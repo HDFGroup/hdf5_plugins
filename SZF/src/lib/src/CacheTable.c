@@ -7,7 +7,13 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdlib.h>
+#ifdef STDC_HEADERS
+# include <stdlib.h>
+#else
+# ifdef HAVE_STDLIB_H
+#  include <stdlib.h>
+# endif
+#endif
 #include "CacheTable.h"
 
 double* g_CacheTable;

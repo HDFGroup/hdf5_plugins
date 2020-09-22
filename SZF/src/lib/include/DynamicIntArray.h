@@ -10,16 +10,17 @@
 #ifndef _DynamicIntArray_H
 #define _DynamicIntArray_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>
 typedef struct DynamicIntArray
-{	
-	unsigned char* array; //char* (one byte) is enough, don't have to be int*
-	size_t size;
-	size_t capacity;
+{
+    unsigned char* array; //char* (one byte) is enough, don't have to be int*
+    size_t size;
+    size_t capacity;
 } DynamicIntArray;
 
 void new_DIA(DynamicIntArray **dia, size_t cap);

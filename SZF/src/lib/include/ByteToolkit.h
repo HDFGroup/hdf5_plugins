@@ -14,10 +14,6 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-
-//ByteToolkit.c
-
 unsigned short bytesToUInt16_bigEndian(unsigned char* bytes);
 unsigned int bytesToUInt32_bigEndian(unsigned char* bytes);
 unsigned long bytesToUInt64_bigEndian(unsigned char* b);

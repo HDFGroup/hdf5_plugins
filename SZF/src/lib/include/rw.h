@@ -10,14 +10,7 @@
 #ifndef _IO_H
 #define _IO_H
 
-#include <stdio.h>
-#include <stdint.h>
-
-#ifdef _WIN32
-#define PATH_SEPARATOR ';'
-#else
-#define PATH_SEPARATOR ':'
-#endif
+#include "sz.h"
 
 #ifdef __cplusplus
 extern "C" {

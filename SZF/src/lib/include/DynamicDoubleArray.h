@@ -10,17 +10,18 @@
 #ifndef _DynamicDoubleArray_H
 #define _DynamicDoubleArray_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdio.h>
 
 typedef struct DynamicDoubleArray
-{	
-	double* array;
-	size_t size;
-	double capacity;
+{
+    double* array;
+    size_t size;
+    double capacity;
 } DynamicDoubleArray;
 
 void new_DDA(DynamicDoubleArray **dda, size_t cap);

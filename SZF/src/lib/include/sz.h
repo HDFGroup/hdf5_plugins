@@ -7,109 +7,17 @@
  *      See COPYRIGHT in top-level directory.
  */
 
+#include "sz_defines.h"
+
+#include "conf.h"
+#include "VarSet.h"
+#include "pastri.h"
+#include "Huffman.h"
+#include "ByteToolkit.h"
+
+
 #ifndef _SZ_H
 #define _SZ_H
-
-#include <stdio.h>
-#include <stdint.h>
-#include <sys/time.h>      /* For gettimeofday(), in microseconds */
-#include <time.h>          /* For time(), in seconds */
-#include "CompressElement.h"
-#include "DynamicByteArray.h"
-#include "DynamicIntArray.h"
-#include "VarSet.h"
-#include "Huffman.h"
-#include "TightDataPointStorageD.h"
-#include "TightDataPointStorageF.h"
-#include "TightDataPointStorageI.h"
-#include "conf.h"
-#include "dataCompression.h"
-#include "ByteToolkit.h"
-#include "TypeManager.h"
-#include "sz_int8.h"
-#include "sz_int16.h"
-#include "sz_int32.h"
-#include "sz_int64.h"
-#include "sz_uint8.h"
-#include "sz_uint16.h"
-#include "sz_uint32.h"
-#include "sz_uint64.h"
-#include "sz_float.h"
-#include "sz_double.h"
-#include "szd_int8.h"
-#include "szd_int16.h"
-#include "szd_int32.h"
-#include "szd_int64.h"
-#include "szd_uint8.h"
-#include "szd_uint16.h"
-#include "szd_uint32.h"
-#include "szd_uint64.h"
-#include "szd_float.h"
-#include "szd_double.h"
-#include "sz_float_pwr.h"
-#include "sz_double_pwr.h"
-#include "sz_opencl.h"
-#include "callZlib.h"
-#include "rw.h"
-#include "pastri.h"
-#include "sz_float_ts.h"
-#include "szd_float_ts.h"
-#include "utility.h"
-#include "CacheTable.h"
-#include "MultiLevelCacheTable.h"
-#include "MultiLevelCacheTableWideInterval.h"
-#include "exafelSZ.h"
-
-#ifdef _WIN32
-#define PATH_SEPARATOR ';'
-#else
-#define PATH_SEPARATOR ':'
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-//typedef char int8_t;
-//typedef unsigned char uint8_t;
-//typedef short int16_t;
-//typedef unsigned short uint16_t;
-//typedef int int32_t;
-//typedef unsigned int uint32_t;
-//typedef long int64_t;
-//typedef unsigned long uint64_t;
-
-#include "defines.h"
-
-//Note: the following setting should be consistent with stateNum in Huffman.h
-//#define intvCapacity 65536
-//#define intvRadius 32768
-//#define intvCapacity 131072
-//#define intvRadius 65536
-
-/*^***************************************************************
-*  Export parameters
-*****************************************************************/
-/*
-*  SZF_DLL_EXPORT :
-*  Enable exporting of functions when building a Windows DLL
-*  SZFLIB_VISIBILITY :
-*  Control library symbols visibility.
-*/
-#ifndef SZFLIB_VISIBILITY
-#  if defined(__GNUC__) && (__GNUC__ >= 4)
-#    define SZFLIB_VISIBILITY __attribute__ ((visibility ("default")))
-#  else
-#    define SZFLIB_VISIBILITY
-#  endif
-#endif
-#if defined(SZF_DLL_EXPORT) && (SZF_DLL_EXPORT==1)
-#  define SZFLIB_API __declspec(dllexport) SZFLIB_VISIBILITY
-#elif defined(SZF_DLL_IMPORT) && (SZF_DLL_IMPORT==1)
-#  define SZFLIB_API __declspec(dllimport) SZFLIB_VISIBILITY /* It isn't required but allows to generate better code, saving a function pointer load from the IAT and an indirect jump.*/
-#else
-#  define SZFLIB_API SZFLIB_VISIBILITY
-#endif
 
 #define SZ_COMPUTE_1D_NUMBER_OF_BLOCKS( COUNT, NUM_BLOCKS, BLOCK_SIZE ) \
     if (COUNT <= BLOCK_SIZE){                  \
@@ -249,6 +157,10 @@ typedef struct sz_tsc_metainfo
     int64_t* hist_index; //sihuan added: prestep index
 
 } sz_tsc_metadata;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern int versionNumber[4];
 

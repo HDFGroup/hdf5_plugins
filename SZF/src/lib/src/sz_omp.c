@@ -7,9 +7,21 @@
  *      See COPYRIGHT in top-level directory.
  */
 
+
 #include "sz_omp.h"
+
+#include "sz_double.h"
+#include "szd_double.h"
+#include "sz_float.h"
+#include "szd_float.h"
 #include <math.h>
+
+#ifdef HAVE_CLOCK_GETTIME
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
 #include <time.h>
+#endif
 
 double sz_wtime(){
 #ifdef _OPENMP

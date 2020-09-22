@@ -7,7 +7,6 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdbool.h>
 #include "MultiLevelCacheTableWideInterval.h"
 
 void freeTopLevelTableWideInterval(struct TopLevelTableWideInterval* topTable)

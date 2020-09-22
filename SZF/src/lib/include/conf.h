@@ -14,8 +14,6 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
-
 //conf.c
 void updateQuantizationInfo(int quant_intervals);
 int SZ_ReadConf(const char* sz_cfgFile);

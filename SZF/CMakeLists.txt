@@ -51,9 +51,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5SZ link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the szf_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5SZF_RESOURCES_DIR}/config.h.in ${H5SZF_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5SZF_RESOURCES_DIR}/config.h.in ${H5SZF_BINARY_DIR}/szf_config.h @ONLY)
 
 option (BUILD_SZF_LIBRARY_SOURCE "build the szf library within the plugin" ON)
 if (NOT BUILD_SZF_LIBRARY_SOURCE)

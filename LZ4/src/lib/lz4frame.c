@@ -59,7 +59,7 @@ You can contact the author at :
 #endif
 
 
-#include "config.h"
+#include "lz4_config.h"
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>

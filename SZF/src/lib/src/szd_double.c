@@ -7,13 +7,12 @@
  *      See COPYRIGHT in top-level directory.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
+#include "sz.h"
 #include "szd_double.h"
 #include "TightDataPointStorageD.h"
-#include "sz.h"
-#include "Huffman.h"
+
+#include "TypeManager.h"
 #include "szd_double_pwr.h"
 #include "szd_double_ts.h"
 #include "utility.h"
