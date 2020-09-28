@@ -85,7 +85,7 @@ macro (BASIC_SETTINGS varname)
   set_global_variable (${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT "")
 
   #-----------------------------------------------------------------------------
-  # Plugins are MODULEs thatmust be built as Shared libs
+  # Plugins are MODULEs that must be built as Shared libs
   #-----------------------------------------------------------------------------
   set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
   set (LIB_TYPE SHARED)

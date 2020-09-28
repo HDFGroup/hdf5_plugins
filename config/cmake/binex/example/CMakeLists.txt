@@ -8,6 +8,7 @@ set (dyn_examples
     h5ex_d_lz4
     h5ex_d_lzf
     h5ex_d_jpeg
+    h5ex_d_sz
 #    h5ex_d_zfp special test
 )
 
@@ -235,11 +236,7 @@ if (BUILD_TESTING)
 
   foreach (h5_file ${dyn_examples})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.tst" "${PROJECT_BINARY_DIR}/${h5_file}.tst" "example_files")
-    if (WIN32 AND MSVC_VERSION LESS 1900 AND ${h5_file} MATCHES "h5ex_d_zfp")
-      HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.wddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
-    else ()
-      HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.ddl" "${PROJECT_BINARY_DIR}/${h5_file}.ddl" "example_files")
-    endif()
+    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}.ddl" "${PROJECT_BINARY_DIR}/${h5_file}.ddl" "example_files")
   endforeach ()
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
