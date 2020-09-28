@@ -32,6 +32,7 @@ set (H5BSHUF_PACKAGE_TARNAME "${H5BSHUF_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BSHUF_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BSHUF_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BSHUF_PACKAGE_SOVERSION "${H5BSHUF_SOVERS_MAJOR}.${H5BSHUF_SOVERS_RELEASE}.${H5BSHUF_SOVERS_MINOR}")
+set (H5BSHUF_PACKAGE_SOVERSION_MAJOR "${H5BSHUF_SOVERS_MAJOR}")
 message("Configuring for bshuf HDF5 Plugin version: " ${H5BSHUF_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------

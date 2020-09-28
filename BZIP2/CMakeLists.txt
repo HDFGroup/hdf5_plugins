@@ -32,6 +32,7 @@ set (H5BZ2_PACKAGE_TARNAME "${H5BZ2_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BZ2_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BZ2_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BZ2_PACKAGE_SOVERSION "${H5BZ2_SOVERS_MAJOR}.${H5BZ2_SOVERS_RELEASE}.${H5BZ2_SOVERS_MINOR}")
+set (H5BZ2_PACKAGE_SOVERSION_MAJOR "${H5BZ2_SOVERS_MAJOR}")
 message("Configuring for bz2 HDF5 Plugin version: " ${H5BZ2_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------

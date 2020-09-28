@@ -90,37 +90,39 @@ void MultiLevelCacheTableBuild(struct TopLevelTable* topTable, float* precisionT
     }
 
     uint32_t index = 1;
-    for(uint8_t i = 0; i<=topTable->topIndex-topTable->baseIndex; i++){
-        struct SubLevelTable* processingSubTable = &topTable->subTables[i];
-        uint8_t expoIndex = i+topTable->baseIndex;
-        for(uint32_t j = 0; j<=processingSubTable->topIndex - processingSubTable->baseIndex; j++){
-            uint32_t mantiIndex = j+processingSubTable->baseIndex;
+    uint8_t ui;
+    uint32_t uj;
+    for(ui = 0; ui<=topTable->topIndex-topTable->baseIndex; ui++){
+        struct SubLevelTable* processingSubTable = &topTable->subTables[ui];
+        uint8_t expoIndex = ui+topTable->baseIndex;
+        for(uj = 0; uj<=processingSubTable->topIndex - processingSubTable->baseIndex; uj++){
+            uint32_t mantiIndex = uj+processingSubTable->baseIndex;
             float sample = MLTC_RebuildFloat(expoIndex, mantiIndex, topTable->bits);
             float bottomBoundary = precisionTable[index] / (1+precision);
             float topBoundary = precisionTable[index] / (1-precision);
             if(sample < topBoundary && sample > bottomBoundary){
-                processingSubTable->table[j] = index;
+                processingSubTable->table[uj] = index;
             }else{
                 //float newPrecision = precisionTable[index];
                 index++;
-                processingSubTable->table[j] = index;
-                if(j)
-                    processingSubTable->table[j-1] = index;
+                processingSubTable->table[uj] = index;
+                if(uj)
+                    processingSubTable->table[uj-1] = index;
                 else{
-                    struct SubLevelTable* pastSubTable = &topTable->subTables[i-1];
+                    struct SubLevelTable* pastSubTable = &topTable->subTables[ui-1];
                     pastSubTable->table[pastSubTable->topIndex - pastSubTable->baseIndex] = index;
                 }
             }
         }
-        if(i == topTable->topIndex - topTable->baseIndex){
-            uint32_t j = processingSubTable->topIndex - processingSubTable->baseIndex + 1;
-            uint32_t mantiIndex = j + processingSubTable->baseIndex;
+        if(ui == topTable->topIndex - topTable->baseIndex){
+            uj = processingSubTable->topIndex - processingSubTable->baseIndex + 1;
+            uint32_t mantiIndex = uj + processingSubTable->baseIndex;
             float sample = MLTC_RebuildFloat(expoIndex, mantiIndex, topTable->bits);
             float bottomBoundary = precisionTable[index] / (1+precision);
             float topBoundary = precisionTable[index] / (1-precision);
             if(sample > topBoundary || sample < bottomBoundary){
                 index++;
-                processingSubTable->table[j-1] = index;
+                processingSubTable->table[uj-1] = index;
             }
         }
     }

@@ -81,24 +81,26 @@ void MultiLevelCacheTableWideIntervalBuild(struct TopLevelTableWideInterval* top
 
     uint32_t index = 0;
     bool flag = false;
-    for(uint16_t i = 0; i<=topTable->topIndex-topTable->baseIndex; i++){
-        struct SubLevelTableWideInterval* processingSubTable = &topTable->subTables[i];
-        uint16_t expoIndex = i+topTable->baseIndex;
-        for(uint32_t j = 0; j<=processingSubTable->topIndex - processingSubTable->baseIndex; j++){
-            uint64_t mantiIndex = j + processingSubTable->baseIndex;
+    uint16_t ui;
+    uint32_t uj;
+    for(ui = 0; ui<=topTable->topIndex-topTable->baseIndex; ui++){
+        struct SubLevelTableWideInterval* processingSubTable = &topTable->subTables[ui];
+        uint16_t expoIndex = ui+topTable->baseIndex;
+        for(uj = 0; uj<=processingSubTable->topIndex - processingSubTable->baseIndex; uj++){
+            uint64_t mantiIndex = uj + processingSubTable->baseIndex;
             double sampleBottom = MLTCWI_RebuildDouble(expoIndex, mantiIndex, topTable->bits);
             double sampleTop = MLTCWI_RebuildDouble(expoIndex, mantiIndex+1, topTable->bits);
             double bottomBoundary = precisionTable[index] / (1+precision);
             double topBoundary = precisionTable[index] / (1-precision);
             if(sampleTop < topBoundary && sampleBottom > bottomBoundary){
-                processingSubTable->table[j] = index;
+                processingSubTable->table[uj] = index;
                 flag = true;
             }else{
                 if(flag && index < count-1){
                     index++;
-                    processingSubTable->table[j] = index;
+                    processingSubTable->table[uj] = index;
                 }else{
-                    processingSubTable->table[j] = 0;
+                    processingSubTable->table[uj] = 0;
                 }
             }
         }

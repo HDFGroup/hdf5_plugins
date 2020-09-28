@@ -52,6 +52,7 @@ set (H5ZFP_PACKAGE_TARNAME "${H5ZFP_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5ZFP_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5ZFP_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5ZFP_PACKAGE_SOVERSION "${H5ZFP_SOVERS_MAJOR}.${H5ZFP_SOVERS_RELEASE}.${H5ZFP_SOVERS_MINOR}")
+set (H5ZFP_PACKAGE_SOVERSION_MAJOR "${H5ZFP_SOVERS_MAJOR}")
 message("Configuring for zfp HDF5 Plugin version: " ${H5ZFP_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------

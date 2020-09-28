@@ -7,5 +7,5 @@ Filter info is available from the dataset creation property
    Number of parameters is 5 with the value 3
    To find more about the filter check SZ compressor/decompressor for floating-point data.
 ....Reading szf compressed data ................
-Maximum value in DS1 is 18446744073709551616.000000
+Maximum value in DS1 is 889.0000
 szf filter is available now since H5Dread triggered loading of the filter.

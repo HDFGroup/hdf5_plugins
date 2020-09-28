@@ -41,6 +41,7 @@ set (H5BLOSC_PACKAGE_TARNAME "${H5BLOSC_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BLOSC_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BLOSC_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BLOSC_PACKAGE_SOVERSION "${H5BLOSC_SOVERS_MAJOR}.${H5BLOSC_SOVERS_RELEASE}.${H5BLOSC_SOVERS_MINOR}")
+set (H5BLOSC_PACKAGE_SOVERSION_MAJOR "${H5BLOSC_SOVERS_MAJOR}")
 message("Configuring for blosc HDF5 Plugin version: " ${H5BLOSC_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------

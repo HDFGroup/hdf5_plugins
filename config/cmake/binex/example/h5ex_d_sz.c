@@ -67,7 +67,7 @@ main (void)
     for (i=0; i<DIM0; i++)
         for (j=0; j<DIM1; j++)
             for (k=0; k<DIM2; k++)
-                wdata[i][j][k]= j * k - i;
+                wdata[i][j][k]= (float)(j * k) - (float)(i);
 
     /*
      * Create a new file using the default properties.
@@ -204,7 +204,7 @@ main (void)
     /*
      * Print the maximum value.
      */
-    printf ("Maximum value in %s is %f\n", DATASET, max);
+    printf ("Maximum value in %s is %6.4f\n", DATASET, max);
     /*
      * Check that filter is registered with the library now.
      */

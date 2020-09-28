@@ -382,7 +382,7 @@ void* exafelSZ_Decompress(void *_pr,
   // cout<<"roiData"<<endl;
   float *roiData=(float*)(&compressedBuffer[bytePos]);
   bytePos+=(roiSavedCount*4);
-  // for(uint64_t roii=0;roii<roiSavedCount;roii++){
+  // for( roii=0;roii<roiSavedCount;roii++){
     // cout<<roiData[roii]<<",";
   // }
   // cout<<"bytePos="<<bytePos<<endl;
