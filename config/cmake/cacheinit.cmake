@@ -107,12 +107,12 @@ set (LZF_PACKAGE_NAME "lzf" CACHE STRING "Name of LZF package" FORCE)
 
 ############################# sz ################################################
 
-set (SZ_GIT_URL "https://github.com/disheng222/SZ" CACHE STRING "Use SZ from github repository" FORCE)
-set (SZ_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (SZF_GIT_URL "https://github.com/disheng222/SZ" CACHE STRING "Use SZ filter from github repository" FORCE)
+set (SZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
-set (SZ_TGZ_NAME "sz.tar.gz" CACHE STRING "Use SZ from compressed file" FORCE)
+set (SZF_TGZ_NAME "szf.tar.gz" CACHE STRING "Use SZ filter from compressed file" FORCE)
 
-set (SZ_PACKAGE_NAME "sz" CACHE STRING "Name of SZ package" FORCE)
+set (SZF_PACKAGE_NAME "szf" CACHE STRING "Name of SZ filter package" FORCE)
 
 ############################# zfp ################################################
 

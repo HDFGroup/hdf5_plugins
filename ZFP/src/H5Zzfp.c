@@ -19,7 +19,7 @@ and calls to bitstream methods with 'B ' as in
     B stream_open(...);
 */
 
-#include "config.h"
+#include "zfp_config.h"
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>

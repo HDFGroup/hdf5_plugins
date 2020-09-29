@@ -26,7 +26,7 @@
 */
 
 
-#include "config.h"
+#include "mafisc_config.h"
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>
