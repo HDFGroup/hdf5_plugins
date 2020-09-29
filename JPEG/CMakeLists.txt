@@ -32,6 +32,7 @@ set (H5JPEG_PACKAGE_TARNAME "${H5JPEG_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5JPEG_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5JPEG_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5JPEG_PACKAGE_SOVERSION "${H5JPEG_SOVERS_MAJOR}.${H5JPEG_SOVERS_RELEASE}.${H5JPEG_SOVERS_MINOR}")
+set (H5JPEG_PACKAGE_SOVERSION_MAJOR "${H5JPEG_SOVERS_MAJOR}")
 message("Configuring for jpeg HDF5 Plugin version: " ${H5JPEG_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
