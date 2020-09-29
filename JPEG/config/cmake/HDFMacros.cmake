@@ -150,30 +150,36 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (HDF_SET_LIB_VERSIONS pkg_name libtarget defaultlibname libtype)
-  set (libname "${defaultlibname}")
-  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
+  set (LIB_OUT_NAME "${defaultlibname}")
 
   if (${libtype} MATCHES "SHARED")
-    set (LIB_PACKAGE_SOVERSION ${${pkg_name}_VERS_MAJOR})
+    set (PACKAGE_SOVERSION ${${pkg_name}_PACKAGE_SOVERSION})
+    set (PACKAGE_COMPATIBILITY ${${pkg_name}_SOVERS_INTERFACE}.0.0)
+    set (PACKAGE_CURRENT ${${pkg_name}_SOVERS_INTERFACE}.${${pkg_name}_SOVERS_MINOR}.0)
     if (WIN32)
       set (LIB_VERSION ${${pkg_name}_PACKAGE_VERSION_MAJOR})
     else ()
-      set (LIB_VERSION ${${pkg_name}_PACKAGE_VERSION})
+      set (LIB_VERSION ${${pkg_name}_PACKAGE_SOVERSION_MAJOR})
     endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${LIB_VERSION})
+    set_target_properties (${libtarget} PROPERTIES VERSION ${PACKAGE_SOVERSION})
     if (WIN32)
-        set (${libname} "${libname}-${LIB_PACKAGE_SOVERSION}")
+        set (${LIB_OUT_NAME} "${LIB_OUT_NAME}-${LIB_VERSION}")
     else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_PACKAGE_SOVERSION})
+        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_VERSION})
+    endif ()
+    if (CMAKE_C_OSX_CURRENT_VERSION_FLAG)
+      set_property(TARGET ${libtarget} APPEND PROPERTY
+          LINK_FLAGS "${CMAKE_C_OSX_CURRENT_VERSION_FLAG}${PACKAGE_CURRENT} ${CMAKE_C_OSX_COMPATIBILITY_VERSION_FLAG}${PACKAGE_COMPATIBILITY}"
+      )
     endif ()
   endif ()
+  HDF_SET_BASE_OPTIONS (${libtarget} ${LIB_OUT_NAME} ${libtype})
 
   #-- Apple Specific install_name for libraries
   if (APPLE)
     option (${pkg_name}_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
     if (${pkg_name}_BUILD_WITH_INSTALL_NAME)
       set_target_properties(${libtarget} PROPERTIES
-          LINK_FLAGS "-current_version ${${pkg_name}_PACKAGE_VERSION} -compatibility_version ${${pkg_name}_PACKAGE_VERSION}"
           INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
           BUILD_WITH_INSTALL_RPATH ${${pkg_name}_BUILD_WITH_INSTALL_NAME}
       )

@@ -32,6 +32,7 @@ set (H5LZ4_PACKAGE_TARNAME "${H5LZ4_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5LZ4_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5LZ4_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5LZ4_PACKAGE_SOVERSION "${H5LZ4_SOVERS_MAJOR}.${H5LZ4_SOVERS_RELEASE}.${H5LZ4_SOVERS_MINOR}")
+set (H5LZ4_PACKAGE_SOVERSION_MAJOR "${H5LZ4_SOVERS_MAJOR}")
 message("Configuring for lz4 HDF5 Plugin version: " ${H5LZ4_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
@@ -51,9 +52,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5LZ4 link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the lz4_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5LZ4_RESOURCES_DIR}/config.h.in ${H5LZ4_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5LZ4_RESOURCES_DIR}/config.h.in ${H5LZ4_BINARY_DIR}/lz4_config.h @ONLY)
 
 INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
 
