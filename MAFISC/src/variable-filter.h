@@ -42,7 +42,7 @@
 #ifndef VARIABLE_FILTER_INCLUDE_GUARD
 #define VARIABLE_FILTER_INCLUDE_GUARD
 
-#include "config.h"
+#include "mafisc_config.h"
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>

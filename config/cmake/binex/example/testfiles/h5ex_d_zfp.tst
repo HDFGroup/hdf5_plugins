@@ -7,5 +7,5 @@ Filter info is available from the dataset creation property
    Number of parameters is 6 with the value 5570817
    To find more about the filter check H5Z-ZFP-1.0.1 (ZFP-0.5.5) github.com/LLNL/H5Z-ZFP
 ....Reading zfp compressed data ................
-Maximum value in DS1 is 1890
+Maximum value in DS1 is 1890.0000
 zfp filter is available now since H5Dread triggered loading of the filter.

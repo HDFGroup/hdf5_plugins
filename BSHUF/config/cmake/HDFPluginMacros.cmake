@@ -85,7 +85,7 @@ macro (BASIC_SETTINGS varname)
   set_global_variable (${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT "")
 
   #-----------------------------------------------------------------------------
-  # Plugins are MODULEs thatmust be built as Shared libs
+  # Plugins are MODULEs that must be built as Shared libs
   #-----------------------------------------------------------------------------
   set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
   set (LIB_TYPE SHARED)
@@ -422,7 +422,7 @@ macro (INSTALL_SUPPORT varname)
       list (APPEND CPACK_GENERATOR "DragNDrop")
       set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
       set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-#      set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/h5blosc.gif")
+#      set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/h5bshuf.gif")
 
       option (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE  "Package the ${PLUGIN_PACKAGE_NAME} Library in a Bundle" OFF)
       if (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE)
@@ -459,7 +459,7 @@ macro (INSTALL_SUPPORT varname)
 #            DESTINATION ..
 #        )
       endif ()
-    else (WIN32)
+    else ()
       list (APPEND CPACK_GENERATOR "STGZ")
       set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
       set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)

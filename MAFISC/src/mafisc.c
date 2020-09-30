@@ -25,7 +25,7 @@
 * SUCH DAMAGE.
 */
 
-#include "config.h"
+#include "mafisc_config.h"
 
 #define _GNU_SOURCE
 
@@ -62,7 +62,9 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
-#include <time.h>
+#ifdef HAVE_TIME_H
+#include <time.h>          /* For time(), in seconds */
+#endif
 #include <assert.h>
 
 #include "H5PLextern.h"
