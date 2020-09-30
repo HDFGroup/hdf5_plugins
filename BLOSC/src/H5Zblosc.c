@@ -6,7 +6,7 @@
  *
  */
 
-#include "config.h"
+#include "blosc_config.h"
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>

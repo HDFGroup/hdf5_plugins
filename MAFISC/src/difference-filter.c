@@ -25,7 +25,7 @@
 * SUCH DAMAGE.
 */
 
-#include "config.h"
+#include "mafisc_config.h"
 
 #define _GNU_SOURCE
 

@@ -6,7 +6,7 @@
  */
 
 #include <winresrc.h>
-#include "config.h"
+#include "mafisc_config.h"
 #define LZMA_H_INTERNAL
 #define LZMA_H_INTERNAL_RC
 #include "lzma/version.h"
