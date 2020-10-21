@@ -195,7 +195,6 @@ if (BUILD_SZF_LIBRARY_SOURCE)
       ${H5SZF_SZ_INC_DIR}/pastri.h
       ${H5SZF_SZ_INC_DIR}/exafelSZ.h
       ${H5SZF_SZ_INC_DIR}/ArithmeticCoding.h
-      ${H5SZF_SZ_INC_DIR}/sz_omp.h
   )
   set (H5SZF_SRCS ${H5SZF_SRCS}
       ${H5SZF_SZ_SRC_DIR}/ArithmeticCoding.c
@@ -244,7 +243,6 @@ if (BUILD_SZF_LIBRARY_SOURCE)
       ${H5SZF_SZ_SRC_DIR}/sz_int32.c
       ${H5SZF_SZ_SRC_DIR}/sz_int64.c
       ${H5SZF_SZ_SRC_DIR}/sz_int8.c
-      ${H5SZF_SZ_SRC_DIR}/sz_omp.c
       ${H5SZF_SZ_SRC_DIR}/sz_uint16.c
       ${H5SZF_SZ_SRC_DIR}/sz_uint32.c
       ${H5SZF_SZ_SRC_DIR}/sz_uint64.c
