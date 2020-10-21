@@ -96,6 +96,7 @@ if (BUILD_TESTING)
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
+              -D "TEST_MASK_MOD=1"
               -D "TEST_REFERENCE=${testname}.ddl"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"

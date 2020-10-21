@@ -142,17 +142,10 @@ if (TEST_FIND_RESULT GREATER -1)
   endif ()
 endif ()
 
-# if the output file needs Storage text removed
-if (TEST_MASK)
-  file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-  string (REGEX REPLACE "Storage:[^\n]+\n" "Storage:   <details removed for portability>\n" TEST_STREAM "${TEST_STREAM}")
-  file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
-endif ()
-
-# if the output file needs Modified text removed
+# if the output file needs COMPRESSION text modified
 if (TEST_MASK_MOD)
   file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-  string (REGEX REPLACE "Modified:[^\n]+\n" "Modified:  XXXX-XX-XX XX:XX:XX XXX\n" TEST_STREAM "${TEST_STREAM}")
+  string (REGEX REPLACE " SIZE [0-9]* .([0-9]*)[.][0-9]*:1 COMPRESSION." " SIZE XXX (\\1.XXXX:1 COMPRESSION)" TEST_STREAM "${TEST_STREAM}")
   file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
 endif ()
 

@@ -8,7 +8,7 @@ set (dyn_examples
     h5ex_d_lz4
     h5ex_d_lzf
     h5ex_d_jpeg
-    h5ex_d_sz
+#    h5ex_d_sz special test compare
 #    h5ex_d_zfp special test
 )
 
@@ -59,7 +59,7 @@ if (BUILD_TESTING)
           NAME ${testname}-ERR
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_ARGS:STRING="
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=1"
               -D "TEST_MASK_ERROR=true"
@@ -84,7 +84,7 @@ if (BUILD_TESTING)
           NAME ${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=$<TARGET_FILE:${testname}>"
-              -D "TEST_ARGS:STRING=${ARGN}"
+              -D "TEST_ARGS:STRING="
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=0"
               -D "TEST_OUTPUT=${testname}.out"
@@ -112,20 +112,38 @@ if (BUILD_TESTING)
                 -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
         )
       else ()
-        add_test (
-            NAME H5DUMP-${testname}
-            COMMAND "${CMAKE_COMMAND}"
-                -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
-                -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
-                -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-                -D "TEST_OUTPUT=${testname}.ddl.out"
-                -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
-                -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
-                -D "TEST_EXPECT=0"
-                -D "TEST_REFERENCE=${testname}.ddl"
-                -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-                -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
-        )
+        if (NOT "${ARGN}" STREQUAL "TEST_MASK_MOD")
+          add_test (
+              NAME H5DUMP-${testname}
+              COMMAND "${CMAKE_COMMAND}"
+                  -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+                  -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
+                  -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+                  -D "TEST_OUTPUT=${testname}.ddl.out"
+                  -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+                  -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+                  -D "TEST_EXPECT=0"
+                  -D "TEST_REFERENCE=${testname}.ddl"
+                  -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                  -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+          )
+        else ()
+          add_test (
+              NAME H5DUMP-${testname}
+              COMMAND "${CMAKE_COMMAND}"
+                  -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+                  -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
+                  -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+                  -D "TEST_OUTPUT=${testname}.ddl.out"
+                  -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
+                  -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+                  -D "TEST_EXPECT=0"
+                  -D "TEST_MASK_MOD=1"
+                  -D "TEST_REFERENCE=${testname}.ddl"
+                  -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                  -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+          )
+        endif ()
       endif ()
       set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
       set (last_test "H5DUMP-${testname}")
@@ -246,6 +264,8 @@ if (BUILD_TESTING)
   foreach (h5_file ${dyn_examples})
     ADD_H5_TEST (${h5_file})
   endforeach ()
+  ## special test compare
+  ADD_H5_TEST (h5ex_d_sz TEST_MASK_MOD)
   ## special filter
   ADD_H5_TEST (h5ex_d_zfp FILTERALL)
 
