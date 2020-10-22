@@ -23,7 +23,7 @@ else ()
 endif ()
 
 #run-time loadable library examples
-foreach (example ${dyn_examples} h5ex_d_zfp)
+foreach (example ${dyn_examples} h5ex_d_sz h5ex_d_zfp)
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   target_include_directories(${example} PRIVATE ${H5PL_INCLUDE_DIRS})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
