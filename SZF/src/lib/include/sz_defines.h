@@ -2,7 +2,7 @@
  *  @file sz_defines.h
  *  @author Sheng Di
  *  @date July, 2019
- *  @brief Header file for the dataCompression.c.
+ *  @brief Header file for the types.
  *  (C) 2016 by Mathematics and Computer Science (MCS), Argonne National Laboratory.
  *      See COPYRIGHT in top-level directory.
  */

@@ -10,6 +10,7 @@
 #ifndef _DataCompression_H
 #define _DataCompression_H
 
+#include "ByteToolkit.h"
 #include "CompressElement.h"
 #include "DynamicByteArray.h"
 #include "DynamicIntArray.h"
