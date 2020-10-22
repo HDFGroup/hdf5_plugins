@@ -363,14 +363,14 @@ void symTransform_8bytes(unsigned char data[8])
     data[4] = tmp;
 }
 
-inline void symTransform_2bytes(unsigned char data[2])
+ void symTransform_2bytes(unsigned char data[2])
 {
     unsigned char tmp = data[0];
     data[0] = data[1];
     data[1] = tmp;
 }
 
-inline void symTransform_4bytes(unsigned char data[4])
+ void symTransform_4bytes(unsigned char data[4])
 {
     unsigned char tmp = data[0];
     data[0] = data[3];
@@ -381,13 +381,13 @@ inline void symTransform_4bytes(unsigned char data[4])
     data[2] = tmp;
 }
 
-inline void compressInt8Value(int8_t tgtValue, int8_t minValue, int byteSize, unsigned char* bytes)
+ void compressInt8Value(int8_t tgtValue, int8_t minValue, int byteSize, unsigned char* bytes)
 {
     uint8_t data = tgtValue - minValue;
     memcpy(bytes, &data, byteSize); //byteSize==1
 }
 
-inline void compressInt16Value(int16_t tgtValue, int16_t minValue, int byteSize, unsigned char* bytes)
+ void compressInt16Value(int16_t tgtValue, int16_t minValue, int byteSize, unsigned char* bytes)
 {
     uint16_t data = tgtValue - minValue;
     unsigned char tmpBytes[2];
@@ -395,7 +395,7 @@ inline void compressInt16Value(int16_t tgtValue, int16_t minValue, int byteSize,
     memcpy(bytes, tmpBytes + 2 - byteSize, byteSize);
 }
 
-inline void compressInt32Value(int32_t tgtValue, int32_t minValue, int byteSize, unsigned char* bytes)
+ void compressInt32Value(int32_t tgtValue, int32_t minValue, int byteSize, unsigned char* bytes)
 {
     uint32_t data = tgtValue - minValue;
     unsigned char tmpBytes[4];
@@ -403,7 +403,7 @@ inline void compressInt32Value(int32_t tgtValue, int32_t minValue, int byteSize,
     memcpy(bytes, tmpBytes + 4 - byteSize, byteSize);
 }
 
-inline void compressInt64Value(int64_t tgtValue, int64_t minValue, int byteSize, unsigned char* bytes)
+ void compressInt64Value(int64_t tgtValue, int64_t minValue, int byteSize, unsigned char* bytes)
 {
     uint64_t data = tgtValue - minValue;
     unsigned char tmpBytes[8];
@@ -411,13 +411,13 @@ inline void compressInt64Value(int64_t tgtValue, int64_t minValue, int byteSize,
     memcpy(bytes, tmpBytes + 8 - byteSize, byteSize);
 }
 
-inline void compressUInt8Value(uint8_t tgtValue, uint8_t minValue, int byteSize, unsigned char* bytes)
+ void compressUInt8Value(uint8_t tgtValue, uint8_t minValue, int byteSize, unsigned char* bytes)
 {
     uint8_t data = tgtValue - minValue;
     memcpy(bytes, &data, byteSize); //byteSize==1
 }
 
-inline void compressUInt16Value(uint16_t tgtValue, uint16_t minValue, int byteSize, unsigned char* bytes)
+ void compressUInt16Value(uint16_t tgtValue, uint16_t minValue, int byteSize, unsigned char* bytes)
 {
     uint16_t data = tgtValue - minValue;
     unsigned char tmpBytes[2];
@@ -425,7 +425,7 @@ inline void compressUInt16Value(uint16_t tgtValue, uint16_t minValue, int byteSi
     memcpy(bytes, tmpBytes + 2 - byteSize, byteSize);
 }
 
-inline void compressUInt32Value(uint32_t tgtValue, uint32_t minValue, int byteSize, unsigned char* bytes)
+ void compressUInt32Value(uint32_t tgtValue, uint32_t minValue, int byteSize, unsigned char* bytes)
 {
     uint32_t data = tgtValue - minValue;
     unsigned char tmpBytes[4];
@@ -433,7 +433,7 @@ inline void compressUInt32Value(uint32_t tgtValue, uint32_t minValue, int byteSi
     memcpy(bytes, tmpBytes + 4 - byteSize, byteSize);
 }
 
-inline void compressUInt64Value(uint64_t tgtValue, uint64_t minValue, int byteSize, unsigned char* bytes)
+ void compressUInt64Value(uint64_t tgtValue, uint64_t minValue, int byteSize, unsigned char* bytes)
 {
     uint64_t data = tgtValue - minValue;
     unsigned char tmpBytes[8];

@@ -22,7 +22,7 @@ uint32_t baseIndex;
 uint32_t topIndex;
 int bits;
 
-inline int doubleGetExpo(double d){
+ int doubleGetExpo(double d){
     long* ptr = (long*)&d;
     *ptr = ((*ptr) >> 52) - 1023;
     return *ptr;
@@ -33,7 +33,7 @@ int CacheTableGetRequiredBits(double precision, int quantization_intervals){
     return -(doubleGetExpo(min_distance));
 }
 
-inline uint32_t CacheTableGetIndex(float value, int bits){
+ uint32_t CacheTableGetIndex(float value, int bits){
     uint32_t* ptr = (uint32_t*)&value;
     int shift = 32 - 9 - bits;
     if(shift>0){
@@ -43,7 +43,7 @@ inline uint32_t CacheTableGetIndex(float value, int bits){
     }
 }
 
-inline uint64_t CacheTableGetIndexDouble(double value, int bits){
+ uint64_t CacheTableGetIndexDouble(double value, int bits){
     uint64_t* ptr = (uint64_t*)&value;
     int shift = 64 - 12 - bits;
     if(shift>0){
@@ -53,7 +53,7 @@ inline uint64_t CacheTableGetIndexDouble(double value, int bits){
     }
 }
 
-inline int CacheTableIsInBoundary(uint32_t index){
+ int CacheTableIsInBoundary(uint32_t index){
     if(index <= topIndex && index > baseIndex){
         return 1;
     }else{
@@ -101,7 +101,7 @@ void CacheTableBuild(double * table, int count, double smallest, double largest,
 
 }
 
-inline uint32_t CacheTableFind(uint32_t index){
+ uint32_t CacheTableFind(uint32_t index){
     return g_InverseTable[index-baseIndex];
 }
 

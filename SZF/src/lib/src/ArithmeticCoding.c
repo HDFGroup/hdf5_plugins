@@ -10,20 +10,20 @@
 
 #include "ArithmeticCoding.h"
 
-inline void output_bit_1(unsigned int* buf)
+ void output_bit_1(unsigned int* buf)
 {
     (*buf) = (*buf) << 1;
     (*buf) |= 1;
 }
 
-inline void output_bit_0(unsigned int* buf)
+ void output_bit_0(unsigned int* buf)
 {
     (*buf) = (*buf) << 1;
     //(*byte) |= 0; //actually doesn't have to set the bit to 0
 }
 
 //TODO: problematic
-inline unsigned int output_bit_1_plus_pending(int pending_bits)
+ unsigned int output_bit_1_plus_pending(int pending_bits)
 {
     unsigned int buf = 0, pbits = pending_bits;
     output_bit_1(&buf);
@@ -33,7 +33,7 @@ inline unsigned int output_bit_1_plus_pending(int pending_bits)
     return buf;
 }
 
-inline unsigned int output_bit_0_plus_pending(int pending_bits)
+ unsigned int output_bit_0_plus_pending(int pending_bits)
 {
     unsigned int buf = 0, pbits = pending_bits;
     //output_bit_0(&buf);
@@ -622,7 +622,7 @@ Prob* getCode(AriCoder *ariCoder, size_t scaled_value)
  *
  * @return unsigned char (output) : 1 or 0
  * */
-inline unsigned char get_bit(unsigned char* p, int offset)
+ unsigned char get_bit(unsigned char* p, int offset)
 {
     return ((*p) >> (7-offset)) & 0x01;
 }

@@ -228,7 +228,7 @@ void free_multisteps(sz_multisteps* multisteps)
     free(multisteps);
 }
 
-inline int checkVarID(unsigned char cur_var_id, unsigned char* var_ids, int var_count)
+ int checkVarID(unsigned char cur_var_id, unsigned char* var_ids, int var_count)
 {
     int j = 0;
     for(j=0;j<var_count;j++)

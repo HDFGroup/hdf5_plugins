@@ -40,7 +40,7 @@ void computeReqLength_float(double realPrecision, short radExpo, int *reqLength,
     }
 }
 
-inline short computeReqLength_float_MSST19(double realPrecision) {
+ short computeReqLength_float_MSST19(double realPrecision) {
     short reqExpo = getPrecisionReqLength_float(realPrecision);
     return 9 - reqExpo;
 }
