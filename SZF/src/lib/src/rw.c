@@ -13,7 +13,7 @@
 
 int checkFileExistance(char* filePath)
 {
-    if( access( filePath, F_OK ) != -1 ) {
+    if( access( filePath, 0 ) != -1 ) {
         // file exists
         return 1;
     } else {
