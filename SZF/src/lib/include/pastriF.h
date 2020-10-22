@@ -1,7 +1,7 @@
 #ifndef PASTRIF_H
 #define PASTRIF_H
 
-static inline int64_t pastri_float_quantize(float x, float binSize){
+SZ_INLINE int64_t pastri_float_quantize(float x, float binSize){
   //Add or sub 0.5, depending on the sign:
   x=x/binSize;
   
@@ -18,7 +18,7 @@ static inline int64_t pastri_float_quantize(float x, float binSize){
   return (int64_t)(x + half.d);
 }
 
-static inline void pastri_float_PatternMatch(float*data,pastri_params* p,pastri_blockParams* bp,int64_t* patternQ,int64_t *scalesQ, int64_t* ECQ){
+SZ_INLINE void pastri_float_PatternMatch(float*data,pastri_params* p,pastri_blockParams* bp,int64_t* patternQ,int64_t *scalesQ, int64_t* ECQ){
   //Find the pattern.
   //First, find the extremum point:
   float absExt=0; //Absolute value of Extremum
@@ -126,7 +126,7 @@ static inline void pastri_float_PatternMatch(float*data,pastri_params* p,pastri_
   */
 }
 
-static inline void pastri_float_Encode(float *data,int64_t* patternQ,int64_t* scalesQ,int64_t* ECQ,pastri_params *p,pastri_blockParams* bp,unsigned char* outBuf,int *numOutBytes){
+SZ_INLINE void pastri_float_Encode(float *data,int64_t* patternQ,int64_t* scalesQ,int64_t* ECQ,pastri_params *p,pastri_blockParams* bp,unsigned char* outBuf,int *numOutBytes){
   bp->ECQBits=bitsNeeded_UI64(bp->ECQExt)+1;
   bp->_1DIdxBits=bitsNeeded_UI64(p->bSize);
   //(*numOutBytes)=0;
@@ -480,7 +480,7 @@ static inline void pastri_float_Encode(float *data,int64_t* patternQ,int64_t* sc
   ////for(i=213;i<233;i++)if(DEBUG)printf("AMG_WE:bitPos:%d buffer[%d]=0x%lx\n",i*8,i,*(uint64_t*)(&outBuf[i])); //DEBUG
   
 }
-static inline int pastri_float_Compress(unsigned char*inBuf,pastri_params *p,unsigned char*outBuf,int *numOutBytes){
+SZ_INLINE int pastri_float_Compress(unsigned char*inBuf,pastri_params *p,unsigned char*outBuf,int *numOutBytes){
   pastri_blockParams bp;
 
   //if(D_G2){printf("Parameters: dataSize:%d\n",p->dataSize);}  //DEBUG
@@ -509,11 +509,11 @@ static inline int pastri_float_Compress(unsigned char*inBuf,pastri_params *p,uns
   return 0;
 }
 
-static inline float pastri_float_InverseQuantization(int64_t q, float binSize){
+SZ_INLINE float pastri_float_InverseQuantization(int64_t q, float binSize){
   return q*binSize;
 }
 
-static inline void pastri_float_PredictData(pastri_params *p,pastri_blockParams *bp,float *data,int64_t* patternQ,int64_t* scalesQ,int64_t* ECQ){
+SZ_INLINE void pastri_float_PredictData(pastri_params *p,pastri_blockParams *bp,float *data,int64_t* patternQ,int64_t* scalesQ,int64_t* ECQ){
   int j;
   float PS_binSize=bp->scalesBinSize*bp->binSize;
   for(j=0;j<p->bSize;j++){
@@ -522,7 +522,7 @@ static inline void pastri_float_PredictData(pastri_params *p,pastri_blockParams 
   }
 }
 
-static inline void pastri_float_Decode(unsigned char*inBuf,pastri_params *p,pastri_blockParams *bp,unsigned char*outBuf,int *numReadBytes,int64_t* patternQ,int64_t* scalesQ,int64_t* ECQ){
+SZ_INLINE void pastri_float_Decode(unsigned char*inBuf,pastri_params *p,pastri_blockParams *bp,unsigned char*outBuf,int *numReadBytes,int64_t* patternQ,int64_t* scalesQ,int64_t* ECQ){
   int j;
   bp->_1DIdxBits=bitsNeeded_UI64(p->bSize);
   //float *data=(float*)(outBuf+p->bSize*8);
@@ -699,7 +699,7 @@ static inline void pastri_float_Decode(unsigned char*inBuf,pastri_params *p,past
           }
           break;
       }
-      //static inline uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,uint64_t numBits){ // numBits must be in range [0:56]
+      //SZ_INLINE uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,uint64_t numBits){ // numBits must be in range [0:56]
       //patternQ=(int64_t*)(inBuf+15); 
       //scalesQ=(int64_t*)(inBuf+15+p->sbSize*8);
       
@@ -837,7 +837,7 @@ static inline void pastri_float_Decode(unsigned char*inBuf,pastri_params *p,past
           }
           break;
       }
-      //static inline uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,uint64_t numBits){ // numBits must be in range [0:56]
+      //SZ_INLINE uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,uint64_t numBits){ // numBits must be in range [0:56]
       //patternQ=(int64_t*)(inBuf+15); 
       //scalesQ=(int64_t*)(inBuf+15+p->sbSize*8);
       bytePos=(bitPos+7)/8;
@@ -854,7 +854,7 @@ static inline void pastri_float_Decode(unsigned char*inBuf,pastri_params *p,past
   (*numReadBytes)=bytePos;
 }
 
-static inline void pastri_float_Decompress(unsigned char*inBuf,int dataSize,pastri_params *p,unsigned char*outBuf,int *numReadBytes){
+SZ_INLINE void pastri_float_Decompress(unsigned char*inBuf,int dataSize,pastri_params *p,unsigned char*outBuf,int *numReadBytes){
   int64_t patternQ[MAX_PS_SIZE]; 
   int64_t scalesQ[MAX_PS_SIZE];
   int64_t ECQ[MAX_BLOCK_SIZE];
@@ -869,7 +869,7 @@ static inline void pastri_float_Decompress(unsigned char*inBuf,int dataSize,past
 }
 
 //inBuf vs Decompressed
-static inline int pastri_float_Check(unsigned char*inBuf,int dataSize,unsigned char*DC,pastri_params *p){
+SZ_INLINE int pastri_float_Check(unsigned char*inBuf,int dataSize,unsigned char*DC,pastri_params *p){
   int i;
   
   float *data=(float*)(inBuf);

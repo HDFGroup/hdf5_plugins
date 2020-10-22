@@ -153,6 +153,31 @@
 #endif
 
 
+/*************************************
+*  Compiler Options
+**************************************/
+#ifdef _MSC_VER    /* Visual Studio */
+#  include <intrin.h>
+#  pragma warning(disable : 4127)        /* disable: C4127: conditional expression is constant */
+#  pragma warning(disable : 4293)        /* disable: C4293: too large shift (32-bits) */
+#endif  /* _MSC_VER */
+
+#ifndef SZ_INLINE
+#  ifdef _MSC_VER    /* Visual Studio */
+#    define SZ_INLINE static __inline
+#  else
+#    if defined (__cplusplus) || defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L   /* C99 */
+#      ifdef __GNUC__
+#        define SZ_INLINE static inline __attribute__((always_inline))
+#      else
+#        define SZ_INLINE static inline
+#      endif
+#    else
+#      define SZ_INLINE static
+#    endif /* __STDC_VERSION__ */
+#  endif  /* _MSC_VER */
+#endif /* SZ_INLINE */
+
 //typedef char int8_t;
 //typedef unsigned char uint8_t;
 //typedef short int16_t;

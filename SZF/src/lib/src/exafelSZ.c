@@ -71,13 +71,13 @@ void exafelSZ_params_print(){
 //*********************************************************************************
 
 //Index Calculator
-static inline size_t calcIdx_4D(int i3, int i2, int i1, int i0, int size2, int size1, int size0){
+SZ_INLINE size_t calcIdx_4D(int i3, int i2, int i1, int i0, int size2, int size1, int size0){
   return i0+size0*(i1+size1*(i2+size2*i3));
 }
-static inline size_t calcIdx_3D(int i2, int i1, int i0, int size1, int size0){
+SZ_INLINE size_t calcIdx_3D(int i2, int i1, int i0, int size1, int size0){
   return i0+size0*(i1+size1*i2);
 }
-static inline size_t calcIdx_2D(int i1, int i0, int size0){
+SZ_INLINE size_t calcIdx_2D(int i1, int i0, int size0){
   return i0+size0*i1;
 }
 

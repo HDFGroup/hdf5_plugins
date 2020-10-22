@@ -2,7 +2,7 @@
 #define PASTRIGENERAL_H
 
 
-static inline double abs_FastD(double x){
+SZ_INLINE double abs_FastD(double x){
   u_UI64I64D u1;
   u1.d=x;
   //(*((uint64_t *)(&x)))&=(int64_t)0x7FFFFFFFFFFFFFFF;
@@ -10,7 +10,7 @@ static inline double abs_FastD(double x){
   return u1.d;
 }
 
-static inline int64_t abs_FastI64(int64_t x){
+SZ_INLINE int64_t abs_FastI64(int64_t x){
   return (x^((x&(int64_t)0x8000000000000000)>>63))+((x&(int64_t)0x8000000000000000)!=0);
 }
 /*
@@ -28,7 +28,7 @@ int abs(int x) {
 //Actually to be completely safe, it correspond to: ceil(log2(abs(i)+1))+0.1
 //+0.1 was for fixing rounding errors
 //REMEMBER: To represent the whole range [-x:x], the number of bits required is bitsNeeded(x)+1
-static inline int bitsNeeded_double(double x){
+SZ_INLINE int bitsNeeded_double(double x){
   u_UI64I64D u1;
   u1.d=x;
   return (((u1.ui64<<1)>>53)-1022) & (((x!=0)<<31)>>31);
@@ -37,13 +37,13 @@ static inline int bitsNeeded_double(double x){
 //Returns the min. bits needed to represent x.
 //Same as: ceil(log2(abs(x))) 
 //NEEDS OPTIMIZATION!
-static inline int bitsNeeded_float(float x){
+SZ_INLINE int bitsNeeded_float(float x){
   u_UI64I64D u1;
   u1.d=x; //Casting to Double!
   return (((u1.ui64<<1)>>53)-1022) & (((x!=0)<<31)>>31);
 }
 
-static inline int bitsNeeded_UI64(uint64_t x){
+SZ_INLINE int bitsNeeded_UI64(uint64_t x){
   int shift;
   int res=0;
   
@@ -90,7 +90,7 @@ static inline int bitsNeeded_UI64(uint64_t x){
   return res;
 }
 
-static inline int bitsNeeded_I64(int64_t x){
+SZ_INLINE int bitsNeeded_I64(int64_t x){
   uint64_t ux;
   ux=abs_FastI64(x);
   return bitsNeeded_UI64(ux);
@@ -98,7 +98,7 @@ static inline int bitsNeeded_I64(int64_t x){
 
 //Implementations(They are inline, so they should be in this header file)
 
-static inline int myEndianType(){ //Should work for most cases. May not work at mixed endian systems.
+SZ_INLINE int myEndianType(){ //Should work for most cases. May not work at mixed endian systems.
   uint64_t n=1;
   if (*(unsigned char*)&n == 1){
     //cout<<"Little-Endian"<<endl;
@@ -110,7 +110,7 @@ static inline int myEndianType(){ //Should work for most cases. May not work at 
   }
 }
 
-static inline void flipBytes_UI64(uint64_t *dataPtr){
+SZ_INLINE void flipBytes_UI64(uint64_t *dataPtr){
   unsigned char*tempA;
   char temp8b;
   tempA=(unsigned char*)dataPtr;
@@ -131,7 +131,7 @@ static inline void flipBytes_UI64(uint64_t *dataPtr){
 
 //WARNING: readBits works properly only on Little Endian machines! (For Big Endians, some modifications are needed)
 
-static inline uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,char numBits){ // numBits must be in range [0:56]
+SZ_INLINE uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,char numBits){ // numBits must be in range [0:56]
     uint64_t mask = ((uint64_t)0x0000000000000001<<numBits)-1;
     //cout<<"bitPos:"<<(*bitPosPtr)<<"\tbitPos>>3:"<<(*bitPosPtr>>3)<<endl;
     uint64_t temp64b = *(uint64_t*)(buffer + ( *bitPosPtr >> 3)); 
@@ -146,7 +146,7 @@ static inline uint64_t readBits_UI64(unsigned char* buffer,uint64_t *bitPosPtr,c
     return (temp64b & mask);
 }
 
-static inline int64_t readBits_I64(unsigned char* buffer,uint64_t *bitPosPtr,char numBits){ // numBits must be in range [0:56]
+SZ_INLINE int64_t readBits_I64(unsigned char* buffer,uint64_t *bitPosPtr,char numBits){ // numBits must be in range [0:56]
   int64_t val;
   val=readBits_UI64(buffer,bitPosPtr,numBits);//Read value
   int64_t shiftAmount=64-numBits;
@@ -155,7 +155,7 @@ static inline int64_t readBits_I64(unsigned char* buffer,uint64_t *bitPosPtr,cha
 }
 
 //WARNING: readBits_EndianSafe is not tested on Big-Endian machines
-static inline uint64_t readBits_EndianSafe(unsigned char* buffer,uint64_t *bitPosPtr,char numBits){ // numBits must be in range [0:56]
+SZ_INLINE uint64_t readBits_EndianSafe(unsigned char* buffer,uint64_t *bitPosPtr,char numBits){ // numBits must be in range [0:56]
     uint64_t mask = ((uint64_t)0x0000000000000001<<numBits)-1;
     uint64_t temp64b = *(uint64_t*)(buffer + ((*bitPosPtr)>>3)); 
     //NOTE: (*bitPosPtr)>>3 is the same as (*bitPosPtr)/8
@@ -169,7 +169,7 @@ static inline uint64_t readBits_EndianSafe(unsigned char* buffer,uint64_t *bitPo
 //WARNING: writeBits_Fast works properly only on Little Endian machines! (For Big Endians, some modifications are needed)
 //The buffer should be initialized as 0's for this to work!
 //Also, the range of data is not checked!(If data exceeds numBits, it may be cause problems)
-static inline void writeBits_Fast(unsigned char* buffer,uint64_t *bitPosPtr,char numBits,int64_t data){
+SZ_INLINE void writeBits_Fast(unsigned char* buffer,uint64_t *bitPosPtr,char numBits,int64_t data){
     //if(DEBUG){printf("writeBits_Fast: data:0x%lx %ld\n",data,data);} //DEBUG
     //if(DEBUG){printf("writeBits_Fast: numBits:0x%lx %ld\n",numBits,numBits);} //DEBUG
     uint64_t mask = ((uint64_t)0x0000000000000001<<numBits)-1;
@@ -185,7 +185,7 @@ static inline void writeBits_Fast(unsigned char* buffer,uint64_t *bitPosPtr,char
 }
 
 //WARNING: writeBits_EndianSafe is not tested on Big-Endian machines
-static inline void writeBits_EndianSafe(unsigned char* buffer,uint64_t *bitPosPtr,char numBits,uint64_t data){
+SZ_INLINE void writeBits_EndianSafe(unsigned char* buffer,uint64_t *bitPosPtr,char numBits,uint64_t data){
     uint64_t mask = ((uint64_t)0x0000000000000001<<numBits)-1;
     data=data&mask;
     uint64_t temp64b_inBuffer=*(uint64_t*)(buffer + ((*bitPosPtr)>>3));
