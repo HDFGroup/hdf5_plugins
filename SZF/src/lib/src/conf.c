@@ -137,7 +137,7 @@ int SZ_ReadConf(const char* sz_cfgFile) {
         return SZ_SCES;
     }
 
-    if (access(sz_cfgFile, F_OK) != 0)
+    if (access(sz_cfgFile, 0) != 0)
     {
         printf("[SZ] Configuration file NOT accessible.\n");
         return SZ_NSCS;
