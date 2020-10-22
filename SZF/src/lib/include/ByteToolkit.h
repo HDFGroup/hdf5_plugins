@@ -10,6 +10,8 @@
 #ifndef _ByteToolkit_H
 #define _ByteToolkit_H
 
+#include "sz.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
