@@ -709,7 +709,7 @@ size_t dataLength, size_t *outSize, float min, float max)
         size_t totalByteLength = 3 + exe_params->SZ_SIZE_TYPE + 1 + floatSize*dataLength;
         *newByteData = (unsigned char*)malloc(totalByteLength);
 
-        unsigned char dsLengthBytes[exe_params->SZ_SIZE_TYPE];
+        unsigned char* dsLengthBytes = (unsigned char*)malloc(sizeof(unsigned char) * exe_params->SZ_SIZE_TYPE);
         intToBytes_bigEndian(dsLengthBytes, dataLength);//4
         for (i = 0; i < 3; i++)//3
             (*newByteData)[k++] = versionNumber[i];
@@ -724,7 +724,7 @@ size_t dataLength, size_t *outSize, float min, float max)
         }
         for (i = 0; i < exe_params->SZ_SIZE_TYPE; i++)//4 or 8
             (*newByteData)[k++] = dsLengthBytes[i];
-
+        free(dsLengthBytes);
 
         if(sysEndianType==BIG_ENDIAN_SYSTEM)
             memcpy((*newByteData)+4+exe_params->SZ_SIZE_TYPE, oriData, dataLength*floatSize);
