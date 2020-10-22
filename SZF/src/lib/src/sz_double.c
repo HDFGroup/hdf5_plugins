@@ -1626,7 +1626,7 @@ size_t dataLength, double realPrecision, double valueRangeSize, double medianVal
     uint64_t* const buffer = (uint64_t*)&predRelErrRatio;
     const int shift = 52-bits;
     uint64_t expoIndex, mantiIndex;
-    uint16_t* tables[range+1];
+    uint16_t** tables = (uint16_t**)malloc(sizeof(uint16_t*) * (range+1));
     for(i=0; i<=range; i++){
         tables[i] = levelTable.subTables[i].table;
     }
@@ -1666,7 +1666,7 @@ size_t dataLength, double realPrecision, double valueRangeSize, double medianVal
 #endif
 
     }//end of for
-
+    free(tables);
 //    printf("miss:%d, hit:%d\n", miss, hit);
 
     size_t exactDataNum = exactLeadNumArray->size;
@@ -1713,7 +1713,7 @@ TightDataPointStorageD* SZ_compress_double_2D_MDQ_MSST19(double *oriData, size_t
 
     double* precisionTable = (double*)malloc(sizeof(double) * quantization_intervals);
     double inv = 2.0-pow(2, -(confparams_cpr->plus_bits));
-    int k;
+    unsigned int k;
     for(k=0; k<quantization_intervals; k++){
         double test = pow((1+realPrecision), inv*(k - exe_params->intvRadius));
         precisionTable[k] = test;
@@ -1772,7 +1772,7 @@ TightDataPointStorageD* SZ_compress_double_2D_MDQ_MSST19(double *oriData, size_t
     uint64_t* const buffer = (uint64_t*)&predRelErrRatio;
     const int shift = 52-bits;
     uint64_t expoIndex, mantiIndex;
-    uint16_t* tables[range+1];
+    uint16_t** tables = (uint16_t**)malloc(sizeof(uint16_t*) * (range+1));
     for(i=0; i<=range; i++){
         tables[i] = levelTable.subTables[i].table;
     }
@@ -1939,6 +1939,7 @@ TightDataPointStorageD* SZ_compress_double_2D_MDQ_MSST19(double *oriData, size_t
         P1 = P0;
         P0 = Pt;
     }
+    free(tables);
 
     if(r2!=1)
         free(P0);
@@ -1986,7 +1987,7 @@ TightDataPointStorageD* SZ_compress_double_3D_MDQ_MSST19(double *oriData, size_t
 
     double* precisionTable = (double*)malloc(sizeof(double) * quantization_intervals);
     double inv = 2.0-pow(2, -(confparams_cpr->plus_bits));
-    int l;
+    unsigned int l;
     for(l=0; l<quantization_intervals; l++){
         double test = pow((1+realPrecision), inv*(l - exe_params->intvRadius));
         precisionTable[l] = test;
@@ -2041,7 +2042,7 @@ TightDataPointStorageD* SZ_compress_double_3D_MDQ_MSST19(double *oriData, size_t
     uint64_t* const buffer = (uint64_t*)&predRelErrRatio;
     const int shift = 52-bits;
     uint64_t expoIndex, mantiIndex;
-    uint16_t* tables[range+1];
+    uint16_t** tables = (uint16_t**)malloc(sizeof(uint16_t*) * (range+1));
     for(l=0; l<=range; l++){
         tables[l] = levelTable.subTables[l].table;
     }
@@ -2393,6 +2394,7 @@ TightDataPointStorageD* SZ_compress_double_3D_MDQ_MSST19(double *oriData, size_t
         P1 = P0;
         P0 = Pt;
     }
+    free(tables);
     if(r23!=1)
         free(P0);
     free(P1);
