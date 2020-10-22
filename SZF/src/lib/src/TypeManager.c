@@ -465,7 +465,7 @@ void decompressBitArraybySimpleLZ77(int** result, unsigned char* bytes, size_t b
 {
     size_t pairLength = (bytesLength*8)/(validLength+1);
     size_t tmpLength = pairLength*2;
-    int tmpResult[tmpLength];
+    int* tmpResult = (int*)malloc(sizeof(int) * tmpLength);
     size_t i, j, k = 0;
     for(i = 0;i<tmpLength;i+=2)
     {
@@ -491,4 +491,5 @@ void decompressBitArraybySimpleLZ77(int** result, unsigned char* bytes, size_t b
         for(j = 0;j<num;j++)
             (*result)[k++] = state;
     }
+    free(tmpResult);
 }
