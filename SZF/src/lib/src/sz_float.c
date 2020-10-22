@@ -1803,7 +1803,7 @@ TightDataPointStorageF* SZ_compress_float_1D_MDQ_MSST19(float *oriData, size_t d
     uint64_t *const buffer = (uint64_t*) &predRelErrRatio;
     const int shift = 52 - bits;
     uint64_t expoIndex, mantiIndex;
-    uint16_t *tables[range + 1];
+    uint16_t** tables = (uint16_t**)malloc(sizeof(uint16_t*) * (range+1));
     for (l = 0; l <= range; l++) {
         tables[l] = levelTable.subTables[l].table;
     }
@@ -1841,6 +1841,7 @@ TightDataPointStorageF* SZ_compress_float_1D_MDQ_MSST19(float *oriData, size_t d
 #endif
 
     } //end of for
+    free(tables);
 
 //    printf("miss:%d, hit:%d\n", miss, hit);
 
@@ -1942,7 +1943,7 @@ TightDataPointStorageF* SZ_compress_float_2D_MDQ_MSST19(float *oriData, size_t r
     uint64_t *const buffer = (uint64_t*) &predRelErrRatio;
     const int shift = 52 - bits;
     uint64_t expoIndex, mantiIndex;
-    uint16_t *tables[range + 1];
+    uint16_t** tables = (uint16_t**)malloc(sizeof(uint16_t*) * (range+1));
     for (l = 0; l <= range; l++) {
         tables[l] = levelTable.subTables[l].table;
     }
@@ -2095,6 +2096,7 @@ TightDataPointStorageF* SZ_compress_float_2D_MDQ_MSST19(float *oriData, size_t r
         P1 = P0;
         P0 = Pt;
     }
+    free(tables);
 
     if (r2 != 1)
         free(P0);
@@ -2193,7 +2195,7 @@ TightDataPointStorageF* SZ_compress_float_3D_MDQ_MSST19(float *oriData, size_t r
     uint64_t *const buffer = (uint64_t*) &predRelErrRatio;
     const int shift = 52 - bits;
     uint64_t expoIndex, mantiIndex;
-    uint16_t *tables[range + 1];
+    uint16_t** tables = (uint16_t**)malloc(sizeof(uint16_t*) * (range+1));
     for (l = 0; l <= range; l++) {
         tables[l] = levelTable.subTables[l].table;
     }
@@ -2517,6 +2519,7 @@ TightDataPointStorageF* SZ_compress_float_3D_MDQ_MSST19(float *oriData, size_t r
         P1 = P0;
         P0 = Pt;
     }
+    free(tables);
     if (r23 != 1)
         free(P0);
     free(P1);

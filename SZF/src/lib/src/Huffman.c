@@ -346,7 +346,7 @@ void decode_MSST19(unsigned char *s, size_t targetLength, node t, int *out, int 
     int* valueTable = (int*)malloc(tableSize * sizeof(int));
     uint8_t* lengthTable = (uint8_t*)malloc(tableSize * sizeof(int));
     node* nodeTable = (node*)malloc(tableSize * sizeof(node));
-    uint32_t maskTable[maxBits+8];
+    uint32_t maskTable[24]; //maximum maxBits(16) + 8
     int iii,jjj;
     uint32_t ui;
     for(ui=0; ui<tableSize; ui++){
