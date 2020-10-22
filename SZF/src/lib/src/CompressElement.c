@@ -39,7 +39,7 @@ char* decompressGroupIDArray(unsigned char* bytes, size_t dataLength)
     return groupID;
 }
 
-inline short computeGroupNum_float(float value)
+ short computeGroupNum_float(float value)
 {
     short expo = getExponent_float(value);
     if(expo < 0)
@@ -47,7 +47,7 @@ inline short computeGroupNum_float(float value)
     return expo;
 }
 
-inline short computeGroupNum_double(double value)
+ short computeGroupNum_double(double value)
 {
     short expo = getExponent_double(value);
     if(expo < 0)
@@ -60,28 +60,28 @@ inline short computeGroupNum_double(double value)
  * @param  last3CmprsData buffer
  * @param  value the value to be added to the buffer
  * */
-inline void listAdd_double(double last3CmprsData[3], double value)
+ void listAdd_double(double last3CmprsData[3], double value)
 {
     last3CmprsData[2] = last3CmprsData[1];
     last3CmprsData[1] = last3CmprsData[0];
     last3CmprsData[0] = value;
 }
 
-inline void listAdd_float(float last3CmprsData[3], float value)
+ void listAdd_float(float last3CmprsData[3], float value)
 {
     last3CmprsData[2] = last3CmprsData[1];
     last3CmprsData[1] = last3CmprsData[0];
     last3CmprsData[0] = value;
 }
 
-inline void listAdd_int(int64_t last3CmprsData[3], int64_t value)
+ void listAdd_int(int64_t last3CmprsData[3], int64_t value)
 {
     last3CmprsData[2] = last3CmprsData[1];
     last3CmprsData[1] = last3CmprsData[0];
     last3CmprsData[0] = value;
 }
 
-inline void listAdd_float_group(float *groups, int *flags, char groupNum, float oriValue, float decValue, char* curGroupID)
+ void listAdd_float_group(float *groups, int *flags, char groupNum, float oriValue, float decValue, char* curGroupID)
 {
     if(groupNum>=0)
     {
@@ -101,7 +101,7 @@ inline void listAdd_float_group(float *groups, int *flags, char groupNum, float 
         *curGroupID = -(groupNum+2); //-[-1,0,1,2,3,....,16] is mapped to [-1,-2,....,-18]
 }
 
-inline void listAdd_double_group(double *groups, int *flags, char groupNum, double oriValue, double decValue, char* curGroupID)
+ void listAdd_double_group(double *groups, int *flags, char groupNum, double oriValue, double decValue, char* curGroupID)
 {
     if(groupNum>=0)
     {
@@ -125,7 +125,7 @@ inline void listAdd_double_group(double *groups, int *flags, char groupNum, doub
  * Determine whether the prediction value minErr is valid.
  *
  * */
-inline int validPrediction_double(double minErr, double precision)
+ int validPrediction_double(double minErr, double precision)
 {
     if(minErr<=precision)
         return 1;
@@ -133,7 +133,7 @@ inline int validPrediction_double(double minErr, double precision)
         return 0;
 }
 
-inline int validPrediction_float(float minErr, float precision)
+ int validPrediction_float(float minErr, float precision)
 {
     if(minErr<=precision)
         return 1;

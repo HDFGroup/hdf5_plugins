@@ -416,7 +416,7 @@ int checkVersion(char* version)
     return 1;
 }
 
-inline int computeVersion(int major, int minor, int revision)
+ int computeVersion(int major, int minor, int revision)
 {
     return major*10000+minor*100+revision;
 }

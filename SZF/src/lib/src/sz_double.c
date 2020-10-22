@@ -31,7 +31,7 @@ unsigned char* SZ_skip_compress_double(double* data, size_t dataLength, size_t* 
     return out;
 }
 
-inline void computeReqLength_double(double realPrecision, short radExpo, int* reqLength, double* medianValue)
+ void computeReqLength_double(double realPrecision, short radExpo, int* reqLength, double* medianValue)
 {
     short reqExpo = getPrecisionReqLength_double(realPrecision);
     *reqLength = 12+radExpo - reqExpo; //radExpo-reqExpo == reqMantiLength
@@ -44,7 +44,7 @@ inline void computeReqLength_double(double realPrecision, short radExpo, int* re
     }
 }
 
-inline short computeReqLength_double_MSST19(double realPrecision)
+ short computeReqLength_double_MSST19(double realPrecision)
 {
     short reqExpo = getPrecisionReqLength_double(realPrecision);
     return 12-reqExpo;
