@@ -32,6 +32,34 @@ endif ()
 #-----------------------------------------------------------------------------
 # Build examples
 #-----------------------------------------------------------------------------
+# Bitshuffle filter
+set (BSHUF_AVAILABLE 0)
+if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+  set (BSHUF_AVAILABLE 1)
+endif ()
+
+# BLOSC filter
+if (WIN32 AND MSVC_VERSION GREATER 1600)
+  set (BLOSC_AVAILABLE 1)
+elseif (NOT WIN32)
+  set (BLOSC_AVAILABLE 1)
+endif ()
+
+# BZIP2 filter
+set (BZIP2_AVAILABLE 1)
+
+# FPZIP filter
+#set (FPZIP_AVAILABLE 1)
+
+# JPEG filter
+set (JPEG_AVAILABLE 1)
+
+# LZ4 filter
+set (LZ4_AVAILABLE 1)
+
+# LZF filter
+set (LZF_AVAILABLE 1)
+
 set (MAFISC_AVAILABLE 0)
 #if (WIN32 AND MSVC_VERSION GREATER 1600)
 #  # MAFISC filter
@@ -39,5 +67,14 @@ set (MAFISC_AVAILABLE 0)
 #elseif (NOT WIN32)
 #  set (MAFISC_AVAILABLE 1)
 #endif ()
+
+set (SZF_AVAILABLE 0)
+if (NOT WIN32)
+  # SZF filter
+  set (SZF_AVAILABLE 1)
+endif ()
+
+# ZFP filter
+set (ZFP_AVAILABLE 1)
 
 add_subdirectory (example)

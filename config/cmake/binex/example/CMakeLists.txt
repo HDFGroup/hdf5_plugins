@@ -1,19 +1,35 @@
 cmake_minimum_required (VERSION 3.12)
 project (HDF5PL_EX)
 
-set (dyn_examples
-    h5ex_d_blosc
-    h5ex_d_bshuf
-    h5ex_d_bzip2
-    h5ex_d_lz4
-    h5ex_d_lzf
-    h5ex_d_jpeg
-#    h5ex_d_sz special test compare
-#    h5ex_d_zfp special test
-)
-
+set (dyn_examples))
+if (BLOSC_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_blosc)
+endif ()
+if (BSHUF_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_bshuf)
+endif ()
+if (BZIP2_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_bzip2)
+endif ()
+if (LZ4_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_lz4)
+endif ()
+if (LZF_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_lzf)
+endif ()
+if (JPEG_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_jpeg)
+endif ()
 if (MAFISC_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_mafisc)
+endif ()
+
+set (extra_examples)
+if (ZFP_AVAILABLE)
+  set (extra_examples ${extra_examples} h5ex_d_zfp)
+endif ()
+if (SZF_AVAILABLE)
+  set (extra_examples ${extra_examples} h5ex_d_sz)
 endif ()
 
 if (USE_SHARED_LIBS)
@@ -23,7 +39,7 @@ else ()
 endif ()
 
 #run-time loadable library examples
-foreach (example ${dyn_examples} h5ex_d_sz h5ex_d_zfp)
+foreach (example ${dyn_examples} ${extra_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   target_include_directories(${example} PRIVATE ${H5PL_INCLUDE_DIRS})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
@@ -264,8 +280,10 @@ if (BUILD_TESTING)
   foreach (h5_file ${dyn_examples})
     ADD_H5_TEST (${h5_file})
   endforeach ()
-  ## special test compare
-  ADD_H5_TEST (h5ex_d_sz TEST_MASK_MOD)
+  if (SZF_AVAILABLE)
+    ## special test compare
+    ADD_H5_TEST (h5ex_d_sz TEST_MASK_MOD)
+  endif ()
   ## special filter
   ADD_H5_TEST (h5ex_d_zfp FILTERALL)
 
