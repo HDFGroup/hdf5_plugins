@@ -27,8 +27,6 @@
 
 #include "mafisc_config.h"
 
-#define _GNU_SOURCE
-
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
 # include <sys/types.h>
