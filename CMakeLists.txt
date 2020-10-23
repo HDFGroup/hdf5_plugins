@@ -86,7 +86,9 @@ FILTER_OPTION (LZF)
 #endif ()
 
 # SZF filter
-FILTER_OPTION (SZF)
+if (NOT WIN32)
+  FILTER_OPTION (SZF)
+endif ()
 
 # ZFP filter
 FILTER_OPTION (ZFP)
