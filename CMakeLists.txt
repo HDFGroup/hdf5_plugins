@@ -85,8 +85,10 @@ FILTER_OPTION (LZF)
 #  FILTER_OPTION (MAFISC)
 #endif ()
 
-# SZ filter
-#FILTER_OPTION (SZ)
+# SZF filter
+if (NOT WIN32)
+  FILTER_OPTION (SZF)
+endif ()
 
 # ZFP filter
 FILTER_OPTION (ZFP)
