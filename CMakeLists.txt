@@ -87,6 +87,17 @@ FILTER_OPTION (LZF)
 
 # SZ filter
 #FILTER_OPTION (SZ)
+#if (WIN32 AND MSVC_VERSION GREATER 1600)
+#  # MAFISC filter
+#  FILTER_OPTION (MAFISC)
+#elseif (NOT WIN32)
+#  FILTER_OPTION (MAFISC)
+#endif ()
+
+# SZF filter
+if (NOT WIN32)
+  FILTER_OPTION (SZF)
+endif ()
 
 # ZFP filter
 FILTER_OPTION (ZFP)
