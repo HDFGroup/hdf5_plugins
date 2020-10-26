@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.12)
 project (HDF5PL_EX)
 
-set (dyn_examples))
+set (dyn_examples)
 if (BLOSC_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_blosc)
 endif ()
