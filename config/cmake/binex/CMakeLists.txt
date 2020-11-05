@@ -69,10 +69,10 @@ set (MAFISC_AVAILABLE 0)
 #endif ()
 
 set (SZF_AVAILABLE 0)
-if (NOT WIN32)
-  # SZF filter
-  set (SZF_AVAILABLE 1)
-endif ()
+#if (NOT WIN32)
+#  # SZF filter
+#  set (SZF_AVAILABLE 1)
+#endif ()
 
 # ZFP filter
 set (ZFP_AVAILABLE 1)
