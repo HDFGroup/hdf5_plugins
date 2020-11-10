@@ -295,8 +295,11 @@ macro (INSTALL_SUPPORT varname)
       ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
   )
   install (
-      FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
-      DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+      FILES
+          ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestScript.cmake
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFoptions.cmake
+          DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
       COMPONENT hdfdocuments
   )
   execute_process(
