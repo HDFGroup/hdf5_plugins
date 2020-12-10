@@ -138,8 +138,8 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     endif ()
   endif ()
 
-  #----- Use MSVC Naming conventions for Shared Libraries
-  if (MINGW AND ${libtype} MATCHES "SHARED")
+  option (HDF5_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
+  if (HDF5_MSVC_NAMING_CONVENTION AND MINGW AND ${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget} PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
@@ -150,36 +150,30 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (HDF_SET_LIB_VERSIONS pkg_name libtarget defaultlibname libtype)
-  set (LIB_OUT_NAME "${defaultlibname}")
+  set (libname "${defaultlibname}")
+  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
 
   if (${libtype} MATCHES "SHARED")
-    set (PACKAGE_SOVERSION ${${pkg_name}_PACKAGE_SOVERSION})
-    set (PACKAGE_COMPATIBILITY ${${pkg_name}_SOVERS_INTERFACE}.0.0)
-    set (PACKAGE_CURRENT ${${pkg_name}_SOVERS_INTERFACE}.${${pkg_name}_SOVERS_MINOR}.0)
+    set (LIB_PACKAGE_SOVERSION ${${pkg_name}_VERS_MAJOR})
     if (WIN32)
       set (LIB_VERSION ${${pkg_name}_PACKAGE_VERSION_MAJOR})
     else ()
-      set (LIB_VERSION ${${pkg_name}_PACKAGE_SOVERSION_MAJOR})
+      set (LIB_VERSION ${${pkg_name}_PACKAGE_VERSION})
     endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${PACKAGE_SOVERSION})
+    set_target_properties (${libtarget} PROPERTIES VERSION ${LIB_VERSION})
     if (WIN32)
-        set (${LIB_OUT_NAME} "${LIB_OUT_NAME}-${LIB_VERSION}")
+        set (${libname} "${libname}-${LIB_PACKAGE_SOVERSION}")
     else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_VERSION})
-    endif ()
-    if (CMAKE_C_OSX_CURRENT_VERSION_FLAG)
-      set_property(TARGET ${libtarget} APPEND PROPERTY
-          LINK_FLAGS "${CMAKE_C_OSX_CURRENT_VERSION_FLAG}${PACKAGE_CURRENT} ${CMAKE_C_OSX_COMPATIBILITY_VERSION_FLAG}${PACKAGE_COMPATIBILITY}"
-      )
+        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_PACKAGE_SOVERSION})
     endif ()
   endif ()
-  HDF_SET_BASE_OPTIONS (${libtarget} ${LIB_OUT_NAME} ${libtype})
 
   #-- Apple Specific install_name for libraries
   if (APPLE)
     option (${pkg_name}_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
     if (${pkg_name}_BUILD_WITH_INSTALL_NAME)
       set_target_properties(${libtarget} PROPERTIES
+          LINK_FLAGS "-current_version ${${pkg_name}_PACKAGE_VERSION} -compatibility_version ${${pkg_name}_PACKAGE_VERSION}"
           INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
           BUILD_WITH_INSTALL_RPATH ${${pkg_name}_BUILD_WITH_INSTALL_NAME}
       )
@@ -365,7 +359,7 @@ macro (HDF_DIR_PATHS package_prefix)
     set (${package_prefix}_INSTALL_INCLUDE_DIR include)
   endif ()
   if (NOT ${package_prefix}_INSTALL_DATA_DIR)
-    if (NOT WIN32)
+    if (NOT MSVC)
       if (APPLE)
         if (${package_prefix}_BUILD_FRAMEWORKS)
           set (${package_prefix}_INSTALL_EXTRA_DIR ../SharedSupport)
@@ -375,11 +369,12 @@ macro (HDF_DIR_PATHS package_prefix)
         set (${package_prefix}_INSTALL_FWRK_DIR ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
       endif ()
       set (${package_prefix}_INSTALL_DATA_DIR share)
-      set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
     else ()
       set (${package_prefix}_INSTALL_DATA_DIR ".")
-      set (${package_prefix}_INSTALL_CMAKE_DIR cmake)
     endif ()
+  endif ()
+  if (NOT ${package_prefix}_INSTALL_CMAKE_DIR)
+    set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
   endif ()
 
   # Always use full RPATH, i.e. don't skip the full RPATH for the build tree
@@ -449,5 +444,36 @@ macro (HDF_DIR_PATHS package_prefix)
       set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
     endif ()
   endif ()
+
+#-----------------------------------------------------------------------------
+# Setup pre-3.14 FetchContent
+#-----------------------------------------------------------------------------
+  if(${CMAKE_VERSION} VERSION_LESS 3.14)
+    macro(FetchContent_MakeAvailable NAME)
+        FetchContent_GetProperties(${NAME})
+        if(NOT ${NAME}_POPULATED)
+            FetchContent_Populate(${NAME})
+            add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
+        endif()
+    endmacro()
+  endif()
+endmacro ()
+
+macro (ADD_H5_FLAGS h5_flag_var infile)
+  file (STRINGS ${infile} TEST_FLAG_STREAM)
+  #message (STATUS "TEST_FLAG_STREAM=${TEST_FLAG_STREAM}")
+  list (LENGTH TEST_FLAG_STREAM len_flag)
+  if (len_flag GREATER 0)
+    math (EXPR _FP_LEN "${len_flag} - 1")
+    foreach (line RANGE 0 ${_FP_LEN})
+      list (GET TEST_FLAG_STREAM ${line} str_flag)
+      string (REGEX REPLACE "^#.*" "" str_flag "${str_flag}")
+      #message (STATUS "str_flag=${str_flag}")
+      if (str_flag)
+        list (APPEND ${h5_flag_var} "${str_flag}")
+      endif ()
+    endforeach ()
+  endif ()
+  #message (STATUS "h5_flag_var=${${h5_flag_var}}")
 endmacro ()
 

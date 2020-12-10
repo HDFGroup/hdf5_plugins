@@ -244,7 +244,6 @@ macro (HDF5_SUPPORT link_hdf)
       set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
       set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
-      set (H5PL_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
     endif ()
 
     set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
@@ -267,7 +266,8 @@ macro (HDF5_SUPPORT link_hdf)
       set (LINK_LIBS ${LINK_LIBS} ${HDF5_LINK_LIBS})
     endif ()
   endif ()
-  message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+  set (H5PL_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
+  message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS} Includes: ${H5PL_INCLUDE_DIRS}")
 
   if (USE_SHARED_LIBS)
     set (H5_LIB_TYPE SHARED)
@@ -295,8 +295,11 @@ macro (INSTALL_SUPPORT varname)
       ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
   )
   install (
-      FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
-      DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+      FILES
+          ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestScript.cmake
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFoptions.cmake
+          DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
       COMPONENT hdfdocuments
   )
   execute_process(
