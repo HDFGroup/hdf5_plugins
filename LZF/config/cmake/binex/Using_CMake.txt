@@ -13,13 +13,11 @@ Notes: This short instruction is written for users who want to quickly build
        all of the operating systems supported by CMake.
 
        NOTES:
-         1. Using CMake for building and using HDF5 is under active
-            development. While we have attempted to provide error-free
-            files, please understand that development with CMake has not
-            been extensively tested outside of HDF. The CMake specific
-            files may change before the next release.
+         1. Using CMake for building the filters and using HDF5 is under
+            active development. We have attempted to provide error-free
+            files. The CMake specific files may change before the next release.
 
-         2. CMake for HDF5 development should be usable on any system
+         2. CMake for HDF5 and filter development should be usable on any system
             where CMake is supported. Please send us any comments on how
             CMake support can be improved on any system.
 
@@ -29,8 +27,8 @@ I. Preconditions
 ========================================================================
 
    1. We suggest you obtain the latest CMake for windows from the Kitware
-      web site. The HDFPL product requires a minimum CMake version
-      of 3.3.2.
+      web site. The HDF5PL 1.12.x product requires a minimum CMake version
+      of 3.12.
 
    2. You have installed the HDF5 library built with CMake, by executing
       the HDF Install Utility (the *.msi file in the binary package for
@@ -40,20 +38,20 @@ I. Preconditions
 
    3. Set the environment variable HDF5_DIR to the installed location of
       the config files for HDF5. On Windows:
-            HDF5_DIR=C:/Program Files/HDF_Group/HDF5/1.10.x/cmake
+            HDF5_DIR=C:/Program Files/HDF_Group/HDF5/1.12.x/cmake
 
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
 
    4. Set the environment variable HDF5_PLUGIN_PATH to the installed location of
       the library files for HDFPL. On Windows:
-            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.10.x/lib/plugin
+            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.12.x/lib/plugin
 
    5. Set the runtime path to the installed location of the library files
       for HDF5. On Windows:
-            PATH=C:/Program Files/HDF_Group/HDF5/1.10.x/lib:C:/Program Files/HDF_Group/HDF5/1.10.x/lib/plugin
+            PATH=C:/Program Files/HDF_Group/HDF5/1.12.x/lib:C:/Program Files/HDF_Group/HDF5/1.12.x/lib/plugin
       On linux:
-            LD_LIBRARY_PATH=<Installation>/HDF_Group/HDF5/1.10.x/lib;<Installation>/HDF_Group/HDF5/1.10.x/lib/plugin
+            LD_LIBRARY_PATH=<Installation>/HDF_Group/HDF5/1.12.x/lib;<Installation>/HDF_Group/HDF5/1.12.x/lib/plugin
 
    6. Created separate source and build directories.
       (CMake commands are executed in the build directory)
@@ -95,15 +93,9 @@ These steps are described in more detail below.
         cmake -G "<generator>"  [-D<options>]  <sourcepath>
 
         Where <generator> is
-            * Borland Makefiles
-            * MSYS Makefiles
             * MinGW Makefiles
             * NMake Makefiles
             * Unix Makefiles
-            * Visual Studio 11
-            * Visual Studio 11 Win64
-            * Visual Studio 12 2013
-            * Visual Studio 12 2013 Win64
             * Visual Studio 14 2015
             * Visual Studio 14 2015 Win64
             * Visual Studio 15 2017
@@ -134,7 +126,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
-           cmake -G "Visual Studio 14  2015 Win64" -DBUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 14 2015 Win64" -DBUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Plugin examples
 
