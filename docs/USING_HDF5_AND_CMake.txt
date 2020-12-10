@@ -1,9 +1,10 @@
 ************************************************************************
-* Build and Install HDF5PL Examples with CMake                          *
+* Build and Install HDF5 Filters with CMake                       *
 ************************************************************************
 
-Notes: This short instruction is written for users who want to quickly build
-       HDFPL Examples from the HDFPL source code package using the CMake tools.
+Notes: This short instruction is written for users who want to quickly
+       build HDF5 filters using the CMake tools. For more information,
+       see the "Minimum C Project Files for CMake" section.
 
        More information about using CMake can be found at the KitWare
        site, www.cmake.org.
@@ -21,6 +22,9 @@ Notes: This short instruction is written for users who want to quickly build
             where CMake is supported. Please send us any comments on how
             CMake support can be improved on any system.
 
+         3. See the appendix at the bottom of this file for an example
+            of using a ctest script for building and testing. See
+            INSTALL_With_CMake.txt for more information.
 
 ========================================================================
 I. Preconditions
@@ -43,31 +47,24 @@ I. Preconditions
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
 
-   4. Set the environment variable HDF5_PLUGIN_PATH to the installed location of
-      the library files for HDFPL. On Windows:
-            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.13.x/lib/plugin
-
-   5. Set the runtime path to the installed location of the library files
-      for HDF5. On Windows:
-            PATH=C:/Program Files/HDF_Group/HDF5/1.13.x/lib:C:/Program Files/HDF_Group/HDF5/1.13.x/lib/plugin
-      On linux:
-            LD_LIBRARY_PATH=<Installation>/HDF_Group/HDF5/1.13.x/lib;<Installation>/HDF_Group/HDF5/1.13.x/lib/plugin
-
-   6. Created separate source and build directories.
+   4. Created separate source and build directories.
       (CMake commands are executed in the build directory)
 
+   5. Created a CMakeLists.txt file(s) for your source. See Section III
+      below.
+
 
 
 ========================================================================
-II. Building HDF5 Plugin Examples with CMake
+II. Building HDF5 Filters with CMake
 ========================================================================
 
-Go through these steps to build HDF5 Plugin applications with CMake.
+Go through these steps to build HDF5 filters with CMake.
 
    1. Run CMake
    2. Configure the cache settings
-   3. Build HDF5 Plugin Examples
-   4. Test HDF5 Plugin Examples.
+   3. Build HDF5 Filters
+   4. Test HDF5 Filters
 
 These steps are described in more detail below.
 
@@ -82,8 +79,8 @@ These steps are described in more detail below.
 
       Specify the source and build directories. Make the build and source
       directories different. For example on Windows, if the source is at
-      c:\MyHDFstuff\hdf5pl, then use c:\MyHDFstuff\hdf5pl\build or
-      c:\MyHDFstuff\build\hdf5pl for the build directory.
+      c:\MyHDFstuff\hdf5filt, then use c:\MyHDFstuff\hdf5filt\build or
+      c:\MyHDFstuff\build\hdf5filt for the build directory.
 
       PREFERRED:
         Users can perform the configuration step without using the visual
@@ -108,9 +105,9 @@ These steps are described in more detail below.
 
       2.1  Visual CMake users, click the Configure button. If this is the first time you are
            running cmake-gui in this directory, you will be prompted for the
-           generator you wish to use (for example on Windows, Visual Studio 14 2015 Win64).
+           generator you wish to use (for example on Windows, Visual Studio 14 2015).
            CMake will read in the CMakeLists.txt files from the source directory and
-           display options for the HDFPL project. After the first configure you
+           display options for the HDF5 filter project. After the first configure, you
            can adjust the cache settings and/or specify locations of other programs.
 
            Any conflicts or new values will be highlighted by the configure
@@ -124,13 +121,13 @@ These steps are described in more detail below.
            On linux, if you are using the Unix Makefiles generator, the Makefiles will
            be created in the build folder.
 
-      2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
+      2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5\build directory:
 
-           cmake -G "Visual Studio 14 2015 Win64" -DBUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 14 2015" -DBUILD_TESTING:BOOL=ON ..
 
-   3. Build HDF5 Plugin examples
+   3. Build HDF5 Filters
 
-      On Windows, you can build HDF5 Plugin applications using either the Visual Studio Environment
+      On Windows, you can build HDF5 filters using either the Visual Studio Environment
       or the command line. The command line is normally used on linux, Unix, and Mac.
 
       To build from the command line, navigate to your build directory and
@@ -146,7 +143,7 @@ These steps are described in more detail below.
            file in your build directory. Be sure to select either Debug or
            Release and build the solution.
 
-   4. Test HDF5 Plugin Examples.
+   4. Test HDF5 Filters
 
       To test the build, navigate to your build directory and execute:
 
@@ -165,7 +162,63 @@ These steps are described in more detail below.
       installation and needs.
 
 
-************************************************************************
 
-Need further assistance, send email to help@hdfgroup.org
+========================================================================
+III. Minimum C Project Files for CMake
+========================================================================
+
+Given the preconditions in section I, create a CMakeLists.txt file at the
+source root. Include the following text in the file:
+
+##########################################################
+cmake_minimum_required (VERSION 3.12)
+project (HDF5MyFilter C CXX)
+
+set (LIB_TYPE SHARED) # Filters require SHARED
+string(TOLOWER ${LIB_TYPE} SEARCH_TYPE)
+
+find_package (HDF5 NAMES hdf5 COMPONENTS C ${SEARCH_TYPE})
+# find_package (HDF5) # Find non-cmake built HDF5
+set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIR}")
+set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_${LIB_TYPE}_LIBRARY})
+
+set (example hdf_example)
+
+add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
+TARGET_C_PROPERTIES (${example} PRIVATE ${LIB_TYPE})
+target_link_libraries (${example} ${LINK_LIBS})
+
+enable_testing ()
+include (CTest)
+
+add_test (NAME test_example COMMAND ${example})
+##########################################################
+
+
+
+========================================================================
+IV. APPENDIX
+========================================================================
+
+Below is an example of a ctest script that can be used to build the examples.
+Adjust the values as necessary. Note that the defaults can be entered on the
+command line and the build folder is created as a sub-folder. Windows should
+adjust the forward slash to double backslashes, except for the HDF_DIR
+environment variable.
+
+NOTE: this file is available at the HDF web site:
+    https://portal.hdfgroup.org/display/support/Building+HDF5+filters+with+CMake
+
+    H5PL_Examples.cmake
+    HDFoptions.cmake
+
+Also available at the HDF web site is a CMake application framework template.
+You can quickly add files to the framework and execute the script to compile
+your application with an installed HDF5 binary.
+
+
+========================================================================
+For further assistance, send email to help@hdfgroup.org
+========================================================================
+
 
