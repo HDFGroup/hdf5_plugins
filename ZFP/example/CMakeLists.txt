@@ -198,6 +198,7 @@ if (BUILD_TESTING)
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_MASK_ERROR=true"
+              -D "TEST_SKIP_COMPARE=1"
               -D "TEST_ERRREF=${testname}.${resultfile}.err"
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
