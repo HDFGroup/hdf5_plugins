@@ -1,0 +1,105 @@
+@H5ZSTD_PACKAGE_NAME@ version @H5ZSTD_PACKAGE_VERSION_STRING@
+------------------------------------------------------------------------------
+
+This directory contains the binary (release) distribution of
+@H5ZSTD_PACKAGE_NAME@-@H5ZSTD_PACKAGE_VERSION_MAJOR@ that was compiled on;
+    @BINARY_PLATFORM@.
+
+It was built with the following options:
+    -- @LIB_TYPE@ C libraries
+    -- @LIB_TYPE@ H5ZSTD tools
+    -- @H5_LIB_TYPE@ ZSTD @ZSTD_VERSION_STRING@
+    -- HDF5 @HDF5_VERSION_STRING@
+
+The contents of this directory are:
+
+    COPYING                 - Copyright notice
+    README.txt              - This file
+    @H5ZSTD_PACKAGE_NAME@-@H5ZSTD_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@    - H5ZSTD Install Utility
+
+Installation
+===========================================================================
+The customary location for the plugins is under the hdf5 libraries location.
+   The plugins depend on the environment variable, HDF5_PLUGIN_PATH, and can
+   be installed into any location.
+On linux, the installer should be executed in the location to install the
+   plugin. The plugins will install into the location:
+            <current dir>/HDF_Group/HDF5/1.13/lib/plugin
+On Windows, the installer will default to the same location as the hdf5 installer:
+   C:/Program Files/HDF_Group/HDF5/1.13 and into the /lib/plugin dir.
+1. Execute @H5ZSTD_PACKAGE_NAME@-@H5ZSTD_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
+2. Follow prompts
+===========================================================================
+
+After Installation, Test using CMake
+===========================================================================
+The HDF5 Plugins examples expect a HDF5 library built with CMake, but can be
+    used with an autotools built binary. Normally the plugins are installed
+    with the HDF5 library.
+
+Copy the following dir and file from the share dir in the H5PL INSTALL location
+   to your working dir:
+       HDFPLExamples
+       H5PL_Examples.cmake
+
+Execute the ctest script:
+  ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
+    where <hdf5 root location> has the following dirs;
+    on windows:
+         ------bin
+         ------include
+         ------lib
+         ------cmake
+    on linux:
+         ------bin
+         ------include
+         ------lib
+         ------share
+------------------------------------------------------------------------------
+
+If you do not use the ctest script, you must supply the following environment
+    variables:
+        HDF5_DIR
+        HDF5_PLUGIN_PATH
+        LD_LIBRARY_PATH
+    and make and cd into a build folder:
+    and execute:
+        cmake -C ../HDFPLExamples/config/cmake/cacheinit.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release -G "Unix Makefiles" \
+            ../HDFPLExamples
+    and execute:
+         cmake --build . --config Release
+    and execute:
+         ctest . -C Release
+
+===========================================================================
+
+After Installation, Test using h5cc on linux
+===========================================================================
+The compression library assumes that HDF5 is installed to the directory
+pointed to by the environment variable HDF5_HOME, e.g. HDF5_HOME=/usr/local/hdf5.
+
+It can be installed in user space or admin space, as long as this variable is
+defined properly.
+
+The installed version of HDF5 must have been built with ‐‐enable‐static=no in
+order to force the hdf5 tools to use dynamic linking, which is required by the plugin.
+
+By default, HDF5 looks for plugins to be installed in $HDF5_HOME/lib/plugin.
+Be sure to copy the shared plugins libraries (*.so files) from this install
+to the $HDF5_HOME/lib/plugin folder.
+
+Copy the following dir from the share dir in the H5PL INSTALL location
+   to your working dir:
+       HDFPLExamples
+
+Change your working dir to the HDFPLExamples/example/test folder.
+
+Execute the test.sh script.
+
+===========================================================================
+
+Documentation for this release can be found at the following URL:
+    http://www.hdfgroup.org/doc.html
+
+Bugs should be reported to help@hdfgroup.org.

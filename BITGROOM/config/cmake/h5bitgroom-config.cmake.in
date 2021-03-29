@@ -1,0 +1,59 @@
+#-----------------------------------------------------------------------------
+# h5bitgroom Config file for compiling against bitgroom install directory
+#-----------------------------------------------------------------------------
+@PACKAGE_INIT@
+
+string(TOUPPER @H5BITGROOM_PACKAGE@ H5BITGROOM_PACKAGE_NAME)
+
+set (${H5BITGROOM_PACKAGE_NAME}_VALID_COMPONENTS static shared)
+
+#-----------------------------------------------------------------------------
+# User Options
+#-----------------------------------------------------------------------------
+set (${H5BITGROOM_PACKAGE_NAME}_BUILD_SHARED_LIBS    @BUILD_SHARED_LIBS@)
+set (${H5BITGROOM_PACKAGE_NAME}_EXPORT_LIBRARIES     @H5BITGROOM_LIBRARIES_TO_EXPORT@)
+
+#-----------------------------------------------------------------------------
+# Directories
+#-----------------------------------------------------------------------------
+set (${H5BITGROOM_PACKAGE_NAME}_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+set (${H5BITGROOM_PACKAGE_NAME}_SHARE_DIR "@PACKAGE_SHARE_INSTALL_DIR@")
+set_and_check (${H5BITGROOM_PACKAGE_NAME}_BUILD_DIR "@PACKAGE_CURRENT_BUILD_DIR@")
+
+#-----------------------------------------------------------------------------
+# Version Strings
+#-----------------------------------------------------------------------------
+set (${H5BITGROOM_PACKAGE_NAME}_VERSION_STRING @H5BITGROOM_VERSION_STRING@)
+set (${H5BITGROOM_PACKAGE_NAME}_VERSION_MAJOR  @H5BITGROOM_VERSION_MAJOR@)
+set (${H5BITGROOM_PACKAGE_NAME}_VERSION_MINOR  @H5BITGROOM_VERSION_MINOR@)
+
+#-----------------------------------------------------------------------------
+# Don't include targets if this file is being picked up by another
+# project which has already build h5bitgroom as a subproject
+#-----------------------------------------------------------------------------
+if (NOT TARGET "@H5BITGROOM_PACKAGE@")
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BITGROOM_PACKAGE@/@H5BITGROOM_PACKAGE@@H5BITGROOM_PACKAGE_EXT@-targets.cmake)
+  set (H5BITGROOM_LIBRARIES "@H5BITGROOM_LIBRARIES_TO_EXPORT@")
+endif ()
+
+# Handle default component(static) :
+if (NOT ${H5BITGROOM_PACKAGE_NAME}_FIND_COMPONENTS)
+    set (${H5BITGROOM_PACKAGE_NAME}_FIND_COMPONENTS static)
+    set (${H5BITGROOM_PACKAGE_NAME}_FIND_REQUIRED_static true)
+endif ()
+
+# Handle requested components:
+list (REMOVE_DUPLICATES ${H5BITGROOM_PACKAGE_NAME}_FIND_COMPONENTS)
+foreach (comp IN LISTS ${H5BITGROOM_PACKAGE_NAME}_FIND_COMPONENTS)
+    list (FIND ${H5BITGROOM_PACKAGE_NAME}_EXPORT_LIBRARIES "@H5BITGROOM_LIB_CORENAME@-${comp}" HAVE_COMP)
+    if (${HAVE_COMP} LESS 0)
+      set (${H5BITGROOM_PACKAGE_NAME}_${comp}_FOUND 0)
+    else ()
+      set (${H5BITGROOM_PACKAGE_NAME}_${comp}_FOUND 1)
+      string(TOUPPER ${H5BITGROOM_PACKAGE_NAME}_${comp}_LIBRARY COMP_LIBRARY)
+      set (${COMP_LIBRARY} ${${COMP_LIBRARY}} @H5BITGROOM_LIB_CORENAME@-${comp})
+    endif ()
+endforeach ()
+
+check_required_components (${H5BITGROOM_PACKAGE_NAME})
