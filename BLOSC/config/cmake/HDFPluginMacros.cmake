@@ -105,6 +105,13 @@ macro (BASIC_SETTINGS varname)
     set (CFG_INIT "")
   endif ()
 
+  set(CMAKE_C_STANDARD 99)
+  set(CMAKE_C_STANDARD_REQUIRED TRUE)
+
+  set(CMAKE_CXX_STANDARD 98)
+  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+
   #-----------------------------------------------------------------------------
   # Compiler specific flags : Shouldn't there be compiler tests for these
   #-----------------------------------------------------------------------------
@@ -462,7 +469,7 @@ macro (INSTALL_SUPPORT varname)
 #            DESTINATION ..
 #        )
       endif ()
-    else (WIN32)
+    else ()
       list (APPEND CPACK_GENERATOR "STGZ")
       set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
       set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
