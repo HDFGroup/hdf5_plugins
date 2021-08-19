@@ -28,7 +28,9 @@ macro (SET_HDF_BUILD_TYPE)
     endif()
   endif()
   if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    message (STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (VERBOSE "Setting build type to 'RelWithDebInfo' as none was specified.")
+    endif()
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
     # Set the possible values of build type for cmake-gui
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
@@ -126,6 +128,7 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
       OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
       OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
+
   if (${libtype} MATCHES "STATIC")
     if (WIN32)
       set_target_properties (${libtarget} PROPERTIES
@@ -461,19 +464,19 @@ endmacro ()
 
 macro (ADD_H5_FLAGS h5_flag_var infile)
   file (STRINGS ${infile} TEST_FLAG_STREAM)
-  #message (STATUS "TEST_FLAG_STREAM=${TEST_FLAG_STREAM}")
+  #message (TRACE "TEST_FLAG_STREAM=${TEST_FLAG_STREAM}")
   list (LENGTH TEST_FLAG_STREAM len_flag)
   if (len_flag GREATER 0)
     math (EXPR _FP_LEN "${len_flag} - 1")
     foreach (line RANGE 0 ${_FP_LEN})
       list (GET TEST_FLAG_STREAM ${line} str_flag)
       string (REGEX REPLACE "^#.*" "" str_flag "${str_flag}")
-      #message (STATUS "str_flag=${str_flag}")
+      #message (TRACE "str_flag=${str_flag}")
       if (str_flag)
         list (APPEND ${h5_flag_var} "${str_flag}")
       endif ()
     endforeach ()
   endif ()
-  #message (STATUS "h5_flag_var=${${h5_flag_var}}")
+  #message (TRACE "h5_flag_var=${${h5_flag_var}}")
 endmacro ()
 
