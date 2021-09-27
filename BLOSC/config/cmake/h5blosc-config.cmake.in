@@ -33,7 +33,7 @@ set (${H5BLOSC_PACKAGE_NAME}_VERSION_MINOR  @H5BLOSC_VERSION_MINOR@)
 # project which has already built h5blosc as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5BLOSC_PACKAGE@")
-  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BLOSC_PACKAGE@/@H5BLOSC_PACKAGE@@H5BLOSC_PACKAGE_EXT@-targets.cmake)
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BLOSC_PACKAGE@@H5BLOSC_PACKAGE_EXT@-targets.cmake)
   set (H5BLOSC_LIBRARIES "@H5BLOSC_LIBRARIES_TO_EXPORT@")
 endif ()
 

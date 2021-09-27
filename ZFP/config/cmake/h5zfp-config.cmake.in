@@ -33,7 +33,7 @@ set (${H5ZFP_PACKAGE_NAME}_VERSION_MINOR  @H5ZFP_VERSION_MINOR@)
 # project which has already built h5zfp as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5ZFP_PACKAGE@")
-  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5ZFP_PACKAGE@/@H5ZFP_PACKAGE@@H5ZFP_PACKAGE_EXT@-targets.cmake)
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5ZFP_PACKAGE@@H5ZFP_PACKAGE_EXT@-targets.cmake)
   set (H5ZFP_LIBRARIES "@H5ZFP_LIBRARIES_TO_EXPORT@")
 endif ()
 
