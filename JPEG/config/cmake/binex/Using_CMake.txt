@@ -174,7 +174,6 @@ These steps are described in more detail below.
       installation and needs.
 
 
-************************************************************************
-
-Need further assistance, send email to help@hdfgroup.org
-
+========================================================================
+For further assistance, send email to help@hdfgroup.org
+========================================================================
