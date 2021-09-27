@@ -33,7 +33,7 @@ set (${H5MAFISC_PACKAGE_NAME}_VERSION_MINOR  @H5MAFISC_VERSION_MINOR@)
 # project which has already built h5mafisc as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5MAFISC_PACKAGE@")
-  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5MAFISC_PACKAGE@/@H5MAFISC_PACKAGE@@H5MAFISC_PACKAGE_EXT@-targets.cmake)
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5MAFISC_PACKAGE@@H5MAFISC_PACKAGE_EXT@-targets.cmake)
   set (H5MAFISC_LIBRARIES "@H5MAFISC_LIBRARIES_TO_EXPORT@")
 endif ()
 
