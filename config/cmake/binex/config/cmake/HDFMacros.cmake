@@ -28,7 +28,9 @@ macro (SET_HDF_BUILD_TYPE)
     endif()
   endif()
   if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    message (STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (VERBOSE "Setting build type to 'RelWithDebInfo' as none was specified.")
+    endif()
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
     # Set the possible values of build type for cmake-gui
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
@@ -126,6 +128,7 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
       OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
       OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
+
   if (${libtype} MATCHES "STATIC")
     if (WIN32)
       set_target_properties (${libtarget} PROPERTIES

@@ -28,7 +28,9 @@ macro (SET_HDF_BUILD_TYPE)
     endif()
   endif()
   if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    message (STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (VERBOSE "Setting build type to 'RelWithDebInfo' as none was specified.")
+    endif()
     set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
     # Set the possible values of build type for cmake-gui
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
@@ -126,6 +128,7 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
       OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
       OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
+
   if (${libtype} MATCHES "STATIC")
     if (WIN32)
       set_target_properties (${libtarget} PROPERTIES
@@ -138,8 +141,8 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     endif ()
   endif ()
 
-  #----- Use MSVC Naming conventions for Shared Libraries
-  if (MINGW AND ${libtype} MATCHES "SHARED")
+  option (HDF5_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
+  if (HDF5_MSVC_NAMING_CONVENTION AND MINGW AND ${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget} PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
@@ -150,36 +153,30 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (HDF_SET_LIB_VERSIONS pkg_name libtarget defaultlibname libtype)
-  set (LIB_OUT_NAME "${defaultlibname}")
+  set (libname "${defaultlibname}")
+  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
 
   if (${libtype} MATCHES "SHARED")
-    set (PACKAGE_SOVERSION ${${pkg_name}_PACKAGE_SOVERSION})
-    set (PACKAGE_COMPATIBILITY ${${pkg_name}_SOVERS_INTERFACE}.0.0)
-    set (PACKAGE_CURRENT ${${pkg_name}_SOVERS_INTERFACE}.${${pkg_name}_SOVERS_MINOR}.0)
+    set (LIB_PACKAGE_SOVERSION ${${pkg_name}_VERS_MAJOR})
     if (WIN32)
       set (LIB_VERSION ${${pkg_name}_PACKAGE_VERSION_MAJOR})
     else ()
-      set (LIB_VERSION ${${pkg_name}_PACKAGE_SOVERSION_MAJOR})
+      set (LIB_VERSION ${${pkg_name}_PACKAGE_VERSION})
     endif ()
-    set_target_properties (${libtarget} PROPERTIES VERSION ${PACKAGE_SOVERSION})
+    set_target_properties (${libtarget} PROPERTIES VERSION ${LIB_VERSION})
     if (WIN32)
-        set (${LIB_OUT_NAME} "${LIB_OUT_NAME}-${LIB_VERSION}")
+        set (${libname} "${libname}-${LIB_PACKAGE_SOVERSION}")
     else ()
-        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_VERSION})
-    endif ()
-    if (CMAKE_C_OSX_CURRENT_VERSION_FLAG)
-      set_property(TARGET ${libtarget} APPEND PROPERTY
-          LINK_FLAGS "${CMAKE_C_OSX_CURRENT_VERSION_FLAG}${PACKAGE_CURRENT} ${CMAKE_C_OSX_COMPATIBILITY_VERSION_FLAG}${PACKAGE_COMPATIBILITY}"
-      )
+        set_target_properties (${libtarget} PROPERTIES SOVERSION ${LIB_PACKAGE_SOVERSION})
     endif ()
   endif ()
-  HDF_SET_BASE_OPTIONS (${libtarget} ${LIB_OUT_NAME} ${libtype})
 
   #-- Apple Specific install_name for libraries
   if (APPLE)
     option (${pkg_name}_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF)
     if (${pkg_name}_BUILD_WITH_INSTALL_NAME)
       set_target_properties(${libtarget} PROPERTIES
+          LINK_FLAGS "-current_version ${${pkg_name}_PACKAGE_VERSION} -compatibility_version ${${pkg_name}_PACKAGE_VERSION}"
           INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
           BUILD_WITH_INSTALL_RPATH ${${pkg_name}_BUILD_WITH_INSTALL_NAME}
       )
@@ -365,7 +362,7 @@ macro (HDF_DIR_PATHS package_prefix)
     set (${package_prefix}_INSTALL_INCLUDE_DIR include)
   endif ()
   if (NOT ${package_prefix}_INSTALL_DATA_DIR)
-    if (NOT WIN32)
+    if (NOT MSVC)
       if (APPLE)
         if (${package_prefix}_BUILD_FRAMEWORKS)
           set (${package_prefix}_INSTALL_EXTRA_DIR ../SharedSupport)
@@ -375,11 +372,12 @@ macro (HDF_DIR_PATHS package_prefix)
         set (${package_prefix}_INSTALL_FWRK_DIR ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
       endif ()
       set (${package_prefix}_INSTALL_DATA_DIR share)
-      set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
     else ()
       set (${package_prefix}_INSTALL_DATA_DIR ".")
-      set (${package_prefix}_INSTALL_CMAKE_DIR cmake)
     endif ()
+  endif ()
+  if (NOT ${package_prefix}_INSTALL_CMAKE_DIR)
+    set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
   endif ()
 
   # Always use full RPATH, i.e. don't skip the full RPATH for the build tree
