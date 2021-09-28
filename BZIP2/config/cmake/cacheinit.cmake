@@ -10,6 +10,8 @@ set (BUILD_EXAMPLES ON CACHE BOOL "Build h5bz2 Examples" FORCE)
 
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
+set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
+
 set (BZ2_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/bzip2.git" CACHE STRING "Use BZ2 from HDF repository" FORCE)
 set (BZ2_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
