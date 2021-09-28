@@ -18,7 +18,7 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)" FORCE)
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
-set (H5PL_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/h5plugin.git" CACHE STRING "Use plugins from HDF repository" FORCE)
+set (H5PL_GIT_URL "https://github.com/HDFGroup/h5plugin.git" CACHE STRING "Use plugins from HDF repository" FORCE)
 set (H5PL_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (H5PL_TGZ_NAME "h5pl.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)

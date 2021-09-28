@@ -33,7 +33,7 @@ set (${H5JPEG_PACKAGE_NAME}_VERSION_MINOR  @H5JPEG_VERSION_MINOR@)
 # project which has already build h5jpeg as a subproject
 #-----------------------------------------------------------------------------
 if (NOT TARGET "@H5JPEG_PACKAGE@")
-  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5JPEG_PACKAGE@/@H5JPEG_PACKAGE@@H5JPEG_PACKAGE_EXT@-targets.cmake)
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5JPEG_PACKAGE@@H5JPEG_PACKAGE_EXT@-targets.cmake)
   set (H5JPEG_LIBRARIES "@H5JPEG_LIBRARIES_TO_EXPORT@")
 endif ()
 
