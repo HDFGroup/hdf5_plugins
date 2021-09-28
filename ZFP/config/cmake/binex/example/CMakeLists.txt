@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (HDFPL_EX)
 
 set (dyn_examples
@@ -174,11 +174,7 @@ if (BUILD_TESTING)
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
   endforeach ()
-  if (WIN32 AND MSVC_VERSION LESS 1900)
-    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.wddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
-  else ()
-    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.ddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
-  endif()
+  HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.ddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "example_files")
   add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
   ADD_H5_TEST (h5ex_d_zfp)

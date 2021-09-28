@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (H5BLOSC C)
 
 #-----------------------------------------------------------------------------
@@ -41,6 +41,7 @@ set (H5BLOSC_PACKAGE_TARNAME "${H5BLOSC_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BLOSC_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BLOSC_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BLOSC_PACKAGE_SOVERSION "${H5BLOSC_SOVERS_MAJOR}.${H5BLOSC_SOVERS_RELEASE}.${H5BLOSC_SOVERS_MINOR}")
+set (H5BLOSC_PACKAGE_SOVERSION_MAJOR "${H5BLOSC_SOVERS_MAJOR}")
 message("Configuring for blosc HDF5 Plugin version: " ${H5BLOSC_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
@@ -58,11 +59,6 @@ include (${H5BLOSC_RESOURCES_DIR}/ConfigureChecks.cmake)
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5BLOSC link libs: ${LINK_LIBS}")
-
-#-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
-#-----------------------------------------------------------------------------
-configure_file (${H5BLOSC_RESOURCES_DIR}/config.h.in ${H5BLOSC_BINARY_DIR}/config.h @ONLY)
 
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if(WIN32)
@@ -189,9 +185,9 @@ if (HDF_ENABLE_BLOSC_SUPPORT)
 endif ()
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the blosc_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5BLOSC_RESOURCES_DIR}/config.h.in ${H5BLOSC_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5BLOSC_RESOURCES_DIR}/config.h.in ${H5BLOSC_BINARY_DIR}/blosc_config.h @ONLY)
 
 #-----------------------------------------------------------------------------
 # Option for external libraries on windows

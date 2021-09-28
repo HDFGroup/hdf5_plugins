@@ -7,7 +7,7 @@
 # This is where HDF5 wants us to install plugins.
 plugindir = @HDF5_PLUGIN_DIR@
 
-# The libh5lz4 library for plugin module.
+# The libh5zfp library for plugin module.
 # Build it as shared library.
 #plugin_LTLIBRARIES = libh5zfp.la
-#libh5lz4_la_SOURCES = H5Zzfp.c
+#libh5zfp_la_SOURCES = H5Zzfp.c

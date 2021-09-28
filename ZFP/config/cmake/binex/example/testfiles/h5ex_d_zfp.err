@@ -32,9 +32,9 @@ version (number)) thread (IDs):
   #010: (file name) line (number) in H5Z_can_apply(): unable to apply filter
     major: Data filters
     minor: Error from filter 'can apply' callback
-  #011: (file name) line (number) in H5Z_prepare_prelude_callback_dcpl(): unable to apply filter
+  #011: (file name) line (number) in H5Z__prepare_prelude_callback_dcpl(): unable to apply filter
     major: Data filters
     minor: Error from filter 'can apply' callback
-  #012: (file name) line (number) in H5Z_prelude_callback(): Filter present but encoding is disabled.
+  #012: (file name) line (number) in H5Z__prelude_callback(): Filter present but encoding is disabled.
     major: Data filters
     minor: Filter present but encoding disabled

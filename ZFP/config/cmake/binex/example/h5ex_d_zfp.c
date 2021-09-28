@@ -50,9 +50,9 @@ main (void)
     unsigned        filter_config;
     const unsigned int    cd_values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     unsigned int    values_out[10] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
-    double          wdata[DIM0][DIM1],          /* Write buffer */
+    float           wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1];          /* Read buffer */
-    long            max;
+    float           max;
     hsize_t         i, j;
     int             ret_value = 1;
 
@@ -61,7 +61,7 @@ main (void)
      */
     for (i=0; i<DIM0; i++)
         for (j=0; j<DIM1; j++)
-            wdata[i][j] = (double)(i * j - j);
+            wdata[i][j] = (float)(i * j) - (float)(j);
 
     /*
      * Create a new file using the default properties.
@@ -108,7 +108,7 @@ main (void)
      * Create the dataset.
      */
     printf ("....Create dataset ................\n");
-    dset_id = H5Dcreate (file_id, DATASET, H5T_NATIVE_DOUBLE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
+    dset_id = H5Dcreate (file_id, DATASET, H5T_IEEE_F32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
     if (dset_id < 0) {
         printf ("failed to create dataset.\n");
         goto done;
@@ -118,7 +118,7 @@ main (void)
      * Write the data to the dataset.
      */
     printf ("....Writing zfp compressed data ................\n");
-    status = H5Dwrite (dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
+    status = H5Dwrite (dset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
     if (status < 0) printf ("failed to write data.\n");
 
     /*
@@ -180,24 +180,24 @@ main (void)
      * Read the data using the default properties.
      */
     printf ("....Reading zfp compressed data ................\n");
-    status = H5Dread (dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
+    status = H5Dread (dset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
     if (status < 0) printf ("failed to read data.\n");
 
     /*
      * Find the maximum value in the dataset, to verify that it was
      * read correctly.
      */
-    max = (long)rdata[0][0];
+    max = rdata[0][0];
     for (i=0; i<DIM0; i++)
         for (j=0; j<DIM1; j++) {
-            /*printf("%d \n", rdata[i][j]); */
-            if (max < (long)rdata[i][j])
-                max = (long)rdata[i][j];
+            /*printf("%f \n", rdata[i][j]); */
+            if (max < rdata[i][j])
+                max = rdata[i][j];
         }
     /*
      * Print the maximum value.
      */
-    printf ("Maximum value in %s is %ld\n", DATASET, max);
+    printf ("Maximum value in %s is %6.4f\n", DATASET, max);
     /*
      * Check that filter is registered with the library now.
      */

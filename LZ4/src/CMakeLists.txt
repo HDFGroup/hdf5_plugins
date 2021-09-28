@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (H5LZ4_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -27,7 +27,6 @@ if (BUILD_LZ4_LIBRARY_SOURCE)
       ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4.h
       ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4hc.c
       ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4hc.h
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4opt.h
       ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame.c
       ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame.h
       ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame_static.h

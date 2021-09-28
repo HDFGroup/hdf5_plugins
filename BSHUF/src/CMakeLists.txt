@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (H5BSHUF_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -38,14 +38,6 @@ if (BUILD_LZ4_LIBRARY_SOURCE)
   set (H5BSHUF_SRCS ${H5BSHUF_SRCS}
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.c
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.h
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4hc.c
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4hc.h
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4opt.h
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4frame.c
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4frame.h
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4frame_static.h
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/xxhash.c
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/xxhash.h
   )
   set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
       ${H5BSHUF_SRC_SOURCE_DIR}/lib

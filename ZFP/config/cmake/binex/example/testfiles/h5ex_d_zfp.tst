@@ -4,8 +4,8 @@ zfp filter is available for encoding and decoding.
 ....Close the file and reopen for reading ........
 Filter info is available from the dataset creation property
    Filter identifier is 32013
-   Number of parameters is 6 with the value 5505152
-   To find more about the filter check H5Z-ZFP-0.8.0 (ZFP-0.5.4) github.com/LLNL/H5Z-ZFP
+   Number of parameters is 6 with the value 5570817
+   To find more about the filter check H5Z-ZFP-1.0.1 (ZFP-0.5.5) github.com/LLNL/H5Z-ZFP
 ....Reading zfp compressed data ................
-Maximum value in DS1 is 1890
+Maximum value in DS1 is 1890.0000
 zfp filter is available now since H5Dread triggered loading of the filter.

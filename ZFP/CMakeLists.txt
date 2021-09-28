@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (H5ZFP C)
 
 #-----------------------------------------------------------------------------
@@ -52,6 +52,7 @@ set (H5ZFP_PACKAGE_TARNAME "${H5ZFP_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5ZFP_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5ZFP_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5ZFP_PACKAGE_SOVERSION "${H5ZFP_SOVERS_MAJOR}.${H5ZFP_SOVERS_RELEASE}.${H5ZFP_SOVERS_MINOR}")
+set (H5ZFP_PACKAGE_SOVERSION_MAJOR "${H5ZFP_SOVERS_MAJOR}")
 message("Configuring for zfp HDF5 Plugin version: " ${H5ZFP_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
@@ -150,11 +151,6 @@ endif ()
 HDF5_SUPPORT (TRUE)
 message (STATUS "H5ZFP link libs: ${LINK_LIBS}")
 
-#-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
-#-----------------------------------------------------------------------------
-configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h @ONLY)
-
 include (ExternalProject)
 option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
@@ -209,9 +205,9 @@ if (ZFP_FOUND)
 endif ()
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the zfp_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/zfp_config.h @ONLY)
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

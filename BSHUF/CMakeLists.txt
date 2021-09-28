@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (H5BSHUF C)
 
 #-----------------------------------------------------------------------------
@@ -32,6 +32,7 @@ set (H5BSHUF_PACKAGE_TARNAME "${H5BSHUF_PACKAGE_NAME}{HDF_PACKAGE_EXT}")
 set (H5BSHUF_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BSHUF_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BSHUF_PACKAGE_SOVERSION "${H5BSHUF_SOVERS_MAJOR}.${H5BSHUF_SOVERS_RELEASE}.${H5BSHUF_SOVERS_MINOR}")
+set (H5BSHUF_PACKAGE_SOVERSION_MAJOR "${H5BSHUF_SOVERS_MAJOR}")
 message("Configuring for bshuf HDF5 Plugin version: " ${H5BSHUF_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
@@ -51,9 +52,9 @@ HDF5_SUPPORT (TRUE)
 message (STATUS "H5BSHUF link libs: ${LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
-# Generate the config.h file containing user settings needed by compilation
+# Generate the bshuf_config.h file containing user settings needed by compilation
 #-----------------------------------------------------------------------------
-configure_file (${H5BSHUF_RESOURCES_DIR}/config.h.in ${H5BSHUF_BINARY_DIR}/config.h @ONLY)
+configure_file (${H5BSHUF_RESOURCES_DIR}/config.h.in ${H5BSHUF_BINARY_DIR}/bshuf_config.h @ONLY)
 
 include (ExternalProject)
 option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")

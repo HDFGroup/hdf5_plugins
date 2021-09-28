@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project (HDF5ZFP_EX)
 
 set (dyn_examples
@@ -198,6 +198,7 @@ if (BUILD_TESTING)
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_MASK_ERROR=true"
+              -D "TEST_SKIP_COMPARE=1"
               -D "TEST_ERRREF=${testname}.${resultfile}.err"
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
@@ -249,11 +250,7 @@ if (BUILD_TESTING)
   foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "zfp_files")
   endforeach ()
-  if (WIN32 AND MSVC_VERSION LESS 1900)
-    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.wddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "zfp_files")
-  else ()
-    HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.ddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "zfp_files")
-  endif()
+  HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/h5ex_d_zfp.ddl" "${PROJECT_BINARY_DIR}/h5ex_d_zfp.ddl" "zfp_files")
   add_custom_target(zfp_files ALL COMMENT "Copying files needed by zfp tests" DEPENDS ${zfp_files_list})
 
   ADD_H5_TEST (h5ex_d_zfp)

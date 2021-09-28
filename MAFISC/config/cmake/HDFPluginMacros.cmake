@@ -85,7 +85,7 @@ macro (BASIC_SETTINGS varname)
   set_global_variable (${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT "")
 
   #-----------------------------------------------------------------------------
-  # Plugins are MODULEs thatmust be built as Shared libs
+  # Plugins are MODULEs that must be built as Shared libs
   #-----------------------------------------------------------------------------
   set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
   set (LIB_TYPE SHARED)
@@ -104,6 +104,13 @@ macro (BASIC_SETTINGS varname)
   if (MAKE_SYSTEM)
     set (CFG_INIT "")
   endif ()
+
+  set(CMAKE_C_STANDARD 99)
+  set(CMAKE_C_STANDARD_REQUIRED TRUE)
+
+  set(CMAKE_CXX_STANDARD 98)
+  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+  set(CMAKE_CXX_EXTENSIONS OFF)
 
   #-----------------------------------------------------------------------------
   # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -244,7 +251,6 @@ macro (HDF5_SUPPORT link_hdf)
       set_property (TARGET hdf5::h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:hdf5::h5dump>)
       set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:hdf5::h5repack>)
-      set (H5PL_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
     endif ()
 
     set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
@@ -267,7 +273,8 @@ macro (HDF5_SUPPORT link_hdf)
       set (LINK_LIBS ${LINK_LIBS} ${HDF5_LINK_LIBS})
     endif ()
   endif ()
-  message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS}")
+  set (H5PL_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
+  message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS} Includes: ${H5PL_INCLUDE_DIRS}")
 
   if (USE_SHARED_LIBS)
     set (H5_LIB_TYPE SHARED)
@@ -295,8 +302,11 @@ macro (INSTALL_SUPPORT varname)
       ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
   )
   install (
-      FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
-      DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+      FILES
+          ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestScript.cmake
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFoptions.cmake
+          DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
       COMPONENT hdfdocuments
   )
   execute_process(
@@ -422,7 +432,7 @@ macro (INSTALL_SUPPORT varname)
       list (APPEND CPACK_GENERATOR "DragNDrop")
       set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
       set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-#      set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/h5blosc.gif")
+#      set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/h5mafisc.gif")
 
       option (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE  "Package the ${PLUGIN_PACKAGE_NAME} Library in a Bundle" OFF)
       if (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE)

@@ -82,10 +82,8 @@ macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
       set (targetfilename $<TARGET_FILE_DIR:${libtarget}>/${target_name}.pdb)
     endif ()
     install (
-      FILES
-          ${targetfilename}
-      DESTINATION
-          ${targetdestination}
+      FILES ${targetfilename}
+      DESTINATION ${targetdestination}
       CONFIGURATIONS Debug RelWithDebInfo
       COMPONENT ${targetcomponent}
       OPTIONAL
@@ -97,10 +95,8 @@ endmacro ()
 macro (INSTALL_PROGRAM_PDB progtarget targetdestination targetcomponent)
   if (WIN32 AND MSVC)
     install (
-      FILES
-          $<TARGET_PDB_FILE:${progtarget}>
-      DESTINATION
-          ${targetdestination}
+      FILES $<TARGET_PDB_FILE:${progtarget}>
+      DESTINATION ${targetdestination}
       CONFIGURATIONS Debug RelWithDebInfo
       COMPONENT ${targetcomponent}
       OPTIONAL
@@ -123,23 +119,16 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     endif ()
   endif ()
 
-  set_target_properties (${libtarget}
-      PROPERTIES
-         OUTPUT_NAME
-               ${LIB_RELEASE_NAME}
-#         OUTPUT_NAME_DEBUG
-#               ${LIB_DEBUG_NAME}
-         OUTPUT_NAME_RELEASE
-               ${LIB_RELEASE_NAME}
-         OUTPUT_NAME_MINSIZEREL
-               ${LIB_RELEASE_NAME}
-         OUTPUT_NAME_RELWITHDEBINFO
-               ${LIB_RELEASE_NAME}
+  set_target_properties (${libtarget} PROPERTIES
+      OUTPUT_NAME                ${LIB_RELEASE_NAME}
+#      OUTPUT_NAME_DEBUG          ${LIB_DEBUG_NAME}
+      OUTPUT_NAME_RELEASE        ${LIB_RELEASE_NAME}
+      OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
+      OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
   if (${libtype} MATCHES "STATIC")
     if (WIN32)
-      set_target_properties (${libtarget}
-          PROPERTIES
+      set_target_properties (${libtarget} PROPERTIES
           COMPILE_PDB_NAME_DEBUG          ${LIB_DEBUG_NAME}
           COMPILE_PDB_NAME_RELEASE        ${LIB_RELEASE_NAME}
           COMPILE_PDB_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
@@ -149,10 +138,9 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     endif ()
   endif ()
 
-  #----- Use MSVC Naming conventions for Shared Libraries
-  if (MINGW AND ${libtype} MATCHES "SHARED")
-    set_target_properties (${libtarget}
-        PROPERTIES
+  option (HDF5_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
+  if (HDF5_MSVC_NAMING_CONVENTION AND MINGW AND ${libtype} MATCHES "SHARED")
+    set_target_properties (${libtarget} PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""
         PREFIX ""
@@ -371,7 +359,7 @@ macro (HDF_DIR_PATHS package_prefix)
     set (${package_prefix}_INSTALL_INCLUDE_DIR include)
   endif ()
   if (NOT ${package_prefix}_INSTALL_DATA_DIR)
-    if (NOT WIN32)
+    if (NOT MSVC)
       if (APPLE)
         if (${package_prefix}_BUILD_FRAMEWORKS)
           set (${package_prefix}_INSTALL_EXTRA_DIR ../SharedSupport)
@@ -381,11 +369,12 @@ macro (HDF_DIR_PATHS package_prefix)
         set (${package_prefix}_INSTALL_FWRK_DIR ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
       endif ()
       set (${package_prefix}_INSTALL_DATA_DIR share)
-      set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
     else ()
       set (${package_prefix}_INSTALL_DATA_DIR ".")
-      set (${package_prefix}_INSTALL_CMAKE_DIR cmake)
     endif ()
+  endif ()
+  if (NOT ${package_prefix}_INSTALL_CMAKE_DIR)
+    set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
   endif ()
 
   # Always use full RPATH, i.e. don't skip the full RPATH for the build tree

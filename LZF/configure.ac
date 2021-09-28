@@ -1,7 +1,7 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This is the main configure file for the LZ4 filter, a HDF5 plugin
-# library that enables lz4 compression/decompression as a HDF5
+# This is the main configure file for the LZF filter, a HDF5 plugin
+# library that enables lzf compression/decompression as a HDF5
 # filter. This is part of the hdf5_plugin project.
 
 # Allen Byrne, Ed Hartnett 1/14/19
@@ -9,7 +9,7 @@
 # Initialize autoconf.
 AC_PREREQ(2.59)
 AC_INIT(H5LZF, 0.1, help@hdfgroup.org)
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([lzf_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_MSG_NOTICE([*** This is a configure for LZ4 ***])
@@ -35,9 +35,9 @@ AC_ARG_WITH([hdf5-plugin-dir],
 AC_MSG_RESULT($HDF5_PLUGIN_DIR)
 AC_SUBST([HDF5_PLUGIN_DIR])
 
-# Is the lz4 library present?
-AC_CHECK_HEADERS([lz4.h], [], [AC_MSG_ERROR([lz4.h is required, set CPPFLAGS.])])
-AC_CHECK_LIB([lz4], [LZ4_compress], [], [AC_MSG_ERROR([liblz4 is required, set LDFLAGS.])])
+# Is the lzf library present?
+AC_CHECK_HEADERS([lzf.h], [], [AC_MSG_ERROR([lzf.h is required, set CPPFLAGS.])])
+AC_CHECK_LIB([lzf], [LZF_compress], [], [AC_MSG_ERROR([liblzf is required, set LDFLAGS.])])
 
 # We need the math library
 AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
