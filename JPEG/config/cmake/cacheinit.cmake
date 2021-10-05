@@ -11,7 +11,7 @@ set (BUILD_EXAMPLES ON CACHE BOOL "Build h5jpeg Examples" FORCE)
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (JPEG_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
-set (JPEG_GIT_BRANCH "jpeg9c" CACHE STRING "" FORCE)
+set (JPEG_GIT_BRANCH "jpeg9d" CACHE STRING "" FORCE)
 
 set (JPEG_TGZ_NAME "JPEG.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
 
