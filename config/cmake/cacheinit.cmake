@@ -72,9 +72,9 @@ set (FPZIP_PACKAGE_NAME "fpzip" CACHE STRING "Name of FPZIP package" FORCE)
 ############################# jpeg ################################################
 
 set (JPEG_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
-set (JPEG_GIT_BRANCH "jpeg9c" CACHE STRING "" FORCE)
+set (JPEG_GIT_BRANCH "jpeg9d" CACHE STRING "" FORCE)
 
-#set (JPEG_TGZ_NAME "JPEG9c.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
+#set (JPEG_TGZ_NAME "JPEG9d.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
 set (JPEG_TGZ_NAME "JPEG.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
 
 set (JPEG_PACKAGE_NAME "jpeg" CACHE STRING "Name of JPEG package" FORCE)
