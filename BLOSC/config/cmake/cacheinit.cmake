@@ -10,6 +10,9 @@ set (BUILD_EXAMPLES ON CACHE BOOL "Build h5blosc Examples" FORCE)
 
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
+
+set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
+
 set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOSC from Github" FORCE)
 set (BLOSC_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
