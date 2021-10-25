@@ -10,6 +10,8 @@ set (BUILD_EXAMPLES ON CACHE BOOL "Build h5zfp Examples" FORCE)
 
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
+set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
+
 set (ZFP_GIT_URL "https://github.com/LLNL/zfp.git" CACHE STRING "Use ZFP from Github" FORCE)
 set (ZFP_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
