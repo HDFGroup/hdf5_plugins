@@ -104,7 +104,7 @@ endif()
 set(ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE_NAME@")
 set(ENV{HDF5_PLUGIN_PATH} "${HDF5_PLUGIN_ROOT}")
 
-set(ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DDISABLE_H5PL_ENCODER:BOOL=@DISABLE_H5PL_ENCODER@")
+set(ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DDISABLE_H5PL_ENCODER:BOOL=@DISABLE_H5JPEG_ENCODER@")
 
 ###############################################################################################################
 # For any comments please contact cdashhelp@hdfgroup.org
