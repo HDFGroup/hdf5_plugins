@@ -9,7 +9,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-set(H5JPEG_INCLUDE_DIRS ${H5JPEG_INCLUDE_DIRS}
+set (H5JPEG_INCLUDE_DIRS ${H5JPEG_INCLUDE_DIRS}
     ${HDF5_INCLUDE_DIR} ${H5JPEG_BINARY_DIR}
     ${H5JPEG_SRC_SOURCE_DIR}
     ${JPEG_INCLUDE_DIRS}

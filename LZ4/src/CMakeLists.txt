@@ -9,7 +9,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-set(H5LZ4_INCLUDE_DIRS ${H5LZ4_INCLUDE_DIRS}
+set (H5LZ4_INCLUDE_DIRS ${H5LZ4_INCLUDE_DIRS}
     ${HDF5_INCLUDE_DIR} ${H5LZ4_BINARY_DIR} ${LZ4_BINARY_DIR}
     ${H5LZ4_SRC_SOURCE_DIR}/lib
     ${LZ4_INCLUDE_DIRS}
