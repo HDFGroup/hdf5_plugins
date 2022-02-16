@@ -4,7 +4,7 @@ project (H5MAFISC_SRC_LIBLZMA C)
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-set(H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
+set (H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}
     ${H5MAFISC_BINARY_DIR}
 )
@@ -17,7 +17,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS} -DHAVE_CONFIG_H)
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-set(H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
+set (H5MAFISC_SRC_INCLUDE_DIRS ${H5MAFISC_SRC_INCLUDE_DIRS}
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/api
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/common
     ${H5MAFISC_SRC_LIBLZMA_SOURCE_DIR}/check

@@ -121,7 +121,7 @@ if (TEST_ERRREF)
           list (SORT v1)
           list (SORT v2)
           if (NOT v1 STREQUAL v2)
-            set(TEST_COMPARE_RESULT 1)
+            set (TEST_COMPARE_RESULT 1)
           endif ()
         endif ()
 

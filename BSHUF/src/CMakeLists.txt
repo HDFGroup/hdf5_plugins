@@ -20,7 +20,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
     ${HDF5_INCLUDE_DIR} ${H5BSHUF_BINARY_DIR}
     ${BSHUF_INCLUDE_DIRS}
 )
@@ -41,7 +41,7 @@ if (BUILD_BSHUF_LIBRARY_SOURCE)
       ${H5BSHUF_SRC_SOURCE_DIR}/iochain.c
       ${H5BSHUF_SRC_SOURCE_DIR}/iochain.h
   )
-  set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+  set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
       ${H5BSHUF_SRC_SOURCE_DIR}
   )
 endif ()
@@ -50,7 +50,7 @@ if (BUILD_LZ4_LIBRARY_SOURCE)
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.c
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.h
   )
-  set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+  set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
       ${H5BSHUF_SRC_SOURCE_DIR}/lib
   )
 endif ()
