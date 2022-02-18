@@ -107,9 +107,11 @@ FILTER_OPTION (LZF)
 #endif ()
 
 # SZ filter
-#if (NOT WIN32)
+if (WIN32 AND MSVC_VERSION GREATER 1900)
   FILTER_OPTION (SZ)
-#endif ()
+elseif (NOT WIN32)
+  FILTER_OPTION (SZ)
+endif ()
 
 # ZFP filter
 FILTER_OPTION (ZFP)
