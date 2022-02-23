@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 if (WIN32)
   set (CMAKE_SYSTEM_NAME Windows)
   set (CMAKE_GENERATOR_PLATFORM "x86")
@@ -42,7 +53,7 @@ elseif(MINGW)
   set (CMAKE_CROSSCOMPILING_EMULATOR wine)
 
   include_directories(/usr/${TOOLCHAIN_PREFIX}/include)
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS On CACHE BOOL "Export windows symbols")
+  set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS On CACHE BOOL "Export windows symbols")
 else ()
   set (CMAKE_SYSTEM_NAME Linux)
 

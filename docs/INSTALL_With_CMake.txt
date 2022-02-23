@@ -466,10 +466,10 @@ These five steps are described in detail below.
                 #set (BUILD_MAFISC_LIBRARY_SOURCE OFF CACHE BOOL "build the mafisc library within the plugin" FORCE)
                 #set (MAFISC_PACKAGE_NAME "mafisc" CACHE STRING "Name of MAFISC package" FORCE)
                 ############################# sz ################################################
-                set (SZF_GIT_URL "https://github.com/disheng222/SZ" CACHE STRING "Use SZ filter from github repository" FORCE)
-                set (SZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
-                set (SZF_TGZ_NAME "szf.tar.gz" CACHE STRING "Use SZ filter from compressed file" FORCE)
-                set (SZF_PACKAGE_NAME "szf" CACHE STRING "Name of SZ filter package" FORCE)
+                set (SZ_GIT_URL "https://github.com/disheng222/SZ" CACHE STRING "Use SZ filter from github repository" FORCE)
+                set (SZ_GIT_BRANCH "master" CACHE STRING "" FORCE)
+                set (SZ_TGZ_NAME "szf.tar.gz" CACHE STRING "Use SZ filter from compressed file" FORCE)
+                set (SZ_PACKAGE_NAME "SZ" CACHE STRING "Name of SZ filter package" FORCE)
                 ############################# zfp ################################################
                 set (ZFP_GIT_URL "https://github.com/LLNL/zfp.git" CACHE STRING "Use ZFP from Github" FORCE)
                 set (ZFP_GIT_BRANCH "master" CACHE STRING "" FORCE)
@@ -651,7 +651,7 @@ HDF_<filter>_USE_EXTERNAL   "Use External Library Building for <filter> plugin" 
 
 ------ BLOSC ------
 HDF_ENABLE_BLOSC_SUPPORT    "Enable blosc"                                   ON
-HDF_ENABLE_Z_LIB_SUPPORT    "Enable Zlib Filters"                            OFF
+HDF_ENABLE_BLOSC_ZLIB_SUPPORT "Enable Zlib Filters"                            OFF
 ZLIB_USE_EXTERNAL           "Use External Library Building for ZLIB"         1
 BLOSC_USE_EXTERNAL          "Use External Library Building for BLOSC"        1
 
@@ -697,9 +697,8 @@ COND_DECODER_SIMPLE         "Enable simple decoder"          ON
 BUILD_MAFISC_LIBRARY_SOURCE "build the mafisc library within the plugin"     ON
 MAFISC_USE_EXTERNAL         "Use External Library Building for MAFISC"       1
 
------- SZF ------
-BUILD_SZF_LIBRARY_SOURCE    "build the szf library within the plugin"        ON
-SZF_USE_EXTERNAL            "Use External Library Building for SZF"          1
+------ SZ ------
+SZ_USE_EXTERNAL            "Use External Library Building for SZ"          1
 
 ------ ZFP ------
 COND_MAIN_ENCODER           "Enable encoding"                ON
