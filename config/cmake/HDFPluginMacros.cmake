@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 #-------------------------------------------------------------------------------
 macro (BASIC_SETTINGS varname)
   string(TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
@@ -105,12 +116,12 @@ macro (BASIC_SETTINGS varname)
     set (CFG_INIT "")
   endif ()
 
-  set(CMAKE_C_STANDARD 99)
-  set(CMAKE_C_STANDARD_REQUIRED TRUE)
+  set (CMAKE_C_STANDARD 99)
+  set (CMAKE_C_STANDARD_REQUIRED TRUE)
 
-  set(CMAKE_CXX_STANDARD 98)
-  set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
-  set(CMAKE_CXX_EXTENSIONS OFF)
+  set (CMAKE_CXX_STANDARD 98)
+  set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
+  set (CMAKE_CXX_EXTENSIONS OFF)
 
   #-----------------------------------------------------------------------------
   # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -233,7 +244,7 @@ macro (HDF5_SUPPORT link_hdf)
     else ()
       find_package (HDF5) # Legacy find
       #Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
-      set(HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
+      set (HDF5_TOOLS_DIR ${HDF5_LIBRARY_DIRS}/../bin)
       #Legacy find_package does not set HDF5_BUILD_SHARED_LIBS, so we set it here
       if (USE_SHARED_LIBS AND EXISTS "${HDF5_LIBRARY_DIRS}/libhdf5.so")
         set (HDF5_BUILD_SHARED_LIBS 1)
@@ -422,7 +433,7 @@ macro (INSTALL_SUPPORT varname)
         #  WiX variables
         set (CPACK_WIX_UNINSTALL "1")
         set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
-#        set(CPACK_WIX_PRODUCT_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
+#        set (CPACK_WIX_PRODUCT_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
       elseif (APPLE)
         list (APPEND CPACK_GENERATOR "STGZ")
         list (APPEND CPACK_GENERATOR "DragNDrop")
