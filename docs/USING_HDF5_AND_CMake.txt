@@ -109,6 +109,9 @@ These steps are described in more detail below.
             * Visual Studio 14 2015 Win64
             * Visual Studio 15 2017
             * Visual Studio 15 2017 Win64
+            * Visual Studio 16 2019
+            * ... in addition VS2019 will need to set the "-A" option,
+            * ... [Win32, x64, ARM, ARM64]
 
         <options> is:
             * BUILD_TESTING:BOOL=ON
@@ -117,7 +120,7 @@ These steps are described in more detail below.
 
       2.1  Visual CMake users, click the Configure button. If this is the first time you are
            running cmake-gui in this directory, you will be prompted for the
-           generator you wish to use (for example on Windows, Visual Studio 14 2015).
+           generator you wish to use (for example on Windows, Visual Studio 14 2015 Win64).
            CMake will read in the CMakeLists.txt files from the source directory and
            display options for the HDF5 filter project. After the first configure, you
            can adjust the cache settings and/or specify locations of other programs.
@@ -135,7 +138,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5\build directory:
 
-           cmake -G "Visual Studio 14 2015" -DBUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 14 2015 Win64" -DBUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Filters
 

@@ -5,7 +5,7 @@
 # This file is part of HDF5.  The full HDF5 copyright notice, including
 # terms governing use, modification, and redistribution, is contained in
 # the COPYING file, which can be found at the root of the source code
-# distribution tree, or in https://support.hdfgroup.org/ftp/HDF5/releases.
+# distribution tree, or in https://www.hdfgroup.org/licenses.
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
@@ -14,24 +14,24 @@
 macro (SET_HDF_BUILD_TYPE)
   get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
   if(_isMultiConfig)
-    set(HDF_CFG_NAME ${CMAKE_BUILD_TYPE})
-    set(HDF_BUILD_TYPE ${CMAKE_CFG_INTDIR})
-    set(HDF_CFG_BUILD_TYPE \${CMAKE_INSTALL_CONFIG_NAME})
+    set (HDF_CFG_NAME ${CMAKE_BUILD_TYPE})
+    set (HDF_BUILD_TYPE ${CMAKE_CFG_INTDIR})
+    set (HDF_CFG_BUILD_TYPE \${CMAKE_INSTALL_CONFIG_NAME})
   else()
-    set(HDF_CFG_BUILD_TYPE ".")
+    set (HDF_CFG_BUILD_TYPE ".")
     if(CMAKE_BUILD_TYPE)
-      set(HDF_CFG_NAME ${CMAKE_BUILD_TYPE})
-      set(HDF_BUILD_TYPE ${CMAKE_BUILD_TYPE})
+      set (HDF_CFG_NAME ${CMAKE_BUILD_TYPE})
+      set (HDF_BUILD_TYPE ${CMAKE_BUILD_TYPE})
     else()
-      set(HDF_CFG_NAME "Release")
-      set(HDF_BUILD_TYPE "Release")
+      set (HDF_CFG_NAME "Release")
+      set (HDF_BUILD_TYPE "Release")
     endif()
   endif()
   if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
       message (VERBOSE "Setting build type to 'RelWithDebInfo' as none was specified.")
     endif()
-    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
+    set (CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
     # Set the possible values of build type for cmake-gui
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
       "MinSizeRel" "RelWithDebInfo")
@@ -45,7 +45,7 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (IDE_GENERATED_PROPERTIES SOURCE_PATH HEADERS SOURCES)
-  #set(source_group_path "Source/AIM/${NAME}")
+  #set (source_group_path "Source/AIM/${NAME}")
   string (REPLACE "/" "\\\\" source_group_path ${SOURCE_PATH})
   source_group (${source_group_path} FILES ${HEADERS} ${SOURCES})
 
