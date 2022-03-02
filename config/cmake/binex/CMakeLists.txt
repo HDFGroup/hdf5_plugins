@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 cmake_minimum_required (VERSION 3.12)
 project (H5PLExamples C)
 
@@ -68,11 +79,13 @@ set (MAFISC_AVAILABLE 0)
 #  set (MAFISC_AVAILABLE 1)
 #endif ()
 
-set (SZF_AVAILABLE 0)
-#if (NOT WIN32)
-#  # SZF filter
-#  set (SZF_AVAILABLE 1)
-#endif ()
+# SZ filter
+set (SZ_AVAILABLE 0)
+if (WIN32 AND MSVC_VERSION GREATER 1900)
+  set (SZ_AVAILABLE 1)
+elseif (NOT WIN32)
+  set (SZ_AVAILABLE 1)
+endif ()
 
 # ZFP filter
 set (ZFP_AVAILABLE 1)

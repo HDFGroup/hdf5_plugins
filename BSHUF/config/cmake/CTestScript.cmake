@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 cmake_minimum_required (VERSION 3.12)
 ########################################################
 # This dashboard is maintained by The HDF Group
@@ -25,6 +36,10 @@ if (NOT SITE_OS_NAME)
   message (STATUS "Dashboard script uname output: ${osname}-${osrel}-${cpu}\n")
 
   set (CTEST_BUILD_NAME  "${osname}-${osrel}-${cpu}")
+  if (SITE_BUILDNAME_SUFFIX)
+    set (CTEST_BUILD_NAME  "${SITE_BUILDNAME_SUFFIX}-${CTEST_BUILD_NAME}")
+  endif ()
+  set (BUILD_OPTIONS "${ADD_BUILD_OPTIONS}")
 else ()
   ## machine name provided
   ## --------------------------
@@ -33,22 +48,11 @@ else ()
   else ()
     set (CTEST_BUILD_NAME "${SITE_OS_NAME}-${SITE_OS_VERSION}-${SITE_COMPILER_NAME}")
   endif ()
+  if (SITE_BUILDNAME_SUFFIX)
+    set (CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${SITE_BUILDNAME_SUFFIX}")
+  endif ()
+  set (BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRING=${CTEST_BUILD_NAME}")
 endif ()
-if (SITE_BUILDNAME_SUFFIX)
-  set (CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${SITE_BUILDNAME_SUFFIX}")
-endif ()
-set (BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILDNAME:STRING=${CTEST_BUILD_NAME}")
-
-# Launchers work only with Makefile and Ninja generators.
-if(NOT "${CTEST_CMAKE_GENERATOR}" MATCHES "Make|Ninja")
-  set(CTEST_USE_LAUNCHERS 0)
-  set(ENV{CTEST_USE_LAUNCHERS_DEFAULT} 0)
-  set(BUILD_OPTIONS "${BUILD_OPTIONS} -DCTEST_USE_LAUNCHERS:BOOL=OFF")
-else()
-  set(CTEST_USE_LAUNCHERS 1)
-  set(ENV{CTEST_USE_LAUNCHERS_DEFAULT} 1)
-  set(BUILD_OPTIONS "${BUILD_OPTIONS} -DCTEST_USE_LAUNCHERS:BOOL=ON")
-endif()
 
 #-----------------------------------------------------------------------------
 # MAC machines need special option
@@ -113,19 +117,18 @@ endforeach ()
 #-----------------------------------------------------------------------------
 # Initialize the CTEST commands
 #------------------------------
-if (CMAKE_GENERATOR_TOOLSET)
+set (CTEST_CONFIGURE_TOOLSET  "")
+if(CMAKE_GENERATOR_TOOLSET)
   set (CTEST_CONFIGURE_TOOLSET  "-T${CMAKE_GENERATOR_TOOLSET}")
-else ()
-  set (CTEST_CONFIGURE_TOOLSET  "")
 endif()
-if (CMAKE_GENERATOR_ARCHITECTURE)
+set (CTEST_CONFIGURE_ARCHITECTURE  "")
+if(CMAKE_GENERATOR_ARCHITECTURE)
   set (CTEST_CONFIGURE_ARCHITECTURE  "-A${CMAKE_GENERATOR_ARCHITECTURE}")
-else ()
-  set (CTEST_CONFIGURE_ARCHITECTURE  "")
 endif()
 set (CTEST_CONFIGURE_COMMAND
     "${CTEST_CMAKE_COMMAND} -C \"${CTEST_SOURCE_DIRECTORY}/config/cmake/cacheinit.cmake\" -DCMAKE_BUILD_TYPE:STRING=${CTEST_CONFIGURATION_TYPE} ${BUILD_OPTIONS} \"-G${CTEST_CMAKE_GENERATOR}\" \"${CTEST_CONFIGURE_ARCHITECTURE}\" \"${CTEST_CONFIGURE_TOOLSET}\" \"${CTEST_SOURCE_DIRECTORY}\""
 )
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 ## -- set output to english

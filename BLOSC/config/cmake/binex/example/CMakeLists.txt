@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 cmake_minimum_required (VERSION 3.12)
 project (HDFPL_EX)
 
@@ -39,9 +50,9 @@ if (BUILD_TESTING)
     endif ()
     set (last_test "${testname}-clearall")
     if (WIN32)
-      set(TESTLIBDIR "${HDF5_TOOLS_DIR}")
+      set (TESTLIBDIR "${HDF5_TOOLS_DIR}")
     else ()
-      set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
+      set (TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
     if (DISABLE_H5PL_ENCODER)
       add_test (
@@ -119,9 +130,9 @@ if (BUILD_TESTING)
     endif ()
     set (last_test "H5BLOSC_UD-${testname}-clearall-objects")
     if (WIN32)
-      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+      set (${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
     else ()
-      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+      set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
     if (HDF5_BUILD_TOOLS)
       add_test (

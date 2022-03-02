@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 #-----------------------------------------------------------------------------
 # Include all the necessary files for macros
 #-----------------------------------------------------------------------------
@@ -17,7 +28,7 @@ if (APPLE)
   list (LENGTH CMAKE_OSX_ARCHITECTURES ARCH_LENGTH)
   if (ARCH_LENGTH GREATER 1)
     set (CMAKE_OSX_ARCHITECTURES "" CACHE STRING "" FORCE)
-    message(FATAL_ERROR "Building Universal Binaries on OS X is NOT supported by the H5ZFP project. This is"
+    message (FATAL_ERROR "Building Universal Binaries on OS X is NOT supported by the H5ZFP project. This is"
     "due to technical reasons. The best approach would be build each architecture in separate directories"
     "and use the 'lipo' tool to combine them into a single executable or library. The 'CMAKE_OSX_ARCHITECTURES'"
     "variable has been set to a blank value which will build the default architecture for this system.")

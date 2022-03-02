@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 cmake_minimum_required (VERSION 3.12)
 project (H5BSHUF_SRC C)
 
@@ -9,7 +20,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
-set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
     ${HDF5_INCLUDE_DIR} ${H5BSHUF_BINARY_DIR}
     ${BSHUF_INCLUDE_DIRS}
 )
@@ -30,7 +41,7 @@ if (BUILD_BSHUF_LIBRARY_SOURCE)
       ${H5BSHUF_SRC_SOURCE_DIR}/iochain.c
       ${H5BSHUF_SRC_SOURCE_DIR}/iochain.h
   )
-  set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+  set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
       ${H5BSHUF_SRC_SOURCE_DIR}
   )
 endif ()
@@ -39,7 +50,7 @@ if (BUILD_LZ4_LIBRARY_SOURCE)
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.c
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.h
   )
-  set(H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+  set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
       ${H5BSHUF_SRC_SOURCE_DIR}/lib
   )
 endif ()
