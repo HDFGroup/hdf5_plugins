@@ -24,17 +24,6 @@ include (TestBigEndian)
 #-----------------------------------------------------------------------------
 # APPLE/Darwin setup
 #-----------------------------------------------------------------------------
-if (APPLE)
-  list (LENGTH CMAKE_OSX_ARCHITECTURES ARCH_LENGTH)
-  if (ARCH_LENGTH GREATER 1)
-    set (CMAKE_OSX_ARCHITECTURES "" CACHE STRING "" FORCE)
-    message (FATAL_ERROR "Building Universal Binaries on OS X is NOT supported by the H5ZFP project. This is"
-    "due to technical reasons. The best approach would be build each architecture in separate directories"
-    "and use the 'lipo' tool to combine them into a single executable or library. The 'CMAKE_OSX_ARCHITECTURES'"
-    "variable has been set to a blank value which will build the default architecture for this system.")
-  endif ()
-  set (AC_APPLE_UNIVERSAL_BUILD 0)
-endif ()
 
 # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
