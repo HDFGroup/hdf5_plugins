@@ -36,6 +36,7 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DDISABLE_${plname}_ENCODER:BOOL=${disable_encoder}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
@@ -60,6 +61,7 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DDISABLE_${plname}_ENCODER:BOOL=${disable_encoder}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
