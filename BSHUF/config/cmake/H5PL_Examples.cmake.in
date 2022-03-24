@@ -15,8 +15,8 @@ cmake_minimum_required(VERSION 3.12)
 # Execute from a command line:
 #     ctest -S H5PL_Examples.cmake,OPTION=VALUE -C Release -VV -O test.log
 ###############################################################################################################
-# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.12/lib/plugin,
-#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.12
+# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.13/lib/plugin,
+#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.13
 #     ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
 ###############################################################################################################
 
@@ -57,7 +57,7 @@ set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DCTEST_CONFIGURATION_TYPE:STRING=$
 ##################################################################
 
 if(NOT DEFINED HDF5INSTALLDIR)
-  set (HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.12")
+  set (HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.13")
 endif()
 if(NOT DEFINED INSTALLDIR)
   set (INSTALLDIR "${HDF5INSTALLDIR}")
@@ -88,20 +88,20 @@ set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILD
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set (CTEST_USE_TAR_SOURCE "HDFPLExamples-1.12-Source")
+#  set (CTEST_USE_TAR_SOURCE "HDFPLExamples-1.13-Source")
 #endif()
 
 ###############################################################################################################
 if(WIN32)
   set (SITE_OS_NAME "Windows")
-  set (ENV{HDF5_DIR} "${HDF5INSTALLDIR}/cmake")
+  set (ENV{HDF5_ROOT} "${HDF5INSTALLDIR}/")
   set (CTEST_BINARY_NAME ${CTEST_SOURCE_NAME}\\build)
   set (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}\\${CTEST_SOURCE_NAME}")
   set (CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}\\${CTEST_BINARY_NAME}")
   set (ENV{PATH} "$ENV{PATH};${HDF5INSTALLDIR}")
   set (HDF5_PLUGIN_ROOT "${INSTALLDIR}/lib/plugin")
 else()
-  set (ENV{HDF5_DIR} "${HDF5INSTALLDIR}/share/cmake")
+  set (ENV{HDF5_ROOT} "${HDF5INSTALLDIR}/share/")
   set (ENV{LD_LIBRARY_PATH} "${HDF5INSTALLDIR}/lib")
   set (CTEST_BINARY_NAME ${CTEST_SOURCE_NAME}/build)
   set (CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/${CTEST_SOURCE_NAME}")
