@@ -1,3 +1,4 @@
+HDF5 1.8 plugins
 Building these filter/example requires knowledge of the hdf5 and the
 compression library installation. Out-of-source build process is expected.
 
@@ -15,7 +16,7 @@ For CMake, you must supply the location of the CMake-built HDF5 configuration fi
     These can be used with the H5PL_ALLOW_EXTERNAL_SUPPORT option.
     Consult CMake documentation for setting CMAKE_GENERATOR
 Example:
-    set(ENV{HDF5_DIR} "/temp/hdf5/share/cmake/hdf5")
+    set(ENV{HDF5_ROOT} "/temp/hdf5/")
     set(BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
     set(BUILD_OPTIONS "${BUILD_OPTIONS} -DTGZPATH:PATH=${PLUGIN_SOURCE}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
     cmake -C ${PLUGIN_SOURCE}/config/cmake/cacheinit.cmake -DCMAKE_BUILD_TYPE:STRING=Release ${BUILD_OPTIONS} "-G${CMAKE_GENERATOR}" ${PLUGIN_SOURCE}

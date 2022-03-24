@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 #-------------------------------------------------------------------------------
 macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")
@@ -24,6 +35,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
@@ -45,6 +57,7 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type libtype)
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
@@ -77,16 +90,16 @@ macro (PACKAGE_BLOSC_LIBRARY compress_type)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
+macro (EXTERNAL_BLOSC_ZLIB_LIBRARY compress_type libtype)
   if (${libtype} MATCHES "SHARED")
     set (BUILD_EXT_SHARED_LIBS "ON")
   else ()
     set (BUILD_EXT_SHARED_LIBS "OFF")
   endif ()
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (ZLIB
-        GIT_REPOSITORY ${ZLIB_URL}
-        GIT_TAG ${ZLIB_BRANCH}
+    EXTERNALPROJECT_ADD (BLOSC_ZLIB
+        GIT_REPOSITORY ${BLOSC_ZLIB_URL}
+        GIT_TAG ${BLOSC_ZLIB_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
             -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
@@ -100,11 +113,12 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (ZLIB
-        URL ${ZLIB_URL}
+    EXTERNALPROJECT_ADD (BLOSC_ZLIB
+        URL ${BLOSC_ZLIB_URL}
         URL_MD5 ""
         INSTALL_COMMAND ""
         CMAKE_ARGS
@@ -119,38 +133,39 @@ macro (EXTERNAL_ZLIB_LIBRARY compress_type libtype)
             -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
             -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
             -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
             -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   endif ()
-  externalproject_get_property (ZLIB BINARY_DIR SOURCE_DIR)
+  externalproject_get_property (BLOSC_ZLIB BINARY_DIR SOURCE_DIR)
 
   if (WIN32)
-    set (ZLIB_LIB_NAME "zlib")
+    set (BLOSC_ZLIB_LIB_NAME "zlib")
   else ()
-    set (ZLIB_LIB_NAME "z")
+    set (BLOSC_ZLIB_LIB_NAME "z")
   endif ()
 
 # Create imported target zlib-static
   add_library(zlib ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (zlib ${ZLIB_LIB_NAME} ${libtype} "")
-  add_dependencies (zlib ZLIB)
-  set (ZLIB_STATIC_LIBRARY "zlib")
+  HDF_IMPORT_SET_LIB_OPTIONS (zlib ${BLOSC_ZLIB_LIB_NAME} ${libtype} "")
+  add_dependencies (zlib BLOSC_ZLIB)
+  set (BLOSC_ZLIB_STATIC_LIBRARY "zlib")
 
-  set (ZLIB_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (ZLIB_INCLUDE_DIR "${SOURCE_DIR}")
-  set (ZLIB_FOUND 1)
-  set (ZLIB_LIBRARIES ${ZLIB_LIBRARY})
-  set (ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR_GEN} ${ZLIB_INCLUDE_DIR})
+  set (BLOSC_ZLIB_INCLUDE_DIR_GEN "${BINARY_DIR}")
+  set (BLOSC_ZLIB_INCLUDE_DIR "${SOURCE_DIR}")
+  set (BLOSC_ZLIB_FOUND 1)
+  set (BLOSC_ZLIB_LIBRARIES ${ZLIB_LIBRARY})
+  set (BLOSC_ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR_GEN} ${ZLIB_INCLUDE_DIR})
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (PACKAGE_ZLIB_LIBRARY compress_type)
-  add_custom_target (ZLIB-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZLIB_INCLUDE_DIR_GEN}/zconf.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${ZLIB_INCLUDE_DIR_GEN}/zconf.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+macro (PACKAGE_BLOSC_ZLIB_LIBRARY compress_type)
+  add_custom_target (BLOSC_ZLIB-GenHeader-Copy ALL
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${BLOSC_ZLIB_INCLUDE_DIR_GEN}/zconf.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+      COMMENT "Copying ${BLOSC_ZLIB_INCLUDE_DIR_GEN}/zconf.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
   )
   set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zconf.h)
   if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (ZLIB-GenHeader-Copy ZLIB)
+    add_dependencies (BLOSC_ZLIB-GenHeader-Copy BLOSC_ZLIB)
   endif ()
 endmacro ()

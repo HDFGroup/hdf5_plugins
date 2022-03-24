@@ -1,3 +1,14 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
 cmake_minimum_required (VERSION 3.12)
 project (HDF5PL_EX)
 
@@ -28,7 +39,7 @@ set (extra_examples)
 if (ZFP_AVAILABLE)
   set (extra_examples ${extra_examples} h5ex_d_zfp)
 endif ()
-if (SZF_AVAILABLE)
+if (SZ_AVAILABLE)
   set (extra_examples ${extra_examples} h5ex_d_sz)
 endif ()
 
@@ -66,9 +77,9 @@ if (BUILD_TESTING)
     endif ()
     set (last_test "${testname}-clearall")
     if (WIN32)
-      set(TESTLIBDIR "${HDF5_TOOLS_DIR}")
+      set (TESTLIBDIR "${HDF5_TOOLS_DIR}")
     else ()
-      set(TESTLIBDIR "${HDF5_LIBRARY_PATH}")
+      set (TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
     if (DISABLE_H5PL_ENCODER)
       add_test (
@@ -183,9 +194,9 @@ if (BUILD_TESTING)
     endif ()
     set (last_test "H5PL_UD-${testname}-clearall-objects")
     if (WIN32)
-      set(${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+      set (${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
     else ()
-      set(${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+      set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
     if (HDF5_BUILD_TOOLS)
       if ("${deptest}" STREQUAL "NONE")
@@ -280,7 +291,7 @@ if (BUILD_TESTING)
   foreach (h5_file ${dyn_examples})
     ADD_H5_TEST (${h5_file})
   endforeach ()
-  if (SZF_AVAILABLE)
+  if (SZ_AVAILABLE)
     ## special test compare
     ADD_H5_TEST (h5ex_d_sz TEST_MASK_MOD)
   endif ()
