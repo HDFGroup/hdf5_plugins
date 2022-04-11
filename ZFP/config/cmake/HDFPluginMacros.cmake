@@ -489,7 +489,7 @@ macro (INSTALL_SUPPORT varname)
 #            DESTINATION ..
 #        )
       endif ()
-    else (WIN32)
+    else ()
       list (APPEND CPACK_GENERATOR "STGZ")
       set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
       set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
