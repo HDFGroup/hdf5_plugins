@@ -153,7 +153,7 @@ Contact Information:
     Email: faltet at pytables dot org
 
 --------------------------------------------
-Compression Library Included: c-blosc version 1.13.1
+Compression Library Included: c-blosc version 1.12.1
 
 Plugin cd_value option
 --------------------------------------------

@@ -59,7 +59,7 @@ Execute the ctest script:
 
 If you do not use the ctest script, you must supply the following environment
     variables:
-        HDF5_DIR
+        HDF5_ROOT
         HDF5_PLUGIN_PATH
         LD_LIBRARY_PATH
     and make and cd into a build folder:
