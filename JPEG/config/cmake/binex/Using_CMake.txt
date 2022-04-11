@@ -35,12 +35,12 @@ I. Preconditions
       Windows). You can obtain pre-built binaries from The HDF Group's website at
       www.hdfgroup.org.
 
-   3. Set the environment variable HDF5_DIR to the installed location of
+   3. Set the environment variable HDF5_ROOT to the installed location of
       the config files for HDF5.
          On Windows:
-            HDF5_DIR=C:/Program Files/HDF_Group/HDF5/1.10.x/cmake
+            HDF5_ROOT=C:/Program Files/HDF_Group/HDF5/1.10.x/
          On unix:
-            HDF5_DIR=<install root folder>/HDF_Group/HDF5/1.10.x/cmake
+            HDF5_ROOT=<install root folder>/HDF_Group/HDF5/1.10.x/
 
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
