@@ -113,6 +113,9 @@ if (WIN32 AND MSVC_VERSION GREATER 1900)
   endif ()
 elseif (NOT WIN32)
   FILTER_OPTION (SZ)
+  if(CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "(Apple)?Cc]lang")
+    FILTER_OPTION (SZ)
+  endif ()
 endif ()
 
 # ZFP filter
