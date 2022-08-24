@@ -4,8 +4,8 @@ SZ filter is available for encoding and decoding.
 ....Close the file and reopen for reading ........
 Filter info is available from the dataset creation property
    Filter identifier is 32017
-   Number of parameters is 5 with the value 3
+   Number of parameters is 9 with the value 1
    To find more about the filter check SZ compressor/decompressor for floating-point data.
 ....Reading SZ compressed data ................
-Maximum value in DS1 is 889.0000
+Maximum value in DS1 is 76830775571309515686801024483328.0000
 SZ filter is available now since H5Dread triggered loading of the filter.
