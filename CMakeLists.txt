@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18)
 project (H5PL C)
 
 #-----------------------------------------------------------------------------
@@ -118,7 +118,10 @@ elseif (NOT WIN32)
 endif ()
 
 # ZFP filter
-FILTER_OPTION (ZFP)
+#FILTER_OPTION (ZFP)
+
+# ZSTD filter
+FILTER_OPTION (ZSTD)
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

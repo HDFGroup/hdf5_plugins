@@ -300,10 +300,14 @@ macro (PLUGIN_README_PROPERTIES pkg_name)
       elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.*")
         if (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.0.*")
           set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2015")
-        elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.16.*")
+        elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.1.*")
           set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2017")
-        else () #19.23
+        elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.2.*")
           set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2019")
+        elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "^19.3.*")
+          set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2022")
+        else ()
+          set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ???")
         endif ()
       else ()
         set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
@@ -377,7 +381,7 @@ macro (HDF_DIR_PATHS package_prefix)
     endif ()
   endif ()
   if (NOT ${package_prefix}_INSTALL_CMAKE_DIR)
-    set (${package_prefix}_INSTALL_CMAKE_DIR share/cmake)
+    set (${package_prefix}_INSTALL_CMAKE_DIR cmake)
   endif ()
 
   # Always use full RPATH, i.e. don't skip the full RPATH for the build tree
@@ -405,12 +409,12 @@ macro (HDF_DIR_PATHS package_prefix)
   endif ()
 
   #set the default debug suffix for all library targets
-    if(NOT CMAKE_DEBUG_POSTFIX)
-      if (WIN32)
-        set (CMAKE_DEBUG_POSTFIX "_D")
-      else ()
-        set (CMAKE_DEBUG_POSTFIX "_debug")
-      endif ()
+  if(NOT CMAKE_DEBUG_POSTFIX)
+    if (WIN32)
+      set (CMAKE_DEBUG_POSTFIX "_D")
+    else ()
+      set (CMAKE_DEBUG_POSTFIX "_debug")
+    endif ()
   endif ()
 
   SET_HDF_BUILD_TYPE()
@@ -429,7 +433,7 @@ macro (HDF_DIR_PATHS package_prefix)
         ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
     )
     set (CMAKE_Fortran_MODULE_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all fortran modules."
+        ${PROJECT_BINARY_DIR}/mod CACHE PATH "Single Directory for all fortran modules."
     )
     get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
     if(_isMultiConfig)

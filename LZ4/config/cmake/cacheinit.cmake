@@ -25,7 +25,7 @@ set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
 set (BUILD_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the plugin" FORCE)
 
-set (LZ4_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/lz4.git" CACHE STRING "Use LZ4 from HDF repository" FORCE)
+set (LZ4_GIT_URL "https://git@someurl/lz4.git" CACHE STRING "Use LZ4 from HDF repository" FORCE)
 set (LZ4_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (LZ4_TGZ_NAME "lz4.tar.gz" CACHE STRING "Use LZ4 from compressed file" FORCE)

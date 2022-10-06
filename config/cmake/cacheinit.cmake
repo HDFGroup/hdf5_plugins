@@ -41,7 +41,7 @@ set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" F
 
 ############################# bitshuffle ################################################
 
-set (BSHUF_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/bitshuffle.git" CACHE STRING "Use BSHUF from HDF repository" FORCE)
+set (BSHUF_GIT_URL "https://someurl/bitshuffle.git" CACHE STRING "Use BSHUF from HDF repository" FORCE)
 set (BSHUF_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (BSHUF_TGZ_NAME "bitshuffle.tar.gz" CACHE STRING "Use BSHUF from compressed file" FORCE)
@@ -57,7 +57,7 @@ set (BLOSC_TGZ_NAME "c-blosc.tar.gz" CACHE STRING "Use BLOSC from compressed fil
 
 set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
 
-set (ZLIB_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/zlib.git" CACHE STRING "Use ZLIB from HDF repo" FORCE)
+set (ZLIB_GIT_URL "https://git@someurl/zlib.git" CACHE STRING "Use ZLIB from HDF repo" FORCE)
 set (ZLIB_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (ZLIB_TGZ_NAME "ZLib.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
@@ -66,7 +66,7 @@ set (ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of ZLIB package" FORCE)
 
 ############################# bzip2 ################################################
 
-set (BZ2_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/bzip2.git" CACHE STRING "Use BZ2 from HDF repository" FORCE)
+set (BZ2_GIT_URL "https://someurl/bzip2.git" CACHE STRING "Use BZ2 from HDF repository" FORCE)
 set (BZ2_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (BZ2_TGZ_NAME "BZ2.tar.gz" CACHE STRING "Use BZ2 from compressed file" FORCE)
@@ -75,7 +75,7 @@ set (BZ2_PACKAGE_NAME "bz2" CACHE STRING "Name of BZ2 package" FORCE)
 
 ############################# fpzip ################################################
 
-set (FPZIP_GIT_URL "https://https://github.com/LLNL/fpzip" CACHE STRING "Use FPZIP from github repository" FORCE)
+set (FPZIP_GIT_URL "https://github.com/LLNL/fpzip" CACHE STRING "Use FPZIP from github repository" FORCE)
 set (FPZIP_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (FPZIP_TGZ_NAME "fpzip.tar.gz" CACHE STRING "Use FPZIP from compressed file" FORCE)
@@ -84,7 +84,7 @@ set (FPZIP_PACKAGE_NAME "fpzip" CACHE STRING "Name of FPZIP package" FORCE)
 
 ############################# jpeg ################################################
 
-set (JPEG_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
+set (JPEG_GIT_URL "https://someurl/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
 set (JPEG_GIT_BRANCH "jpeg9d" CACHE STRING "" FORCE)
 
 #set (JPEG_TGZ_NAME "JPEG9d.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
@@ -96,7 +96,7 @@ set (JPEG_PACKAGE_NAME "jpeg" CACHE STRING "Name of JPEG package" FORCE)
 
 set (BUILD_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the plugin" FORCE)
 
-set (LZ4_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/lz4.git" CACHE STRING "Use LZ4 from HDF repository" FORCE)
+set (LZ4_GIT_URL "https://someurl/lz4.git" CACHE STRING "Use LZ4 from HDF repository" FORCE)
 set (LZ4_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (LZ4_TGZ_NAME "lz4.tar.gz" CACHE STRING "Use LZ4 from compressed file" FORCE)
@@ -105,7 +105,7 @@ set (LZ4_PACKAGE_NAME "lz4" CACHE STRING "Name of LZ4 package" FORCE)
 
 ############################# lzf ################################################
 
-set (LZF_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/lzf.git" CACHE STRING "Use LZF from HDF repository" FORCE)
+set (LZF_GIT_URL "https://someurl/lzf.git" CACHE STRING "Use LZF from HDF repository" FORCE)
 set (LZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (LZF_TGZ_NAME "lzf.tar.gz" CACHE STRING "Use LZF from compressed file" FORCE)
@@ -135,3 +135,12 @@ set (ZFP_GIT_BRANCH "master" CACHE STRING "" FORCE)
 set (ZFP_TGZ_NAME "zfp.tar.gz" CACHE STRING "Use ZFP from compressed file" FORCE)
 
 set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)
+
+############################# zstd ################################################
+
+set (ZSTD_GIT_URL "https://github.com/facebook/zstd" CACHE STRING "Use ZSTD from repository" FORCE)
+set (ZSTD_GIT_BRANCH "dev" CACHE STRING "" FORCE)
+
+set (ZSTD_TGZ_NAME "zstd.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)
+
+set (ZSTD_PACKAGE_NAME "zstd" CACHE STRING "Name of ZSTD package" FORCE)

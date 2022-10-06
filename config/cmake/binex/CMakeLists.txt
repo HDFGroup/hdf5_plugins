@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (H5PLExamples C)
 
 #-----------------------------------------------------------------------------
@@ -89,5 +89,8 @@ endif ()
 
 # ZFP filter
 set (ZFP_AVAILABLE 1)
+
+# ZSTD filter
+set (ZSTD_AVAILABLE 1)
 
 add_subdirectory (example)

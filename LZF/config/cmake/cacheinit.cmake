@@ -23,7 +23,7 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (LZF_GIT_URL "https://git@bitbucket.hdfgroup.org/scm/test/lzf.git" CACHE STRING "Use LZF from HDF repository" FORCE)
+set (LZF_GIT_URL "https://git@someurl/lzf.git" CACHE STRING "Use LZF from HDF repository" FORCE)
 set (LZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (LZF_TGZ_NAME "lzf.tar.gz" CACHE STRING "Use LZF from compressed file" FORCE)
