@@ -40,8 +40,8 @@ macro (BASIC_SETTINGS varname)
   #-----------------------------------------------------------------------------
   set (${PLUGIN_PACKAGE_NAME}_LIB_TARGET              ${${PLUGIN_PACKAGE_NAME}_LIB_CORENAME})
 
-  option (HDF_USE_GNU_DIRS "TRUE to use GNU Coding Standard install directory variables, FALSE to use historical settings" FALSE)
-  if (HDF_USE_GNU_DIRS)
+  option (H5PL_USE_GNU_DIRS "TRUE to use GNU Coding Standard install directory variables, FALSE to use historical settings" FALSE)
+  if (H5PL_USE_GNU_DIRS)
     include(GNUInstallDirs)
     if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR)
       set (${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
@@ -67,7 +67,7 @@ macro (BASIC_SETTINGS varname)
     if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
       set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${CMAKE_INSTALL_DOCDIR})
     endif ()
-    message(STATUS "GNU: ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}")
+    message(STATUS "GNU: ${${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR}")
   endif ()
 
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR)
@@ -100,7 +100,7 @@ macro (BASIC_SETTINGS varname)
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
     set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR})
   endif ()
-  message(STATUS "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}")
+  message(STATUS "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR}")
 
   #-----------------------------------------------------------------------------
   # Setup output Directories

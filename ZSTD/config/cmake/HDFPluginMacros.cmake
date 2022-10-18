@@ -40,8 +40,8 @@ macro (BASIC_SETTINGS varname)
   #-----------------------------------------------------------------------------
   set (${PLUGIN_PACKAGE_NAME}_LIB_TARGET              ${${PLUGIN_PACKAGE_NAME}_LIB_CORENAME})
 
-  option (HDF_USE_GNU_DIRS "TRUE to use GNU Coding Standard install directory variables, FALSE to use historical settings" FALSE)
-  if (HDF_USE_GNU_DIRS)
+  option (H5PL_USE_GNU_DIRS "TRUE to use GNU Coding Standard install directory variables, FALSE to use historical settings" FALSE)
+  if (H5PL_USE_GNU_DIRS)
     include(GNUInstallDirs)
     if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR)
       set (${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
