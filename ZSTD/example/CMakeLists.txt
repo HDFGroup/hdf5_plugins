@@ -22,7 +22,7 @@ else ()
   add_definitions (-DH5_BUILT_AS_STATIC_LIB)
 endif ()
 
-#run-time loadable bzip library examples
+#run-time loadable zstd library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")

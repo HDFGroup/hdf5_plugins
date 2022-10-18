@@ -11,12 +11,12 @@
 #
 #-------------------------------------------------------------------------------
 macro (BASIC_SETTINGS varname)
-  string(TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
-  string(TOLOWER ${varname} PLUGIN_VARNAME)
+  string (TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
+  string (TOLOWER ${varname} PLUGIN_VARNAME)
   set (H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE "h5${PLUGIN_VARNAME}")
   set (H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME "h5${PLUGIN_VARNAME}")
-  string(TOUPPER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_PACKAGE_NAME)
-  string(TOLOWER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_NAME)
+  string (TOUPPER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_PACKAGE_NAME)
+  string (TOLOWER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_NAME)
   set (CMAKE_NO_SYSTEM_FROM_IMPORTED 1)
 
   #-----------------------------------------------------------------------------
@@ -39,6 +39,36 @@ macro (BASIC_SETTINGS varname)
   # Set the target names of all the libraries
   #-----------------------------------------------------------------------------
   set (${PLUGIN_PACKAGE_NAME}_LIB_TARGET              ${${PLUGIN_PACKAGE_NAME}_LIB_CORENAME})
+
+  option (HDF_USE_GNU_DIRS "TRUE to use GNU Coding Standard install directory variables, FALSE to use historical settings" FALSE)
+  if (HDF_USE_GNU_DIRS)
+    include(GNUInstallDirs)
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR}/plugin)
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_JAR_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_JAR_DIR ${CMAKE_INSTALL_LIBDIR})
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_INCLUDE_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_MODULE_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_MODULE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/mod)
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR ${CMAKE_INSTALL_DATADIR})
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake)
+    endif ()
+    if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
+      set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${CMAKE_INSTALL_DOCDIR})
+    endif ()
+    message(STATUS "GNU: ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}")
+  endif ()
 
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR)
     set (${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR bin)
@@ -67,6 +97,10 @@ macro (BASIC_SETTINGS varname)
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR)
     set (${PLUGIN_PACKAGE_NAME}_INSTALL_CMAKE_DIR cmake)
   endif ()
+  if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
+    set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR})
+  endif ()
+  message(STATUS "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}")
 
   #-----------------------------------------------------------------------------
   # Setup output Directories
@@ -353,7 +387,7 @@ macro (INSTALL_SUPPORT varname)
     install (
         FILES
             ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/docs/PluginLibraries.txt
-        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}
         COMPONENT hdfdocuments
     )
 

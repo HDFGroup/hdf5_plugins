@@ -57,7 +57,7 @@ set (BLOSC_TGZ_NAME "c-blosc.tar.gz" CACHE STRING "Use BLOSC from compressed fil
 
 set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
 
-set (ZLIB_GIT_URL "https://git@someurl/zlib.git" CACHE STRING "Use ZLIB from HDF repo" FORCE)
+set (ZLIB_GIT_URL "https://someurl/zlib.git" CACHE STRING "Use ZLIB from HDF repo" FORCE)
 set (ZLIB_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (ZLIB_TGZ_NAME "ZLib.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)

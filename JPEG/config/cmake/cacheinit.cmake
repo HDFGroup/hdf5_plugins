@@ -23,7 +23,7 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (JPEG_GIT_URL "https://git@someurl/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
+set (JPEG_GIT_URL "https://someurl/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
 set (JPEG_GIT_BRANCH "jpeg9d" CACHE STRING "" FORCE)
 
 set (JPEG_TGZ_NAME "JPEG.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)

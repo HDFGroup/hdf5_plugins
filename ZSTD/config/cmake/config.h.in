@@ -4,40 +4,40 @@
 #define CONFIG_H_
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#cmakedefine HAVE_DLFCN_H ${HAVE_DLFCN_H}
+#cmakedefine HAVE_DLFCN_H @HAVE_DLFCN_H@
 
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#cmakedefine HAVE_DOPRNT ${HAVE_DOPRNT}
+#cmakedefine HAVE_DOPRNT @HAVE_DOPRNT@
 
 /* Define to 1 if you have the <fcntl.h> header file. */
-#cmakedefine HAVE_FCNTL_H ${HAVE_FCNTL_H}
+#cmakedefine HAVE_FCNTL_H @HAVE_FCNTL_H@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#cmakedefine HAVE_INTTYPES_H ${HAVE_INTTYPES_H}
+#cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
 
 /* Define to 1 if you have the `zstd' library (-lzstd). */
-#cmakedefine HAVE_LIBZSTD ${HAVE_LIBZSTD}
+#cmakedefine HAVE_LIBZSTD @HAVE_LIBZSTD@
 
 /* Define to 1 if you have the `hdf5' library (-lhdf5). */
-#cmakedefine HAVE_LIBHDF5 ${HAVE_LIBHDF5}
+#cmakedefine HAVE_LIBHDF5 @HAVE_LIBHDF5@
 
 /* Define to 1 if you have the <memory.h> header file. */
-#cmakedefine HAVE_MEMORY_H ${HAVE_MEMORY_H}
+#cmakedefine HAVE_MEMORY_H @HAVE_MEMORY_H@
 
 /* Define to 1 if you have the `memset' function. */
-#cmakedefine HAVE_MEMSET ${HAVE_MEMSET}
+#cmakedefine HAVE_MEMSET @HAVE_MEMSET@
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#cmakedefine HAVE_STDINT_H ${HAVE_STDINT_H}
+#cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#cmakedefine HAVE_STDLIB_H ${HAVE_STDLIB_H}
+#cmakedefine HAVE_STDLIB_H @HAVE_STDLIB_H@
 
 /* Define to 1 if you have the <strings.h> header file. */
-#cmakedefine HAVE_STRINGS_H ${HAVE_STRINGS_H}
+#cmakedefine HAVE_STRINGS_H @HAVE_STRINGS_H@
 
 /* Define to 1 if you have the <string.h> header file. */
-#cmakedefine HAVE_STRING_H ${HAVE_STRING_H}
+#cmakedefine HAVE_STRING_H @HAVE_STRING_H@
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #cmakedefine HAVE_SYS_STAT_H ${HAVE_SYS_STAT_H}
@@ -46,10 +46,10 @@
 #cmakedefine HAVE_SYS_TYPES_H ${HAVE_SYS_TYPES_H}
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#cmakedefine HAVE_UNISTD_H ${HAVE_UNISTD_H}
+#cmakedefine HAVE_UNISTD_H @HAVE_UNISTD_H@
 
 /* Define to 1 if you have the `vprintf' function. */
-#cmakedefine HAVE_VPRINTF ${HAVE_VPRINTF}
+#cmakedefine HAVE_VPRINTF @HAVE_VPRINTF@
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
