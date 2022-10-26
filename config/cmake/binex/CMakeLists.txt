@@ -90,4 +90,7 @@ endif ()
 # ZFP filter
 set (ZFP_AVAILABLE 1)
 
+# ZSTD filter
+set (ZSTD_AVAILABLE 1)
+
 add_subdirectory (example)

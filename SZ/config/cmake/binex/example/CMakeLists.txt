@@ -100,7 +100,7 @@ if (BUILD_TESTING)
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
+              -D "TEST_ARGS:STRING=--enable-error-stack;-p;-H;${testname}.h5"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
