@@ -486,6 +486,7 @@ macro (HDF_DIR_PATHS package_prefix)
       set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
     endif ()
   endif ()
+endmacro ()
 
 macro (ADD_H5_FLAGS h5_flag_var infile)
   file (STRINGS ${infile} TEST_FLAG_STREAM)
