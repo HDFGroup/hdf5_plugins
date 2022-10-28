@@ -137,7 +137,13 @@ endif ()
 #FILTER_OPTION (ZFP)
 
 # ZSTD filter
-FILTER_OPTION (ZSTD)
+if (WIN32)
+  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+    FILTER_OPTION (ZSTD)
+  endif ()
+elseif (NOT WIN32)
+  FILTER_OPTION (ZSTD)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
