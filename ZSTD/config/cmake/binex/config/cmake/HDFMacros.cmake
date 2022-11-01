@@ -111,8 +111,13 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     set (LIB_DEBUG_NAME "${libname}${CMAKE_DEBUG_POSTFIX}")
   else ()
     if (WIN32 AND NOT MINGW)
-      set (LIB_RELEASE_NAME "lib${libname}")
-      set (LIB_DEBUG_NAME "lib${libname}${CMAKE_DEBUG_POSTFIX}")
+      if ("${ARGN}" STREQUAL "NOPREFIX")
+        set (LIB_RELEASE_NAME "${libname}")
+        set (LIB_DEBUG_NAME "${libname}${CMAKE_DEBUG_POSTFIX}")
+      else ()
+        set (LIB_RELEASE_NAME "lib${libname}")
+        set (LIB_DEBUG_NAME "lib${libname}${CMAKE_DEBUG_POSTFIX}")
+      endif ()
     else ()
       set (LIB_RELEASE_NAME "${libname}")
       set (LIB_DEBUG_NAME "${libname}${CMAKE_DEBUG_POSTFIX}")
@@ -152,7 +157,7 @@ endmacro ()
 #-------------------------------------------------------------------------------
 macro (HDF_SET_LIB_VERSIONS pkg_name libtarget defaultlibname libtype)
   set (libname "${defaultlibname}")
-  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
+  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype} ${ARGN})
 
   if (${libtype} MATCHES "SHARED")
     set (LIB_PACKAGE_SOVERSION ${${pkg_name}_VERS_MAJOR})
@@ -184,7 +189,7 @@ endmacro ()
 
 #-------------------------------------------------------------------------------
 macro (HDF_IMPORT_SET_LIB_OPTIONS libtarget libname libtype libversion)
-  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype})
+  HDF_SET_BASE_OPTIONS (${libtarget} ${libname} ${libtype} ${ARGN})
 
   if (${importtype} MATCHES "IMPORT")
     set (importprefix "${CMAKE_STATIC_LIBRARY_PREFIX}")
@@ -486,19 +491,6 @@ macro (HDF_DIR_PATHS package_prefix)
       set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
     endif ()
   endif ()
-
-#-----------------------------------------------------------------------------
-# Setup pre-3.14 FetchContent
-#-----------------------------------------------------------------------------
-  if(${CMAKE_VERSION} VERSION_LESS 3.14)
-    macro(FetchContent_MakeAvailable NAME)
-        FetchContent_GetProperties(${NAME})
-        if(NOT ${NAME}_POPULATED)
-            FetchContent_Populate(${NAME})
-            add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
-        endif()
-    endmacro()
-  endif()
 endmacro ()
 
 macro (ADD_H5_FLAGS h5_flag_var infile)

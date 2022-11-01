@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18)
 project (H5PL C)
 
 if (POLICY CMP0074)
@@ -105,8 +105,8 @@ FILTER_OPTION (BZIP2)
 # JPEG filter
 if (NOT WIN32)
   FILTER_OPTION (JPEG)
-elseif (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "[Ll][Ll][Vv][Mm]")
-  FILTER_OPTION (JPEG)
+#elseif (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "[Ll][Ll][Vv][Mm]")
+#  FILTER_OPTION (JPEG)
 endif ()
 
 # LZ4 filter
@@ -137,7 +137,17 @@ endif ()
 #FILTER_OPTION (ZFP)
 
 # ZSTD filter
-FILTER_OPTION (ZSTD)
+if (WIN32)
+#  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+    FILTER_OPTION (ZSTD)
+#  endif ()
+elseif (APPLE)
+  if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+    FILTER_OPTION (ZSTD)
+  endif ()
+else ()
+  FILTER_OPTION (ZSTD)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
