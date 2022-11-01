@@ -105,8 +105,8 @@ FILTER_OPTION (BZIP2)
 # JPEG filter
 if (NOT WIN32)
   FILTER_OPTION (JPEG)
-elseif (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "[Ll][Ll][Vv][Mm]")
-  FILTER_OPTION (JPEG)
+#elseif (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "[Ll][Ll][Vv][Mm]")
+#  FILTER_OPTION (JPEG)
 endif ()
 
 # LZ4 filter
@@ -138,9 +138,9 @@ endif ()
 
 # ZSTD filter
 if (WIN32)
-  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+#  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
     FILTER_OPTION (ZSTD)
-  endif ()
+#  endif ()
 elseif (APPLE)
   if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
     FILTER_OPTION (ZSTD)
