@@ -149,13 +149,13 @@ macro (EXTERNAL_BLOSC_ZLIB_LIBRARY compress_type libtype)
   add_library(zlib ${libtype} IMPORTED)
   HDF_IMPORT_SET_LIB_OPTIONS (zlib ${BLOSC_ZLIB_LIB_NAME} ${libtype} "")
   add_dependencies (zlib BLOSC_ZLIB)
-  set (BLOSC_ZLIB_STATIC_LIBRARY "zlib")
+  set (BLOSC_ZLIB_LIBRARY "zlib")
 
   set (BLOSC_ZLIB_INCLUDE_DIR_GEN "${BINARY_DIR}")
   set (BLOSC_ZLIB_INCLUDE_DIR "${SOURCE_DIR}")
   set (BLOSC_ZLIB_FOUND 1)
-  set (BLOSC_ZLIB_LIBRARIES ${ZLIB_LIBRARY})
-  set (BLOSC_ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR_GEN} ${ZLIB_INCLUDE_DIR})
+  set (BLOSC_ZLIB_LIBRARIES ${BLOSC_ZLIB_LIBRARY})
+  set (BLOSC_ZLIB_INCLUDE_DIRS ${BLOSC_ZLIB_INCLUDE_DIR_GEN} ${BLOSC_ZLIB_INCLUDE_DIR})
 endmacro ()
 
 #-------------------------------------------------------------------------------
