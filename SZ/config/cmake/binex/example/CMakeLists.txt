@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (HDFPL_EX)
 
 set (dyn_examples
@@ -100,7 +100,7 @@ if (BUILD_TESTING)
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
+              -D "TEST_ARGS:STRING=--enable-error-stack;-p;-H;${testname}.h5"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"

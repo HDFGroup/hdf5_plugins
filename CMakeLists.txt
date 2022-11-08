@@ -9,8 +9,24 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18)
 project (H5PL C)
+
+if (POLICY CMP0074)
+  # find_package() uses <PackageName>_ROOT variables.
+  cmake_policy (SET CMP0074 NEW)
+endif ()
+
+if (POLICY CMP0083)
+  # To control generation of Position Independent Executable (PIE) or not,
+  # some flags are required at link time.
+  cmake_policy (SET CMP0083 NEW)
+endif ()
+
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
 
 #-----------------------------------------------------------------------------
 # Basic H5PL stuff here
@@ -26,8 +42,8 @@ BASIC_SETTINGS (${PL_PACKAGE_NAME})
 
 set (H5PL_VERS_MAJOR "1")
 set (H5PL_VERS_MINOR "13")
-set (H5PL_VERS_RELEASE "3")
-set (H5PL_OVERRIDE_VERSION "1.13.3")
+set (H5PL_VERS_RELEASE "4")
+set (H5PL_OVERRIDE_VERSION "1.13.4")
 
 set (H5PL_SOVERS_MAJOR 1)
 set (H5PL_SOVERS_MINOR 0)
@@ -41,7 +57,7 @@ set (H5PL_PACKAGE_VERSION_MAJOR "${H5PL_VERS_MAJOR}")
 set (H5PL_PACKAGE_VERSION_MINOR "${H5PL_VERS_MINOR}")
 set (H5PL_PACKAGE_STRING "${H5PL_PACKAGE_NAME}")
 set (H5PL_PACKAGE_TARNAME "${H5PL_PACKAGE_NAME}${HDF_PACKAGE_EXT}")
-set (H5PL_PACKAGE_URL "https://support.hdfgroup.org/hdf5/")
+set (H5PL_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5PL_PACKAGE_BUGREPORT "help@hdfgroup.org")
 
 #-----------------------------------------------------------------------------
@@ -89,8 +105,8 @@ FILTER_OPTION (BZIP2)
 # JPEG filter
 if (NOT WIN32)
   FILTER_OPTION (JPEG)
-elseif (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "[Ll][Ll][Vv][Mm]")
-  FILTER_OPTION (JPEG)
+#elseif (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "[Ll][Ll][Vv][Mm]")
+#  FILTER_OPTION (JPEG)
 endif ()
 
 # LZ4 filter
@@ -112,13 +128,26 @@ if (WIN32 AND MSVC_VERSION GREATER 1900)
     FILTER_OPTION (SZ)
   endif ()
 elseif (NOT WIN32)
-  if(CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "(Apple)?[Cc]lang")
+  if(CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "Apple[Cc]lang")
     FILTER_OPTION (SZ)
   endif ()
 endif ()
 
 # ZFP filter
-FILTER_OPTION (ZFP)
+#FILTER_OPTION (ZFP)
+
+# ZSTD filter
+if (WIN32)
+#  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+    FILTER_OPTION (ZSTD)
+#  endif ()
+elseif (APPLE)
+  if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+    FILTER_OPTION (ZSTD)
+  endif ()
+else ()
+  FILTER_OPTION (ZSTD)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

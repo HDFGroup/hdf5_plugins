@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (HDF5PL_EX)
 
 set (dyn_examples)
@@ -33,6 +33,9 @@ if (JPEG_AVAILABLE)
 endif ()
 if (MAFISC_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_mafisc)
+endif ()
+if (ZSTD_AVAILABLE)
+  set (extra_examples ${extra_examples} h5ex_d_zstd)
 endif ()
 
 set (extra_examples)
