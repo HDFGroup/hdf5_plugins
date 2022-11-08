@@ -23,6 +23,7 @@
 #include "hdf5.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define FILE            "h5ex_d_sz.h5"
 #define DATASET         "DS1"
@@ -33,7 +34,13 @@
 #define CHUNK0          8
 #define CHUNK1          8
 #define CHUNK2          128
-#define H5Z_FILTER_SZ        32017
+#define H5Z_FILTER_SZ   32017
+#define MAX_CHUNK_SIZE  4294967295 //2^32-1
+#define SZ_FLOAT        0
+#define ABS             0
+#define REL             1
+
+void SZ_errConfigToCdArray(size_t* cd_nelmts, unsigned int cd_values[], int error_bound_mode, double abs_error, double rel_error, double pw_rel_error, double psnr);
 
 int
 main (void)
@@ -48,14 +55,14 @@ main (void)
     char            filter_name[80];
     hsize_t         dims[DIM_SIZE] = {DIM0, DIM1, DIM2},
                     chunk[DIM_SIZE] = {CHUNK0, CHUNK1, CHUNK2};
-    size_t          nelmts = 5;                /* number of elements in cd_values */
+    size_t          nelmts = 9;                /* number of elements in cd_values */
     size_t          nbEle = DIM0*DIM1*DIM2;
-    int             dataType = 0; /* FLOAT */
+    int             dataType = SZ_FLOAT;
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[10] = {DIM_SIZE, dataType, DIM2, DIM1, DIM0, 0, 0, 0, 0, 0};
-    unsigned int    values_out[10] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
-    float           wdata[DIM0][DIM1][DIM2],          /* Write buffer */
+    unsigned int    cd_values[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};//, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int    values_out[16] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
+    float           wdata[DIM0*DIM1*DIM2],          /* Write buffer */
                     rdata[DIM0][DIM1][DIM2],          /* Read buffer */
                     max;
     hsize_t         i, j, k;
@@ -64,10 +71,8 @@ main (void)
     /*
      * Initialize data.
      */
-    for (i=0; i<DIM0; i++)
-        for (j=0; j<DIM1; j++)
-            for (k=0; k<DIM2; k++)
-                wdata[i][j][k]= (float)(j * k) - (float)(i);
+    for (i=0; i<nbEle; i++)
+        wdata[i] = (float)i;
 
     /*
      * Create a new file using the default properties.
@@ -88,6 +93,11 @@ main (void)
      */
     dcpl_id = H5Pcreate (H5P_DATASET_CREATE);
     if (dcpl_id < 0) goto done;
+
+    /*
+     * Fill the cd_values array
+     */
+    SZ_errConfigToCdArray(&nelmts, cd_values, REL, 0.001, 0.001, 0, 0);
 
     status = H5Pset_filter (dcpl_id, H5Z_FILTER_SZ, H5Z_FLAG_MANDATORY, nelmts, cd_values);
     if (status < 0) goto done;
@@ -124,7 +134,7 @@ main (void)
      * Write the data to the dataset.
      */
     printf ("....Writing SZ compressed data ................\n");
-    status = H5Dwrite (dset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
+    status = H5Dwrite (dset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, &wdata);
     if (status < 0) printf ("failed to write data.\n");
 
     /*
@@ -174,7 +184,7 @@ main (void)
     switch (filter_id) {
         case H5Z_FILTER_SZ:
             printf ("%d\n", filter_id);
-            printf ("   Number of parameters is %d with the value %u\n", nelmts, values_out[0]);
+            printf ("   Number of parameters is %zu with the value %u\n", nelmts, values_out[0]);
             printf ("   To find more about the filter check %s\n", filter_name);
             break;
         default:
@@ -225,3 +235,85 @@ done:
 
     return ret_value;
 }
+
+void symTransform_8bytes(unsigned char data[8])
+{
+    unsigned char tmp = data[0];
+    data[0] = data[7];
+    data[7] = tmp;
+
+    tmp = data[1];
+    data[1] = data[6];
+    data[6] = tmp;
+
+    tmp = data[2];
+    data[2] = data[5];
+    data[5] = tmp;
+
+    tmp = data[3];
+    data[3] = data[4];
+    data[4] = tmp;
+}
+
+typedef union ldouble
+{
+    double value;
+    unsigned long lvalue;
+    unsigned char byte[8];
+} ldouble;
+
+inline void doubleToBytes(unsigned char *b, double num)
+{
+    ldouble buf;
+    buf.value = num;
+    memcpy(b, buf.byte, 8);
+    int x = 1;
+    char *y = (char*)&x;
+    if(*y==1)
+        symTransform_8bytes(b);
+}
+
+inline int bytesToInt32_bigEndian(unsigned char* bytes)
+{
+    int temp = 0;
+    int res = 0;
+
+    res <<= 8;
+    temp = bytes[0] & 0xff;
+    res |= temp;
+
+    res <<= 8;
+    temp = bytes[1] & 0xff;
+    res |= temp;
+
+    res <<= 8;
+    temp = bytes[2] & 0xff;
+    res |= temp;
+
+    res <<= 8;
+    temp = bytes[3] & 0xff;
+    res |= temp;
+
+    return res;
+}
+
+void SZ_errConfigToCdArray(size_t* cd_nelmts, unsigned int cd_values[], int error_bound_mode, double abs_error, double rel_error, double pw_rel_error, double psnr)
+{
+    int k = 0;
+    cd_values[k++] = error_bound_mode;
+    unsigned char b[8];
+    doubleToBytes(b, abs_error);
+    cd_values[k++] = bytesToInt32_bigEndian(b);
+    cd_values[k++] = bytesToInt32_bigEndian(b+4);
+    doubleToBytes(b, rel_error);
+    cd_values[k++] = bytesToInt32_bigEndian(b);
+    cd_values[k++] = bytesToInt32_bigEndian(b+4);
+    doubleToBytes(b, pw_rel_error);
+    cd_values[k++] = bytesToInt32_bigEndian(b);
+    cd_values[k++] = bytesToInt32_bigEndian(b+4);
+    doubleToBytes(b, psnr);
+    cd_values[k++] = bytesToInt32_bigEndian(b);
+    cd_values[k++] = bytesToInt32_bigEndian(b+4);
+    *cd_nelmts = k;
+}
+
