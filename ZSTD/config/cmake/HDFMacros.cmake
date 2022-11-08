@@ -28,7 +28,9 @@ macro (SET_HDF_BUILD_TYPE)
     endif ()
   endif ()
   if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    message (VERBOSE "Setting build type to 'RelWithDebInfo' as none was specified.")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (VERBOSE "Setting build type to 'RelWithDebInfo' as none was specified.")
+    endif ()
     set (CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
     # Set the possible values of build type for cmake-gui
     set_property (CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
@@ -473,7 +475,7 @@ macro (HDF_DIR_PATHS package_prefix)
         ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
     )
     set (CMAKE_Fortran_MODULE_DIRECTORY
-        ${PROJECT_BINARY_DIR}/mod CACHE PATH "Single Directory for all fortran modules."
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all fortran modules."
     )
     get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
     if(_isMultiConfig)
@@ -491,6 +493,19 @@ macro (HDF_DIR_PATHS package_prefix)
       set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
     endif ()
   endif ()
+
+#-----------------------------------------------------------------------------
+# Setup pre-3.14 FetchContent
+#-----------------------------------------------------------------------------
+  if(${CMAKE_VERSION} VERSION_LESS 3.14)
+    macro(FetchContent_MakeAvailable NAME)
+        FetchContent_GetProperties(${NAME})
+        if(NOT ${NAME}_POPULATED)
+            FetchContent_Populate(${NAME})
+            add_subdirectory(${${NAME}_SOURCE_DIR} ${${NAME}_BINARY_DIR})
+        endif()
+    endmacro()
+  endif()
 endmacro ()
 
 macro (ADD_H5_FLAGS h5_flag_var infile)
