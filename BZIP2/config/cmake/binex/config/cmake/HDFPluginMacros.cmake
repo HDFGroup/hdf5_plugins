@@ -71,6 +71,13 @@ macro (BASIC_SETTINGS varname)
     add_definitions (-D_CONSOLE)
   endif ()
 
+  #-----------------------------------------------------------------------------
+  # Plugins are MODULEs that must be built as Shared libs
+  #-----------------------------------------------------------------------------
+  set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
+  set (LIB_TYPE SHARED)
+  set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+
   if (MSVC)
     set (CMAKE_MFC_FLAG 0)
   endif ()
@@ -101,13 +108,6 @@ macro (BASIC_SETTINGS varname)
   if (CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
-
-  #-----------------------------------------------------------------------------
-  # Plugins are MODULEs that must be built as Shared libs
-  #-----------------------------------------------------------------------------
-  set (BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries" FORCE)
-  set (LIB_TYPE SHARED)
-  set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
   #-----------------------------------------------------------------------------
   # Option to allow the user to disable compiler warnings
