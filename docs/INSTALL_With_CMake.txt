@@ -29,7 +29,7 @@ CMake version
    1. We suggest you obtain the latest CMake from the Kitware web site.
       The HDF5 Filters 1.12."X" product requires a minimum CMake version 3.12,
       where "X" is the current HDF5 release version. If you are using
-      VS2019, the minimum version is 3.15.
+      VS2022, the minimum version is 3.21.
 
 Note:
    To change the install prefix from the platform defaults initialize
