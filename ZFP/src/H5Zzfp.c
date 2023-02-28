@@ -73,7 +73,6 @@ and calls to bitstream methods with 'B ' as in
 #include "H5PLextern.h"
 #include "H5Spublic.h"
 #include "zfp.h"
-#include "bitstream.h"
 #define Z
 #define B
 #endif /* ] AS_SILO_BUILTIN */
@@ -229,11 +228,13 @@ H5Z_zfp_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
         ndims_used++;
     }
 
+#if ZFP_VERSION_NO < 0x0530
     if (ndims_used == 0 || ndims_used > max_ndims)
         H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
-#if ZFP_VERSION_NO < 0x0530
             "chunk must have only 1...3 non-unity dimensions");
 #else
+    if (ndims_used == 0 || ndims_used > max_ndims)
+        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
             "chunk must have only 1...4 non-unity dimensions");
 #endif
 

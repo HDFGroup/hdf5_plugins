@@ -41,11 +41,17 @@
 #endif
 #include <assert.h>
 
-#if defined(_WIN32)
-#include <winsock2.h>
-#endif
+
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h> /* for htonl() */
+#else
+#ifdef HAVE_WINSOCK2_H
+#include <winsock2.h>
+#endif
 #endif
 
 #include "H5PLextern.h"
@@ -165,6 +171,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
         size_t block;
         uint64_t *i64Buf;
         uint32_t *i32Buf;
+        size_t maxDestSize;
         char *rpos;      /* pointer to current read position */
         char *roBuf;    /* pointer to current write position */
 
@@ -187,8 +194,8 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
             blockSize = nbytes;
         }
         nBlocks = (nbytes-1)/blockSize +1;
-        if (NULL==(outBuf = malloc(LZ4_COMPRESSBOUND(nbytes)
-                + 4+8 + nBlocks*4)))
+        maxDestSize = nBlocks * LZ4_compressBound(blockSize) + 4 + 8 + nBlocks*4;
+        if (NULL==(outBuf = malloc(maxDestSize)))
         {
             goto error;
         }
@@ -214,7 +221,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
                 blockSize = nbytes - origWritten;
 
 #if LZ4_VERSION_NUMBER > 10300
-            compBlockSize = LZ4_compress_default(rpos, roBuf+4,blockSize,nBlocks*4); /// reserve space for compBlockSize
+            compBlockSize = LZ4_compress_default(rpos, roBuf+4,blockSize,LZ4_compressBound(blockSize)); /// reserve space for compBlockSize
 #else
             compBlockSize = LZ4_compress(rpos, roBuf+4, blockSize); /// reserve space for compBlockSize
 #endif
