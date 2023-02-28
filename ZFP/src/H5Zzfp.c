@@ -73,7 +73,6 @@ and calls to bitstream methods with 'B ' as in
 #include "H5PLextern.h"
 #include "H5Spublic.h"
 #include "zfp.h"
-#include "bitstream.h"
 #define Z
 #define B
 #endif /* ] AS_SILO_BUILTIN */

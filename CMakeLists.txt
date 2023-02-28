@@ -162,7 +162,7 @@ else ()
 endif ()
 
 # ZFP filter
-#FILTER_OPTION (ZFP)
+FILTER_OPTION (ZFP)
 
 # ZSTD filter
 if (WIN32)
