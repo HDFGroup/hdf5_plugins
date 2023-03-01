@@ -323,11 +323,11 @@ H5Z_zfp_set_local(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
 #if ZFP_VERSION_NO >= 0x0540
         case 4: dummy_field = Z zfp_field_4d(0, zt, dims_used[3], dims_used[2], dims_used[1], dims_used[0]); break;
 #endif
-        default: H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
+        default:
 #if ZFP_VERSION_NO < 0x0530
-                     "chunks may have only 1...3 non-unity dims");
+            H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "chunks may have only 1...3 non-unity dims");
 #else
-                     "chunks may have only 1...4 non-unity dims");
+            H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "chunks may have only 1...4 non-unity dims");
 #endif
     }
     if (!dummy_field)
