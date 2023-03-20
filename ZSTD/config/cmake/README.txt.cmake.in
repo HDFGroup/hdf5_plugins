@@ -24,9 +24,9 @@ The customary location for the plugins is under the hdf5 libraries location.
    be installed into any location.
 On linux, the installer should be executed in the location to install the
    plugin. The plugins will install into the location:
-            <current dir>/HDF_Group/HDF5/1.12/lib/plugin
+            <current dir>/HDF_Group/HDF5/1.10/lib/plugin
 On Windows, the installer will default to the same location as the hdf5 installer:
-   C:/Program Files/HDF_Group/HDF5/1.12 and into the /lib/plugin dir.
+   C:/Program Files/HDF_Group/HDF5/1.10 and into the /lib/plugin dir.
 1. Execute @H5ZSTD_PACKAGE_NAME@-@H5ZSTD_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
 2. Follow prompts
 ===========================================================================

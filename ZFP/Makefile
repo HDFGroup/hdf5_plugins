@@ -3,15 +3,19 @@ include config.make
 .PHONY: help all clean dist install
 
 help:
-	@echo "               This is H5Z-ZFP version $(H5Z_ZFP_VERSINFO)."
-	@echo "See http://h5z-zfp.readthedocs.io/en/latest/ file for detailed information."
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo "             This is H5Z-ZFP version $(H5Z_ZFP_VERSINFO)."
+	@echo "See http://h5z-zfp.readthedocs.io/en/latest/ file for more info."
 	@echo ""
 	@echo "Typical make command is..."
 	@echo ""
-	@echo "    make [FC=<Fortran-compiler>] CC=<C-compiler> HDF5_HOME=<path> \\"
-	@echo "    ZFP_HOME=<path> PREFIX=<path> all"
+	@echo "    make CC=<C-compiler> HDF5_HOME=<path> ZFP_HOME=<path> PREFIX=<path> all"
 	@echo ""
 	@echo "where <path> is a dir whose children are include/lib/bin subdirs."
+	@echo "HDF5_HOME can also be specified by the HDF5 include directory,"
+	@echo "library directory and bin directory separated by commas, i.e. HDF5_HOME=INC,LIB,BIN"
 	@echo "Standard make variables (e.g. CFLAGS, LD, etc.) can be set as usual."
 	@echo "Optionally, add FC=<fortran-compiler> to include Fortran support and tests."
 	@echo ""

@@ -29,11 +29,20 @@ set (H5ZFP_INCLUDE_DIRS ${H5ZFP_INCLUDE_DIRS}
 #-----------------------------------------------------------------------------
 # Define H5ZFP Library
 #-----------------------------------------------------------------------------
-set (H5ZFP_SRCS
-    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp.c
+set (H5ZFP_HDRS
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp.h
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp_lib.h
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp_plugin.h
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp_props.h
 )
 
-add_library (${H5ZFP_LIB_TARGET} MODULE ${H5ZFP_SRCS})
+set (H5ZFP_SRCS
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp.c
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp_props_private.h
+    ${H5ZFP_SRC_SOURCE_DIR}/H5Zzfp_props.c
+)
+
+add_library (${H5ZFP_LIB_TARGET} MODULE ${H5ZFP_SRCS} ${H5ZFP_HDRS})
 if (DISABLE_H5ZFP_ENCODER)
   set_target_properties(${H5ZFP_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()

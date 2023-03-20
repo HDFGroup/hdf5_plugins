@@ -27,7 +27,7 @@ I. Preconditions
 ========================================================================
 
    1. We suggest you obtain the latest CMake for windows from the Kitware
-      web site. The HDF5PL 1.12.x product requires a minimum CMake version
+      web site. The HDF5PL 1.10.x product requires a minimum CMake version
       of 3.18.
 
    2. You have installed the HDF5 library built with CMake, by executing
@@ -38,9 +38,9 @@ I. Preconditions
    3. Set the environment variable HDF5_ROOT to the installed location of
       the config files for HDF5.
          On Windows:
-            HDF5_ROOT=C:/Program Files/HDF_Group/HDF5/1.12.x/
+            HDF5_ROOT=C:/Program Files/HDF_Group/HDF5/1.10.x/
          On unix:
-            HDF5_ROOT=<install root folder>/HDF_Group/HDF5/1.12.x/
+            HDF5_ROOT=<install root folder>/HDF_Group/HDF5/1.10.x/
 
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
@@ -48,16 +48,16 @@ I. Preconditions
    4. Set the environment variable HDF5_PLUGIN_PATH to the installed location of
       the library files for HDFPL.
          On Windows:
-            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.12.x/lib/plugin
+            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.10.x/lib/plugin
          On unix:
-            HDF5_PLUGIN_PATH=<install root folder>/HDF_Group/HDF5/1.12.x/lib/plugin
+            HDF5_PLUGIN_PATH=<install root folder>/HDF_Group/HDF5/1.10.x/lib/plugin
 
    5. Set the runtime path to the installed location of the library (*.so on linux
       and *.dll on Windows) files for HDF5.
       On Windows:
-            PATH=%PATH%:C:/Program Files/HDF_Group/HDF5/1.12.x/bin:C:/Program Files/HDF_Group/HDF5/1.12.x/lib/plugin
+            PATH=%PATH%:C:/Program Files/HDF_Group/HDF5/1.10.x/bin:C:/Program Files/HDF_Group/HDF5/1.10.x/lib/plugin
       On linux:
-            LD_LIBRARY_PATH=$LD_LIBRARY_PATH;<Installation>/HDF_Group/HDF5/1.12.x/lib;<Installation>/HDF_Group/HDF5/1.12.x/lib/plugin
+            LD_LIBRARY_PATH=$LD_LIBRARY_PATH;<Installation>/HDF_Group/HDF5/1.10.x/lib;<Installation>/HDF_Group/HDF5/1.10.x/lib/plugin
 
    6. Created separate source and build directories.
       (CMake commands are executed in the build directory)
