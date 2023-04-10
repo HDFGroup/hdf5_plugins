@@ -49,7 +49,9 @@ endif ()
 
 if (TEST_ENV_VAR)
   set (ENV{${TEST_ENV_VAR}} "${TEST_ENV_VALUE}")
-  message (TRACE "ENV:${TEST_ENV_VAR}=$ENV{${TEST_ENV_VAR}}")
+  if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+    message (TRACE "ENV:${TEST_ENV_VAR}=$ENV{${TEST_ENV_VAR}}")
+  endif ()
 endif ()
 
 # run the test program, capture the stdout/stderr and the result var
