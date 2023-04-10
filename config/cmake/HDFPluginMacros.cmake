@@ -382,6 +382,13 @@ macro (INSTALL_SUPPORT varname)
     PLUGIN_README_PROPERTIES (${PLUGIN_PACKAGE_NAME})
 
     #-----------------------------------------------------------------------------
+    # Configure the COPYING.txt file for the windows binary package
+    #-----------------------------------------------------------------------------
+    if (WIN32)
+      configure_file (${CMAKE_SOURCE_DIR}/COPYING ${CMAKE_BINARY_DIR}/COPYING.txt @ONLY)
+    endif ()
+
+    #-----------------------------------------------------------------------------
     # Add Document File(s) to CMake Install
     #-----------------------------------------------------------------------------
     install (
@@ -432,9 +439,9 @@ macro (INSTALL_SUPPORT varname)
       set (CPACK_PACKAGE_VERSION_MAJOR "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MAJOR}")
       set (CPACK_PACKAGE_VERSION_MINOR "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MINOR}")
       set (CPACK_PACKAGE_VERSION_PATCH "")
-      #set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-      set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
-      set (CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+      set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
+      set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_BINARY_DIR}/README.txt")
+      set (CPACK_RESOURCE_FILE_README "${CMAKE_BINARY_DIR}/README.txt")
       set (CPACK_PACKAGE_RELOCATABLE TRUE)
       set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PLUGIN_NAME} Installation")
       if (H5PL_OVERRIDE_VERSION)
@@ -475,7 +482,7 @@ macro (INSTALL_SUPPORT varname)
         endif ()
         #  WiX variables
         set (CPACK_WIX_UNINSTALL "1")
-        set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
+        set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/COPYING.txt")
 #        set (CPACK_WIX_PRODUCT_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
       elseif (APPLE)
         list (APPEND CPACK_GENERATOR "STGZ")

@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.12)
 project (H5PL C)
 
 if (POLICY CMP0074)
@@ -43,7 +43,7 @@ BASIC_SETTINGS (${PL_PACKAGE_NAME})
 set (H5PL_VERS_MAJOR "1")
 set (H5PL_VERS_MINOR "15")
 set (H5PL_VERS_RELEASE "0")
-set (H5PL_OVERRIDE_VERSION "1.15.0")
+set (H5PL_OVERRIDE_VERSION "1.${H5PL_VERS_MINOR}.0")
 
 set (H5PL_SOVERS_MAJOR 1)
 set (H5PL_SOVERS_MINOR 0)
