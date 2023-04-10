@@ -27,7 +27,7 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 354 (9.040:1 COMPRESSION)
+         SIZE 896 (3.571:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
@@ -124,7 +124,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 26160
+         OFFSET 26960
       }
       FILTERS {
          NONE

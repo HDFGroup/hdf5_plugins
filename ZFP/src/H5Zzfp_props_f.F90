@@ -7,9 +7,9 @@ MODULE H5Zzfp_props_f
   INTEGER :: H5Z_FILTER_ZFP=32013
 
   INTEGER :: H5Z_FILTER_ZFP_VERSION_MAJOR=1
-  INTEGER :: H5Z_FILTER_ZFP_VERSION_MINOR=0
-  INTEGER :: H5Z_FILTER_ZFP_VERSION_PATCH=1
-  
+  INTEGER :: H5Z_FILTER_ZFP_VERSION_MINOR=1
+  INTEGER :: H5Z_FILTER_ZFP_VERSION_PATCH=0
+
   INTEGER(C_SIZE_T), PARAMETER :: H5Z_ZFP_CD_NELMTS_MEM=6  ! used in public API to filter
   INTEGER(C_SIZE_T), PARAMETER :: H5Z_ZFP_CD_NELMTS_MAX=6  ! max, over all versions, used in dataset header
 
@@ -43,7 +43,7 @@ MODULE H5Zzfp_props_f
        INTEGER(HID_T), VALUE :: plist
        INTEGER(C_INT), VALUE :: prec
      END FUNCTION H5Pset_zfp_precision
-     
+
      INTEGER(C_INT) FUNCTION H5Pset_zfp_accuracy(plist, acc) BIND(C, NAME='H5Pset_zfp_accuracy')
        IMPORT :: C_INT, C_DOUBLE, HID_T
        IMPLICIT NONE
@@ -67,7 +67,7 @@ MODULE H5Zzfp_props_f
        IMPLICIT NONE
        INTEGER(HID_T), VALUE :: plist
      END FUNCTION H5Pset_zfp_reversible
-    
+
   END INTERFACE
 
 END MODULE H5Zzfp_props_f
