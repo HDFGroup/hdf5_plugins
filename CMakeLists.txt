@@ -123,7 +123,11 @@ endif ()
 
 # LZ4 filter
 if (NOT MINGW)
-  FILTER_OPTION (LZ4)
+  if (WIN32 AND NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+    FILTER_OPTION (LZ4)
+  else ()
+    set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
+  endif ()
 else ()
   set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
 endif ()
