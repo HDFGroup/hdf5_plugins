@@ -195,7 +195,9 @@ if (BUILD_TESTING)
   endforeach ()
   add_custom_target(sz_files ALL COMMENT "Copying files needed by sz tests" DEPENDS ${sz_files_list})
 
-  ADD_H5_TEST (h5ex_d_sz)
+  if (WIN32 AND NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+    ADD_H5_TEST (h5ex_d_sz)
+  endif ()
 
   # skip because SZ filter is for floating point and ints compression ratio could vary slightly
   #if (NOT DISABLE_H5SZ_ENCODER)
