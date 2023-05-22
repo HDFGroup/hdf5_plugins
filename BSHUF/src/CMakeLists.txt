@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5BSHUF_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5BSHUF_BINARY_DIR}
     ${BSHUF_INCLUDE_DIRS}
 )
 
