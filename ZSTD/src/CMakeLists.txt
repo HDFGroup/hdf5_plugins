@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5ZSTD_INCLUDE_DIRS ${H5ZSTD_INCLUDE_DIRS}
-    ${H5PL_INCLUDE_DIRS} ${H5ZSTD_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5ZSTD_BINARY_DIR}
     ${H5ZSTD_SRC_SOURCE_DIR}
     ${ZSTD_INCLUDE_DIRS}
 )
