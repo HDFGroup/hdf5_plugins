@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (HDF5LZF_EX)
 
 set (dyn_examples
@@ -26,7 +26,7 @@ endif ()
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
-  target_link_libraries (${example} PRIVATE ${HDF5_LINK_LIBS})
+  target_link_libraries (${example} PRIVATE ${H5PL_HDF5_LINK_LIBS})
   if (NOT WIN32)
     target_link_libraries (${example} PRIVATE dl)
   endif ()
@@ -102,7 +102,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=--enable-error-stack;-p;${testname}.h5"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
@@ -143,7 +143,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5LZF_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_REPACK_EXECUTABLE}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_REPACK_EXECUTABLE}"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
@@ -159,7 +159,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5LZF_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"

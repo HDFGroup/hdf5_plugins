@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.12)
 project (H5PL C)
 
 if (POLICY CMP0074)
@@ -41,9 +41,9 @@ set (H5PL_EXPORTED_TARGETS "")
 BASIC_SETTINGS (${PL_PACKAGE_NAME})
 
 set (H5PL_VERS_MAJOR "1")
-set (H5PL_VERS_MINOR "14")
-set (H5PL_VERS_RELEASE "1")
-set (H5PL_OVERRIDE_VERSION "1.14.1")
+set (H5PL_VERS_MINOR "15")
+set (H5PL_VERS_RELEASE "0")
+set (H5PL_OVERRIDE_VERSION "1.${H5PL_VERS_MINOR}.0")
 
 set (H5PL_SOVERS_MAJOR 1)
 set (H5PL_SOVERS_MINOR 0)
@@ -79,7 +79,7 @@ set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Build
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
 # Bitshuffle filter
-if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
   FILTER_OPTION (BSHUF)
 else ()
   set (ENABLE_BSHUF OFF CACHE BOOL "" FORCE)
@@ -93,7 +93,9 @@ if (WIN32)
     set (ENABLE_BLOSC OFF CACHE BOOL "" FORCE)
   endif ()
 elseif (APPLE)
-  if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
+    FILTER_OPTION (BLOSC)
+  elseif (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
     FILTER_OPTION (BLOSC)
   else ()
     set (ENABLE_BLOSC OFF CACHE BOOL "" FORCE)
@@ -123,7 +125,11 @@ endif ()
 
 # LZ4 filter
 if (NOT MINGW)
-  FILTER_OPTION (LZ4)
+  if (WIN32 AND NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
+    FILTER_OPTION (LZ4)
+  else ()
+    set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
+  endif ()
 else ()
   set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
 endif ()
@@ -146,7 +152,7 @@ endif ()
 
 # SZ filter
 if (WIN32 AND MSVC_VERSION GREATER 1900)
-  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" OR CMAKE_C_COMPILER_ID STREQUAL "Intel")
+  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" OR CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
     FILTER_OPTION (SZ)
   else ()
     set (ENABLE_SZ OFF CACHE BOOL "" FORCE)
@@ -162,17 +168,13 @@ else ()
 endif ()
 
 # ZFP filter
-#FILTER_OPTION (ZFP)
+FILTER_OPTION (ZFP)
 
 # ZSTD filter
 if (WIN32)
-#  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
     FILTER_OPTION (ZSTD)
-#  else ()
-#    set (ENABLE_ZSTD OFF CACHE BOOL "" FORCE)
-#  endif ()
 elseif (APPLE)
-  if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]" AND NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
     FILTER_OPTION (ZSTD)
   else ()
     set (ENABLE_ZSTD OFF CACHE BOOL "" FORCE)

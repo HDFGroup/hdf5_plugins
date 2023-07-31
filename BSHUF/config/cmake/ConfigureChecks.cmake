@@ -168,7 +168,9 @@ macro (HDF_FUNCTION_TEST OTHER_TEST)
       )
     endif ()
 
-    message (TRACE "Performing ${OTHER_TEST}")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (TRACE "Performing ${OTHER_TEST}")
+    endif ()
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5BSHUF_RESOURCES_DIR}/H5PLTests.c
@@ -263,11 +265,15 @@ endif ()
 macro (HDF_CHECK_TYPE_SIZE type var)
   set (aType ${type})
   set (aVar  ${var})
-  message (TRACE "Checking size of ${aType} and storing into ${aVar}")
+  if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+    message (TRACE "Checking size of ${aType} and storing into ${aVar}")
+  endif ()
   CHECK_TYPE_SIZE (${aType}   ${aVar})
   if (NOT ${aVar})
     set (${aVar} 0 CACHE INTERNAL "SizeOf for ${aType}")
-    message (TRACE "Size of ${aType} was NOT Found")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (TRACE "Size of ${aType} was NOT Found")
+    endif ()
   endif ()
 endmacro ()
 

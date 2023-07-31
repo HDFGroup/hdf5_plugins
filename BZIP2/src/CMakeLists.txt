@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5BZ2_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5BZ2_INCLUDE_DIRS ${H5BZ2_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5BZ2_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5BZ2_BINARY_DIR}
     ${H5BZ2_SRC_SOURCE_DIR}
     ${BZ2_INCLUDE_DIRS}
 )

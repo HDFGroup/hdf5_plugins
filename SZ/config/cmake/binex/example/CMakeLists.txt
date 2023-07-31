@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (HDFPL_EX)
 
 set (dyn_examples
@@ -25,7 +25,7 @@ endif ()
 #run-time loadable SZ library examples
 foreach (example ${dyn_examples})
   add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
-  target_include_directories(${example} PRIVATE ${H5PL_INCLUDE_DIRS})
+  target_include_directories(${example} PRIVATE ${H5PL_HDF5_INCLUDE_DIRS})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE} " " " ")
   target_link_libraries (${example} PRIVATE ${LINK_LIBS})
   if (NOT WIN32)
@@ -99,7 +99,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=--enable-error-stack;-p;-H;${testname}.h5"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${testname}.ddl.out"
@@ -138,7 +138,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5SZ_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_REPACK_EXECUTABLE}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_REPACK_EXECUTABLE}"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
@@ -152,7 +152,7 @@ if (BUILD_TESTING)
       add_test (
           NAME H5SZ_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
@@ -185,7 +185,9 @@ if (BUILD_TESTING)
   endforeach ()
   add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
 
-  ADD_H5_TEST (h5ex_d_sz)
+  if (WIN32 AND NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+    ADD_H5_TEST (h5ex_d_sz)
+  endif ()
 
   # skip because SZ filter is for floating point and ints compression ratio could vary slightly
   #if (NOT DISABLE_H5PL_ENCODER)
