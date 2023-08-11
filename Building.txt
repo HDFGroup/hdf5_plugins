@@ -1,4 +1,4 @@
-HDF5 1.15 plugins
+HDF5 plugins
 Building these filter/example requires knowledge of the hdf5 and the
 compression library installation. Out-of-source build process is expected.
 
