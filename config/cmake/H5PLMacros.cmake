@@ -20,7 +20,7 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
         GIT_TAG ${${plname}_BRANCH}
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DUSED_SHARED_LIBS:BOOL="ON"
+            -DUSE_SHARED_LIBS:BOOL="ON"
             -DBUILD_SHARED_LIBS:BOOL="ON"
             -D${plname}_PACKAGE_NAME:STRING="${PLUGIN_NAME}"
             -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=${H5PL_ALLOW_EXTERNAL_SUPPORT}
@@ -46,7 +46,7 @@ macro (EXTERNAL_PL_LIBRARY plname compress_type disable_encoder)
         URL_MD5 ""
         INSTALL_COMMAND ""
         CMAKE_ARGS
-            -DUSED_SHARED_LIBS:BOOL="ON"
+            -DUSE_SHARED_LIBS:BOOL="ON"
             -DBUILD_SHARED_LIBS:BOOL="ON"
             -D${plname}_PACKAGE_NAME:STRING="${PLUGIN_NAME}"
             -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=${H5PL_ALLOW_EXTERNAL_SUPPORT}
