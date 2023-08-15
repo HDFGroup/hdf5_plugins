@@ -1,0 +1,64 @@
+name: hdf5 plugins daily build
+
+# Controls when the action will run. Triggers the workflow on a schedule
+on:
+  workflow_dispatch:
+#  push:
+#    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+# A workflow run is made up of one or more jobs that can run sequentially or
+# in parallel.
+jobs:
+  get-base-names:
+    runs-on: ubuntu-latest
+    outputs:
+      hdf5-name: ${{ steps.gethdf5base.outputs.HDF5_NAME_BASE }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get hdf5 release base name
+      uses: dsaltares/fetch-gh-release-asset@master
+      with:
+        repo: 'HDFGroup/hdf5'
+        version: 'tags/snapshot'
+        file: 'last-file.txt'
+
+    - name: Read base-name file
+      id: gethdf5base
+      run: echo "HDF5_NAME_BASE=$(cat last-file.txt)" >> $GITHUB_OUTPUT
+
+  call-workflow-tarball:
+    uses: ./.github/workflows/tarball.yml
+    with:
+      #use_tag: snapshot
+      use_environ: snapshots
+
+  call-workflow-ctest:
+    needs: [get-base-names, call-workflow-tarball]
+    uses: ./.github/workflows/cmake-ctest.yml
+    with:
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      use_hdf: ${{ needs.get-base-names.outputs.hdf5-name }}
+      #use_tag: snapshot
+      #use_environ: snapshots
+    if: ${{ needs.call-workflow-tarball.outputs.has_changes == 'true' }}
+
+  call-workflow-release:
+    needs: [call-workflow-tarball, call-workflow-ctest]
+    permissions:
+      contents: write # In order to allow tag creation
+    uses: ./.github/workflows/release-files.yml
+    with:
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
+      file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
+      use_tag: snapshot
+      use_environ: snapshots
+    if: ${{ needs.call-workflow-tarball.outputs.has_changes == 'true' }}
+

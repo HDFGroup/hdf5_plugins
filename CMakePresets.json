@@ -18,7 +18,6 @@
       "hidden": true,
       "cacheVariables": {
         "PL_PACKAGE_NAME": "pl",
-        "USE_SHARED_LIBS": "ON",
         "HDF5_NAMESPACE": {"type": "STRING", "value": "hdf5::"},
         "HDF5_PACKAGE_NAME": {"type": "STRING", "value": "hdf5"},
         "BSHUF_TGZ_NAME": {"type": "STRING", "value": "bitshuffle.tar.gz"},
@@ -51,7 +50,7 @@
       "hidden": true,
       "inherits": ["ci-base-tgz", "ci-base-plugins"],
       "cacheVariables": {
-        "HDF_PACKAGE_NAMESPACE": {"type": "STRING", "value": "hdf5::"}
+        "USE_SHARED_LIBS": "ON"
       }
     },
     {

@@ -4,7 +4,7 @@
     {
       "name": "ci-base",
       "displayName": "Basic Config",
-      "description": "Basic build using Ninja generator",
+      "description": "Basic build using default generator",
       "hidden": true,
       "binaryDir": "${sourceParentDir}/build/${presetName}",
       "installDir": "${sourceParentDir}/install/${presetName}"
