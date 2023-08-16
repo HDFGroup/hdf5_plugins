@@ -105,6 +105,11 @@ jobs:
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
         shell: bash
 
+      - name: List files in the repository
+        run: |
+              ls -l ${{ github.workspace }}
+              ls $GITHUB_WORKSPACE
+
       - name: Create source file (tgz and zip)
         id: create-files
         run: |

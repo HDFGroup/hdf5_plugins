@@ -42,7 +42,8 @@
         "ZFP_TGZ_NAME": {"type": "STRING", "value": "zfp.tar.gz"},
         "ZFP_PACKAGE_NAME": {"type": "STRING", "value": "zfp"},
         "ZSTD_TGZ_NAME": {"type": "STRING", "value": "zstd.tar.gz"},
-        "ZSTD_PACKAGE_NAME": {"type": "STRING", "value": "zstd"}
+        "ZSTD_PACKAGE_NAME": {"type": "STRING", "value": "zstd"},
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -50,6 +51,7 @@
       "hidden": true,
       "inherits": ["ci-base-tgz", "ci-base-plugins"],
       "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
         "USE_SHARED_LIBS": "ON"
       }
     },
