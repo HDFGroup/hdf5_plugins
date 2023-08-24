@@ -83,6 +83,7 @@ jobs:
     needs: create-files-ctest
     uses: ./.github/workflows/cmake-ctest.yml
     with:
+      use_hdf: ${{ needs.log-the-inputs.outputs.rel_tag }}
       file_base: ${{ needs.create-files-ctest.outputs.file_base }}
 
   call-workflow-release:
