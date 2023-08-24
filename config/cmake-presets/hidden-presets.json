@@ -42,8 +42,6 @@
     {
       "name": "ci-MSVC",
       "hidden": true,
-      "description": "Basic build using Ninja generator",
-      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
