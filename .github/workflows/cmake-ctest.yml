@@ -247,12 +247,6 @@ jobs:
 
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 19
-        uses: actions/setup-java@v3
-        with:
-          java-version: '19'
-          distribution: 'temurin'
-
       - name: Get hdf5 release
         uses: dsaltares/fetch-gh-release-asset@master
         with:
@@ -306,10 +300,6 @@ jobs:
 
       - name: Uncompress source (MacOS)
         run: tar -zxvf ${{ github.workspace }}/${{ steps.set-file-base.outputs.FILE_BASE }}.tar.gz
-
-      # symlinks the compiler executables to a common location 
-      - name: Setup GNU Fortran
-        uses: modflowpy/install-gfortran-action@v1
   
       - name: Run ctest (MacOS)
         id: run-ctest
@@ -329,7 +319,7 @@ jobs:
           cp ${{ runner.workspace }}/hdf5_plugins/hdfsrc/README.md ${{ runner.workspace }}/build/hdf5_plugins
           cp ${{ runner.workspace }}/hdf5_plugins/build/ci-StdShar-Clang/*.tar.gz ${{ runner.workspace }}/build/hdf5_plugins
           cd "${{ runner.workspace }}/build"
-          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-osx12.tar.gz hdf5
+          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-osx12.tar.gz hdf5_plugins
         shell: bash
 
       - name: List files in the space (MacOS)
