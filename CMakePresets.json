@@ -9,7 +9,7 @@
       "hidden": true,
       "inherits": "ci-base",
       "cacheVariables": {
-        "H5PL_ALLOW_EXTERNAL_SUPPORT": "NO",
+        "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
         "TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"}
       }
     },
@@ -17,6 +17,8 @@
       "name": "ci-base-plugins",
       "hidden": true,
       "cacheVariables": {
+        "PLUGIN_TGZ_NAME": {"type": "STRING", "value": "hdf5_plugins.tar.gz"},
+        "PLUGIN_PACKAGE_NAME": {"type": "STRING", "value": "pl"},
         "PL_PACKAGE_NAME": "pl",
         "HDF5_NAMESPACE": {"type": "STRING", "value": "hdf5::"},
         "HDF5_PACKAGE_NAME": {"type": "STRING", "value": "hdf5"},
@@ -24,7 +26,7 @@
         "BSHUF_PACKAGE_NAME": {"type": "STRING", "value": "bshuf"},
         "BLOSC_TGZ_NAME": {"type": "STRING", "value": "c-blosc.tar.gz"},
         "BLOSC_PACKAGE_NAME": {"type": "STRING", "value": "blosc"},
-        "BLOSC_ZLIB_TGZ_NAME": {"type": "STRING", "value": "zlib-1.2.13.tar.gz"},
+        "BLOSC_ZLIB_TGZ_NAME": {"type": "STRING", "value": "ZLib.tar.gz"},
         "BLOSC_ZLIB_PACKAGE_NAME": {"type": "STRING", "value": "zlib"},
         "BZ2_TGZ_NAME": {"type": "STRING", "value": "BZ2.tar.gz"},
         "BZ2_PACKAGE_NAME": {"type": "STRING", "value": "bz2"},
@@ -60,6 +62,7 @@
       "description": "MSVC Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-MSVC",
+        "ci-CPP",
         "ci-StdShar"
       ]
     },
@@ -68,6 +71,7 @@
       "description": "Clang Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-Clang",
+        "ci-CPP",
         "ci-StdShar"
       ]
     },
@@ -76,6 +80,7 @@
       "description": "GNUC Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-GNUC",
+        "ci-CPP",
         "ci-StdShar"
       ]
     }

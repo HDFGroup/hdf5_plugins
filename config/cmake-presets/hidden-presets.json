@@ -95,6 +95,13 @@
       }
     },
     {
+      "name": "ci-CPP",
+      "hidden": true,
+      "cacheVariables": {
+        "HDF5_BUILD_CPP_LIB": "ON"
+      }
+    },
+    {
       "name": "ci-x64-Debug-MSVC",
       "description": "MSVC for x64 (Debug)",
       "hidden": true,
