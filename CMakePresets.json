@@ -10,7 +10,9 @@
       "inherits": "ci-base",
       "cacheVariables": {
         "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
-        "TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"}
+        "TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"},
+        "H5PL_BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
       }
     },
     {
