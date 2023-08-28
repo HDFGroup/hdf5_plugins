@@ -115,6 +115,15 @@ macro (BASIC_SETTINGS varname)
     set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
         ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
     )
+    get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+    if(_isMultiConfig)
+      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
+      set (CMAKE_PDB_OUTPUT_DIRECTORY
+          ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all pdb files."
+      )
+    else ()
+      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    endif ()
   else ()
     # if we are externally configured, but the project uses old cmake scripts
     # this may not be set
@@ -304,7 +313,7 @@ macro (HDF5_SUPPORT link_hdf)
       set (H5PL_HDF5_HAVE_H5PUBCONF_H 1)
       set (H5PL_HDF5_HAVE_HDF5 1)
       set (H5PL_HDF5_HEADER "h5pubconf.h")
-      message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIRS} TOOLS=${HDF5_TOOLS_DIR}")
+      message (STATUS "HDF5-${HDF5_VERSION_STRING} found: INC=${HDF5_INCLUDE_DIRS} TOOLS=${HDF5_TOOLS_DIR}")
     else ()
       message (FATAL_ERROR " HDF5 is Required for plugin library")
     endif ()

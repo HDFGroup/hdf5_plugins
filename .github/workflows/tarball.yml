@@ -66,7 +66,7 @@ jobs:
       with:
         seconds: 86400 # One day in seconds
         branch: '${{ steps.get-branch-name.outputs.branch_ref }}'
-      if: ${{ inputs.use_environ == 'snapshots' }}
+      if: ${{ (inputs.use_environ == 'snapshots' && inputs.use_ignore == 'check') }}
 
     - run: echo "You have ${{ steps.check-new-commits.outputs.new-commits-number }} new commit(s) in ${{ steps.get-branch-name.outputs.BRANCH_REF }} ✅!"
       if: ${{ steps.check-new-commits.outputs.has-new-commits == 'true' }}
@@ -91,7 +91,7 @@ jobs:
         id: version
         run: |
           cd "$GITHUB_WORKSPACE/hdfsrc"
-          echo "TAG_VERSION=1.0.2" >> $GITHUB_OUTPUT
+          echo "TAG_VERSION=2.0.4" >> $GITHUB_OUTPUT
 
       - name: Set file base name
         id: set-file-base
