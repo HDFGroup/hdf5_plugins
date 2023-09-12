@@ -184,9 +184,7 @@
       "inherits": [
         "ci-base"
       ],
-      "cacheVariables": {
-        "configuration": "Debug"
-      }
+      "configuration": "Debug"
     },
     {
       "name": "ci-x64-Release-MSVC",
@@ -195,9 +193,7 @@
       "inherits": [
         "ci-base"
       ],
-      "cacheVariables": {
-        "configuration": "RelWithDebInfo"
-      }
+      "configuration": "RelWithDebInfo"
     },
     {
       "name": "ci-x64-Debug-Clang",
