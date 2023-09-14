@@ -309,7 +309,7 @@
       "generators": [
         "ZIP"
       ],
-      "configurations": "RelWithDebInfo"
+      "configurations": ["RelWithDebInfo"]
     },
     {
       "name": "ci-x64-Release-Clang",
