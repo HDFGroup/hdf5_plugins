@@ -308,7 +308,8 @@
       "inherits": "ci-base",
       "generators": [
         "ZIP"
-      ]
+      ],
+      "configurations": "RelWithDebInfo"
     },
     {
       "name": "ci-x64-Release-Clang",
