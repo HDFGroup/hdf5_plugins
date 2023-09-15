@@ -80,7 +80,7 @@ jobs:
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
   call-workflow-ctest:
-    needs: create-files-ctest
+    needs: [log-the-inputs, create-files-ctest]
     uses: ./.github/workflows/cmake-ctest.yml
     with:
       use_hdf: ${{ needs.log-the-inputs.outputs.rel_tag }}
