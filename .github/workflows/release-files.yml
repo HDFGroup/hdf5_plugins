@@ -44,7 +44,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: |
+      - name: Get Commit
+        if: ${{ (inputs.use_environ == 'snapshots') }}
+        run: |
           git checkout ${{ inputs.file_sha }}
 
       - uses: rickstaa/action-create-tag@v1
