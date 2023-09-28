@@ -39,7 +39,7 @@ jobs:
           repo: 'HDFGroup/hdf5'
           #version: 'tags/1.14.2'
           #file: 'hdf5-1_14_2-win_vs2022.zip'
-          version: 'tags/snapshot'
+          version: 'tags/${{ inputs.use_hdf }}'
           file: '${{ inputs.use_hdf }}-win_vs2022.zip'
 
       - name: Uncompress gh binary (Win)
@@ -155,7 +155,7 @@ jobs:
           repo: 'HDFGroup/hdf5'
           #version: 'tags/1.14.2'
           #file: 'hdf5-1_14_2-ubuntu-2204.tar.gz'
-          version: 'tags/snapshot'
+          version: 'tags/${{ inputs.use_hdf }}'
           file: '${{ inputs.use_hdf }}-ubuntu-2204.tar.gz'
 
       - name: List files for the space (Linux)
@@ -253,7 +253,7 @@ jobs:
           repo: 'HDFGroup/hdf5'
           #version: 'tags/1.14.2'
           #file: 'hdf5-1_14_2-osx12.tar.gz'
-          version: 'tags/snapshot'
+          version: 'tags/${{ inputs.use_hdf }}'
           file: '${{ inputs.use_hdf }}-osx12.tar.gz'
 
       - name: List files for the space (MacOS)
