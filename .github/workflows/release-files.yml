@@ -108,6 +108,7 @@ jobs:
               path: ${{ github.workspace }}
 
       - name: Store snapshot name
+        if: ${{ (inputs.use_environ == 'snapshots') }}
         run: |
           echo "${{ steps.get-file-base.outputs.FILE_BASE }}" > ./last-file.txt
 
@@ -136,11 +137,11 @@ jobs:
           prerelease: false
           #body_path: ${{ github.workspace }}-CHANGELOG.txt
           files: |
-              ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}.zip
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-osx12.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-win_vs2022.zip
+              ${{ inputs.use_tag }}.tar.gz
+              ${{ inputs.use_tag }}.zip
+              ${{ inputs.use_tag }}-osx12.tar.gz
+              ${{ inputs.use_tag }}-ubuntu-2204.tar.gz
+              ${{ inputs.use_tag }}-win_vs2022.zip
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
       - name: List files for the space (Linux)

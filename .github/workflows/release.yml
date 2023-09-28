@@ -9,6 +9,11 @@ on:
         type: string
         required: false
         default: snapshot
+      use_name:
+        description: 'Plugin Release Name'
+        type: string
+        required: false
+        default: hdf5_plugin-snapshot
 
 permissions:
   contents: read
@@ -20,12 +25,16 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       rel_tag: ${{ steps.get-tag-name.outputs.RELEASE_TAG }}
+      rel_name: ${{ steps.get-tag-name.outputs.RELEASE_NAME }}
     steps:
     - name: Get tag name
       id: get-tag-name
       env:
         TAG: ${{ inputs.use_tag }}
-      run: echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
+        TAG_NAME: ${{ inputs.use_name }}
+      run: |
+        echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
+        echo "RELEASE_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
 
   create-files-ctest:
     needs: log-the-inputs
@@ -89,6 +98,6 @@ jobs:
       file_base: ${{ needs.create-files-ctest.outputs.file_base }}
       file_branch: ${{ needs.log-the-inputs.outputs.rel_tag }}
       file_sha: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
+      use_tag: ${{ needs.log-the-inputs.outputs.rel_name }}
       use_environ: release
 
