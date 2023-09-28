@@ -30,6 +30,7 @@ jobs:
     - name: Get tag name
       id: get-tag-name
       env:
+        TAG: ${{ inputs.use_tag }}
         TAG_NAME: ${{ inputs.use_name }}
       run: |
         echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
