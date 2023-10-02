@@ -13,7 +13,7 @@
         "H5PL_VERS_MINOR": {"type": "STRING", "value": "10"},
         "H5PL_VERS_RELEASE": {"type": "STRING", "value": "11"},
         "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
-        "TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"},
+        "H5PL_COMP_TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"},
         "H5PL_BUILD_TESTING": "ON",
         "BUILD_EXAMPLES": "ON"
       }

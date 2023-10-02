@@ -98,9 +98,9 @@ jobs:
         run: |
           if [[ '${{ inputs.use_environ }}' == 'snapshots' && '${{ needs.check_commits.outputs.has_changes }}' == 'true' ]]
           then
-            FILE_NAME_BASE=$(echo "hdf5_plugin-${{ needs.check_commits.outputs.branch_ref }}-${{ needs.check_commits.outputs.branch_sha }}")
+            FILE_NAME_BASE=$(echo "hdf5_plugins-${{ needs.check_commits.outputs.branch_ref }}-${{ needs.check_commits.outputs.branch_sha }}")
           else
-            FILE_NAME_BASE=$(echo "hdf5_plugin-${{ steps.version.outputs.TAG_VERSION }}")
+            FILE_NAME_BASE=$(echo "hdf5_plugins-${{ steps.version.outputs.TAG_VERSION }}")
           fi
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
         shell: bash
