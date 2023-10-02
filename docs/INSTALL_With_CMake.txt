@@ -552,7 +552,7 @@ These five steps are described in detail below.
                SZIP_TGZ_NAME:STRING="szip_src.ext"
                LIBAEC_TGZ_NAME:STRING="libaec_src.ext"
                PLUGIN_TGZ_NAME:STRING="plugin_src.ext"
-               TGZPATH:STRING="some_location"
+               H5PL_TGZPATH:STRING="some_location"
             where "some_location/xxxx_src.ext" is the URL or full path to
             the compressed file and where ext is the type of the compression
             file such as .bz2, .tar, .tar.gz, .tgz, or .zip. Also define
