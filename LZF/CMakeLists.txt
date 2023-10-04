@@ -60,7 +60,7 @@ set (H5LZF_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5LZF_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5LZF_PACKAGE_SOVERSION "${H5LZF_SOVERS_MAJOR}.${H5LZF_SOVERS_RELEASE}.${H5LZF_SOVERS_MINOR}")
 set (H5LZF_PACKAGE_SOVERSION_MAJOR "${H5LZF_SOVERS_MAJOR}")
-message("Configuring for lzf HDF5 Plugin version: " ${H5LZF_PACKAGE_STRING})
+message(STATUS "Configuring for lzf HDF5 Plugin version: " ${H5LZF_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -121,7 +121,7 @@ if (NOT H5_LZF_HEADER)
     set (LZF_INCLUDE_DIRS ${LZF_INCLUDE_DIRS} ${LZF_INCLUDE_DIR})
   else ()
     if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_LZF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      EXTERNAL_LZF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
       set (H5_HAVE_LZF_H 1)
       set (H5_HAVE_LZF 1)
       message (STATUS "Filter LZF is built")
@@ -135,10 +135,6 @@ else ()
 endif ()
 message (STATUS "lzf found: INC=${LZF_INCLUDE_DIR} TOOLS=${LZF_LIBRARIES}")
 set (LINK_LIBS ${LINK_LIBS} ${LZF_LIBRARIES})
-
-if (LZF_FOUND)
-  PACKAGE_LZF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-endif ()
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -155,12 +151,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (LZF_FOUND AND LZF_USE_EXTERNAL)
-    add_dependencies (${H5LZF_LIB_TARGET} LZF)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5lzf Examples" OFF)
 if (BUILD_EXAMPLES)

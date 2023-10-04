@@ -9,75 +9,48 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
+include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_LZF_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+macro (EXTERNAL_LZF_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (LZF
+    FetchContent_Declare (LZF
         GIT_REPOSITORY ${LZF_URL}
         GIT_TAG ${LZF_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DLZF_PACKAGE_EXT:STRING=${LZF_PACKAGE_EXT}
-            -DLZF_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (LZF
+    FetchContent_Declare (LZF
         URL ${LZF_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DLZF_PACKAGE_EXT:STRING=${LZF_PACKAGE_EXT}
-            -DLZF_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (LZF BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties (LZF)
+  if (NOT lzf_POPULATED)
+    FetchContent_Populate (LZF)
 
-  # Create imported target LZF
-  add_library (lzf ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (lzf "lzf" ${libtype} "")
-  add_dependencies (lzf LZF)
+    # Store the old value of the 'BUILD_SHARED_LIBS'
+    set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
+    # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    # Store the old value of the 'BUILD_TESTING'
+    set (BUILD_TESTING_OLD ${BUILD_TESTING})
+    # Make subproject to use 'BUILD_TESTING=OFF' setting.
+    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
+
+    add_subdirectory (${lzf_SOURCE_DIR} ${lzf_BINARY_DIR})
+
+    # Restore the old value of the parameter
+    set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
+    # Restore the old value of the parameter
+    set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
+  endif ()
 
 #  include (${BINARY_DIR}/LZF-targets.cmake)
-  set (LZF_LIBRARY "lzf")
+  set (LZF_LIBRARY "lzf-static")
 
-  set (LZF_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (LZF_INCLUDE_DIR "${SOURCE_DIR}")
+  set (LZF_INCLUDE_DIR_GEN "${lzf_BINARY_DIR}")
+  set (LZF_INCLUDE_DIR "${lzf_SOURCE_DIR}")
   set (LZF_FOUND 1)
   set (LZF_LIBRARIES ${LZF_LIBRARY})
   set (LZF_INCLUDE_DIRS ${LZF_INCLUDE_DIR_GEN} ${LZF_INCLUDE_DIR})
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_LZF_LIBRARY compress_type)
-  add_custom_target (LZF-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LZF_INCLUDE_DIR}/lzf.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${LZF_INCLUDE_DIR}/lzf.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lzf.h)
-  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (LZF-GenHeader-Copy LZF)
-  endif ()
 endmacro ()

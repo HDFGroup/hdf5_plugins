@@ -60,7 +60,7 @@ set (H5BSHUF_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BSHUF_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BSHUF_PACKAGE_SOVERSION "${H5BSHUF_SOVERS_MAJOR}.${H5BSHUF_SOVERS_RELEASE}.${H5BSHUF_SOVERS_MINOR}")
 set (H5BSHUF_PACKAGE_SOVERSION_MAJOR "${H5BSHUF_SOVERS_MAJOR}")
-message("Configuring for bshuf HDF5 Plugin version: " ${H5BSHUF_PACKAGE_STRING})
+message(STATUS "Configuring for bshuf HDF5 Plugin version: " ${H5BSHUF_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -177,7 +177,7 @@ if (NOT BUILD_BSHUF_LIBRARY_SOURCE)
       set (BSHUF_INCLUDE_DIRS ${BSHUF_INCLUDE_DIRS} ${BSHUF_INCLUDE_DIR})
     else ()
       if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-        EXTERNAL_BSHUF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+        EXTERNAL_BSHUF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
         set (H5_HAVE_BSHUF_H 1)
         set (H5_HAVE_BSHUF 1)
         message (STATUS "Filter BSHUF is built")
@@ -212,15 +212,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (BSHUF_FOUND AND BSHUF_USE_EXTERNAL)
-    add_dependencies (${H5BSHUF_LIB_TARGET} BSHUF)
-  endif ()
-  if (LZ4_FOUND AND LZ4_USE_EXTERNAL)
-    add_dependencies (${H5BSHUF_LIB_TARGET} LZ4)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5bshuf Examples" OFF)
 if (BUILD_EXAMPLES)

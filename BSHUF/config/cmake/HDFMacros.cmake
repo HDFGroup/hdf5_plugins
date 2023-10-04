@@ -490,6 +490,8 @@ macro (HDF_DIR_PATHS package_prefix)
       set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
     endif ()
   endif ()
+
+  include (FetchContent)
 endmacro ()
 
 macro (ADD_H5_FLAGS h5_flag_var infile)

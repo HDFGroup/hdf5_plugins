@@ -60,7 +60,7 @@ set (H5SZ_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5SZ_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5SZ_PACKAGE_SOVERSION "${H5SZ_SOVERS_MAJOR}.${H5SZ_SOVERS_RELEASE}.${H5SZ_SOVERS_MINOR}")
 set (H5SZ_PACKAGE_SOVERSION_MAJOR "${H5SZ_SOVERS_MAJOR}")
-message("Configuring for SZ HDF5 Plugin version: " ${H5SZ_PACKAGE_STRING})
+message(STATUS "Configuring for SZ HDF5 Plugin version: " ${H5SZ_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -121,7 +121,7 @@ if (NOT H5_SZ_HEADER)
     set (SZ_INCLUDE_DIRS ${SZ_INCLUDE_DIRS} ${SZ_INCLUDE_DIR})
   else ()
     if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_SZ_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      EXTERNAL_SZ_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
       set (H5_HAVE_SZ_H 1)
       set (H5_HAVE_SZ 1)
       message (STATUS "Filter SZ is built")
@@ -135,10 +135,6 @@ else ()
 endif ()
 message (STATUS "SZ found: INC=${SZ_INCLUDE_DIR} TOOLS=${SZ_LIBRARIES}")
 set (LINK_LIBS ${LINK_LIBS} ${SZ_LIBRARIES})
-
-if (SZ_FOUND)
-  PACKAGE_SZ_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-endif ()
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -155,12 +151,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (SZ_FOUND AND SZ_USE_EXTERNAL)
-    add_dependencies (${H5SZ_LIB_TARGET} SZ)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5SZ Examples" OFF)
 if (BUILD_EXAMPLES)
