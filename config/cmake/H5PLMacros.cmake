@@ -34,10 +34,3 @@ macro (FILTER_OPTION plname)
     set_global_variable (H5PL_LIBRARIES_TO_EXPORT "${H5PL_LIBRARIES_TO_EXPORT};${H5${plname}_LIBRARIES_TO_EXPORT}")
   endif ()
 endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_PL_LIBRARY plname compress_type)
-  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (${plname}-GenHeader-Copy ${plname})
-  endif ()
-endmacro ()

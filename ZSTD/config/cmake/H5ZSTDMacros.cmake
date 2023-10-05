@@ -28,9 +28,10 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
   if (NOT zstd_POPULATED)
     FetchContent_Populate (ZSTD)
 
-    set (ZSTD_BUILD_PROGRAMS OFF CACHE BOOL "")
-    set (ZSTD_BUILD_SHARED OFF CACHE BOOL "")
-    set (ZSTD_LEGACY_SUPPORT OFF CACHE BOOL "")
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake)
+    file(COPY ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake/lib)
+    file(RENAME ${zstd_SOURCE_DIR}/build/cmake/lib/libCMakeLists.txt ${zstd_SOURCE_DIR}/build/cmake/lib/CMakeLists.txt)
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})

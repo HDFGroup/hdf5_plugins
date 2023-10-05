@@ -28,6 +28,13 @@ macro (EXTERNAL_LZF_LIBRARY compress_type)
   if (NOT lzf_POPULATED)
     FetchContent_Populate (LZF)
 
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${lzf_SOURCE_DIR})
+    file(COPY ${H5LZF_SOURCE_DIR}/config/ConfigureChecks.cmake DESTINATION ${lzf_SOURCE_DIR})
+
+    set (LZF_EXTERNALLY_CONFIGURED OFF CACHE INTERNAL "No package")
+    set (LZF_INSTALL_NO_DEVELOPMENT OFF CACHE INTERNAL "No package")
+
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
     # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.

@@ -28,6 +28,11 @@ macro (EXTERNAL_JPEG_LIBRARY compress_type)
   if(NOT jpeg_POPULATED)
     FetchContent_Populate(JPEG)
 
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5JPEG_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${jpeg_SOURCE_DIR})
+    file(COPY ${H5JPEG_SOURCE_DIR}/config/ConfigureChecks.cmake DESTINATION ${jpeg_SOURCE_DIR})
+    file(COPY ${H5JPEG_SOURCE_DIR}/config/jconfig.h.in DESTINATION ${jpeg_SOURCE_DIR})
+
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
     # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
@@ -49,7 +54,7 @@ macro (EXTERNAL_JPEG_LIBRARY compress_type)
   set (JPEG_LIBRARY "jpeg-static")
 
   set (JPEG_INCLUDE_DIR_GEN "${jpeg_BINARY_DIR}")
-  set (JPEG_INCLUDE_DIR "${jpeg_SOURCE_DIR}/src")
+  set (JPEG_INCLUDE_DIR "${jpeg_SOURCE_DIR}")
   set (JPEG_FOUND 1)
   set (JPEG_LIBRARIES ${JPEG_LIBRARY})
   set (JPEG_INCLUDE_DIRS ${JPEG_INCLUDE_DIR_GEN} ${JPEG_INCLUDE_DIR})

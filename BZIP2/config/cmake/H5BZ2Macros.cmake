@@ -28,6 +28,10 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type)
   if(NOT bz2_POPULATED)
     FetchContent_Populate(BZ2)
 
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5BZ2_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${bz2_SOURCE_DIR})
+    file(COPY ${H5BZ2_SOURCE_DIR}/config/ConfigureChecks.cmake DESTINATION ${bz2_SOURCE_DIR})
+
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
     # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
@@ -49,7 +53,7 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type)
   set (BZ2_LIBRARY "bz2-static")
 
   set (BZ2_INCLUDE_DIR_GEN "${bz2_BINARY_DIR}")
-  set (BZ2_INCLUDE_DIR "${bz2_SOURCE_DIR}/src")
+  set (BZ2_INCLUDE_DIR "${bz2_SOURCE_DIR}")
   set (BZ2_FOUND 1)
   set (BZ2_LIBRARIES ${BZ2_LIBRARY})
   set (BZ2_INCLUDE_DIRS ${BZ2_INCLUDE_DIR_GEN} ${BZ2_INCLUDE_DIR})

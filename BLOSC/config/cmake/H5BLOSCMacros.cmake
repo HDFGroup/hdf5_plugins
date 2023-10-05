@@ -35,6 +35,8 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type)
     set (PREFER_EXTERNAL_ZLIB OFF CACHE BOOL "")
     set (PREFER_EXTERNAL_ZSTD OFF CACHE BOOL "")
     set (DEACTIVATE_SNAPPY ON CACHE BOOL "")
+    set (BLOSC_IS_SUBPROJECT OFF CACHE BOOL "")
+    set (BLOSC_INSTALL OFF CACHE BOOL "")
 
     add_subdirectory(${blosc_SOURCE_DIR} ${blosc_BINARY_DIR})
   endif()
