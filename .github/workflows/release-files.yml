@@ -137,11 +137,11 @@ jobs:
           prerelease: false
           #body_path: ${{ github.workspace }}-CHANGELOG.txt
           files: |
-              ${{ inputs.use_tag }}.tar.gz
-              ${{ inputs.use_tag }}.zip
-              ${{ inputs.use_tag }}-osx12.tar.gz
-              ${{ inputs.use_tag }}-ubuntu-2204.tar.gz
-              ${{ inputs.use_tag }}-win_vs2022.zip
+              ${{ inputs.file_branch }}.tar.gz
+              ${{ inputs.file_branch }}.zip
+              ${{ inputs.file_branch }}-osx12.tar.gz
+              ${{ inputs.file_branch }}-ubuntu-2204.tar.gz
+              ${{ inputs.file_branch }}-win_vs2022.zip
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
       - name: List files for the space (Linux)
