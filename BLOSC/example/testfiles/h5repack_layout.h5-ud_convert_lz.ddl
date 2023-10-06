@@ -93,7 +93,7 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 20, 10 )
-         SIZE 1128 (2.837:1 COMPRESSION)
+         SIZE 1123 (2.850:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {

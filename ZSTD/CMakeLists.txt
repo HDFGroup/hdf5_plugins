@@ -60,7 +60,7 @@ set (H5ZSTD_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5ZSTD_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5ZSTD_PACKAGE_SOVERSION "${H5ZSTD_SOVERS_MAJOR}.${H5ZSTD_SOVERS_RELEASE}.${H5ZSTD_SOVERS_MINOR}")
 set (H5ZSTD_PACKAGE_SOVERSION_MAJOR "${H5ZSTD_SOVERS_MAJOR}")
-message("Configuring for zstd HDF5 Plugin version: " ${H5ZSTD_PACKAGE_STRING})
+message(STATUS "Configuring for zstd HDF5 Plugin version: " ${H5ZSTD_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -113,7 +113,7 @@ if (ZSTD_FOUND)
   set (ZSTD_INCLUDE_DIRS ${ZSTD_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_ZSTD_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_ZSTD_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5ZSTD_HAVE_ZSTD 1)
     message (STATUS "Filter ZSTD is built")
   else ()
@@ -137,12 +137,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (ZSTD_FOUND AND ZSTD_USE_EXTERNAL)
-    add_dependencies (${H5ZSTD_LIB_TARGET} ZSTD)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5zstd Examples" OFF)
 if (BUILD_EXAMPLES)

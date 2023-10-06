@@ -80,7 +80,7 @@ set (H5ZFP_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5ZFP_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5ZFP_PACKAGE_SOVERSION "${H5ZFP_SOVERS_MAJOR}.${H5ZFP_SOVERS_RELEASE}.${H5ZFP_SOVERS_MINOR}")
 set (H5ZFP_PACKAGE_SOVERSION_MAJOR "${H5ZFP_SOVERS_MAJOR}")
-message("Configuring for zfp HDF5 Plugin version: " ${H5ZFP_PACKAGE_STRING})
+message(STATUS "Configuring for zfp HDF5 Plugin version: " ${H5ZFP_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -216,7 +216,7 @@ if (ZFP_FOUND)
   set (ZFP_INCLUDE_DIRS ${ZFP_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5_HAVE_ZFP_H 1)
     set (H5_HAVE_ZFP 1)
     message (STATUS "Filter ZFP is built")
@@ -226,10 +226,6 @@ else ()
 endif ()
 message (STATUS "zfp found: INC=${ZFP_INCLUDE_DIR} TOOLS=${ZFP_LIBRARIES}")
 set (LINK_LIBS ${LINK_LIBS} ${ZFP_LIBRARIES})
-
-if (ZFP_FOUND)
-  PACKAGE_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-endif ()
 
 #-----------------------------------------------------------------------------
 # Generate the zfp_config.h file containing user settings needed by compilation
@@ -250,12 +246,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (ZFP_FOUND AND ZFP_USE_EXTERNAL)
-    add_dependencies (${H5ZFP_LIB_TARGET} ZFP)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5zfp Examples" OFF)
 if (BUILD_EXAMPLES)

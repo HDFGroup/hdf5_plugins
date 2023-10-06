@@ -9,94 +9,54 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
+include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_ZFP_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-    if (WIN32)
-      set (ZFP_LIBRARY_PREFIX "lib")
-    endif ()
+macro (EXTERNAL_ZFP_LIBRARY compress_type)
+  if (WIN32)
+    set (ZFP_LIBRARY_PREFIX "lib")
   endif ()
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (ZFP
+    FetchContent_Declare (ZFP
         GIT_REPOSITORY ${ZFP_URL}
         GIT_TAG ${ZFP_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DZFP_PACKAGE_EXT:STRING=${ZFP_PACKAGE_EXT}
-            -DZFP_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DBUILD_UTILITIES:BOOL=OFF
-            -DBUILD_TESTING:BOOL=OFF
-            -DZFP_WITH_OPENMP=OFF
-            -DZFP_BIT_STREAM_WORD_SIZE=8
-            -DZFP_LIBRARY_PREFIX:STRING=${ZFP_LIBRARY_PREFIX}
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (ZFP
+    FetchContent_Declare (ZFP
         URL ${ZFP_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DZFP_PACKAGE_EXT:STRING=${ZFP_PACKAGE_EXT}
-            -DZFP_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DBUILD_UTILITIES:BOOL=OFF
-            -DBUILD_TESTING:BOOL=OFF
-            -DZFP_WITH_OPENMP=OFF
-            -DZFP_BIT_STREAM_WORD_SIZE=8
-            -DZFP_LIBRARY_PREFIX:STRING=${ZFP_LIBRARY_PREFIX}
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (ZFP BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties (ZFP)
+  if (NOT zfp_POPULATED)
+    FetchContent_Populate (ZFP)
 
-  # Create imported target ZFP
-  add_library (${ZFP_LIB_TARGET} ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (${ZFP_LIB_TARGET} "zfp" ${libtype} "")
-  add_dependencies (${ZFP_LIB_TARGET} ZFP)
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5ZFP_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${zfp_SOURCE_DIR})
+    file(COPY ${H5ZFP_SOURCE_DIR}/config/srcCMakeLists.txt DESTINATION ${zfp_SOURCE_DIR}/src)
+    file(RENAME ${zfp_SOURCE_DIR}/src/srcCMakeLists.txt ${zfp_SOURCE_DIR}/src/CMakeLists.txt)
+
+    set (ZFP_WITH_OPENMP OFF CACHE BOOL "")
+    set (ZFP_BIT_STREAM_WORD_SIZE 8 CACHE STRING "")
+    set (ZFP_LIBRARY_PREFIX ${ZFP_LIBRARY_PREFIX} CACHE STRING "")
+
+    # Store the old value of the 'BUILD_SHARED_LIBS'
+    set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
+    # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+
+    add_subdirectory (${zfp_SOURCE_DIR} ${zfp_BINARY_DIR})
+
+    # Restore the old value of the parameter
+    set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
+  endif ()
 
 #  include (${BINARY_DIR}/ZFP-targets.cmake)
   set (ZFP_LIBRARY "zfp")
 
-  set (ZFP_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (ZFP_INCLUDE_DIR "${SOURCE_DIR}/include")
+  set (ZFP_INCLUDE_DIR_GEN "${zfp_BINARY_DIR}")
+  set (ZFP_INCLUDE_DIR "${zfp_SOURCE_DIR}/include")
   set (ZFP_FOUND 1)
   set (ZFP_LIBRARIES ${ZFP_LIBRARY})
   set (ZFP_INCLUDE_DIRS ${ZFP_INCLUDE_DIR_GEN} ${ZFP_INCLUDE_DIR})
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_ZFP_LIBRARY compress_type)
-  add_custom_target (ZFP-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZFP_INCLUDE_DIR}/zfp.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${ZFP_INCLUDE_DIR}/zfp.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zfp.h)
-  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (ZFP-GenHeader-Copy ZFP)
-  endif ()
 endmacro ()

@@ -60,7 +60,7 @@ set (H5LZ4_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5LZ4_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5LZ4_PACKAGE_SOVERSION "${H5LZ4_SOVERS_MAJOR}.${H5LZ4_SOVERS_RELEASE}.${H5LZ4_SOVERS_MINOR}")
 set (H5LZ4_PACKAGE_SOVERSION_MAJOR "${H5LZ4_SOVERS_MAJOR}")
-message("Configuring for lz4 HDF5 Plugin version: " ${H5LZ4_PACKAGE_STRING})
+message(STATUS "Configuring for lz4 HDF5 Plugin version: " ${H5LZ4_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -155,12 +155,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (LZ4_FOUND AND LZ4_USE_EXTERNAL)
-    add_dependencies (${H5LZ4_LIB_TARGET} LZ4)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5lz4 Examples" OFF)
 if (BUILD_EXAMPLES)

@@ -80,7 +80,7 @@ set (H5MAFISC_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5MAFISC_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5MAFISC_PACKAGE_SOVERSION "${H5MAFISC_SOVERS_MAJOR}.${H5MAFISC_SOVERS_RELEASE}.${H5MAFISC_SOVERS_MINOR}")
 set (H5MAFISC_PACKAGE_SOVERSIONMAJOR "${H5MAFISC_SOVERS_MAJOR}")
-message("Configuring for mafisc HDF5 Plugin version: " ${H5MAFISC_PACKAGE_STRING})
+message(STATUS "Configuring for mafisc HDF5 Plugin version: " ${H5MAFISC_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -222,7 +222,7 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
     set (H5MAFISC_INCLUDE_DIRS ${MAFISC_INCLUDE_DIR})
   else ()
     if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      EXTERNAL_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
       set (H5MAFISC_HAVE_MAFISC_H 1)
       set (H5MAFISC_HAVE_MAFISC 1)
       message (STATUS "Filter MAFISC is built")
@@ -232,10 +232,6 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
   endif ()
   message (STATUS "mafisc found: INC=${MAFISC_INCLUDE_DIR} TOOLS=${MAFISC_LIBRARIES}")
   set (LINK_LIBS ${LINK_LIBS} ${MAFISC_LIBRARIES})
-
-  if (MAFISC_FOUND)
-    PACKAGE_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-  endif ()
 endif ()
 
 #-----------------------------------------------------------------------------
@@ -252,12 +248,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (MAFISC_FOUND AND MAFISC_USE_EXTERNAL)
-    add_dependencies (${H5MAFISC_LIB_TARGET} MAFISC)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5mafisc Examples" OFF)
 if (BUILD_EXAMPLES)

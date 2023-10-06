@@ -25,7 +25,6 @@ set (H5ZSTD_INCLUDE_DIRS ${H5ZSTD_INCLUDE_DIRS}
     ${H5ZSTD_SRC_SOURCE_DIR}
     ${ZSTD_INCLUDE_DIRS}
 )
-
 #-----------------------------------------------------------------------------
 # Define H5ZSTD Library
 #-----------------------------------------------------------------------------

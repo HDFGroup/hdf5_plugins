@@ -60,7 +60,7 @@ set (H5JPEG_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5JPEG_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5JPEG_PACKAGE_SOVERSION "${H5JPEG_SOVERS_MAJOR}.${H5JPEG_SOVERS_RELEASE}.${H5JPEG_SOVERS_MINOR}")
 set (H5JPEG_PACKAGE_SOVERSION_MAJOR "${H5JPEG_SOVERS_MAJOR}")
-message("Configuring for jpeg HDF5 Plugin version: " ${H5JPEG_PACKAGE_STRING})
+message(STATUS "Configuring for jpeg HDF5 Plugin version: " ${H5JPEG_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -114,7 +114,7 @@ if (JPEG_FOUND)
   set (JPEG_INCLUDE_DIRS ${JPEG_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_JPEG_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_JPEG_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5JPEG_HAVE_BZLIB_H 1)
     set (H5JPEG_HAVE_JPEG 1)
     message (STATUS "Filter JPEG is built")
@@ -139,12 +139,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (JPEG_FOUND AND JPEG_USE_EXTERNAL)
-    add_dependencies (${H5JPEG_LIB_TARGET} JPEG)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5jpeg Examples" OFF)
 if (BUILD_EXAMPLES)
