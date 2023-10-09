@@ -23,10 +23,10 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (LZF_GIT_URL "https://someurl/lzf.git" CACHE STRING "Use LZF from HDF repository" FORCE)
-set (LZF_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (LZF_URL "http://software.schmorp.de/pkg/liblzf.html" CACHE STRING "LZF home" FORCE)
 
-set (LZF_TGZ_NAME "lzf.tar.gz" CACHE STRING "Use LZF from compressed file" FORCE)
+set (LZF_TGZ_ORIGPATH "http://dist.schmorp.de/liblzf" CACHE STRING "Use LZF from original location" FORCE)
+set (LZF_TGZ_NAME "liblzf-3.6.tar.gz" CACHE STRING "Use LZF from compressed file" FORCE)
 
 set (LZF_PACKAGE_NAME "lzf" CACHE STRING "Name of LZF package" FORCE)
 set (H5LZF_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)

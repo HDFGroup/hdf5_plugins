@@ -30,7 +30,6 @@ macro (EXTERNAL_LZF_LIBRARY compress_type)
 
     # Copy an additional/replacement files into the populated source
     file(COPY ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${lzf_SOURCE_DIR})
-    file(COPY ${H5LZF_SOURCE_DIR}/config/ConfigureChecks.cmake DESTINATION ${lzf_SOURCE_DIR})
 
     set (LZF_EXTERNALLY_CONFIGURED OFF CACHE INTERNAL "No package")
     set (LZF_INSTALL_NO_DEVELOPMENT OFF CACHE INTERNAL "No package")
