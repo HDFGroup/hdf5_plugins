@@ -23,10 +23,11 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (SZ_GIT_URL "https://github.com/disheng222/SZ" CACHE STRING "Use SZ filter from github repository" FORCE)
+set (SZ_GIT_URL "https://github.com/szcompressor/SZ.git" CACHE STRING "Use SZ filter from  GitHub repository" FORCE)
 set (SZ_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
-set (SZ_TGZ_NAME "szf.tar.gz" CACHE STRING "Use SZ filter from compressed file" FORCE)
+set (SZ_TGZ_ORIGPATH "https://github.com/szcompressor/SZ/releases/download/v2.1.12.5" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (SZ_TGZ_NAME "SZ-2.1.12.5.tar.gz" CACHE STRING "Use SZ filter from compressed file" FORCE)
 
 set (SZ_PACKAGE_NAME "SZ" CACHE STRING "Name of SZ filter package" FORCE)
 set (H5SZ_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)

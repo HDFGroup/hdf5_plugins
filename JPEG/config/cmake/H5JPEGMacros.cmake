@@ -30,7 +30,6 @@ macro (EXTERNAL_JPEG_LIBRARY compress_type)
 
     # Copy an additional/replacement files into the populated source
     file(COPY ${H5JPEG_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${jpeg_SOURCE_DIR})
-    file(COPY ${H5JPEG_SOURCE_DIR}/config/ConfigureChecks.cmake DESTINATION ${jpeg_SOURCE_DIR})
     file(COPY ${H5JPEG_SOURCE_DIR}/config/jconfig.h.in DESTINATION ${jpeg_SOURCE_DIR})
 
     # Store the old value of the 'BUILD_SHARED_LIBS'

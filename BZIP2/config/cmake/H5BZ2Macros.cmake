@@ -30,7 +30,6 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type)
 
     # Copy an additional/replacement files into the populated source
     file(COPY ${H5BZ2_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${bz2_SOURCE_DIR})
-    file(COPY ${H5BZ2_SOURCE_DIR}/config/ConfigureChecks.cmake DESTINATION ${bz2_SOURCE_DIR})
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})

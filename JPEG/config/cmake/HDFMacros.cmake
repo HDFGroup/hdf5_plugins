@@ -74,7 +74,7 @@ macro (INSTALL_TARGET_PDB libtarget targetdestination targetcomponent)
   mark_as_advanced (DISABLE_PDB_FILES)
   if (WIN32 AND MSVC AND NOT DISABLE_PDB_FILES)
     get_target_property (target_type ${libtarget} TYPE)
-    if (${target_type} MATCHES "SHARED")
+    if (${libtype} MATCHES "SHARED")
       set (targetfilename $<TARGET_PDB_FILE:${libtarget}>)
     else ()
       get_property (target_name TARGET ${libtarget} PROPERTY "$<IF:$<OR:$<CONFIG:Debug>,$<CONFIG:Developer>>,OUTPUT_NAME_DEBUG,OUTPUT_NAME_RELWITHDEBINFO>")
@@ -143,7 +143,7 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     endif ()
   endif ()
 
-  option (HDF5_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
+  option (HDF_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
   if (HDF5_MSVC_NAMING_CONVENTION AND MINGW AND ${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget} PROPERTIES
         IMPORT_SUFFIX ".lib"
