@@ -76,7 +76,7 @@ include (${H5ZSTD_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5ZSTD link libs: ${LINK_LIBS}")
+message (STATUS "H5ZSTD link libs: ${H5PL_LINK_LIBS}")
 
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
@@ -121,7 +121,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "zstd found: INC=${ZSTD_INCLUDE_DIR} LIBS=${ZSTD_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${ZSTD_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZSTD_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

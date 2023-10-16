@@ -76,7 +76,7 @@ include (${H5LZ4_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5LZ4 link libs: ${LINK_LIBS}")
+message (STATUS "H5LZ4 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the lz4_config.h file containing user settings needed by compilation
@@ -133,7 +133,7 @@ if (NOT BUILD_LZ4_LIBRARY_SOURCE)
     endif ()
   endif ()
   message (STATUS "lz4 found: INC=${LZ4_INCLUDE_DIR} TOOLS=${LZ4_LIBRARIES}")
-  set (LINK_LIBS ${LINK_LIBS} ${LZ4_LIBRARIES})
+  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZ4_LIBRARIES})
 
   if (LZ4_FOUND)
     PACKAGE_LZ4_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})

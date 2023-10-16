@@ -176,7 +176,7 @@ endif ()
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5MAFISC link libs: ${LINK_LIBS}")
+message (STATUS "H5MAFISC link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the mafisc_config.h file containing user settings needed by compilation
@@ -231,7 +231,7 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
     endif ()
   endif ()
   message (STATUS "mafisc found: INC=${MAFISC_INCLUDE_DIR} TOOLS=${MAFISC_LIBRARIES}")
-  set (LINK_LIBS ${LINK_LIBS} ${MAFISC_LIBRARIES})
+  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${MAFISC_LIBRARIES})
 endif ()
 
 #-----------------------------------------------------------------------------

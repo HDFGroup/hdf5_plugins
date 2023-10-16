@@ -76,7 +76,7 @@ include (${H5LZF_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5LZF link libs: ${LINK_LIBS}")
+message (STATUS "H5LZF link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the lzf_config.h file containing user settings needed by compilation
@@ -109,7 +109,7 @@ if (NOT H5_LZF_HEADER)
     if (NOT LZF_FOUND)
       find_package (LZF) # Legacy find
       if (LZF_FOUND)
-        set (LINK_LIBS ${LINK_LIBS} ${LZF_LIBRARIES})
+        set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZF_LIBRARIES})
       endif ()
     endif ()
   endif ()
@@ -134,7 +134,7 @@ else ()
   set (H5_HAVE_LZF_H 1)
 endif ()
 message (STATUS "lzf found: INC=${LZF_INCLUDE_DIR} TOOLS=${LZF_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${LZF_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZF_LIBRARIES})
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------

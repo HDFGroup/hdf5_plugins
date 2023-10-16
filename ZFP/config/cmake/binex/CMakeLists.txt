@@ -23,7 +23,7 @@ BASIC_SETTINGS (HDFPLExamples)
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
 
-message (STATUS "HDF5 link libs: ${LINK_LIBS}")
+message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

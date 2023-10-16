@@ -35,11 +35,11 @@ endif ()
 # This MACRO checks IF the symbol exists in the library and IF it
 # does, it appends library to the list.
 #-----------------------------------------------------------------------------
-set (LINK_LIBS "")
+set (H5PL_LINK_LIBS "")
 macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
-  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
+  CHECK_LIBRARY_EXISTS ("${LIBRARY};${H5PL_LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
   if (${VARIABLE})
-    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
+    set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LIBRARY})
   endif ()
 endmacro ()
 
@@ -157,7 +157,7 @@ else ()
 endif ()
 
 # For other tests to use the same libraries
-set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${LINK_LIBS})
+set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${H5PL_LINK_LIBS})
 
 set (USE_INCLUDES "")
 if (WINDOWS)

@@ -76,7 +76,7 @@ include (${H5BSHUF_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5BSHUF link libs: ${LINK_LIBS}")
+message (STATUS "H5BSHUF link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the bshuf_config.h file containing user settings needed by compilation
@@ -133,7 +133,7 @@ if (NOT BUILD_LZ4_LIBRARY_SOURCE)
     endif ()
   endif ()
   message (STATUS "lz4 found: INC=${LZ4_INCLUDE_DIR} TOOLS=${LZ4_LIBRARIES}")
-  set (LINK_LIBS ${LINK_LIBS} ${LZ4_LIBRARIES})
+  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZ4_LIBRARIES})
 
   if (LZ4_FOUND)
     PACKAGE_LZ4_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
@@ -165,7 +165,7 @@ if (NOT BUILD_BSHUF_LIBRARY_SOURCE)
       if (NOT BSHUF_FOUND)
         find_package (BSHUF) # Legacy find
         if (BSHUF_FOUND)
-          set (LINK_LIBS ${LINK_LIBS} ${BSHUF_LIBRARIES})
+          set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${BSHUF_LIBRARIES})
         endif ()
       endif ()
     endif ()
@@ -190,7 +190,7 @@ if (NOT BUILD_BSHUF_LIBRARY_SOURCE)
     set (H5_HAVE_BSHUF_H 1)
   endif ()
   message (STATUS "bshuf found: INC=${BSHUF_INCLUDE_DIR} TOOLS=${BSHUF_LIBRARIES}")
-  set (LINK_LIBS ${LINK_LIBS} ${BSHUF_LIBRARIES})
+  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${BSHUF_LIBRARIES})
 
   if (BSHUF_FOUND)
     PACKAGE_BSHUF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})

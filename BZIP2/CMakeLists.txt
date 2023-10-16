@@ -76,7 +76,7 @@ include (${H5BZ2_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5BZ2 link libs: ${LINK_LIBS}")
+message (STATUS "H5BZ2 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the bzip_config.h file containing user settings needed by compilation
@@ -128,7 +128,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "bz2 found: INC=${BZ2_INCLUDE_DIR} LIBS=${BZ2_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${BZ2_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${BZ2_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

@@ -176,7 +176,7 @@ endif ()
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5ZFP link libs: ${LINK_LIBS}")
+message (STATUS "H5ZFP link libs: ${H5PL_LINK_LIBS}")
 
 include (ExternalProject)
 option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
@@ -225,7 +225,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "zfp found: INC=${ZFP_INCLUDE_DIR} TOOLS=${ZFP_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${ZFP_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZFP_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Generate the zfp_config.h file containing user settings needed by compilation
