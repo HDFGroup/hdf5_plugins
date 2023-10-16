@@ -76,7 +76,7 @@ include (${H5SZ_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5SZ link libs: ${LINK_LIBS}")
+message (STATUS "H5SZ link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the SZ_config.h file containing user settings needed by compilation
@@ -109,7 +109,7 @@ if (NOT H5_SZ_HEADER)
     if (NOT SZ_FOUND)
       find_package (SZ) # Legacy find
       if (SZ_FOUND)
-        set (LINK_LIBS ${LINK_LIBS} ${SZ_LIBRARIES})
+        set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${SZ_LIBRARIES})
       endif ()
     endif ()
   endif ()

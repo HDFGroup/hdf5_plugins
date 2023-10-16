@@ -75,7 +75,7 @@ include (${H5PL_RESOURCES_DIR}/H5PLMacros.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${LINK_LIBS}")
+message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # External plugin targets for the H5PL super project.

@@ -76,7 +76,7 @@ include (${H5JPEG_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5JPEG link libs: ${LINK_LIBS}")
+message (STATUS "H5JPEG link libs: ${H5PL_LINK_LIBS}")
 
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
@@ -123,7 +123,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "jpeg found: INC=${JPEG_INCLUDE_DIR} LIBS=${JPEG_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${JPEG_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${JPEG_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
