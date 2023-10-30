@@ -12,7 +12,7 @@
 
 include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_MAFISC_LIBRARY compress_type libtype)
+macro (EXTERNAL_MAFISC_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
     FetchContent_Declare (MAFISC
         GIT_REPOSITORY ${MAFISC_URL}

@@ -12,7 +12,7 @@
 
 include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_SZ_LIBRARY compress_type libtype)
+macro (EXTERNAL_SZ_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
     FetchContent_Declare (SZF
         GIT_REPOSITORY ${SZ_URL}
