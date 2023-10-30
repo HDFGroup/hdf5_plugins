@@ -73,11 +73,6 @@ else(NOT DEFINED STATIC_ONLY)
   set (STATICLIBRARIES "NO")
 endif()
 
-if(NOT DEFINED HDF_LOCAL)
-  set (CDASH_LOCAL "NO")
-else()
-  set (CDASH_LOCAL "YES")
-endif()
 if(NOT DEFINED CTEST_SITE)
   set (CTEST_SITE "local")
 endif()
@@ -109,13 +104,14 @@ else()
   set (ENV{PATH} "$ENV{PATH}:${HDF5INSTALLDIR}")
   set (HDF5_PLUGIN_ROOT "${INSTALLDIR}/lib/plugin")
 endif()
-if(${CDASH_LOCAL})
-  set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DCDASH_LOCAL:BOOL=ON")
-endif()
 set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE_NAME@")
 set (ENV{HDF5_PLUGIN_PATH} "${HDF5_PLUGIN_ROOT}")
 
 set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DDISABLE_H5PL_ENCODER:BOOL=@DISABLE_H5BSHUF_ENCODER@")
+### use a toolchain file (supported everywhere)       ####
+if("@CMAKE_TOOLCHAIN_FILE@")
+#  set(ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DCMAKE_TOOLCHAIN_FILE:STRING=@CMAKE_TOOLCHAIN_FILE@")
+endif()
 
 ###############################################################################################################
 # For any comments please contact cdashhelp@hdfgroup.org
