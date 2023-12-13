@@ -71,7 +71,7 @@ set (BLOSC_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC_ZLIB package" FO
 ############################# bzip2 ################################################
 
 set (BZ2_GIT_URL "https://github.com/libarchive/bzip2.git" CACHE STRING "Use BZ2 from  GitHub repository" FORCE)
-set (BZ2_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (BZ2_GIT_BRANCH "bzip2-1.0.8" CACHE STRING "" FORCE)
 
 set (BZ2_TGZ_ORIGPATH "https://github.com/libarchive/bzip2/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
 set (BZ2_TGZ_NAME "bzip2-bzip2-1.0.8.tar.gz" CACHE STRING "Use BZ2 from compressed file" FORCE)
@@ -90,9 +90,8 @@ set (FPZIP_PACKAGE_NAME "fpzip" CACHE STRING "Name of FPZIP package" FORCE)
 
 ############################# jpeg ################################################
 
-set (JPEG_GIT_URL "No repo www.ijg.org/files" CACHE STRING "Use JPEG from ILG" FORCE)
-set (JPEG_GIT_BRANCH "v9e" CACHE STRING "" FORCE)
-#set (JPEG_TGZ_NAME "JPEG9d.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
+set (JPEG_GIT_URL "https://github.com/libjpeg-turbo/libjpeg-turbo.git" CACHE STRING "Use JPEG from TurboJPEG" FORCE)
+set (JPEG_GIT_BRANCH "jpeg-9e" CACHE STRING "" FORCE)
 
 set (JPEG_TGZ_ORIGPATH "https://www.ijg.org/files" CACHE STRING "Use PLUGINS from original location" FORCE)
 set (JPEG_TGZ_NAME "jpegsrc.v9e.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
