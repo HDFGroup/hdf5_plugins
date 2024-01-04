@@ -27,6 +27,7 @@
         "PL_PACKAGE_NAME": "pl",
         "HDF5_NAMESPACE": {"type": "STRING", "value": "hdf5::"},
         "HDF5_PACKAGE_NAME": {"type": "STRING", "value": "hdf5"},
+        "BUILD_BSHUF_LZ4_LIBRARY_SOURCE": "ON",
         "BSHUF_TGZ_NAME": {"type": "STRING", "value": "bitshuffle-0.5.1.tar.gz"},
         "BSHUF_PACKAGE_NAME": {"type": "STRING", "value": "bshuf"},
         "BLOSC_TGZ_NAME": {"type": "STRING", "value": "c-blosc-1.21.5.tar.gz"},
