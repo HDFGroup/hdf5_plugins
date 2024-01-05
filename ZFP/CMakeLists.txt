@@ -196,6 +196,7 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (ZFP_USE_EXTERNAL 0)
   endif ()
 endif ()
+
 #-----------------------------------------------------------------------------
 # zfp Library Settings
 #-----------------------------------------------------------------------------
@@ -203,8 +204,8 @@ if (NOT ZFP_USE_EXTERNAL)
   find_package (ZFP NAMES ${ZFP_PACKAGE_NAME})
   if (NOT ZFP_FOUND)
     find_package (ZFP) # Legacy find
-    if (NOT ZFP_FOUND)
-      message (FATAL_ERROR " zfp is Required for ${H5ZFP_PACKAGE_NAME} library")
+    if (ZFP_FOUND)
+      set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZFP_LIBRARIES})
     endif ()
   endif ()
 endif ()

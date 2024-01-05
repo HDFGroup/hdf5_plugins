@@ -424,6 +424,7 @@ These five steps are described in detail below.
                 set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
                 set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
                 ############################# bitshuffle ################################################
+                set (BUILD_BSHUF_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the BSHUF plugin" FORCE)
                 set (BSHUF_GIT_URL "https://github.com/kiyo-masui/bitshuffle.git" CACHE STRING "Use BSHUF from HDF repository" FORCE)
                 set (BSHUF_GIT_BRANCH "master" CACHE STRING "" FORCE)
                 set (BSHUF_TGZ_ORIGPATH "https://github.com/kiyo-masui/bitshuffle/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
@@ -669,16 +670,16 @@ ENABLE_<filter>             "Enable Library Building for <filter> plugin"       
 HDF_<filter>_USE_EXTERNAL   "Use External Library Building for <filter> plugin" 0
 
 ------ BLOSC ------
-HDF_ENABLE_BLOSC_SUPPORT    "Enable blosc"                                   ON
-HDF_ENABLE_BLOSC_ZLIB_SUPPORT "Enable Zlib Filters"                            OFF
-ZLIB_USE_EXTERNAL           "Use External Library Building for ZLIB"         1
-BLOSC_USE_EXTERNAL          "Use External Library Building for BLOSC"        1
+HDF_ENABLE_BLOSC_SUPPORT      "Enable blosc"                                   ON
+HDF_ENABLE_BLOSC_ZLIB_SUPPORT "Enable Zlib Filters"                            ON
+BLOSC_ZLIB_USE_EXTERNAL       "Use External Library Building for ZLIB"         1
+BLOSC_USE_EXTERNAL            "Use External Library Building for BLOSC"        1
 
 ------ BSHUF ------
-BUILD_LZ4_LIBRARY_SOURCE    "build the lz4 library within the plugin"        ON
-BUILD_BSHUF_LIBRARY_SOURCE  "build the bitshuffle library within the plugin" ON
-LZ4_USE_EXTERNAL            "Use External Library Building for LZ4"          1
-BSHUF_USE_EXTERNAL          "Use External Library Building for BSHUF"        1
+BUILD_BSHUF_LZ4_LIBRARY_SOURCE "build the lz4 library within the BSHUF plugin"  ON
+BUILD_BSHUF_LIBRARY_SOURCE     "build the bitshuffle library within the plugin" ON
+BSHUF_LZ4_USE_EXTERNAL         "Use External Library Building for BSHUF_LZ4"    1
+BSHUF_USE_EXTERNAL             "Use External Library Building for BSHUF"        1
 
 ------ BZIP2 ------
 BZ2_USE_EXTERNAL            "Use External Library Building for BZ2"          1

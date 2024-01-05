@@ -80,21 +80,20 @@ macro (EXTERNAL_BLOSC_ZLIB_LIBRARY compress_type)
   if(NOT blosc_zlib_POPULATED)
     FetchContent_Populate(BLOSC_ZLIB)
 
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5BLOSC_SOURCE_DIR}/config/zlib-CMakeLists.txt DESTINATION ${blosc_zlib_SOURCE_DIR})
+    file(RENAME ${blosc_zlib_SOURCE_DIR}/zlib-CMakeLists.txt ${blosc_zlib_SOURCE_DIR}/CMakeLists.txt)
+
     add_subdirectory(${blosc_zlib_SOURCE_DIR} ${blosc_zlib_BINARY_DIR})
   endif()
 
-  if (WIN32)
-    set (BLOSC_ZLIB_LIB_NAME "zlib")
-  else ()
-    set (BLOSC_ZLIB_LIB_NAME "z")
-  endif ()
-
-  set ({BLOSC_ZLIB_STATIC_LIBRARY "blosc_zlib-static")
-  set ({BLOSC_ZLIB_LIBRARIES ${{BLOSC_ZLIB_STATIC_LIBRARY})
+  set (BLOSC_ZLIB_STATIC_LIBRARY "zlibstatic")
+  set (BLOSC_ZLIB_LIBRARY ${BLOSC_ZLIB_STATIC_LIBRARY})
+  set (BLOSC_ZLIB_LIBRARIES ${BLOSC_ZLIB_LIBRARY})
 
   set (BLOSC_ZLIB_INCLUDE_DIR_GEN "${blosc_zlib_BINARY_DIR}")
   set (BLOSC_ZLIB_INCLUDE_DIR "${blosc_zlib_SOURCE_DIR}")
   set (BLOSC_ZLIB_FOUND 1)
-  set (BLOSC_ZLIB_LIBRARIES ${BLOSC_ZLIB_LIBRARY})
   set (BLOSC_ZLIB_INCLUDE_DIRS ${BLOSC_ZLIB_INCLUDE_DIR_GEN} ${BLOSC_ZLIB_INCLUDE_DIR})
+  message (VERBOSE "BLOSC_ZLIB Includes: ${BLOSC_ZLIB_INCLUDE_DIRS}")
 endmacro ()

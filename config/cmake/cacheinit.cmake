@@ -42,6 +42,8 @@ set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" F
 
 ############################# bitshuffle ################################################
 
+set (BUILD_BSHUF_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the BSHUF plugin" FORCE)
+
 set (BSHUF_GIT_URL "https://github.com/kiyo-masui/bitshuffle.git" CACHE STRING "Use BSHUF from HDF repository" FORCE)
 set (BSHUF_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
