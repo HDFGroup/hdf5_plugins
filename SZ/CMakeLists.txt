@@ -134,7 +134,7 @@ else ()
   set (H5_HAVE_SZ_H 1)
 endif ()
 message (STATUS "SZ found: INC=${SZ_INCLUDE_DIR} TOOLS=${SZ_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${SZ_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${SZ_LIBRARIES})
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------

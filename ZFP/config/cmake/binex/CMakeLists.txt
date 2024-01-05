@@ -22,7 +22,6 @@ BASIC_SETTINGS (HDFPLExamples)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-
 message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------

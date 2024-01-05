@@ -325,14 +325,9 @@ macro (HDF5_SUPPORT link_hdf)
       #plugin source needs to be linked with HDF5
       set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${H5PL_HDF5_LINK_LIBS})
     endif ()
+    set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
   endif ()
-  message (STATUS "HDF5 link libs: ${H5PL_HDF5_LINK_LIBS} Includes: ${H5PL_HDF5_INCLUDE_DIRS}")
-
-  if (USE_SHARED_LIBS)
-    set (H5_LIB_TYPE SHARED)
-  else ()
-    set (H5_LIB_TYPE STATIC)
-  endif ()
+  message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS} Includes: ${H5PL_HDF5_INCLUDE_DIRS}")
 endmacro ()
 
 macro (INSTALL_SUPPORT varname)
