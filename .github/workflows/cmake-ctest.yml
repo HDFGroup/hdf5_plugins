@@ -21,8 +21,6 @@ on:
 permissions:
   contents: read
 
-# A workflow run is made up of one or more jobs that can run sequentially or
-# in parallel
 jobs:
   build_and_test_win:
   # Windows w/ MSVC + CMake
@@ -44,7 +42,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-win_vs2022.zip'
+          file: '${{ inputs.use_hdf }}-win_vs2022_cl.zip'
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
@@ -52,7 +50,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-win_vs2022.zip'
+          file: '${{ inputs.use_hdf }}-win_vs2022_cl.zip'
 
       - name: Uncompress gh binary (Win)
         run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win_vs2022.zip
@@ -96,7 +94,7 @@ jobs:
 
       # Get files created by release script
       - name: Get zip-tarball (Windows)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
               name: zip-tarball
               path: ${{ github.workspace }}
@@ -167,7 +165,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz'
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
@@ -175,7 +173,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz'
 
       - name: List files for the space (Linux)
         run: |
@@ -209,7 +207,7 @@ jobs:
 
       # Get files created by release script
       - name: Get tgz-tarball (Linux)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
               name: tgz-tarball
               path: ${{ github.workspace }}
@@ -311,6 +309,7 @@ jobs:
         run: |
           FILE_NAME_BASE=$(echo "${{ inputs.file_base }}")
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
+        shell: bash
 
       # Get files created by release script
       - name: Get tgz-tarball (MacOS)

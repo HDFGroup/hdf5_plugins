@@ -40,7 +40,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Get Sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           fetch-depth: 0
 
@@ -49,7 +49,7 @@ jobs:
         run: |
           git checkout ${{ inputs.file_sha }}
 
-      - uses: rickstaa/action-create-tag@v1
+      - uses: rickstaa/action-create-tag@a1c7777fcb2fee4f19b0f283ba888afa11678b72 # v1.7.2
         id: "tag_create"
         with:
           commit_sha: ${{ inputs.file_sha }}
@@ -77,20 +77,20 @@ jobs:
 
       # Get files created by tarball script
       - name: Get tgz-tarball (Linux)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
               name: tgz-tarball
               path: ${{ github.workspace }}
 
       - name: Get zip-tarball (Windows)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
               name: zip-tarball
               path: ${{ github.workspace }}
 
       # Get files created by cmake-ctest script
       - name: Get published binary (Windows)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
               name: zip-vs2022-binary
               path: ${{ github.workspace }}
@@ -102,7 +102,7 @@ jobs:
               path: ${{ github.workspace }}
 
       - name: Get published binary (Linux)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
         with:
               name: tgz-ubuntu-2204-binary
               path: ${{ github.workspace }}
@@ -115,7 +115,7 @@ jobs:
       - name: PreRelease tag
         id: create_prerelease
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           tag_name: "${{ inputs.use_tag }}"
           prerelease: true
