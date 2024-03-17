@@ -53,7 +53,7 @@ jobs:
           file: '${{ inputs.use_hdf }}-win_vs2022_cl.zip'
 
       - name: Uncompress gh binary (Win)
-        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win_vs2022.zip
+        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win_vs2022_cl.zip
 
       - name: Uncompress hdf5 binary (Win)
         working-directory: ${{ github.workspace }}/hdf5
@@ -181,7 +181,7 @@ jobs:
             ls ${{ runner.workspace }}
 
       - name: Uncompress gh binary (Linux)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2204.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz
 
       - name: Uncompress hdf5 binary (Linux)
         run:  |
@@ -204,6 +204,7 @@ jobs:
         run: |
           FILE_NAME_BASE=$(echo "${{ inputs.file_base }}")
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
+        shell: bash
 
       # Get files created by release script
       - name: Get tgz-tarball (Linux)
