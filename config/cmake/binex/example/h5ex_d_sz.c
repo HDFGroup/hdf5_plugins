@@ -52,7 +52,7 @@ main (void)
     herr_t          status;
     htri_t          avail;
     H5Z_filter_t    filter_id = 0;
-    char            filter_name[80];
+    char            filter_name[128];
     hsize_t         dims[DIM_SIZE] = {DIM0, DIM1, DIM2},
                     chunk[DIM_SIZE] = {CHUNK0, CHUNK1, CHUNK2};
     size_t          nelmts = 9;                /* number of elements in cd_values */
