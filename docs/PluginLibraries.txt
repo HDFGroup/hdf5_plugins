@@ -2,7 +2,7 @@ The Compression Plugin Project
 ==============================
 
 The HDF Group Registered Third-Party Filters (Compression) webpage:
-        https://support.hdfgroup.org/services/contributions.html
+        https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
 
 This is a list of filters included into the Compression Plugin Library
     and some parameter settings pulled from the corresponding filter

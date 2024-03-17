@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }
@@ -54,7 +54,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }
@@ -76,7 +76,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }
@@ -98,7 +98,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }
@@ -120,7 +120,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }
@@ -142,7 +142,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32000
-            COMMENT HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lzf filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
             PARAMS { 4 261 128 }
          }
       }

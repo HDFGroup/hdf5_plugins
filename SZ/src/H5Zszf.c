@@ -18,7 +18,7 @@
 
 /*
  * SZ compression is an external filter registered with The HDF Group
- * See http://www.hdfgroup.org/services/contributions.html for more information.
+ * See https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html for more information.
  */
 
 /* Filter revision number, starting at 1 */
