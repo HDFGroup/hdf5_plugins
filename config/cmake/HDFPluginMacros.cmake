@@ -9,6 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
 #-------------------------------------------------------------------------------
 macro (BASIC_SETTINGS varname)
   string (TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
@@ -105,32 +106,7 @@ macro (BASIC_SETTINGS varname)
   #-----------------------------------------------------------------------------
   # Setup output Directories
   #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables."
-    )
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Libraries"
-    )
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
-    )
-    get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-    if(_isMultiConfig)
-      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE})
-      set (CMAKE_PDB_OUTPUT_DIRECTORY
-          ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all pdb files."
-      )
-    else ()
-      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    endif ()
-  else ()
-    # if we are externally configured, but the project uses old cmake scripts
-    # this may not be set
-    if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-      set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-    endif ()
-  endif ()
+  SET_HDF_OUTPUT_DIRS(${PLUGIN_PACKAGE_NAME})
 
   #-----------------------------------------------------------------------------
   # Targets built within this project are exported at Install time for use
@@ -154,6 +130,8 @@ macro (BASIC_SETTINGS varname)
   set (LIB_TYPE SHARED)
   add_definitions (-D${PLUGIN_PACKAGE_NAME}_BUILT_AS_DYNAMIC_LIB)
 
+  set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+
   if (MSVC)
     set (CMAKE_MFC_FLAG 0)
   endif ()
@@ -161,9 +139,13 @@ macro (BASIC_SETTINGS varname)
   set (CMAKE_C_STANDARD 99)
   set (CMAKE_C_STANDARD_REQUIRED TRUE)
 
-  set (CMAKE_CXX_STANDARD 98)
-  set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
-  set (CMAKE_CXX_EXTENSIONS OFF)
+  if (HDF_BUILD_CPP_LIB)
+    ENABLE_LANGUAGE (CXX)
+
+    set (CMAKE_CXX_STANDARD 98)
+    set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
+    set (CMAKE_CXX_EXTENSIONS OFF)
+  endif ()
 
   #-----------------------------------------------------------------------------
   # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -171,7 +153,7 @@ macro (BASIC_SETTINGS varname)
   if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_C_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_C_FLAGS} -std=c99 -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
-  if (CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
 
@@ -182,7 +164,7 @@ macro (BASIC_SETTINGS varname)
   if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
   endif ()
-  if (CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
   endif ()
 
@@ -217,26 +199,6 @@ macro (HDF5_SUPPORT link_hdf)
     find_package (HDF5 NAMES ${SEARCH_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
     message (STATUS "HDF5 C libs:${HDF5_FOUND} static:${HDF5_static_C_FOUND} and shared:${HDF5_shared_C_FOUND}")
     if (HDF5_FOUND)
-      if (USE_SHARED_LIBS)
-        if (NOT TARGET ${HDF5_NAMESPACE}h5dump-shared)
-          add_executable (${HDF5_NAMESPACE}h5dump-shared IMPORTED)
-        endif ()
-        if (NOT TARGET ${HDF5_NAMESPACE}h5repack-shared)
-          add_executable (${HDF5_NAMESPACE}h5repack-shared IMPORTED)
-        endif ()
-        set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump-shared>)
-        set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack-shared>)
-      else ()
-        if (NOT TARGET ${HDF5_NAMESPACE}h5dump)
-          add_executable (${HDF5_NAMESPACE}h5dump IMPORTED)
-        endif()
-        if (NOT TARGET ${HDF5_NAMESPACE}h5repack)
-          add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
-        endif()
-        set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
-        set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
-      endif()
-
       if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
         #find library from non-dual-binary package
         set (FIND_HDF_COMPONENTS C)
@@ -271,17 +233,32 @@ macro (HDF5_SUPPORT link_hdf)
             #plugin source needs to be linked with HDF5
             set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
           endif ()
-          set_property (TARGET ${HDF5_NAMESPACE}h5dump-shared PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump-shared")
-          set_property (TARGET ${HDF5_NAMESPACE}h5repack-shared PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack-shared")
         else ()
           set (H5PL_HDF5_LINK_LIBS ${H5PL_HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
           if (${link_hdf})
             #plugin source needs to be linked with HDF5
             set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
           endif ()
-          set_property (TARGET ${HDF5_NAMESPACE}h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
-          set_property (TARGET ${HDF5_NAMESPACE}h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
         endif ()
+        if (HDF5_VERSION VERSION_LESS "1.14.4" AND NOT HDF5_shared_C_FOUND)
+          if (NOT TARGET ${HDF5_NAMESPACE}h5dump-shared)
+            add_executable (${HDF5_NAMESPACE}h5dump-shared IMPORTED)
+          endif ()
+          if (NOT TARGET ${HDF5_NAMESPACE}h5repack-shared)
+            add_executable (${HDF5_NAMESPACE}h5repack-shared IMPORTED)
+          endif ()
+          set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump-shared>)
+          set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack-shared>)
+        else ()
+          if (NOT TARGET ${HDF5_NAMESPACE}h5dump)
+            add_executable (${HDF5_NAMESPACE}h5dump IMPORTED)
+          endif()
+          if (NOT TARGET ${HDF5_NAMESPACE}h5repack)
+            add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
+          endif()
+          set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
+          set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
+        endif()
       endif ()
     else ()
       find_package (HDF5) # Legacy find
@@ -299,21 +276,21 @@ macro (HDF5_SUPPORT link_hdf)
         set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_LIBRARIES})
       endif ()
       add_executable (${HDF5_NAMESPACE}h5dump IMPORTED)
-      add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
       set_property (TARGET ${HDF5_NAMESPACE}h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
-      set_property (TARGET ${HDF5_NAMESPACE}h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
+      add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
+      set_property (TARGET ${HDF5_NAMESPACE}h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
       set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
     endif ()
 
     set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
 
     if (HDF5_FOUND)
-      set (H5PL_HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS})
+      set (H5PL_HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
       set (H5PL_HDF5_HAVE_H5PUBCONF_H 1)
       set (H5PL_HDF5_HAVE_HDF5 1)
       set (H5PL_HDF5_HEADER "h5pubconf.h")
-      message (STATUS "HDF5-${HDF5_VERSION_STRING} found: INC=${HDF5_INCLUDE_DIRS} TOOLS=${HDF5_TOOLS_DIR}")
+      message (STATUS "HDF5-${HDF5_VERSION_STRING} found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
     else ()
       message (FATAL_ERROR " HDF5 is Required for plugin library")
     endif ()
