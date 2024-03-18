@@ -50,10 +50,10 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-win_vs2022_cl.zip'
+          file: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
 
       - name: Uncompress gh binary (Win)
-        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win_vs2022_cl.zip
+        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win-vs2022_cl.zip
 
       - name: Uncompress hdf5 binary (Win)
         working-directory: ${{ github.workspace }}/hdf5
