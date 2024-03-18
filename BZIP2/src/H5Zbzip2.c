@@ -91,7 +91,7 @@ static size_t H5Z_filter_bzip2(unsigned int flags, size_t cd_nelmts,
 /*
  * BZIP2 compression was the first external filter registered by PyTables developers
  * with The HDF Group
- * See http://www.hdfgroup.org/services/contributions.html for more information.
+ * See https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html for more information.
  *
  * If you intend your plugin to be used by others, please register your filter
  * with The HDF Group.
@@ -107,7 +107,7 @@ const H5Z_class2_t H5Z_BZIP2[1] = {{
     1,                   /* encoder_present flag (set to true) */
 #endif
     1,              /* decoder_present flag (set to true) */
-    "HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html",
+    "HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html",
                                 /* Filter name for debugging    */
     NULL,                       /* The "can apply" callback     */
     NULL,                       /* The "set local" callback     */

@@ -89,7 +89,7 @@ const H5Z_class2_t blosc_H5Filter[1] = {{
     1,                   /* encoder_present flag (set to true) */
 #endif
     1,                   /* decoder_present flag (set to true) */
-    "HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html", /* Filter name for debugging */
+    "HDF5 blosc filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html", /* Filter name for debugging */
     NULL,                           /* The "can apply" callback */
     (H5Z_set_local_func_t)(blosc_set_local), /* The "set local" callback */
     (H5Z_func_t)(blosc_filter),    /* The actual filter function */
