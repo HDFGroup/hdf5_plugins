@@ -1,6 +1,6 @@
 name: hdf5 plugins ctest runs
 
-# Controls when the action will run. Triggers the workflow on a schedule
+# Controls when the action will run. Triggers the workflow on a call
 on:
   workflow_call:
     inputs:
@@ -129,7 +129,7 @@ jobs:
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
-          cd "${{ runner.workspace }}/hdf5/${{ steps.set-file-base.outputs.SOURCE_BASE }}"
+          cd "${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}"
           cmake --workflow --preset=${{ inputs.preset_name }}-MSVC --fresh
         shell: bash
 
@@ -242,7 +242,7 @@ jobs:
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
-          cd "${{ runner.workspace }}/hdf5/${{ steps.set-file-base.outputs.SOURCE_BASE }}"
+          cd "${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}"
           cmake --workflow --preset=${{ inputs.preset_name }}-GNUC --fresh
         shell: bash
 
@@ -355,7 +355,7 @@ jobs:
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
-          cd "${{ runner.workspace }}/hdf5/${{ steps.set-file-base.outputs.SOURCE_BASE }}"
+          cd "${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}"
           cmake --workflow --preset=${{ inputs.preset_name }}-Clang --fresh
         shell: bash
 
