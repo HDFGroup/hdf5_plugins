@@ -92,7 +92,7 @@ jobs:
       file_base: ${{ needs.create-files-ctest.outputs.file_base }}
       preset_name: ci-StdShar
       use_hdf: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      use_environ: ${{ needs.get-base-names.outputs.run-environ }}
+      use_environ: ${{ inputs.use_environ }}
 
   call-workflow-release:
     needs: [log-the-inputs, create-files-ctest, call-workflow-ctest]
@@ -104,5 +104,5 @@ jobs:
       file_branch: ${{ needs.log-the-inputs.outputs.rel_name }}
       file_sha: ${{ needs.log-the-inputs.outputs.rel_tag }}
       use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      use_environ: ${{ needs.get-base-names.outputs.run-environ }}
+      use_environ: ${{ inputs.use_environ }}
 
