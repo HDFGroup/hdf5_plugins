@@ -255,7 +255,7 @@ jobs:
           cp ${{ runner.workspace }}/hdf5_plugins/hdfsrc/README.md ${{ runner.workspace }}/build/hdf5_plugins
           cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-GNUC/*.tar.gz ${{ runner.workspace }}/build/hdf5_plugins
           cd "${{ runner.workspace }}/build"
-          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-ubuntu-2204.tar.gz hdf5_plugins
+          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.tar.gz hdf5_plugins
         shell: bash
 
       - name: List files in the space (Linux)
