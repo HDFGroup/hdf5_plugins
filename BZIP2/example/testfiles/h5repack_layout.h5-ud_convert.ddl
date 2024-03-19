@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
@@ -54,7 +54,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
@@ -76,7 +76,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
@@ -98,7 +98,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
@@ -120,7 +120,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
@@ -142,7 +142,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 9 }
          }
       }
