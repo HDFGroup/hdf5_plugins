@@ -14,6 +14,11 @@ on:
         type: string
         required: false
         default: hdf5_plugins-snapshot
+      use_environ:
+        description: 'Environment to locate files'
+        type: string
+        required: false
+        default: snapshots
 
 permissions:
   contents: read
@@ -26,6 +31,8 @@ jobs:
     outputs:
       rel_tag: ${{ steps.get-tag-name.outputs.RELEASE_TAG }}
       rel_name: ${{ steps.get-tag-name.outputs.RELEASE_NAME }}
+      run-environ: ${{ steps.get-tag-name.outputs.INPUTS_ENVIRON }}
+
     steps:
     - name: Get tag name
       id: get-tag-name
@@ -35,6 +42,7 @@ jobs:
       run: |
         echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
         echo "RELEASE_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
+        echo "INPUTS_ENVIRON=${{ ((github.event.inputs.use_environ == '' && github.event.inputs.use_environ)  || 'snapshots') }}" >> $GITHUB_OUTPUT
 
   create-files-ctest:
     needs: log-the-inputs
@@ -84,10 +92,10 @@ jobs:
     needs: [log-the-inputs, create-files-ctest]
     uses: ./.github/workflows/cmake-ctest.yml
     with:
-      use_hdf: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      preset_name: ci-StdShar
       file_base: ${{ needs.create-files-ctest.outputs.file_base }}
-      use_environ: release
+      preset_name: ci-StdShar
+      use_hdf: ${{ needs.log-the-inputs.outputs.rel_tag }}
+      use_environ: ${{ needs.log-the-inputs.outputs.run-environ }}
 
   call-workflow-release:
     needs: [log-the-inputs, create-files-ctest, call-workflow-ctest]
@@ -99,5 +107,5 @@ jobs:
       file_branch: ${{ needs.log-the-inputs.outputs.rel_name }}
       file_sha: ${{ needs.log-the-inputs.outputs.rel_tag }}
       use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      use_environ: release
+      use_environ: ${{ needs.log-the-inputs.outputs.run-environ }}
 
