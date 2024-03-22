@@ -85,7 +85,7 @@ const H5Z_class2_t H5Z_LZ4[1] = {{
     1,                   /* encoder_present flag (set to true) */
 #endif
         1,              /* decoder_present flag (set to true) */
-        "HDF5 lz4 filter; see https://portal.hdfgroup.org/documentation/hdf5-docs/registered_filter_plugins.html",
+        "HDF5 lz4 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
         /* Filter name for debugging    */
         NULL,                       /* The "can apply" callback     */
         NULL,                       /* The "set local" callback     */
