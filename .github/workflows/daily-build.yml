@@ -59,7 +59,7 @@ jobs:
     needs: get-base-names
     uses: ./.github/workflows/tarball.yml
     with:
-      use_ignore: ${{ needs.get-base-names.outputs.run-ignore }}
+      #use_ignore: ${{ needs.get-base-names.outputs.run-ignore }}
       use_tag: snapshot
       use_environ: ${{ needs.get-base-names.outputs.run-environ }}
 
