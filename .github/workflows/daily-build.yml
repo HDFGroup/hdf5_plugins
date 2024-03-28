@@ -8,11 +8,6 @@ on:
         type: string
         required: false
         default: check
-      use_environ:
-        description: 'Environment to locate files'
-        type: string
-        required: false
-        default: snapshots
   pull_request:
     branches: [ "master" ]
 
@@ -27,7 +22,6 @@ jobs:
     outputs:
       hdf5-name: ${{ steps.gethdf5base.outputs.HDF5_NAME_BASE }}
       run-ignore: ${{ steps.getinputs.outputs.INPUTS_IGNORE }}
-      run-environ: ${{ steps.getinputs.outputs.INPUTS_ENVIRON }}
 
     steps:
     - uses: actions/checkout@v4.1.1
@@ -49,19 +43,15 @@ jobs:
       id: getinputs
       run: |
         echo "INPUTS_IGNORE=${{ ((github.event.inputs.use_ignore == '' && github.event.inputs.use_ignore)  || 'ignore') }}" >> $GITHUB_OUTPUT
-        echo "INPUTS_ENVIRON=${{ ((github.event.inputs.use_environ == '' && github.event.inputs.use_environ)  || 'snapshots') }}" >> $GITHUB_OUTPUT
 
     - run: echo "use_ignore is ${{ steps.getinputs.outputs.INPUTS_IGNORE }}."
-
-    - run: echo "use_environ is ${{ steps.getinputs.outputs.INPUTS_ENVIRON }}."
 
   call-workflow-tarball:
     needs: get-base-names
     uses: ./.github/workflows/tarball.yml
     with:
-      #use_ignore: ${{ needs.get-base-names.outputs.run-ignore }}
       use_tag: snapshot
-      use_environ: ${{ needs.get-base-names.outputs.run-environ }}
+      use_environ: snapshots
 
   call-workflow-ctest:
     needs: [get-base-names, call-workflow-tarball]
@@ -71,8 +61,8 @@ jobs:
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.get-base-names.outputs.hdf5-name }}
       use_tag: snapshot
-      use_environ: ${{ needs.get-base-names.outputs.run-environ }}
-    if: ${{ ((needs.get-base-names.outputs.run-environ == 'snapshots') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore'))) || (needs.get-base-names.outputs.run-environ  == 'release') }}
+      use_environ: snapshots
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-release:
     needs: [get-base-names, call-workflow-tarball, call-workflow-ctest]
@@ -84,6 +74,6 @@ jobs:
       file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
       file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
       use_tag: snapshot
-      use_environ: ${{ needs.get-base-names.outputs.run-environ }}
-    if: ${{ ((needs.get-base-names.outputs.run-environ == 'snapshots') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore'))) || (needs.get-base-names.outputs.run-environ  == 'release') }}
+      use_environ: snapshots
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
 

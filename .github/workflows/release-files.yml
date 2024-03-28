@@ -116,7 +116,6 @@ jobs:
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.zip >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
 
       - name: Store snapshot name
-        if: ${{ (inputs.use_environ == 'snapshots') }}
         run: |
           echo "${{ steps.get-file-base.outputs.FILE_BASE }}" > ./last-file.txt
 
@@ -150,7 +149,7 @@ jobs:
               ${{ steps.get-file-base.outputs.FILE_BASE }}-osx12.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.zip
-              sha256sums.txt
+              ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
       - name: List files for the space (Linux)

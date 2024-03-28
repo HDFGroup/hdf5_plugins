@@ -8,6 +8,11 @@ on:
         description: "The hdf5 base name of the binaries"
         required: true
         type: string
+      snap_name:
+        description: 'The name in the source tarballs'
+        type: string
+        required: false
+        default: hdfsrc
       file_base:
         description: "The common base name of the source tarballs"
         required: true
