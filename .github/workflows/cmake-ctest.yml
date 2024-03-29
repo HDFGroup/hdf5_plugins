@@ -8,6 +8,11 @@ on:
         description: "The hdf5 base name of the binaries"
         required: true
         type: string
+      snap_name:
+        description: 'The name in the source tarballs'
+        type: string
+        required: false
+        default: hdfsrc
       file_base:
         description: "The common base name of the source tarballs"
         required: true
@@ -38,7 +43,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1.12.1
+        uses: ilammy/msvc-dev-cmd@v1.13.0
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'snapshots') }}
@@ -94,11 +99,11 @@ jobs:
         run: |
           FILE_NAME_BASE=$(echo "${{ inputs.file_base }}")
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
-          if [[ '${{ inputs.use_environ }}' == 'snapshots' ]]
+          if [[ '${{ inputs.use_environ }}' == 'release' ]]
           then
-            SOURCE_NAME_BASE=$(echo "hdfsrc")
+            SOURCE_NAME_BASE=$(echo "${{ inputs.snap_name }}")
           else
-            SOURCE_NAME_BASE=$(echo "$FILE_NAME_BASE")
+            SOURCE_NAME_BASE=$(echo "hdfsrc")
           fi
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
         shell: bash
@@ -215,11 +220,11 @@ jobs:
         run: |
           FILE_NAME_BASE=$(echo "${{ inputs.file_base }}")
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
-          if [[ '${{ inputs.use_environ }}' == 'snapshots' ]]
+          if [[ '${{ inputs.use_environ }}' == 'release' ]]
           then
-            SOURCE_NAME_BASE=$(echo "hdfsrc")
+            SOURCE_NAME_BASE=$(echo "${{ inputs.snap_name }}")
           else
-            SOURCE_NAME_BASE=$(echo "$FILE_NAME_BASE")
+            SOURCE_NAME_BASE=$(echo "hdfsrc")
           fi
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
 
@@ -275,7 +280,7 @@ jobs:
   # MacOS w/ Clang + CMake
   #
     name: "MacOS Clang CMake"
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
       - name: Install Dependencies (MacOS)
         run: brew install ninja doxygen
@@ -327,11 +332,11 @@ jobs:
         run: |
           FILE_NAME_BASE=$(echo "${{ inputs.file_base }}")
           echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
-          if [[ '${{ inputs.use_environ }}' == 'snapshots' ]]
+          if [[ '${{ inputs.use_environ }}' == 'release' ]]
           then
-            SOURCE_NAME_BASE=$(echo "hdfsrc")
+            SOURCE_NAME_BASE=$(echo "${{ inputs.snap_name }}")
           else
-            SOURCE_NAME_BASE=$(echo "$FILE_NAME_BASE")
+            SOURCE_NAME_BASE=$(echo "hdfsrc")
           fi
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
 
