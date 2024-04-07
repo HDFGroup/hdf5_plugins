@@ -21,43 +21,42 @@ List of Filters Registered with The HDF Group
 ---------------------------------------------
 |Filter  |Identifier Name |Short Description|
 |--------|----------------|---------------------|
-|305 |LZO |LZO lossless compression used by PyTables|
-|307 |BZIP2   |BZIP2 lossless compression used by PyTables|
-|32000   |LZF |LZF lossless compression used by H5Py project|
-|32001   |BLOSC   |Blosc lossless compression used by PyTables|
-|32002   |MAFISC  |Modified LZMA compression filter, MAFISC (Multidimensional Adaptive Filtering Improved Scientific data Compression)|
-|32003   |Snappy  |Snappy lossless compression|
-|32004   |LZ4 |LZ4 fast lossless compression algorithm|
-|32005   |APAX    |Samplify’s APAX Numerical Encoding Technology|
-|32006   |CBF |All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset|
-|32007   |JPEG-XR |Enables images to be compressed/decompressed with JPEG-XR compression|
-|32008   |bitshuffle  |Extreme version of shuffle filter that shuffles data at bit level instead of byte level|
-|32009   |SPDP    |SPDP fast lossless compression algorithm for single- and double-precision floating-point data|
-|32010   |LPC-Rice    |LPC-Rice multi-threaded lossless compression|
-|32011   |CCSDS-123   |ESA CCSDS-123 multi-threaded compression filter|
-|32012   |JPEG-LS |CharLS JPEG-LS multi-threaded compression filter|
-|32013   |zfp |Lossy & lossless compression of floating point and integer datasets to meet rate, accuracy, and/or precision targets.|
-|32014   |fpzip   |Fast and Efficient Lossy or Lossless Compressor for Floating-Point Data|
-|32015   |Zstandard   |Real-time compression algorithm with wide range of compression / speed trade-off and fast decoder|
-|32016   |B³D |GPU based image compression method developed for light-microscopy applications|
-|32017   |SZ  |An error-bounded lossy compressor for scientific floating-point data|
-|32018   |FCIDECOMP   |EUMETSAT CharLS compression filter for use with netCDF|
-|32019   |JPEG    |Jpeg compression filter|
-|32020   |VBZ |Compression filter for raw dna signal data used by Oxford Nanopore|
-|32021   |FAPEC  | Versatile and efficient data compressor supporting many kinds of data and using an outlier-resilient entropy coder|
-|32022   |BitGroom    |The BitGroom quantization algorithm|
-|32023   |Granular |BitRound (GBR) The GBG quantization algorithm is a significant improvement to the BitGroom filter|
-|32024   |SZ3 |A modular error-bounded lossy compression framework for scientific datasets|
-|32025   |Delta-Rice  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
-|32026   |BLOSC   |The recent new-generation version of the Blosc compression library|
-|32027   |FLAC    |FLAC audio compression filter in HDF5|
-|32028   |H5Z-SPERR    |HDF5 compression filter|
+|305     |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
+|307     |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
+|32000   |<a href="#lzf">LZF</a> |LZF lossless compression used by H5Py project|
+|32001   |<a href="#blosc">BLOSC</a>   |Blosc lossless compression used by PyTables|
+|32002   |<a href="#mafisc">MAFISC</a>  |Modified LZMA compression filter, MAFISC (Multidimensional Adaptive Filtering Improved Scientific data Compression)|
+|32003   |<a href="#snappy">Snappy</a>  |Snappy lossless compression|
+|32004   |<a href="#lz4">LZ4</a> |LZ4 fast lossless compression algorithm|
+|32005   |<a href="#apax">APAX</a>    |Samplify’s APAX Numerical Encoding Technology|
+|32006   |<a href="#cbf">CBF</a> |All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset|
+|32007   |<a href="#jpeg-xr">JPEG-XR</a> |Enables images to be compressed/decompressed with JPEG-XR compression|
+|32008   |<a href="#bitshuffle">bitshuffle</a>  |Extreme version of shuffle filter that shuffles data at bit level instead of byte level|
+|32009   |<a href="#spdp">SPDP</a>    |SPDP fast lossless compression algorithm for single- and double-precision floating-point data|
+|32010   |<a href="#lpc-rice">LPC-Rice</a>    |LPC-Rice multi-threaded lossless compression|
+|32011   |<a href="#ccsds-123">CCSDS-123</a>   |ESA CCSDS-123 multi-threaded compression filter|
+|32012   |<a href="#jpeg-ls">JPEG-LS</a> |CharLS JPEG-LS multi-threaded compression filter|
+|32013   |<a href="#zfp">zfp</a> |Lossy & lossless compression of floating point and integer datasets to meet rate, accuracy, and/or precision targets.|
+|32014   |<a href="#fpzip">fpzip</a>   |Fast and Efficient Lossy or Lossless Compressor for Floating-Point Data|
+|32015   |<a href="#zstandard">Zstandard</a>   |Real-time compression algorithm with wide range of compression / speed trade-off and fast decoder|
+|32016   |<a href="#b³d">B³D</a> |GPU based image compression method developed for light-microscopy applications|
+|32017   |<a href="#sz">SZ</a>  |An error-bounded lossy compressor for scientific floating-point data|
+|32018   |<a href="#fcidecomp">FCIDECOMP</a>   |EUMETSAT CharLS compression filter for use with netCDF|
+|32019   |<a href="#jpeg">JPEG</a>    |Jpeg compression filter|
+|32020   |<a href="#vbz">VBZ</a> |Compression filter for raw dna signal data used by Oxford Nanopore|
+|32021   |<a href="#fapec">FAPEC</a>  | Versatile and efficient data compressor supporting many kinds of data and using an outlier-resilient entropy coder|
+|32022   |<a href="#bitgroom">BitGroom</a>    |The BitGroom quantization algorithm|
+|32023   |<a href="#gbr">Granular</a> |BitRound (GBR) The GBG quantization algorithm is a significant improvement to the BitGroom filter|
+|32024   |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
+|32025   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
+|32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
+|32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
+|32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |HDF5 compression filter|
 
 
 ## <center>The Filters</center>
 
-
-### LZO Filter
+<h2 id="lzo">LZO Filter</h2>
 
 #### Filter ID: 305
 
@@ -79,7 +78,7 @@ Email: faltet at pytables dot org
 
 ##
 
-### BZIP2 Filter
+<h2 id="bzip2">BZIP2 Filter</h2>
 
 #### Filter ID: 307
 
@@ -96,7 +95,7 @@ Email: faltet at pytables dot org
 
 ##
 
-### LZF Filter
+<h2 id="lzf">LZF Filter</h2>
 
 #### Filter ID: 32000
 
@@ -114,6 +113,7 @@ The LZF filter was developed as part of the h5py project, which implements a gen
 #### Filter Information:
 
 The h5py homepage: http://h5py.org
+
 The LZF library homepage: http://home.schmorp.de/marc/liblzf.html
 
 #### Contact Information:
@@ -123,7 +123,7 @@ Web: http://h5py.org
 
 ##
 
-### Blosc Filter
+<h2 id="blosc">Blosc Filter</h2>
 
 #### Filter ID: 32001
 
@@ -144,7 +144,7 @@ Email: faltet at pytables dot org
 
 ##
 
-### MAFISC Filter
+<h2 id="mafisc">MAFISC Filter</h2>
 
 #### Filter ID: 32002
 
@@ -164,7 +164,7 @@ Email: nathanael.huebbe at informatik dot uni-hamburg dot de
 
 ##
 
-### Snappy Filter
+<h2 id="snappy">Snappy Filter</h2>
 
 #### Filter ID: 32003
 
@@ -183,7 +183,7 @@ Email: lucasvr at gmail dot com
 
 ##
 
-### LZ4 Filter
+<h2 id="lz4">LZ4 Filter</h2>
 
 #### Filter ID: 32004
 
@@ -206,7 +206,7 @@ Email: michael dot rissi at dectris dot com
 
 ##
 
-### APAX
+<h2 id="apax">APAX</h2>
 
 #### Filter ID: 32005
 
@@ -214,7 +214,7 @@ Appears to be no longer available
 
 ##
 
-### CBF
+<h2 id="cbf">CBF</h2>
 
 #### Filter ID: 32006
 
@@ -229,7 +229,7 @@ Email: yayahjb at gmail dot com
 
 ##
 
-### JPEG-XR
+<h2 id="jpeg-xr">JPEG-XR</h2>
 
 #### Filter ID: 32007
 
@@ -248,7 +248,7 @@ Email: marvin dot albert at gmail dot com
 
 ##
 
-### bitshuffle
+<h2 id="bitshuffle">bitshuffle</h2>
 
 #### Filter ID: 32008
 
@@ -267,7 +267,7 @@ Email: kiyo at physics dot ubc dot ca
 
 ##
 
-### SPDP
+<h2 id="spdp">SPDP</h2>
 
 #### Filter ID: 32009
 
@@ -285,7 +285,7 @@ Email: burtscher at txstate dot edu
 
 ##
 
-### LPC-Rice
+<h2 id="lpc-rice">LPC-Rice</h2>
 
 #### Filter ID: 32010
 
@@ -306,7 +306,7 @@ Email: dswanepoel at gmail dot com
 
 ##
 
-### CCSDS-123
+<h2 id="ccsds-123">CCSDS-123</h2>
 
 #### Filter ID: 32011
 
@@ -327,7 +327,7 @@ Email: dswanepoel at gmail dot com
 
 ##
 
-### JPEG-LS
+<h2 id="jpeg-ls">JPEG-LS</h2>
 
 #### Filter ID: 32012
 
@@ -348,7 +348,7 @@ Email: dswanepoel at gmail dot com
 
 ##
 
-### zfp
+<h2 id="zfp">zfp</h2>
 
 #### Filter ID: 32013
 
@@ -371,7 +371,7 @@ Email: pl at llnl dot gov
 
 ##
 
-### fpzip
+<h2 id="fpzip">fpzip</h2>
 
 #### Filter ID: 32014
 
@@ -389,7 +389,7 @@ Email: pl at llnl dot gov
 
 ##
 
-### Zstandard
+<h2 id="zstandard">Zstandard</h2>
 
 #### Filter ID: 32015
 
@@ -407,7 +407,7 @@ Email: paramon at acdlabs dot ru
 
 ##
 
-### B³D
+<h2 id="b³d">B³D</h2>
 
 #### Filter ID: 32016
 
@@ -418,7 +418,7 @@ B³D is a fast (~1 GB/s), GPU based image compression method, developed for ligh
 
 ##
 
-### SZ
+<h2 id="sz">SZ</h2>
 
 #### Filter ID: 32017
 
@@ -441,7 +441,7 @@ Email: cappello at mcs dot anl dot gov
 
 ##
 
-### FCIDECOMP
+<h2 id="fcidecomp">FCIDECOMP</h2>
 
 #### Filter ID: 32018
 
@@ -450,7 +450,9 @@ FCIDECOMP is a third-party compression filter used at EUMETSAT for the compressi
 
 #### Filter Information:
 
-All software and documentation can be found at this link: ftp://ftp.eumetsat.int/pub/OPS/out/test-data/Test-data-for-External-Users/MTG_FCI_L1c_Compressed-Datasets_and_Decompression-Plugin_April2017/Decompression_Plugin/
+All software and documentation can be found at this link:
+
+ftp://ftp.eumetsat.int/pub/OPS/out/test-data/Test-data-for-External-Users/MTG_FCI_L1c_Compressed-Datasets_and_Decompression-Plugin_April2017/Decompression_Plugin/
 
 #### Contact Information:
 
@@ -459,7 +461,7 @@ Email: daniel dot lee at eumetsat dot int
 
 ##
 
-### JPEG
+<h2 id="jpeg">JPEG</h2>
 
 #### Filter ID: 32019
 
@@ -487,7 +489,7 @@ HDF5 only supports compression for "chunked" datasets; this just means that you 
 
 When calling H5Pset_filter for compression it must be called with cd_nelmts=4 and cd_values as follows:
 
-       cd_values[0] = quality factor (1-100)
+    cd_values[0] = quality factor (1-100)
 
     cd_values[1] = numColumns
 
@@ -503,7 +505,7 @@ Mark Rivers , University of Chicago (rivers at cars.uchicago.edu)
 
 ##
 
-### VBZ
+<h2 id="vbz">VBZ</h2>
 
 #### Filter ID: 32020
 
@@ -520,7 +522,7 @@ George Pimm
 
 ##
 
-### FAPEC
+<h2 id="fapec">FAPEC</h2>
 
 #### Filter ID:  32021
 
@@ -548,7 +550,7 @@ fapec at dapcom dot es
 
 ##
 
-### BitGroom
+<h2 id="bitgroom">BitGroom</h2>
 
 #### Filter ID:  32022
 
@@ -568,7 +570,7 @@ Charlie Zender  (University of California, Irvine)
 
 ##
 
-### Granular BitRound (GBR)
+<h2 id="gbr">Granular BitRound (GBR)</h2>
 
 #### Filter ID:  32023
 
@@ -588,7 +590,7 @@ Charlie Zender  (University of California, Irvine)
 
 ##
 
-### SZ3
+<h2 id="sz3">SZ3</h2>
 
 #### Filter ID:  32024
 
@@ -612,7 +614,7 @@ Email: cappello at mcs dot anl dot gov
 
 ##
 
-### Delta-Rice
+<h2 id="delta-rice">Delta-Rice</h2>
 
 #### Filter ID:  32025
 
@@ -631,7 +633,7 @@ Email: david dot mathews dot 1994 at gmail dot com
 
 ##
 
-### Blosc2 Filter
+<h2 id="blosc2">Blosc2 Filter</h2>
 
 #### Filter ID: 32026
 
@@ -644,7 +646,9 @@ C-Blosc2 is the new major version of C-Blosc, and tries hard to be backward comp
 #### Filter Information:
 
 Blosc project: https://www.blosc.org
+
 C-Blosc2 docs: https://www.blosc.org/c-blosc2/c-blosc2.html
+
 License: https://github.com/Blosc/c-blosc2/blob/main/LICENSE.txt
 
 #### Contact Information:
@@ -654,7 +658,7 @@ Email: faltet at gmail dot org (BDFL for the Blosc project)
 
 ##
 
-### FLAC Filter
+<h2 id="flac">FLAC Filter</h2>
 
 #### Filter ID: 32027
 
@@ -665,6 +669,7 @@ FLAC is an audio compression filter in HDF5. (Our ultimate goal is to use it via
 #### Filter Information:
 
 The FLAC filter is open source: https://github.com/xiph/flac
+
 libFLAC has BSD-like license: https://github.com/xiph/flac/blob/master/CONTRIBUTING.md
 
 #### Contact Information:
@@ -674,7 +679,7 @@ Email: lastephey at lbl dot gov
 
 ##
 
-### H5Z-SPERR Filter
+<h2 id="h5z-sperr">H5Z-SPERR Filter</h2>
 
 #### Filter ID: 32028
 
