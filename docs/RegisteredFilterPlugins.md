@@ -51,7 +51,7 @@ List of Filters Registered with The HDF Group
 |32025   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
 |32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
-|32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |HDF5 compression filter|
+|32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
 
 
 ## <center>The Filters</center>
@@ -685,10 +685,11 @@ Email: lastephey at lbl dot gov
 
 #### Filter Description:
 
-
+SPERR is a wavelet-based lossy compressor for floating-point scientific data; it achieves one of the best compression ratios given a user-prescribed error tolerance (i.e., maximum point-wise error). SPERR also supports two distinctive decoding modes, namely "flexible-rate decoding" and "multi-resolution decoding," that facilitate data analysis with various constraints. More details are available on SPERR Github repository: https://github.com/NCAR/SPERR.
 
 #### Filter Information:
-https://github.com/NCAR/H5Z-SPERR
+
+H5Z-SPERR is the HDF5 filter for SPERR. It's also available on Github: https://github.com/NCAR/H5Z-SPERR
 
 #### Contact Information:
 Samuel Li
