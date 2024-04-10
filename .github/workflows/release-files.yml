@@ -122,7 +122,7 @@ jobs:
       - name: PreRelease tag
         id: create_prerelease
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
+        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564 # v2.0.4
         with:
           tag_name: "${{ inputs.use_tag }}"
           prerelease: true
@@ -139,7 +139,7 @@ jobs:
       - name: Release tag
         id: create_release
         if: ${{ (inputs.use_environ == 'release') }}
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
+        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564 # v2.0.4
         with:
           tag_name: "${{ inputs.use_tag }}"
           prerelease: false
