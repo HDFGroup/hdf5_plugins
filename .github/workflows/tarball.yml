@@ -119,6 +119,7 @@ jobs:
               ls -l ${{ github.workspace }}
               ls $GITHUB_WORKSPACE
 
+
       - name: Create source file (tgz and zip)
         id: create-files
         run: |
@@ -130,8 +131,8 @@ jobs:
         id: ren-basename
         if: ${{ (inputs.use_environ == 'release') && (inputs.use_tag  == 'snapshot') }}
         run: |
-          mv hdf5_plugins-${{ steps.version.outputs.SOURCE_TAG }}.tar.gz ${{ inputs.use_tag }}.tar.gz
-          mv hdf5_plugins-${{ steps.version.outputs.SOURCE_TAG }}.zip ${{ inputs.use_tag }}.zip
+          mv ${{ steps.set-file-base.outputs.FILE_BASE }}.tar.gz ${{ inputs.use_tag }}.tar.gz
+          mv ${{ steps.set-file-base.outputs.FILE_BASE }}.zip ${{ inputs.use_tag }}.zip
         shell: bash
 
       - name: List files in the repository
