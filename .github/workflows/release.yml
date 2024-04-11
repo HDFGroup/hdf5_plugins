@@ -1,24 +1,18 @@
-name: hdf5 plugins release build
+name: hdf5 1.14 plugins release build
 
-# Controls when the action will run. Triggers the workflow on a manual run
 on:
   workflow_dispatch:
     inputs:
-      use_tag:
+      hdf_tag:
         description: 'Release hdf5 version tag'
         type: string
         required: false
-        default: snapshot
-      use_name:
-        description: 'Plugin Release Name'
+        default: snapshot-1.14
+      use_tag:
+        description: 'Release version tag'
         type: string
         required: false
-        default: hdf5_plugins-snapshot
-      use_environ:
-        description: 'Environment to locate files'
-        type: string
-        required: false
-        default: snapshots
+        default: snapshot-1.14
 
 permissions:
   contents: read
@@ -29,83 +23,44 @@ jobs:
   log-the-inputs:
     runs-on: ubuntu-latest
     outputs:
+      hdf_tag: ${{ steps.get-tag-name.outputs.HDF_TAG }}
       rel_tag: ${{ steps.get-tag-name.outputs.RELEASE_TAG }}
-      rel_name: ${{ steps.get-tag-name.outputs.RELEASE_NAME }}
-      run-environ: ${{ steps.get-tag-name.outputs.INPUTS_ENVIRON }}
-
     steps:
     - name: Get tag name
       id: get-tag-name
       env:
+        HDFTAG: ${{ inputs.hdf_tag }}
         TAG: ${{ inputs.use_tag }}
-        TAG_NAME: ${{ inputs.use_name }}
       run: |
+        echo "HDF_TAG=$HDFTAG" >> $GITHUB_OUTPUT
         echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
-        echo "RELEASE_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
-        echo "INPUTS_ENVIRON=${{ ((github.event.inputs.use_environ == '' && github.event.inputs.use_environ)  || 'snapshots') }}" >> $GITHUB_OUTPUT
 
-  create-files-ctest:
+  call-workflow-tarball:
     needs: log-the-inputs
-    runs-on: ubuntu-latest
-    outputs:
-      file_base: ${{ steps.set-file-base.outputs.FILE_BASE }}
-    steps:
-      - name: Set file base name
-        id: set-file-base
-        run: |
-          FILE_NAME_BASE=$(echo "${{ needs.log-the-inputs.outputs.rel_name }}")
-          echo "FILE_BASE=$FILE_NAME_BASE" >> $GITHUB_OUTPUT
-        shell: bash
-
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Get Sources
-        uses: actions/checkout@v3
-        with:
-          path: hdfsrc
-
-      - name: Zip Folder
-        run: |
-              zip -r ${{ steps.set-file-base.outputs.FILE_BASE }}.zip ./hdfsrc
-              tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}.tar.gz ./hdfsrc
-
-      - name: List files in the repository
-        run: |
-              ls -l ${{ github.workspace }}
-              ls $GITHUB_WORKSPACE
-
-      # Save files created by release script
-      - name: Save tgz-tarball
-        uses: actions/upload-artifact@v4
-        with:
-              name: tgz-tarball
-              path: ${{ steps.set-file-base.outputs.FILE_BASE }}.tar.gz
-              if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
-
-      - name: Save zip-tarball
-        uses: actions/upload-artifact@v4
-        with:
-              name: zip-tarball
-              path: ${{ steps.set-file-base.outputs.FILE_BASE }}.zip
-              if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+    uses: ./.github/workflows/tarball.yml
+    with:
+      use_tag: 1.14.4
+      use_environ: release
 
   call-workflow-ctest:
-    needs: [log-the-inputs, create-files-ctest]
+    needs: [log-the-inputs, call-workflow-tarball]
     uses: ./.github/workflows/cmake-ctest.yml
     with:
-      file_base: ${{ needs.create-files-ctest.outputs.file_base }}
       preset_name: ci-StdShar
-      use_hdf: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      use_environ: ${{ needs.log-the-inputs.outputs.run-environ }}
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      use_hdf: ${{ needs.log-the-inputs.outputs.hdf_tag }}
+      snap_name: hdf5_plugins-${{ needs.call-workflow-tarball.outputs.source_base }}
+      use_environ: release
 
   call-workflow-release:
-    needs: [log-the-inputs, create-files-ctest, call-workflow-ctest]
+    needs: [log-the-inputs, call-workflow-tarball, call-workflow-ctest]
     permissions:
       contents: write # In order to allow tag creation
     uses: ./.github/workflows/release-files.yml
     with:
-      file_base: ${{ needs.create-files-ctest.outputs.file_base }}
-      file_branch: ${{ needs.log-the-inputs.outputs.rel_name }}
-      file_sha: ${{ needs.log-the-inputs.outputs.rel_tag }}
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
+      file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
       use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      use_environ: ${{ needs.log-the-inputs.outputs.run-environ }}
+      use_environ: release
 
