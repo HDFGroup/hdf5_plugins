@@ -1,4 +1,4 @@
-name: hdf5 plugins release build
+name: hdf5 1.14 plugins release build
 
 on:
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
     needs: log-the-inputs
     uses: ./.github/workflows/tarball.yml
     with:
-      use_tag: master
+      use_tag: 1.14.4
       use_environ: release
 
   call-workflow-ctest:

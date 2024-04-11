@@ -9,7 +9,7 @@ on:
         required: false
         default: check
   pull_request:
-    branches: [ "1_14" ]
+    branches: [ "release/1_14_4" ]
 
 permissions:
   contents: read
