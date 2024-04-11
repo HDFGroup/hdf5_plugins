@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5ZFP_INCLUDE_DIRS ${H5ZFP_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS}
     ${H5ZFP_SRC_SOURCE_DIR}
     ${H5ZFP_BINARY_DIR}
     ${ZFP_INCLUDE_DIRS}
@@ -47,7 +47,7 @@ if (DISABLE_H5ZFP_ENCODER)
   set_target_properties(${H5ZFP_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()
 target_include_directories(${H5ZFP_LIB_TARGET} PRIVATE ${H5ZFP_INCLUDE_DIRS})
-target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 if (WIN32)
   target_link_libraries (${H5ZFP_LIB_TARGET} PRIVATE "ws2_32.lib")
 endif ()

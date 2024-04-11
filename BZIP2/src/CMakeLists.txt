@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5BZ2_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5BZ2_INCLUDE_DIRS ${H5BZ2_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5BZ2_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5BZ2_BINARY_DIR}
     ${H5BZ2_SRC_SOURCE_DIR}
     ${BZ2_INCLUDE_DIRS}
 )
@@ -38,7 +38,7 @@ if (DISABLE_H5BZ2_ENCODER)
   set_target_properties(${H5BZ2_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()
 target_include_directories(${H5BZ2_LIB_TARGET} PRIVATE ${H5BZ2_INCLUDE_DIRS})
-target_link_libraries (${H5BZ2_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5BZ2_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5BZ2_LIBRARIES_TO_EXPORT ${H5BZ2_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5BZ2" ${H5BZ2_LIB_TARGET} ${H5BZ2_LIB_NAME} MODULE)
 

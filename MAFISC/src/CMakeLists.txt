@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5MAFISC_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5MAFISC_INCLUDE_DIRS ${H5MAFISC_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS}
     ${H5MAFISC_SRC_SOURCE_DIR}
     ${H5MAFISC_SRC_LIBLZMA_DIR}/api
     ${H5MAFISC_BINARY_DIR}
@@ -56,7 +56,7 @@ if (DISABLE_H5MAFISC_ENCODER)
   set_target_properties(${H5MAFISC_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()
 target_include_directories(${H5MAFISC_LIB_TARGET} PRIVATE ${H5MAFISC_INCLUDE_DIRS})
-target_link_libraries (${H5MAFISC_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5MAFISC_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 if (WIN32)
   target_link_libraries (${H5MAFISC_LIB_TARGET} PRIVATE "ws2_32.lib")
 endif ()

@@ -9,8 +9,24 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5MAFISC C)
+
+if (POLICY CMP0074)
+  # find_package() uses <PackageName>_ROOT variables.
+  cmake_policy (SET CMP0074 NEW)
+endif ()
+
+if (POLICY CMP0083)
+  # To control generation of Position Independent Executable (PIE) or not,
+  # some flags are required at link time.
+  cmake_policy (SET CMP0083 NEW)
+endif ()
+
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
 
 #-----------------------------------------------------------------------------
 # Basic H5MAFISC stuff here
@@ -64,7 +80,7 @@ set (H5MAFISC_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5MAFISC_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5MAFISC_PACKAGE_SOVERSION "${H5MAFISC_SOVERS_MAJOR}.${H5MAFISC_SOVERS_RELEASE}.${H5MAFISC_SOVERS_MINOR}")
 set (H5MAFISC_PACKAGE_SOVERSIONMAJOR "${H5MAFISC_SOVERS_MAJOR}")
-message("Configuring for mafisc HDF5 Plugin version: " ${H5MAFISC_PACKAGE_STRING})
+message(STATUS "Configuring for mafisc HDF5 Plugin version: " ${H5MAFISC_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -160,7 +176,7 @@ endif ()
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5MAFISC link libs: ${LINK_LIBS}")
+message (STATUS "H5MAFISC link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the mafisc_config.h file containing user settings needed by compilation
@@ -178,10 +194,10 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
       set (MAFISC_URL ${MAFISC_GIT_URL} CACHE STRING "Path to mafisc git repository")
       set (MAFISC_BRANCH ${MAFISC_GIT_BRANCH})
     elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      if (NOT TGZPATH)
-        set (TGZPATH ${H5MAFISC_SOURCE_DIR})
+      if (NOT H5PL_COMP_TGZPATH)
+        set (H5PL_COMP_TGZPATH ${H5MAFISC_SOURCE_DIR})
       endif ()
-      set (MAFISC_URL ${TGZPATH}/${MAFISC_TGZ_NAME})
+      set (MAFISC_URL ${H5PL_COMP_TGZPATH}/${MAFISC_TGZ_NAME})
     else ()
       set (MAFISC_USE_EXTERNAL 0)
     endif ()
@@ -206,7 +222,7 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
     set (H5MAFISC_INCLUDE_DIRS ${MAFISC_INCLUDE_DIR})
   else ()
     if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      EXTERNAL_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
       set (H5MAFISC_HAVE_MAFISC_H 1)
       set (H5MAFISC_HAVE_MAFISC 1)
       message (STATUS "Filter MAFISC is built")
@@ -215,11 +231,7 @@ if (NOT BUILD_MAFISC_LIBRARY_SOURCE)
     endif ()
   endif ()
   message (STATUS "mafisc found: INC=${MAFISC_INCLUDE_DIR} TOOLS=${MAFISC_LIBRARIES}")
-  set (LINK_LIBS ${LINK_LIBS} ${MAFISC_LIBRARIES})
-
-  if (MAFISC_FOUND)
-    PACKAGE_MAFISC_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-  endif ()
+  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${MAFISC_LIBRARIES})
 endif ()
 
 #-----------------------------------------------------------------------------
@@ -236,12 +248,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (MAFISC_FOUND AND MAFISC_USE_EXTERNAL)
-    add_dependencies (${H5MAFISC_LIB_TARGET} MAFISC)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5mafisc Examples" OFF)
 if (BUILD_EXAMPLES)

@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5ZSTD_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,11 +21,10 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5ZSTD_INCLUDE_DIRS ${H5ZSTD_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5ZSTD_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5ZSTD_BINARY_DIR}
     ${H5ZSTD_SRC_SOURCE_DIR}
     ${ZSTD_INCLUDE_DIRS}
 )
-
 #-----------------------------------------------------------------------------
 # Define H5ZSTD Library
 #-----------------------------------------------------------------------------
@@ -38,7 +37,7 @@ if (DISABLE_H5ZSTD_ENCODER)
   set_target_properties(${H5ZSTD_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()
 target_include_directories(${H5ZSTD_LIB_TARGET} PRIVATE ${H5ZSTD_INCLUDE_DIRS})
-target_link_libraries (${H5ZSTD_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5ZSTD_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5ZSTD_LIBRARIES_TO_EXPORT ${H5ZSTD_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5ZSTD" ${H5ZSTD_LIB_TARGET} ${H5ZSTD_LIB_NAME} MODULE)
 

@@ -9,6 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
 #-------------------------------------------------------------------------------
 macro (BASIC_SETTINGS varname)
   string (TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
@@ -67,7 +68,7 @@ macro (BASIC_SETTINGS varname)
     if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
       set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${CMAKE_INSTALL_DOCDIR})
     endif ()
-    message(STATUS "GNU: ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}")
+    message(STATUS "GNU: ${${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR}")
   endif ()
 
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_BIN_DIR)
@@ -100,28 +101,12 @@ macro (BASIC_SETTINGS varname)
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
     set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR})
   endif ()
-  message(STATUS "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}")
+  message(STATUS "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR}")
 
   #-----------------------------------------------------------------------------
   # Setup output Directories
   #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables."
-    )
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Libraries"
-    )
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
-    )
-  else ()
-    # if we are externally configured, but the project uses old cmake scripts
-    # this may not be set
-    if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-      set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-    endif ()
-  endif ()
+  SET_HDF_OUTPUT_DIRS(${PLUGIN_PACKAGE_NAME})
 
   #-----------------------------------------------------------------------------
   # Targets built within this project are exported at Install time for use
@@ -145,26 +130,22 @@ macro (BASIC_SETTINGS varname)
   set (LIB_TYPE SHARED)
   add_definitions (-D${PLUGIN_PACKAGE_NAME}_BUILT_AS_DYNAMIC_LIB)
 
+  set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+
   if (MSVC)
     set (CMAKE_MFC_FLAG 0)
-  endif ()
-
-  set (MAKE_SYSTEM)
-  if (CMAKE_BUILD_TOOL MATCHES "make")
-    set (MAKE_SYSTEM 1)
-  endif ()
-
-  set (CFG_INIT "/${CMAKE_CFG_INTDIR}")
-  if (MAKE_SYSTEM)
-    set (CFG_INIT "")
   endif ()
 
   set (CMAKE_C_STANDARD 99)
   set (CMAKE_C_STANDARD_REQUIRED TRUE)
 
-  set (CMAKE_CXX_STANDARD 98)
-  set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
-  set (CMAKE_CXX_EXTENSIONS OFF)
+  if (HDF_BUILD_CPP_LIB)
+    ENABLE_LANGUAGE (CXX)
+
+    set (CMAKE_CXX_STANDARD 98)
+    set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
+    set (CMAKE_CXX_EXTENSIONS OFF)
+  endif ()
 
   #-----------------------------------------------------------------------------
   # Compiler specific flags : Shouldn't there be compiler tests for these
@@ -172,7 +153,7 @@ macro (BASIC_SETTINGS varname)
   if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_C_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_C_FLAGS} -std=c99 -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
-  if (CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
 
@@ -183,11 +164,11 @@ macro (BASIC_SETTINGS varname)
   if (CMAKE_COMPILER_IS_GNUCC)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
   endif ()
-  if (CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
   endif ()
 
-  option (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER "build the ${PLUGIN_NAME} library without encoding" OFF)
+  option (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER "build the ${PLUGIN_NAME} library without encoding" ${DISABLE_H5PL_ENCODER})
   if (DISABLE_${PLUGIN_PACKAGE_NAME}_ENCODER)
     set (FILTER_DECODE_ONLY 1)
   endif ()
@@ -206,7 +187,7 @@ macro (HDF5_SUPPORT link_hdf)
   # plugins must use SHARED libraries
   option (USE_SHARED_LIBS "Use Shared Libraries" ON)
 
-  if (NOT HDF5_HDF5_HEADER)
+  if (NOT H5PL_HDF5_HEADER)
     if (USE_SHARED_LIBS)
       set (FIND_HDF_COMPONENTS C shared)
     else ()
@@ -218,26 +199,6 @@ macro (HDF5_SUPPORT link_hdf)
     find_package (HDF5 NAMES ${SEARCH_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
     message (STATUS "HDF5 C libs:${HDF5_FOUND} static:${HDF5_static_C_FOUND} and shared:${HDF5_shared_C_FOUND}")
     if (HDF5_FOUND)
-      if (USE_SHARED_LIBS)
-        if (NOT TARGET ${HDF5_NAMESPACE}h5dump-shared)
-          add_executable (${HDF5_NAMESPACE}h5dump-shared IMPORTED)
-        endif ()
-        if (NOT TARGET ${HDF5_NAMESPACE}h5repack-shared)
-          add_executable (${HDF5_NAMESPACE}h5repack-shared IMPORTED)
-        endif ()
-        set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump-shared>)
-        set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack-shared>)
-      else ()
-        if (NOT TARGET ${HDF5_NAMESPACE}h5dump)
-          add_executable (${HDF5_NAMESPACE}h5dump IMPORTED)
-        endif()
-        if (NOT TARGET ${HDF5_NAMESPACE}h5repack)
-          add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
-        endif()
-        set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
-        set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
-      endif()
-
       if (NOT HDF5_static_C_FOUND AND NOT HDF5_shared_C_FOUND)
         #find library from non-dual-binary package
         set (FIND_HDF_COMPONENTS C)
@@ -245,10 +206,10 @@ macro (HDF5_SUPPORT link_hdf)
 
         find_package (HDF5 NAMES ${SEARCH_PACKAGE_NAME} COMPONENTS ${FIND_HDF_COMPONENTS})
         message (STATUS "HDF5 libs:${HDF5_FOUND} C:${HDF5_C_FOUND}")
-        set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+        set (H5PL_HDF5_LINK_LIBS ${H5PL_HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
         if (${link_hdf})
           #plugin source needs to be linked with HDF5
-          set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
+          set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_LIBRARIES})
           if (HDF5_BUILD_SHARED_LIBS)
             add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
           else ()
@@ -262,27 +223,42 @@ macro (HDF5_SUPPORT link_hdf)
           set_property (TARGET ${HDF5_NAMESPACE}h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
           set_property (TARGET ${HDF5_NAMESPACE}h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
         endif ()
-        set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
-        set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
+        set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
+        set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
       else ()
         if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
-          set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+          set (H5PL_HDF5_LINK_LIBS ${H5PL_HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
           set (HDF5_LIBRARY_PATH ${PACKAGE_PREFIX_DIR}/lib)
           if (${link_hdf})
             #plugin source needs to be linked with HDF5
-            set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
+            set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
           endif ()
-          set_property (TARGET ${HDF5_NAMESPACE}h5dump-shared PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump-shared")
-          set_property (TARGET ${HDF5_NAMESPACE}h5repack-shared PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack-shared")
         else ()
-          set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
+          set (H5PL_HDF5_LINK_LIBS ${H5PL_HDF5_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
           if (${link_hdf})
             #plugin source needs to be linked with HDF5
-            set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
+            set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_C_STATIC_LIBRARY})
           endif ()
-          set_property (TARGET ${HDF5_NAMESPACE}h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
-          set_property (TARGET ${HDF5_NAMESPACE}h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
         endif ()
+        if (HDF5_VERSION VERSION_LESS "1.14.4" AND NOT HDF5_shared_C_FOUND)
+          if (NOT TARGET ${HDF5_NAMESPACE}h5dump-shared)
+            add_executable (${HDF5_NAMESPACE}h5dump-shared IMPORTED)
+          endif ()
+          if (NOT TARGET ${HDF5_NAMESPACE}h5repack-shared)
+            add_executable (${HDF5_NAMESPACE}h5repack-shared IMPORTED)
+          endif ()
+          set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump-shared>)
+          set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack-shared>)
+        else ()
+          if (NOT TARGET ${HDF5_NAMESPACE}h5dump)
+            add_executable (${HDF5_NAMESPACE}h5dump IMPORTED)
+          endif()
+          if (NOT TARGET ${HDF5_NAMESPACE}h5repack)
+            add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
+          endif()
+          set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
+          set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
+        endif()
       endif ()
     else ()
       find_package (HDF5) # Legacy find
@@ -294,262 +270,251 @@ macro (HDF5_SUPPORT link_hdf)
       else ()
         set (HDF5_BUILD_SHARED_LIBS 0)
       endif ()
-      set (HDF5_LINK_LIBS ${HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
+      set (H5PL_HDF5_LINK_LIBS ${H5PL_HDF5_LINK_LIBS} ${HDF5_LIBRARIES})
       if (${link_hdf})
         #plugin source needs to be linked with HDF5
-        set (LINK_LIBS ${LINK_LIBS} ${HDF5_LIBRARIES})
+        set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_LIBRARIES})
       endif ()
       add_executable (${HDF5_NAMESPACE}h5dump IMPORTED)
-      add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
       set_property (TARGET ${HDF5_NAMESPACE}h5dump PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5dump")
+      set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
+      add_executable (${HDF5_NAMESPACE}h5repack IMPORTED)
       set_property (TARGET ${HDF5_NAMESPACE}h5repack PROPERTY IMPORTED_LOCATION "${HDF5_TOOLS_DIR}/h5repack")
-      set (HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
-      set (HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
+      set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
     endif ()
 
     set (HDF5_PACKAGE_NAME ${SEARCH_PACKAGE_NAME})
 
     if (HDF5_FOUND)
-      set (HDF5_HAVE_H5PUBCONF_H 1)
-      set (HDF5_HAVE_HDF5 1)
-      set (HDF5_HDF5_HEADER "h5pubconf.h")
-      set (HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
-      message (STATUS "HDF5 found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
+      set (H5PL_HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
+      set (H5PL_HDF5_HAVE_H5PUBCONF_H 1)
+      set (H5PL_HDF5_HAVE_HDF5 1)
+      set (H5PL_HDF5_HEADER "h5pubconf.h")
+      message (STATUS "HDF5-${HDF5_VERSION_STRING} found: INC=${HDF5_INCLUDE_DIR} TOOLS=${HDF5_TOOLS_DIR}")
     else ()
       message (FATAL_ERROR " HDF5 is Required for plugin library")
     endif ()
   else ()
     # This project is being called from within another and HDF5 is already configured
-    set (HDF5_HAVE_H5PUBCONF_H 1)
-    set (HDF5_HAVE_HDF5 1)
+    set (H5PL_HDF5_HAVE_H5PUBCONF_H 1)
+    set (H5PL_HDF5_HAVE_HDF5 1)
     if (${link_hdf})
       #plugin source needs to be linked with HDF5
-      set (LINK_LIBS ${LINK_LIBS} ${HDF5_LINK_LIBS})
+      set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${H5PL_HDF5_LINK_LIBS})
     endif ()
+    set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
   endif ()
-  set (H5PL_INCLUDE_DIRS ${HDF5_INCLUDE_DIR})
-  message (STATUS "HDF5 link libs: ${HDF5_LINK_LIBS} Includes: ${H5PL_INCLUDE_DIRS}")
-
-  if (USE_SHARED_LIBS)
-    set (H5_LIB_TYPE SHARED)
-  else ()
-    set (H5_LIB_TYPE STATIC)
-  endif ()
+  message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS} Includes: ${H5PL_HDF5_INCLUDE_DIRS}")
 endmacro ()
 
 macro (INSTALL_SUPPORT varname)
   string(TOUPPER ${varname} PLUGIN_PACKAGE_NAME)
   string(TOLOWER ${varname} PLUGIN_NAME)
 
-  #-----------------------------------------------------------------------------
-  # Set variables needed for installation
-  #-----------------------------------------------------------------------------
-  set (${PLUGIN_PACKAGE_NAME}_VERSION_STRING ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION})
-  set (${PLUGIN_PACKAGE_NAME}_VERSION_MAJOR  ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MAJOR})
-  set (${PLUGIN_PACKAGE_NAME}_VERSION_MINOR  ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MINOR})
-
-  #-----------------------------------------------------------------------------
-  # Configure the H5PL_Examples.cmake file and the examples
-  #-----------------------------------------------------------------------------
-  configure_file (
-      ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
-      ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
-  )
-  install (
-      FILES
-          ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
-          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestScript.cmake
-          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFoptions.cmake
-          DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
-      COMPONENT hdfdocuments
-  )
-  execute_process(
-       COMMAND ${CMAKE_COMMAND} -E copy_directory ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/binex ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
-  )
-  install (
-    DIRECTORY ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
-    DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
-    USE_SOURCE_PERMISSIONS
-    COMPONENT hdfdocuments
-  )
-
-  #-----------------------------------------------------------------------------
-  # Configure the README.txt file for the binary package
-  #-----------------------------------------------------------------------------
-  PLUGIN_README_PROPERTIES (${PLUGIN_PACKAGE_NAME})
-
-  #-----------------------------------------------------------------------------
-  # Check for Installation Utilities
-  #-----------------------------------------------------------------------------
-  if (WIN32)
-    set (PF_ENV_EXT "(x86)")
-    find_program (NSIS_EXECUTABLE NSIS.exe PATHS "$ENV{ProgramFiles}\\NSIS" "$ENV{ProgramFiles${PF_ENV_EXT}}\\NSIS")
-    if(NOT CPACK_WIX_ROOT)
-      file(TO_CMAKE_PATH "$ENV{WIX}" CPACK_WIX_ROOT)
-    endif()
-    find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
-  endif ()
-
-  #-----------------------------------------------------------------------------
-  # Set the cpack variables
-  #-----------------------------------------------------------------------------
-  if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
-    set (CPACK_PACKAGE_VENDOR "HDF_Group")
-    set (CPACK_PACKAGE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME}")
-    if (CDASH_LOCAL)
-      set (CPACK_PACKAGE_VERSION "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION}")
-    else ()
-      set (CPACK_PACKAGE_VERSION "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_STRING}")
-    endif ()
-    set (CPACK_PACKAGE_VERSION_MAJOR "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MAJOR}")
-    set (CPACK_PACKAGE_VERSION_MINOR "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MINOR}")
-    set (CPACK_PACKAGE_VERSION_PATCH "")
-    #set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-    set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
-    set (CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
-    set (CPACK_PACKAGE_RELOCATABLE TRUE)
-    set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PLUGIN_NAME} Installation")
-    set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
-
-    set (CPACK_GENERATOR "TGZ")
-    if (WIN32)
-      set (CPACK_GENERATOR "ZIP")
-
-      if (NSIS_EXECUTABLE)
-        list (APPEND CPACK_GENERATOR "NSIS")
-      endif ()
-      # Installers for 32- vs. 64-bit CMake:
-      #  - Root install directory (displayed to end user at installer-run time)
-      #  - "NSIS package/display name" (text used in the installer GUI)
-      #  - Registry key used to store info about the installation
-      set (CPACK_NSIS_PACKAGE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
-      if (CMAKE_CL_64)
-        set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
-        set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
-      else ()
-        set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
-        set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
-      endif ()
-      # set the install/unistall icon used for the installer itself
-      # There is a bug in NSI that does not handle full unix paths properly.
-      #set (CPACK_NSIS_MUI_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
-      #set (CPACK_NSIS_MUI_UNIICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
-      # set the package header icon for MUI
-      #set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.bmp")
-      set (CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_PACKAGE_NAME}, is a dynamic filter for HDF5")
-      #set (CPACK_PACKAGE_INSTALL_DIRECTORY "plugins")
-      set (CPACK_NSIS_CONTACT "${${PLUGIN_PACKAGE_NAME}_PACKAGE_BUGREPORT}")
-      set (CPACK_NSIS_MODIFY_PATH ON)
-
-      if (WIX_EXECUTABLE)
-        list (APPEND CPACK_GENERATOR "WIX")
-      endif ()
-      #WiX variables
-      set (CPACK_WIX_UNINSTALL "1")
-#   .. variable:: CPACK_WIX_LICENSE_RTF
-#    RTF License File
-#
-#    If CPACK_RESOURCE_FILE_LICENSE has an .rtf extension it is used as-is.
-#
-#    If CPACK_RESOURCE_FILE_LICENSE has an .txt extension it is implicitly
-#    converted to RTF by the WiX Generator.
-#    The expected encoding of the .txt file is UTF-8.
-#
-#    With CPACK_WIX_LICENSE_RTF you can override the license file used by the
-#    WiX Generator in case CPACK_RESOURCE_FILE_LICENSE is in an unsupported
-#    format or the .txt -> .rtf conversion does not work as expected.
-      set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.txt")
-#   .. variable:: CPACK_WIX_PRODUCT_ICON
-#    The Icon shown next to the program name in Add/Remove programs.
-#      set (CPACK_WIX_PRODUCT_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
-#
-#    .. variable:: CPACK_WIX_UI_BANNER
-#
-#    The bitmap will appear at the top of all installer pages other than the
-#    welcome and completion dialogs.
-#
-#    If set, this image will replace the default banner image.
-#
-#    This image must be 493 by 58 pixels.
-#
-#   .. variable:: CPACK_WIX_UI_DIALOG
-#
-#    Background bitmap used on the welcome and completion dialogs.
-#
-#    If this variable is set, the installer will replace the default dialog
-#    image.
-#
-#    This image must be 493 by 312 pixels.
-#
-    elseif (APPLE)
-      list (APPEND CPACK_GENERATOR "STGZ")
-      list (APPEND CPACK_GENERATOR "DragNDrop")
-      set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
-      set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-#      set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/h5lzf.gif")
-
-      option (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE  "Package the ${PLUGIN_PACKAGE_NAME} Library in a Bundle" OFF)
-      if (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE)
-        list (APPEND CPACK_GENERATOR "Bundle")
-        set (CPACK_BUNDLE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
-        set (CPACK_BUNDLE_LOCATION "/")    # make sure CMAKE_INSTALL_PREFIX ends in /
-        set (CMAKE_INSTALL_PREFIX "/${CPACK_BUNDLE_NAME}.framework/Versions/${CPACK_PACKAGE_VERSION}/${CPACK_PACKAGE_NAME}/")
-#        set (CPACK_BUNDLE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5LZF.icns")
-#        set (CPACK_BUNDLE_PLIST "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/Info.plist")
-        set (CPACK_APPLE_GUI_INFO_STRING "${PLUGIN_PACKAGE_NAME} Plugin Library")
-        set (CPACK_APPLE_GUI_COPYRIGHT "Copyright © ???. All rights reserved.")
-        set (CPACK_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
-        set (CPACK_APPLE_GUI_BUNDLE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
-        set (CPACK_APPLE_GUI_VERSION_STRING "${CPACK_PACKAGE_VERSION_STRING}")
-        set (CPACK_APPLE_GUI_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
-        #-----------------------------------------------------------------------------
-        # Configure the Info.plist file for the install bundle
-        #-----------------------------------------------------------------------------
-#        configure_file (
-#            ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CPack.Info.plist.in
-#            ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/Info.plist @ONLY
-#        )
-#        configure_file (
-#            ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/PkgInfo.in
-#            ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/PkgInfo @ONLY
-#        )
-#        configure_file (
-#            ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/version.plist.in
-#            ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/version.plist @ONLY
-#        )
-#        install (
-#            FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/PkgInfo
-#                  ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/version.plist
-#            DESTINATION ..
-#        )
-      endif ()
-    else ()
-      list (APPEND CPACK_GENERATOR "STGZ")
-      set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
-      set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
-
-      set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
-      set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${${PLUGIN_PACKAGE_NAME}_PACKAGE_BUGREPORT}")
-
-#        list (APPEND CPACK_GENERATOR "RPM")
-      set (CPACK_RPM_PACKAGE_RELEASE "1")
-      set (CPACK_RPM_COMPONENT_INSTALL ON)
-      set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
-    endif ()
-
-    if (${PLUGIN_PACKAGE_NAME}_CPACK_ENABLE)
-      set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
-    else ()
-      set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};libraries;/")
-      set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};headers;/")
-    endif ()
-
-    set (CPACK_ALL_INSTALL_TYPES Full User)
-    set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
-
-  endif ()
-
   if (${PLUGIN_PACKAGE_NAME}_CPACK_ENABLE)
+    #-----------------------------------------------------------------------------
+    # Set variables needed for installation
+    #-----------------------------------------------------------------------------
+    set (${PLUGIN_PACKAGE_NAME}_VERSION_STRING ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION})
+    set (${PLUGIN_PACKAGE_NAME}_VERSION_MAJOR  ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MAJOR})
+    set (${PLUGIN_PACKAGE_NAME}_VERSION_MINOR  ${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MINOR})
+
+    #-----------------------------------------------------------------------------
+    # Configure the H5PL_Examples.cmake file and the examples
+    #-----------------------------------------------------------------------------
+    if (${PLUGIN_PACKAGE_NAME}_BUILD_TESTING)
+      configure_file (
+          ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
+          ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
+      )
+      install (
+          FILES
+              ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
+              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestScript.cmake
+              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFoptions.cmake
+          DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+          COMPONENT hdfdocuments
+      )
+      execute_process(
+           COMMAND ${CMAKE_COMMAND} -E copy_directory ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/binex ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
+      )
+      install (
+        DIRECTORY ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/HDFPLExamples
+        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
+        USE_SOURCE_PERMISSIONS
+        COMPONENT hdfdocuments
+      )
+    endif ()
+
+    #-----------------------------------------------------------------------------
+    # Configure the README.txt file for the binary package
+    #-----------------------------------------------------------------------------
+    PLUGIN_README_PROPERTIES (${PLUGIN_PACKAGE_NAME})
+
+    #-----------------------------------------------------------------------------
+    # Configure the COPYING.txt file for the windows binary package
+    #-----------------------------------------------------------------------------
+    if (WIN32)
+      configure_file (${CMAKE_SOURCE_DIR}/COPYING ${CMAKE_BINARY_DIR}/COPYING.txt @ONLY)
+    endif ()
+
+    #-----------------------------------------------------------------------------
+    # Add Document File(s) to CMake Install
+    #-----------------------------------------------------------------------------
+    install (
+        FILES
+            ${${PLUGIN_PACKAGE_NAME}_SOURCE_DIR}/docs/PluginLibraries.txt
+        DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR}
+        COMPONENT hdfdocuments
+    )
+
+    #-----------------------------------------------------------------------------
+    # Check for Installation Utilities
+    #-----------------------------------------------------------------------------
+    if (WIN32)
+      set (PF_ENV_EXT "(x86)")
+      find_program (NSIS_EXECUTABLE NSIS.exe PATHS "$ENV{ProgramFiles}\\NSIS" "$ENV{ProgramFiles${PF_ENV_EXT}}\\NSIS")
+      if(NOT CPACK_WIX_ROOT)
+        file(TO_CMAKE_PATH "$ENV{WIX}" CPACK_WIX_ROOT)
+      endif()
+      find_program (WIX_EXECUTABLE candle  PATHS "${CPACK_WIX_ROOT}/bin")
+    endif ()
+
+    if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+      if (CMAKE_HOST_UNIX)
+        set (CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/HDF_Group/${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME}/${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION}"
+            CACHE PATH "Install path prefix, prepended onto install directories." FORCE
+        )
+      else ()
+        GetDefaultWindowsPrefixBase(CMAKE_GENERIC_PROGRAM_FILES)
+        set (CMAKE_INSTALL_PREFIX
+            "${CMAKE_GENERIC_PROGRAM_FILES}/HDF_Group/${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME}/${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION}"
+            CACHE PATH "Install path prefix, prepended onto install directories." FORCE
+        )
+        set (CMAKE_GENERIC_PROGRAM_FILES)
+      endif ()
+    endif ()
+
+    #-----------------------------------------------------------------------------
+    # Set the cpack variables
+    #-----------------------------------------------------------------------------
+    if (NOT ${PLUGIN_PACKAGE_NAME}_EXTERNALLY_CONFIGURED)
+      set (CPACK_PACKAGE_VENDOR "HDF_Group")
+      set (CPACK_PACKAGE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_NAME}")
+      if (NOT WIN32 OR ${PLUGIN_PACKAGE_NAME}_VERS_SUBRELEASE MATCHES "^[0-9]+$")
+        set (CPACK_PACKAGE_VERSION "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_STRING}")
+      else ()
+        set (CPACK_PACKAGE_VERSION "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION}")
+      endif ()
+      set (CPACK_PACKAGE_VERSION_MAJOR "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MAJOR}")
+      set (CPACK_PACKAGE_VERSION_MINOR "${${PLUGIN_PACKAGE_NAME}_PACKAGE_VERSION_MINOR}")
+      set (CPACK_PACKAGE_VERSION_PATCH "")
+      set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
+      set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_BINARY_DIR}/README.txt")
+      set (CPACK_RESOURCE_FILE_README "${CMAKE_BINARY_DIR}/README.txt")
+      set (CPACK_PACKAGE_RELOCATABLE TRUE)
+      set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PLUGIN_NAME} Installation")
+      if (H5PL_OVERRIDE_VERSION)
+        string(TOUPPER ${HDF5_PACKAGE_NAME} PLUGIN_HDF5_PACKAGE_NAME)
+        set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${PLUGIN_HDF5_PACKAGE_NAME}/${H5PL_OVERRIDE_VERSION}")
+      else ()
+        set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
+      endif ()
+
+      set (CPACK_GENERATOR "TGZ")
+      if (WIN32)
+        set (CPACK_GENERATOR "ZIP")
+
+        if (NSIS_EXECUTABLE)
+          list (APPEND CPACK_GENERATOR "NSIS")
+        endif ()
+        set (CPACK_NSIS_PACKAGE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
+        if (CMAKE_CL_64)
+          set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+          set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION} (Win64)")
+        else ()
+          set (CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+          set (CPACK_PACKAGE_INSTALL_REGISTRY_KEY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
+        endif ()
+        # set the install/unistall icon used for the installer itself
+        # There is a bug in NSI that does not handle full unix paths properly.
+        #set (CPACK_NSIS_MUI_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
+        #set (CPACK_NSIS_MUI_UNIICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
+        # set the package header icon for MUI
+        #set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.bmp")
+        set (CPACK_NSIS_DISPLAY_NAME "${CPACK_NSIS_PACKAGE_NAME}, is a dynamic filter for HDF5")
+        #set (CPACK_PACKAGE_INSTALL_DIRECTORY "plugins")
+        set (CPACK_NSIS_CONTACT "${${PLUGIN_PACKAGE_NAME}_PACKAGE_BUGREPORT}")
+        set (CPACK_NSIS_MODIFY_PATH ON)
+
+        if (WIX_EXECUTABLE)
+          list (APPEND CPACK_GENERATOR "WIX")
+        endif ()
+        #  WiX variables
+        set (CPACK_WIX_UNINSTALL "1")
+        set (CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/COPYING.txt")
+#        set (CPACK_WIX_PRODUCT_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}\\\\${PLUGIN_PACKAGE_NAME}.ico")
+      elseif (APPLE)
+        list (APPEND CPACK_GENERATOR "STGZ")
+        list (APPEND CPACK_GENERATOR "DragNDrop")
+        set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
+        set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+#        set (CPACK_PACKAGE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/h5pl.gif")
+
+        option (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE  "Package the ${PLUGIN_PACKAGE_NAME} Library in a Bundle" OFF)
+        if (${PLUGIN_PACKAGE_NAME}_PACK_MACOSX_BUNDLE)
+          list (APPEND CPACK_GENERATOR "Bundle")
+          set (CPACK_BUNDLE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
+          set (CPACK_BUNDLE_LOCATION "/")    # make sure CMAKE_INSTALL_PREFIX ends in /
+          set (CMAKE_INSTALL_PREFIX "/${CPACK_BUNDLE_NAME}.framework/Versions/${CPACK_PACKAGE_VERSION}/${CPACK_PACKAGE_NAME}/")
+#          set (CPACK_BUNDLE_ICON "${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL.icns")
+#          set (CPACK_BUNDLE_PLIST "${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/Info.plist")
+          set (CPACK_APPLE_GUI_INFO_STRING "${PLUGIN_PACKAGE_NAME} Plugin Library")
+          set (CPACK_APPLE_GUI_COPYRIGHT "Copyright © ???. All rights reserved.")
+          set (CPACK_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+          set (CPACK_APPLE_GUI_BUNDLE_NAME "${${PLUGIN_PACKAGE_NAME}_PACKAGE_STRING}")
+          set (CPACK_APPLE_GUI_VERSION_STRING "${CPACK_PACKAGE_VERSION_STRING}")
+          set (CPACK_APPLE_GUI_SHORT_VERSION_STRING "${CPACK_PACKAGE_VERSION}")
+          #-----------------------------------------------------------------------------
+          # Configure the Info.plist file for the install bundle
+          #-----------------------------------------------------------------------------
+#          configure_file (
+#              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CPack.Info.plist.in
+#              ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/Info.plist @ONLY
+#          )
+#          configure_file (
+#              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/PkgInfo.in
+#              ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/PkgInfo @ONLY
+#          )
+#          configure_file (
+#              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/version.plist.in
+#              ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/version.plist @ONLY
+#          )
+#          install (
+#              FILES ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/PkgInfo
+#                    ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/CMakeFiles/version.plist
+#              DESTINATION ..
+#          )
+        endif ()
+      else ()
+        list (APPEND CPACK_GENERATOR "STGZ")
+        set (CPACK_PACKAGING_INSTALL_PREFIX "/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+        set (CPACK_COMPONENTS_ALL_IN_ONE_PACKAGE ON)
+
+        set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
+        set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${${PLUGIN_PACKAGE_NAME}_PACKAGE_BUGREPORT}")
+
+#          list (APPEND CPACK_GENERATOR "RPM")
+        set (CPACK_RPM_PACKAGE_RELEASE "1")
+        set (CPACK_RPM_COMPONENT_INSTALL ON)
+        set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
+      endif ()
+
+      set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
+      set (CPACK_ALL_INSTALL_TYPES Full User)
+      set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
+    endif ()
+
     include (CPack)
 
     cpack_add_component_group(Runtime)

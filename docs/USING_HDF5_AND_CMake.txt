@@ -36,8 +36,8 @@ I. Preconditions
 ========================================================================
 
    1. We suggest you obtain the latest CMake for your platform from the Kitware
-      web site. The HDF5 1.14.x product requires a minimum CMake version
-      of 3.18. If you are using VS2022, the minimum version is 3.21.
+      web site. The HDF5 1.y.x product requires a minimum CMake version
+      of 3.18. If you are using VS2022, the minimum CMake version is 3.21.
 
    2. You have installed the HDF5 library built with CMake, by executing
       the HDF Install Utility (the *.msi file in the binary package for
@@ -48,24 +48,24 @@ I. Preconditions
       or environment variable, set(ENV{HDF5_ROOT} "<install_path>")
       to the installed location of HDF5.
          On Windows:
-            HDF5_ROOT=C:/Program Files/HDF_Group/HDF5/1.14.x/
+            HDF5_ROOT=C:/Program Files/HDF_Group/HDF5/1.y.x/
          On unix:
-            HDF5_ROOT=<install root folder>/HDF_Group/HDF5/1.14.x/
+            HDF5_ROOT=<install root folder>/HDF_Group/HDF5/1.y.x/
 
       If you are using shared libraries, you may need to add to the path
       environment variable. Set the path environment variable to the
       installed location of the library files for HDF5.
          On Windows (*.dll):
-            PATH=%PATH%;C:/Program Files/HDF_Group/HDF5/1.14.x/bin
+            PATH=%PATH%;C:/Program Files/HDF_Group/HDF5/1.y.x/bin
          On unix (*.so):
-            LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<install root folder>/HDF_Group/HDF5/1.14.x/lib
+            LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<install root folder>/HDF_Group/HDF5/1.y.x/lib
 
    4. Set the environment variable HDF5_PLUGIN_PATH to the installed location of
       the library files for HDFPL.
          On Windows:
-            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.14.x/lib/plugin
+            HDF5_PLUGIN_PATH=C:/Program Files/HDF_Group/HDF5/1.y.x/lib/plugin
          On unix:
-            HDF5_PLUGIN_PATH=<install root folder>/HDF_Group/HDF5/1.14.x/lib/plugin
+            HDF5_PLUGIN_PATH=<install root folder>/HDF_Group/HDF5/1.y.x/lib/plugin
 
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
@@ -73,12 +73,13 @@ I. Preconditions
    5. Set the runtime path to the installed location of the library (*.so on linux
       and *.dll on Windows) files for HDF5.
       On Windows:
-            PATH=%PATH%:C:/Program Files/HDF_Group/HDF5/1.14.x/bin:C:/Program Files/HDF_Group/HDF5/1.14.x/lib/plugin
+            PATH=%PATH%:C:/Program Files/HDF_Group/HDF5/1.y.x/bin:C:/Program Files/HDF_Group/HDF5/1.y.x/lib/plugin
       On linux:
-            LD_LIBRARY_PATH=$LD_LIBRARY_PATH;<Installation>/HDF_Group/HDF5/1.14.x/lib;<Installation>/HDF_Group/HDF5/1.14.x/lib/plugin
+            LD_LIBRARY_PATH=$LD_LIBRARY_PATH;<Installation>/HDF_Group/HDF5/1.y.x/lib;<Installation>/HDF_Group/HDF5/1.y.x/lib/plugin
 
    6. Created separate source and build directories.
       (CMake commands are executed in the build directory)
+
 
 
 ========================================================================
@@ -93,9 +94,6 @@ Go through these steps to build HDF5 filters with CMake.
    4. Test HDF5 Filters
 
 These steps are described in more detail below.
-
-
-
    1. Run CMake
 
       The visual CMake executable is named "cmake-gui.exe" on Windows and should be
@@ -119,12 +117,13 @@ These steps are described in more detail below.
             * MinGW Makefiles
             * NMake Makefiles
             * Unix Makefiles
-            * Visual Studio 14 2015
-            * Visual Studio 14 2015 Win64
             * Visual Studio 15 2017
             * Visual Studio 15 2017 Win64
             * Visual Studio 16 2019
             * ... in addition VS2019 will need to set the "-A" option,
+            * ... [Win32, x64, ARM, ARM64]
+            * Visual Studio 17 2022
+            * ... in addition VS2022 will need to set the "-A" option,
             * ... [Win32, x64, ARM, ARM64]
 
         <options> is:
@@ -134,7 +133,7 @@ These steps are described in more detail below.
 
       2.1  Visual CMake users, click the Configure button. If this is the first time you are
            running cmake-gui in this directory, you will be prompted for the
-           generator you wish to use (for example on Windows, Visual Studio 14 2015 Win64).
+           generator you wish to use (for example on Windows, Visual Studio 16 2019).
            CMake will read in the CMakeLists.txt files from the source directory and
            display options for the HDF5 filter project. After the first configure, you
            can adjust the cache settings and/or specify locations of other programs.
@@ -152,7 +151,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5\build directory:
 
-           cmake -G "Visual Studio 14 2015 Win64" -DBUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 16 2019" -A "x64" -DBUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Filters
 
@@ -209,13 +208,12 @@ string(TOLOWER ${LIB_TYPE} SEARCH_TYPE)
 find_package (HDF5 NAMES hdf5 COMPONENTS C ${SEARCH_TYPE})
 # find_package (HDF5) # Find non-cmake built HDF5
 set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIR}")
-set (LINK_LIBS ${LINK_LIBS} ${HDF5_C_${LIB_TYPE}_LIBRARY})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_C_${LIB_TYPE}_LIBRARY})
 
 set (example hdf_example)
 
 add_executable (${example} ${PROJECT_SOURCE_DIR}/${example}.c)
-TARGET_C_PROPERTIES (${example} PRIVATE ${LIB_TYPE})
-target_link_libraries (${example} ${LINK_LIBS})
+target_link_libraries (${example} ${H5PL_LINK_LIBS})
 
 enable_testing ()
 include (CTest)
@@ -235,11 +233,10 @@ command line and the build folder is created as a sub-folder. Windows should
 adjust the forward slash to double backslashes, except for the HDF_DIR
 environment variable.
 
-NOTE: this file is available at the HDF web site:
-    https://portal.hdfgroup.org/display/support/Building+HDF5+filters+with+CMake
+NOTE: this file is available in the HDF5 repository, for more information see:
+    https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/USING_HDF5_AND_CMake.txt
 
-    H5PL_Examples.cmake
-    HDFoptions.cmake
+           ctest -S H5PL_Examples.cmake -C Release -V -O test.log
 
 Also available at the HDF web site is a CMake application framework template.
 You can quickly add files to the framework and execute the script to compile

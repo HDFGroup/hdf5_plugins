@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 3200 5 1 1 }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 3200 5 1 1 }
          }
       }
@@ -54,7 +54,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 3200 5 1 1 }
          }
       }
@@ -76,7 +76,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 3200 5 1 1 }
          }
       }
@@ -98,7 +98,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 800 5 1 1 }
          }
       }
@@ -120,7 +120,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 3200 5 1 1 }
          }
       }
@@ -142,7 +142,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { 2 2 4 3200 5 1 1 }
          }
       }

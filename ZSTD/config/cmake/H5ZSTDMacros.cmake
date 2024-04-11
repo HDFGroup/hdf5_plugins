@@ -9,87 +9,53 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
+include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_ZSTD_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+macro (EXTERNAL_ZSTD_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (ZSTD
+    FetchContent_Declare (ZSTD
         GIT_REPOSITORY ${ZSTD_URL}
         GIT_TAG ${ZSTD_BRANCH}
-        SOURCE_SUBDIR "build/cmake"
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBUILD_TESTING:BOOL=OFF
-            -DZSTD_BUILD_PROGRAMS:BOOL=OFF
-            -DZSTD_BUILD_SHARED:BOOL=OFF
-            -DZSTD_LEGACY_SUPPORT:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (ZSTD
+    FetchContent_Declare (ZSTD
         URL ${ZSTD_URL}
-        URL_MD5 ""
-        SOURCE_SUBDIR "build/cmake"
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBUILD_TESTING:BOOL=OFF
-            -DZSTD_BUILD_PROGRAMS:BOOL=OFF
-            -DZSTD_BUILD_SHARED:BOOL=OFF
-            -DZSTD_LEGACY_SUPPORT:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (ZSTD BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties (ZSTD)
+  if (NOT zstd_POPULATED)
+    FetchContent_Populate (ZSTD)
 
-  # Create imported target ZSTD
-  add_library (zstd ${libtype} IMPORTED)
-  set(STATIC_LIBRARY_BASE_NAME zstd)
-  if (MSVC OR (WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT MINGW))
-    set(STATIC_LIBRARY_BASE_NAME zstd_static)
+    # Copy an additional/replacement files into the populated source
+    file(COPY ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake)
+    file(COPY ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake/lib)
+    file(RENAME ${zstd_SOURCE_DIR}/build/cmake/lib/libCMakeLists.txt ${zstd_SOURCE_DIR}/build/cmake/lib/CMakeLists.txt)
+
+    # Store the old value of the 'BUILD_SHARED_LIBS'
+    set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
+    # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    # Store the old value of the 'BUILD_TESTING'
+    set (BUILD_TESTING_OLD ${BUILD_TESTING})
+    # Make subproject to use 'BUILD_TESTING=OFF' setting.
+    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
+
+    add_subdirectory (${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
+
+    # Restore the old value of the parameter
+    set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
+    # Restore the old value of the parameter
+    set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
   endif ()
-  HDF_IMPORT_SET_LIB_OPTIONS (zstd "${STATIC_LIBRARY_BASE_NAME}" ${libtype} "" "NOPREFIX")
-  add_dependencies (zstd ZSTD)
 
 #  include (${BINARY_DIR}/ZSTD-targets.cmake)
-  set (ZSTD_LIBRARY "zstd")
+  set (ZSTD_LIBRARY "libzstd_static")
 
-  set (ZSTD_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (ZSTD_INCLUDE_DIR "${SOURCE_DIR}/lib")
+  set (ZSTD_INCLUDE_DIR_GEN "${zstd_BINARY_DIR}")
+  set (ZSTD_INCLUDE_DIR "${zstd_SOURCE_DIR}/lib")
   set (ZSTD_FOUND 1)
   set (ZSTD_LIBRARIES ${ZSTD_LIBRARY})
   set (ZSTD_INCLUDE_DIRS ${ZSTD_INCLUDE_DIR_GEN} ${ZSTD_INCLUDE_DIR})
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_ZSTD_LIBRARY compress_type)
-  add_custom_target (ZSTD-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ZSTD_INCLUDE_DIR}/zstd.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${ZSTD_INCLUDE_DIR}/zstd.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zstd.h)
-  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (ZSTD-GenHeader-Copy zstd)
-  endif ()
 endmacro ()

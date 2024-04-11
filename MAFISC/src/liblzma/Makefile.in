@@ -1738,7 +1738,7 @@ uninstall-am: uninstall-docDATA uninstall-libLTLIBRARIES \
 
 
 # Windows resource compiler support. libtool knows what to do with .rc
-# files, but Automake (<= 1.14 at least) doesn't know.
+# files, but Automake (<= 1.15 at least) doesn't know.
 #
 # We want the resource file only in shared liblzma. To avoid linking it into
 # static liblzma, we overwrite the static object file with an object file

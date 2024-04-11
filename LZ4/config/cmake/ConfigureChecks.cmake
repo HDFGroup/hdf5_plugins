@@ -35,11 +35,11 @@ endif ()
 # This MACRO checks IF the symbol exists in the library and IF it
 # does, it appends library to the list.
 #-----------------------------------------------------------------------------
-set (LINK_LIBS "")
+set (H5PL_LINK_LIBS "")
 macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
-  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
+  CHECK_LIBRARY_EXISTS ("${LIBRARY};${H5PL_LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
   if (${VARIABLE})
-    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
+    set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LIBRARY})
   endif ()
 endmacro ()
 
@@ -127,6 +127,9 @@ CHECK_INCLUDE_FILE_CONCAT ("inttypes.h"      HAVE_INTTYPES_H)
 # _Bool type support
 CHECK_INCLUDE_FILE_CONCAT (stdbool.h    HAVE_STDBOOL_H)
 
+CHECK_INCLUDE_FILE_CONCAT ("netinet/in.h"    HAVE_NETINET_IN_H)
+CHECK_INCLUDE_FILE_CONCAT ("arpa/inet.h"     HAVE_ARPA_INET_H)
+
 #-----------------------------------------------------------------------------
 #  Check for the math library "m"
 #-----------------------------------------------------------------------------
@@ -140,8 +143,21 @@ endif ()
 # UCB (BSD) compatibility library
 CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
 
+if (NOT WINDOWS)
+  CHECK_FUNCTION_EXISTS (ntohl             HAVE_NTOHL)
+  CHECK_FUNCTION_EXISTS (htonl             HAVE_HTONL)
+  CHECK_FUNCTION_EXISTS (ntohs             HAVE_NTOHS)
+  CHECK_FUNCTION_EXISTS (htons             HAVE_HTONS)
+else ()
+  set (CMAKE_REQUIRED_LIBRARIES "ws2_32")
+  check_symbol_exists (ntohl "winsock2.h" HAVE_NTOHL)
+  check_symbol_exists (htonl "winsock2.h" HAVE_HTONL)
+  check_symbol_exists (ntohs "winsock2.h" HAVE_NTOHS)
+  check_symbol_exists (htons "winsock2.h" HAVE_HTONS)
+endif ()
+
 # For other tests to use the same libraries
-set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${LINK_LIBS})
+set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${H5PL_LINK_LIBS})
 
 set (USE_INCLUDES "")
 if (WINDOWS)

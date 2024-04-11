@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5BSHUF_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5BSHUF_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5BSHUF_BINARY_DIR}
     ${BSHUF_INCLUDE_DIRS}
 )
 
@@ -45,7 +45,7 @@ if (BUILD_BSHUF_LIBRARY_SOURCE)
       ${H5BSHUF_SRC_SOURCE_DIR}
   )
 endif ()
-if (BUILD_LZ4_LIBRARY_SOURCE)
+if (BUILD_BSHUF_LZ4_LIBRARY_SOURCE)
   set (H5BSHUF_SRCS ${H5BSHUF_SRCS}
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.c
       ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.h
@@ -60,7 +60,7 @@ if (DISABLE_H5BSHUF_ENCODER)
   set_target_properties(${H5BSHUF_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()
 target_include_directories(${H5BSHUF_LIB_TARGET} PRIVATE ${H5BSHUF_INCLUDE_DIRS})
-target_link_libraries (${H5BSHUF_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5BSHUF_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5BSHUF_LIBRARIES_TO_EXPORT ${H5BSHUF_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5BSHUF" ${H5BSHUF_LIB_TARGET} ${H5BSHUF_LIB_NAME} MODULE)
 

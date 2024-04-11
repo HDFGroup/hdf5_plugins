@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5LZF_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5LZF_INCLUDE_DIRS ${H5LZF_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5LZF_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5LZF_BINARY_DIR}
     ${H5LZF_SRC_SOURCE_DIR}
     ${LZF_INCLUDE_DIRS}
 )
@@ -39,7 +39,7 @@ if (DISABLE_H5LZF_ENCODER)
 endif ()
 target_include_directories(${H5LZF_LIB_TARGET} PRIVATE ${H5LZF_INCLUDE_DIRS})
 #set_property (TARGET ${H5LZF_LIB_TARGET} APPEND PROPERTY COMPILE_DEFINITIONS H5PY_LZF_DEBUG)
-target_link_libraries (${H5LZF_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5LZF_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5LZF_LIBRARIES_TO_EXPORT ${H5LZF_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5LZF" ${H5LZF_LIB_TARGET} ${H5LZF_LIB_NAME} MODULE)
 

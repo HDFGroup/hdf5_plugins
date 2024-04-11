@@ -9,8 +9,24 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5JPEG C)
+
+if (POLICY CMP0074)
+  # find_package() uses <PackageName>_ROOT variables.
+  cmake_policy (SET CMP0074 NEW)
+endif ()
+
+if (POLICY CMP0083)
+  # To control generation of Position Independent Executable (PIE) or not,
+  # some flags are required at link time.
+  cmake_policy (SET CMP0083 NEW)
+endif ()
+
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
 
 #-----------------------------------------------------------------------------
 # Basic H5JPEG stuff here
@@ -44,7 +60,7 @@ set (H5JPEG_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5JPEG_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5JPEG_PACKAGE_SOVERSION "${H5JPEG_SOVERS_MAJOR}.${H5JPEG_SOVERS_RELEASE}.${H5JPEG_SOVERS_MINOR}")
 set (H5JPEG_PACKAGE_SOVERSION_MAJOR "${H5JPEG_SOVERS_MAJOR}")
-message("Configuring for jpeg HDF5 Plugin version: " ${H5JPEG_PACKAGE_STRING})
+message(STATUS "Configuring for jpeg HDF5 Plugin version: " ${H5JPEG_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -60,7 +76,7 @@ include (${H5JPEG_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5JPEG link libs: ${LINK_LIBS}")
+message (STATUS "H5JPEG link libs: ${H5PL_LINK_LIBS}")
 
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
@@ -71,10 +87,10 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (JPEG_URL ${JPEG_GIT_URL} CACHE STRING "Path to jpeg git repository")
     set (JPEG_BRANCH ${JPEG_GIT_BRANCH})
   elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    if (NOT TGZPATH)
-      set (TGZPATH ${H5JPEG_SOURCE_DIR})
+    if (NOT H5PL_COMP_TGZPATH)
+      set (H5PL_COMP_TGZPATH ${H5JPEG_SOURCE_DIR})
     endif ()
-    set (JPEG_URL ${TGZPATH}/${JPEG_TGZ_NAME})
+    set (JPEG_URL ${H5PL_COMP_TGZPATH}/${JPEG_TGZ_NAME})
   else ()
     set (JPEG_USE_EXTERNAL 0)
   endif ()
@@ -98,7 +114,7 @@ if (JPEG_FOUND)
   set (JPEG_INCLUDE_DIRS ${JPEG_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_JPEG_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_JPEG_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5JPEG_HAVE_BZLIB_H 1)
     set (H5JPEG_HAVE_JPEG 1)
     message (STATUS "Filter JPEG is built")
@@ -107,7 +123,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "jpeg found: INC=${JPEG_INCLUDE_DIR} LIBS=${JPEG_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${JPEG_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${JPEG_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -123,12 +139,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (JPEG_FOUND AND JPEG_USE_EXTERNAL)
-    add_dependencies (${H5JPEG_LIB_TARGET} JPEG)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5jpeg Examples" OFF)
 if (BUILD_EXAMPLES)

@@ -73,7 +73,6 @@ and calls to bitstream methods with 'B ' as in
 #include "H5PLextern.h"
 #include "H5Spublic.h"
 #include "zfp.h"
-#include "bitstream.h"
 #define Z
 #define B
 #endif /* ] AS_SILO_BUILTIN */
@@ -229,11 +228,13 @@ H5Z_zfp_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
         ndims_used++;
     }
 
+#if ZFP_VERSION_NO < 0x0530
     if (ndims_used == 0 || ndims_used > max_ndims)
         H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
-#if ZFP_VERSION_NO < 0x0530
             "chunk must have only 1...3 non-unity dimensions");
 #else
+    if (ndims_used == 0 || ndims_used > max_ndims)
+        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
             "chunk must have only 1...4 non-unity dimensions");
 #endif
 
@@ -322,11 +323,11 @@ H5Z_zfp_set_local(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
 #if ZFP_VERSION_NO >= 0x0540
         case 4: dummy_field = Z zfp_field_4d(0, zt, dims_used[3], dims_used[2], dims_used[1], dims_used[0]); break;
 #endif
-        default: H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0,
+        default:
 #if ZFP_VERSION_NO < 0x0530
-                     "chunks may have only 1...3 non-unity dims");
+            H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "chunks may have only 1...3 non-unity dims");
 #else
-                     "chunks may have only 1...4 non-unity dims");
+            H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "chunks may have only 1...4 non-unity dims");
 #endif
     }
     if (!dummy_field)
@@ -498,11 +499,6 @@ get_zfp_info_from_cd_values(size_t cd_nelmts, unsigned int const *cd_values,
 
     /* Do a read of *just* magic to detect possible codec version mismatch */
     if (0 == (Z zfp_read_header(zstr, zfld, ZFP_HEADER_MAGIC)))
-        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "ZFP codec version mismatch");
-    Z zfp_stream_rewind(zstr);
-
-    /* Now, read ZFP *full* header */
-    if (0 == (Z zfp_read_header(zstr, zfld, ZFP_HEADER_FULL)))
     {
         herr_t conv;
 
@@ -516,9 +512,14 @@ get_zfp_info_from_cd_values(size_t cd_nelmts, unsigned int const *cd_values,
             H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADVALUE, 0, "header endian-swap failed");
 
         Z zfp_stream_rewind(zstr);
-        if (0 == (Z zfp_read_header(zstr, zfld, ZFP_HEADER_FULL)))
-            H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_CANTGET, 0, "reading header failed");
+        if (0 == (Z zfp_read_header(zstr, zfld, ZFP_HEADER_MAGIC)))
+        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_CANTGET, 0, "ZFP codec version mismatch");
     }
+    Z zfp_stream_rewind(zstr);
+
+    /* Now, read ZFP *full* header */
+    if (0 == (Z zfp_read_header(zstr, zfld, ZFP_HEADER_FULL)))
+        H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_CANTGET, 0, "reading header failed");
 
     /* Get ZFP stream mode and field meta */
     *zfp_mode = Z zfp_stream_mode(zstr);

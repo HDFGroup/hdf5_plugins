@@ -12,6 +12,22 @@
 cmake_minimum_required (VERSION 3.12)
 project (H5ZFP C)
 
+if (POLICY CMP0074)
+  # find_package() uses <PackageName>_ROOT variables.
+  cmake_policy (SET CMP0074 NEW)
+endif ()
+
+if (POLICY CMP0083)
+  # To control generation of Position Independent Executable (PIE) or not,
+  # some flags are required at link time.
+  cmake_policy (SET CMP0083 NEW)
+endif ()
+
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 #-----------------------------------------------------------------------------
 # Basic H5ZFP stuff here
 #-----------------------------------------------------------------------------
@@ -64,7 +80,7 @@ set (H5ZFP_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5ZFP_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5ZFP_PACKAGE_SOVERSION "${H5ZFP_SOVERS_MAJOR}.${H5ZFP_SOVERS_RELEASE}.${H5ZFP_SOVERS_MINOR}")
 set (H5ZFP_PACKAGE_SOVERSION_MAJOR "${H5ZFP_SOVERS_MAJOR}")
-message("Configuring for zfp HDF5 Plugin version: " ${H5ZFP_PACKAGE_STRING})
+message(STATUS "Configuring for zfp HDF5 Plugin version: " ${H5ZFP_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -160,7 +176,7 @@ endif ()
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5ZFP link libs: ${LINK_LIBS}")
+message (STATUS "H5ZFP link libs: ${H5PL_LINK_LIBS}")
 
 include (ExternalProject)
 option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
@@ -172,14 +188,15 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (ZFP_URL ${ZFP_GIT_URL} CACHE STRING "Path to zfp git repository")
     set (ZFP_BRANCH ${ZFP_GIT_BRANCH})
   elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    if (NOT TGZPATH)
-      set (TGZPATH ${H5ZFP_SOURCE_DIR})
+    if (NOT H5PL_COMP_TGZPATH)
+      set (H5PL_COMP_TGZPATH ${H5ZFP_SOURCE_DIR})
     endif ()
-    set (ZFP_URL ${TGZPATH}/${ZFP_TGZ_NAME})
+    set (ZFP_URL ${H5PL_COMP_TGZPATH}/${ZFP_TGZ_NAME})
   else ()
     set (ZFP_USE_EXTERNAL 0)
   endif ()
 endif ()
+
 #-----------------------------------------------------------------------------
 # zfp Library Settings
 #-----------------------------------------------------------------------------
@@ -187,8 +204,8 @@ if (NOT ZFP_USE_EXTERNAL)
   find_package (ZFP NAMES ${ZFP_PACKAGE_NAME})
   if (NOT ZFP_FOUND)
     find_package (ZFP) # Legacy find
-    if (NOT ZFP_FOUND)
-      message (FATAL_ERROR " zfp is Required for ${H5ZFP_PACKAGE_NAME} library")
+    if (ZFP_FOUND)
+      set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZFP_LIBRARIES})
     endif ()
   endif ()
 endif ()
@@ -200,7 +217,7 @@ if (ZFP_FOUND)
   set (ZFP_INCLUDE_DIRS ${ZFP_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5_HAVE_ZFP_H 1)
     set (H5_HAVE_ZFP 1)
     message (STATUS "Filter ZFP is built")
@@ -209,11 +226,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "zfp found: INC=${ZFP_INCLUDE_DIR} TOOLS=${ZFP_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${ZFP_LIBRARIES})
-
-if (ZFP_FOUND)
-  PACKAGE_ZFP_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-endif ()
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZFP_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Generate the zfp_config.h file containing user settings needed by compilation
@@ -234,12 +247,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (ZFP_FOUND AND ZFP_USE_EXTERNAL)
-    add_dependencies (${H5ZFP_LIB_TARGET} ZFP)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5zfp Examples" OFF)
 if (BUILD_EXAMPLES)

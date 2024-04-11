@@ -9,93 +9,48 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
+include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_SZ_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+macro (EXTERNAL_SZ_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (SZF
+    FetchContent_Declare (SZF
         GIT_REPOSITORY ${SZ_URL}
         GIT_TAG ${SZ_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBUILD_SZ_EXAMPLES:BOOL=OFF
-            -DSZ_PACKAGE_EXT:STRING=${SZ_PACKAGE_EXT}
-            -DSZ_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DSZ_FIND_DEPS:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (SZF
+    FetchContent_Declare (SZF
         URL ${SZ_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBUILD_SZ_EXAMPLES:BOOL=OFF
-            -DSZ_PACKAGE_EXT:STRING=${SZ_PACKAGE_EXT}
-            -DSZ_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DSZ_FIND_DEPS:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (SZF BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties (SZF)
+  if (NOT szf_POPULATED)
+    FetchContent_Populate (SZF)
 
-  # Create imported target SZ
-  add_library (SZ ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (SZ "SZ" ${libtype} "")
-  add_dependencies (SZ SZF)
+    # Store the old value of the 'BUILD_SHARED_LIBS'
+    set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
+    # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    # Store the old value of the 'BUILD_TESTING'
+    set (BUILD_TESTING_OLD ${BUILD_TESTING})
+    # Make subproject to use 'BUILD_TESTING=OFF' setting.
+    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
 
-  # Create imported target zstd
-  add_library(zstd STATIC IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (zstd "zstd" ${libtype} "")
-  add_dependencies (zstd SZF)
+    add_subdirectory (${szf_SOURCE_DIR} ${szf_BINARY_DIR})
 
-  # Create imported target ZLIB
-  add_library(ZLIB STATIC IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (ZLIB "ZLIB" ${libtype} "")
-  add_dependencies (ZLIB SZF)
+    # Restore the old value of the parameter
+    set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
+    # Restore the old value of the parameter
+    set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
+  endif ()
 
 #  include (${BINARY_DIR}/SZ-targets.cmake)
   set (SZ_LIBRARY "SZ;zstd;ZLIB")
 
-  set (SZ_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (SZ_INCLUDE_DIR "${SOURCE_DIR}/sz/include")
+  set (SZ_INCLUDE_DIR_GEN "${szf_BINARY_DIR}")
+  set (SZ_INCLUDE_DIR "${szf_SOURCE_DIR}/sz/include")
   set (SZ_FOUND 1)
   set (SZ_LIBRARIES ${SZ_LIBRARY})
   set (SZ_INCLUDE_DIRS ${SZ_INCLUDE_DIR_GEN} ${SZ_INCLUDE_DIR})
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_SZ_LIBRARY compress_type)
-  add_custom_target (SZF-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SZ_INCLUDE_DIR}/sz.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${SZ_INCLUDE_DIR}/sz.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/sz.h)
-  if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (SZF-GenHeader-Copy SZF)
-  endif ()
 endmacro ()

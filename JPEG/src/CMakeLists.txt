@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5JPEG_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5JPEG_INCLUDE_DIRS ${H5JPEG_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR} ${H5JPEG_BINARY_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5JPEG_BINARY_DIR}
     ${H5JPEG_SRC_SOURCE_DIR}
     ${JPEG_INCLUDE_DIRS}
 )
@@ -38,7 +38,7 @@ if (DISABLE_H5JPEG_ENCODER)
   set_target_properties(${H5JPEG_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
 endif ()
 target_include_directories(${H5JPEG_LIB_TARGET} PRIVATE ${H5JPEG_INCLUDE_DIRS})
-target_link_libraries (${H5JPEG_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5JPEG_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5JPEG_LIBRARIES_TO_EXPORT ${H5JPEG_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5JPEG" ${H5JPEG_LIB_TARGET} ${H5JPEG_LIB_NAME} MODULE)
 

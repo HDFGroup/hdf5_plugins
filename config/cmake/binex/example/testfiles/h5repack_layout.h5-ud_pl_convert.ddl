@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 307
-            COMMENT HDF5 bzip2 filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 bzip2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { XXXX }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { XXXX }
          }
       }
@@ -54,7 +54,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32004
-            COMMENT HDF5 lz4 filter; see http://www.hdfgroup.org/services/contributions.html
+            COMMENT HDF5 lz4 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
             PARAMS { XXXX }
          }
       }
@@ -76,7 +76,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32013
-            COMMENT H5Z-ZFP-1.0.1 (ZFP-0.5.5) github.com/LLNL/H5Z-ZFP
+            COMMENT H5Z-ZFP-1.1.1 (ZFP-1.0.0) github.com/LLNL/H5Z-ZFP
             PARAMS { XXXX }
          }
       }

@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5PLExamples C)
 
 #-----------------------------------------------------------------------------
@@ -22,8 +22,7 @@ BASIC_SETTINGS (H5PLExamples)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-
-message (STATUS "HDF5 link libs: ${LINK_LIBS}")
+message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings

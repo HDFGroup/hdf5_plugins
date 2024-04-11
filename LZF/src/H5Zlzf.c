@@ -88,7 +88,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * LZF compression is an external filter registered by PyTables developers
  * with The HDF Group
- * See http://www.hdfgroup.org/services/contributions.html for more information.
+ * See https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md for more information.
  */
 
 /* Filter revision number, starting at 1 */
@@ -125,7 +125,7 @@ const H5Z_class2_t H5Z_LZF[1] = {{
     1,                   /* encoder_present flag (set to true) */
 #endif
         1,              /* decoder_present flag (set to true) */
-        "HDF5 lzf filter; see http://www.hdfgroup.org/services/contributions.html",
+        "HDF5 lzf filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
         /* Filter name for debugging    */
         NULL,                       /* The "can apply" callback     */
         (H5Z_set_local_func_t)(H5Z_lzf_set_local), /* The "set local" callback */

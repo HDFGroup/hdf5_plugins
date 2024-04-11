@@ -35,11 +35,11 @@ endif ()
 # This MACRO checks IF the symbol exists in the library and IF it
 # does, it appends library to the list.
 #-----------------------------------------------------------------------------
-set (LINK_LIBS "")
+set (H5PL_LINK_LIBS "")
 macro (CHECK_LIBRARY_EXISTS_CONCAT LIBRARY SYMBOL VARIABLE)
-  CHECK_LIBRARY_EXISTS ("${LIBRARY};${LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
+  CHECK_LIBRARY_EXISTS ("${LIBRARY};${H5PL_LINK_LIBS}" ${SYMBOL} "" ${VARIABLE})
   if (${VARIABLE})
-    set (LINK_LIBS ${LINK_LIBS} ${LIBRARY})
+    set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LIBRARY})
   endif ()
 endmacro ()
 
@@ -141,7 +141,7 @@ endif ()
 CHECK_LIBRARY_EXISTS_CONCAT ("ucb"    gethostname  HAVE_LIBUCB)
 
 # For other tests to use the same libraries
-set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${LINK_LIBS})
+set (HDF_REQUIRED_LIBRARIES ${HDF_REQUIRED_LIBRARIES} ${H5PL_LINK_LIBS})
 
 set (USE_INCLUDES "")
 if (WINDOWS)
@@ -168,7 +168,9 @@ macro (HDF_FUNCTION_TEST OTHER_TEST)
       )
     endif ()
 
-    message (TRACE "Performing ${OTHER_TEST}")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (TRACE "Performing ${OTHER_TEST}")
+    endif ()
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5BLOSC_RESOURCES_DIR}/H5PLTests.c
@@ -178,9 +180,13 @@ macro (HDF_FUNCTION_TEST OTHER_TEST)
     )
     if (${OTHER_TEST})
       set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
-      message (VERBOSE "Performing Other Test ${OTHER_TEST} - Success")
+      if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+        message (VERBOSE "Performing Other Test ${OTHER_TEST} - Success")
+      endif ()
     else ()
-      message (VERBOSE "Performing Other Test ${OTHER_TEST} - Failed")
+      if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+        message (VERBOSE "Performing Other Test ${OTHER_TEST} - Failed")
+      endif ()
       set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
@@ -263,11 +269,15 @@ endif ()
 macro (HDF_CHECK_TYPE_SIZE type var)
   set (aType ${type})
   set (aVar  ${var})
-  message (TRACE "Checking size of ${aType} and storing into ${aVar}")
+  if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+    message (TRACE "Checking size of ${aType} and storing into ${aVar}")
+  endif ()
   CHECK_TYPE_SIZE (${aType}   ${aVar})
   if (NOT ${aVar})
     set (${aVar} 0 CACHE INTERNAL "SizeOf for ${aType}")
-    message (TRACE "Size of ${aType} was NOT Found")
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+      message (TRACE "Size of ${aType} was NOT Found")
+    endif ()
   endif ()
 endmacro ()
 

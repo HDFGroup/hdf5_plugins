@@ -34,7 +34,7 @@ const H5Z_class2_t H5Z_ZSTD[1] = {{
     1,                                /* encoder_present flag (set to true) */
 #endif
     1,                                /* decoder_present flag (set to true) */
-    "HDF5 zstd filter; see http://www.hdfgroup.org/services/contributions.html",
+    "HDF5 zstd filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
                                       /* Filter name for debugging    */
     NULL,                             /* The "can apply" callback     */
     NULL,                             /* The "set local" callback     */

@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.18)
+cmake_minimum_required (VERSION 3.12)
 project (H5SZ_SRC C)
 
 #-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5SZ_INCLUDE_DIRS ${H5SZ_INCLUDE_DIRS}
-    ${HDF5_INCLUDE_DIR}
+    ${H5PL_HDF5_INCLUDE_DIRS}
     ${H5SZ_SRC_SOURCE_DIR}
     ${H5SZ_BINARY_DIR}
     ${SZ_INCLUDE_DIRS}
@@ -39,7 +39,7 @@ if (DISABLE_H5SZ_ENCODER)
 endif ()
 target_include_directories(${H5SZ_LIB_TARGET} PRIVATE ${H5SZ_INCLUDE_DIRS})
 #set_property (TARGET ${H5SZ_LIB_TARGET} APPEND PROPERTY COMPILE_DEFINITIONS H5_SZ_DEBUG)
-target_link_libraries (${H5SZ_LIB_TARGET} PRIVATE ${LINK_LIBS})
+target_link_libraries (${H5SZ_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 if (WIN32)
   target_link_libraries (${H5SZ_LIB_TARGET} PRIVATE "ws2_32.lib")
 endif ()
