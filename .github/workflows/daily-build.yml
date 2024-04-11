@@ -46,6 +46,7 @@ jobs:
         repo: 'HDFGroup/hdf5_plugins'
         version: 'tags/snapshot-1.14'
         file: 'last-file.txt'
+      continue-on-error: true
 
     - name: Read base-name file
       id: getpluginbase
