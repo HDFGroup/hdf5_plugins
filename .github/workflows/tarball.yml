@@ -95,7 +95,7 @@ jobs:
         id: version
         run: |
           cd "$GITHUB_WORKSPACE/hdfsrc"
-          echo "SOURCE_TAG=master" >> $GITHUB_OUTPUT
+          echo "SOURCE_TAG=${{ inputs.use_tag }}" >> $GITHUB_OUTPUT
 
       - name: Set file base name
         id: set-file-base
