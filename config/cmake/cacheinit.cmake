@@ -34,8 +34,8 @@ set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 set (H5PL_GIT_URL "https://github.com/HDFGroup/h5plugin.git" CACHE STRING "Use plugins from HDF repository" FORCE)
 set (H5PL_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
-set (H5PL_TGZ_ORIGPATH "https://github.com/HDFGroup/hdf5_plugins/releases/download/snapshots" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (H5PL_TGZ_NAME "hdf5_plugins-master.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)
+set (H5PL_TGZ_ORIGPATH "https://github.com/HDFGroup/hdf5_plugins/releases/download/snapshot-1.14" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (H5PL_TGZ_NAME "hdf5_plugins-1_14_4.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)
 
 set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
 set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)

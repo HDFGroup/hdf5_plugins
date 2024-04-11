@@ -10,8 +10,8 @@
       "inherits": "ci-base",
       "cacheVariables": {
         "H5PL_VERS_MAJOR": {"type": "STRING", "value": "1"},
-        "H5PL_VERS_MINOR": {"type": "STRING", "value": "15"},
-        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "0"},
+        "H5PL_VERS_MINOR": {"type": "STRING", "value": "14"},
+        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "4"},
         "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
         "H5PL_COMP_TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"},
         "H5PL_BUILD_TESTING": "ON",
@@ -22,7 +22,7 @@
       "name": "ci-base-plugins",
       "hidden": true,
       "cacheVariables": {
-        "PLUGIN_TGZ_NAME": {"type": "STRING", "value": "hdf5_plugins-master.tar.gz"},
+        "PLUGIN_TGZ_NAME": {"type": "STRING", "value": "hdf5_plugins-1.14.4.tar.gz"},
         "PLUGIN_PACKAGE_NAME": {"type": "STRING", "value": "pl"},
         "PL_PACKAGE_NAME": "pl",
         "HDF5_NAMESPACE": {"type": "STRING", "value": "hdf5::"},
