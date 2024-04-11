@@ -11,6 +11,41 @@
 #
 
 #-------------------------------------------------------------------------------
+# Setup output Directories
+#-----------------------------------------------------------------------------
+macro (SET_HDF_OUTPUT_DIRS package_prefix)
+  if (NOT ${package_prefix}_EXTERNALLY_CONFIGURED)
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables."
+    )
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Libraries"
+    )
+    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
+    )
+    set (CMAKE_Fortran_MODULE_DIRECTORY
+        ${PROJECT_BINARY_DIR}/mod CACHE PATH "Single Directory for all fortran modules."
+    )
+    get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+    if(_isMultiConfig)
+      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${HDF_CFG_NAME})
+      set (CMAKE_PDB_OUTPUT_DIRECTORY
+          ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all pdb files."
+      )
+    else ()
+      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    endif ()
+  else ()
+    # if we are externally configured, but the project uses old cmake scripts
+    # this may not be set and utilities like H5detect will fail
+    if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+      set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
+    endif ()
+  endif ()
+endmacro ()
+
+#-------------------------------------------------------------------------------
 macro (SET_HDF_BUILD_TYPE)
   get_property (_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
   if (_isMultiConfig)
@@ -344,7 +379,7 @@ macro (HDFTEST_COPY_FILE src dest target)
 endmacro ()
 
 macro (HDF_DIR_PATHS package_prefix)
-  option (H5PL_USE_GNU_DIRS "TRUE to use GNU Coding Standard install directory variables, FALSE to use historical settings" FALSE)
+  option (H5PL_USE_GNU_DIRS "ON to use GNU Coding Standard install directory variables, OFF to use historical settings" OFF)
   if (H5PL_USE_GNU_DIRS)
     include(GNUInstallDirs)
     if (NOT ${package_prefix}_INSTALL_BIN_DIR)
@@ -375,7 +410,7 @@ macro (HDF_DIR_PATHS package_prefix)
   endif ()
 
   if (APPLE)
-    option (${package_prefix}_BUILD_FRAMEWORKS "TRUE to build as frameworks libraries, FALSE to build according to BUILD_SHARED_LIBS" FALSE)
+    option (${package_prefix}_BUILD_FRAMEWORKS "ON to build as frameworks libraries, OFF to build according to BUILD_SHARED_LIBS" OFF)
   endif ()
 
   if (NOT ${package_prefix}_INSTALL_BIN_DIR)
@@ -424,10 +459,10 @@ macro (HDF_DIR_PATHS package_prefix)
   message(STATUS "Final: ${${package_prefix}_INSTALL_DOC_DIR}")
 
   # Always use full RPATH, i.e. don't skip the full RPATH for the build tree
-  set (CMAKE_SKIP_BUILD_RPATH  FALSE)
+  set (CMAKE_SKIP_BUILD_RPATH  OFF)
   # when building, don't use the install RPATH already
   # (but later on when installing)
-  set (CMAKE_INSTALL_RPATH_USE_LINK_PATH  FALSE)
+  set (CMAKE_INSTALL_RPATH_USE_LINK_PATH  OFF)
   # add the automatically determined parts of the RPATH
   # which point to directories outside the build tree to the install RPATH
   set (CMAKE_BUILD_WITH_INSTALL_RPATH ON)
@@ -458,38 +493,9 @@ macro (HDF_DIR_PATHS package_prefix)
 
   SET_HDF_BUILD_TYPE()
 
-#-----------------------------------------------------------------------------
-# Setup output Directories
-#-----------------------------------------------------------------------------
-  if (NOT ${package_prefix}_EXTERNALLY_CONFIGURED)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Executables."
-    )
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all Libraries"
-    )
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-        ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all static libraries."
-    )
-    set (CMAKE_Fortran_MODULE_DIRECTORY
-        ${PROJECT_BINARY_DIR}/mod CACHE PATH "Single Directory for all fortran modules."
-    )
-    get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-    if(_isMultiConfig)
-      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${HDF_CFG_NAME})
-      set (CMAKE_PDB_OUTPUT_DIRECTORY
-          ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single Directory for all pdb files."
-      )
-    else ()
-      set (CMAKE_TEST_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    endif ()
-  else ()
-    # if we are externally configured, but the project uses old cmake scripts
-    # this may not be set and utilities like H5detect will fail
-    if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
-      set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
-    endif ()
-  endif ()
+  SET_HDF_OUTPUT_DIRS(${package_prefix})
+
+  include (FetchContent)
 endmacro ()
 
 macro (ADD_H5_FLAGS h5_flag_var infile)
@@ -506,4 +512,3 @@ macro (ADD_H5_FLAGS h5_flag_var infile)
     endforeach ()
   endif ()
 endmacro ()
-

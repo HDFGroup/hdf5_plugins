@@ -60,7 +60,7 @@ set (H5LZF_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5LZF_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5LZF_PACKAGE_SOVERSION "${H5LZF_SOVERS_MAJOR}.${H5LZF_SOVERS_RELEASE}.${H5LZF_SOVERS_MINOR}")
 set (H5LZF_PACKAGE_SOVERSION_MAJOR "${H5LZF_SOVERS_MAJOR}")
-message("Configuring for lzf HDF5 Plugin version: " ${H5LZF_PACKAGE_STRING})
+message(STATUS "Configuring for lzf HDF5 Plugin version: " ${H5LZF_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -76,7 +76,7 @@ include (${H5LZF_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5LZF link libs: ${LINK_LIBS}")
+message (STATUS "H5LZF link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the lzf_config.h file containing user settings needed by compilation
@@ -92,10 +92,10 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (LZF_URL ${LZF_GIT_URL} CACHE STRING "Path to lzf git repository")
     set (LZF_BRANCH ${LZF_GIT_BRANCH})
   elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    if (NOT TGZPATH)
-      set (TGZPATH ${H5LZF_SOURCE_DIR})
+    if (NOT H5PL_COMP_TGZPATH)
+      set (H5PL_COMP_TGZPATH ${H5LZF_SOURCE_DIR})
     endif ()
-    set (LZF_URL ${TGZPATH}/${LZF_TGZ_NAME})
+    set (LZF_URL ${H5PL_COMP_TGZPATH}/${LZF_TGZ_NAME})
   else ()
     set (LZF_USE_EXTERNAL 0)
   endif ()
@@ -109,7 +109,7 @@ if (NOT H5_LZF_HEADER)
     if (NOT LZF_FOUND)
       find_package (LZF) # Legacy find
       if (LZF_FOUND)
-        set (LINK_LIBS ${LINK_LIBS} ${LZF_LIBRARIES})
+        set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZF_LIBRARIES})
       endif ()
     endif ()
   endif ()
@@ -121,7 +121,7 @@ if (NOT H5_LZF_HEADER)
     set (LZF_INCLUDE_DIRS ${LZF_INCLUDE_DIRS} ${LZF_INCLUDE_DIR})
   else ()
     if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      EXTERNAL_LZF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+      EXTERNAL_LZF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
       set (H5_HAVE_LZF_H 1)
       set (H5_HAVE_LZF 1)
       message (STATUS "Filter LZF is built")
@@ -134,11 +134,7 @@ else ()
   set (H5_HAVE_LZF_H 1)
 endif ()
 message (STATUS "lzf found: INC=${LZF_INCLUDE_DIR} TOOLS=${LZF_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${LZF_LIBRARIES})
-
-if (LZF_FOUND)
-  PACKAGE_LZF_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-endif ()
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZF_LIBRARIES})
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
@@ -155,12 +151,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (LZF_FOUND AND LZF_USE_EXTERNAL)
-    add_dependencies (${H5LZF_LIB_TARGET} LZF)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5lzf Examples" OFF)
 if (BUILD_EXAMPLES)

@@ -60,7 +60,7 @@ set (H5BZ2_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5BZ2_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5BZ2_PACKAGE_SOVERSION "${H5BZ2_SOVERS_MAJOR}.${H5BZ2_SOVERS_RELEASE}.${H5BZ2_SOVERS_MINOR}")
 set (H5BZ2_PACKAGE_SOVERSION_MAJOR "${H5BZ2_SOVERS_MAJOR}")
-message("Configuring for bz2 HDF5 Plugin version: " ${H5BZ2_PACKAGE_STRING})
+message(STATUS "Configuring for bz2 HDF5 Plugin version: " ${H5BZ2_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -76,7 +76,7 @@ include (${H5BZ2_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5BZ2 link libs: ${LINK_LIBS}")
+message (STATUS "H5BZ2 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the bzip_config.h file containing user settings needed by compilation
@@ -92,10 +92,10 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (BZ2_URL ${BZ2_GIT_URL} CACHE STRING "Path to bz2 git repository")
     set (BZ2_BRANCH ${BZ2_GIT_BRANCH})
   elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    if (NOT TGZPATH)
-      set (TGZPATH ${H5BZ2_SOURCE_DIR})
+    if (NOT H5PL_COMP_TGZPATH)
+      set (H5PL_COMP_TGZPATH ${H5BZ2_SOURCE_DIR})
     endif ()
-    set (BZ2_URL ${TGZPATH}/${BZ2_TGZ_NAME})
+    set (BZ2_URL ${H5PL_COMP_TGZPATH}/${BZ2_TGZ_NAME})
   else ()
     set (BZ2_USE_EXTERNAL 0)
   endif ()
@@ -119,7 +119,7 @@ if (BZ2_FOUND)
   set (BZ2_INCLUDE_DIRS ${BZ2_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_BZ2_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_BZ2_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5BZ2_HAVE_BZLIB_H 1)
     set (H5BZ2_HAVE_BZ2 1)
     message (STATUS "Filter BZ2 is built")
@@ -128,7 +128,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "bz2 found: INC=${BZ2_INCLUDE_DIR} LIBS=${BZ2_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${BZ2_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${BZ2_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -144,12 +144,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (BZ2_FOUND AND BZ2_USE_EXTERNAL)
-    add_dependencies (${H5BZ2_LIB_TARGET} BZ2)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5bz2 Examples" OFF)
 if (BUILD_EXAMPLES)

@@ -9,66 +9,47 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
+include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_BSHUF_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+macro (EXTERNAL_BSHUF_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (BSHUF
+    FetchContent_Declare (BSHUF
         GIT_REPOSITORY ${BSHUF_URL}
         GIT_TAG ${BSHUF_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBSHUF_PACKAGE_EXT:STRING=${BSHUF_PACKAGE_EXT}
-            -DBSHUF_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (BSHUF
+    FetchContent_Declare (BSHUF
         URL ${BSHUF_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DBSHUF_PACKAGE_EXT:STRING=${BSHUF_PACKAGE_EXT}
-            -DBSHUF_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (BSHUF BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties(BSHUF)
+  if(NOT bshuf_POPULATED)
+    FetchContent_Populate(BSHUF)
 
-  # Create imported target BSHUF
-  add_library (bshuf ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (bshuf "bshuf" ${libtype} "")
-  add_dependencies (bshuf BSHUF)
+    # Store the old value of the 'BUILD_SHARED_LIBS'
+    set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
+    # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    # Store the old value of the 'BUILD_TESTING'
+    set (BUILD_TESTING_OLD ${BUILD_TESTING})
+    # Make subproject to use 'BUILD_TESTING=OFF' setting.
+    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
+
+    add_subdirectory(${bshuf_SOURCE_DIR} ${bshuf_BINARY_DIR})
+
+    # Restore the old value of the parameter
+    set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
+    # Restore the old value of the parameter
+    set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
+  endif()
 
 #  include (${BINARY_DIR}/BSHUF-targets.cmake)
   set (BSHUF_LIBRARY "bshuf")
 
-  set (BSHUF_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (BSHUF_INCLUDE_DIR "${SOURCE_DIR}")
+  set (BSHUF_INCLUDE_DIR_GEN "${bshuf_BINARY_DIR}")
+  set (BSHUF_INCLUDE_DIR "${bshuf_SOURCE_DIR}")
   set (BSHUF_FOUND 1)
   set (BSHUF_LIBRARIES ${BSHUF_LIBRARY})
   set (BSHUF_INCLUDE_DIRS ${BSHUF_INCLUDE_DIR_GEN} ${BSHUF_INCLUDE_DIR})
@@ -87,67 +68,30 @@ macro (PACKAGE_BSHUF_LIBRARY compress_type)
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_LZ4_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+macro (EXTERNAL_LZ4_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (LZ4
+    FetchContent_Declare (LZ4
         GIT_REPOSITORY ${LZ4_URL}
         GIT_TAG ${LZ4_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DLZ4_PACKAGE_EXT:STRING=${LZ4_PACKAGE_EXT}
-            -DLZ4_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (LZ4
+    FetchContent_Declare (LZ4
         URL ${LZ4_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DLZ4_PACKAGE_EXT:STRING=${LZ4_PACKAGE_EXT}
-            -DLZ4_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (LZ4 BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties(LZ4)
+  if(NOT lz4_POPULATED)
+    FetchContent_Populate(LZ4)
 
-  # Create imported target LZ4
-  add_library (lz4 ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (lz4 "lz4" ${libtype} "")
-  add_dependencies (lz4 LZ4)
+    add_subdirectory(${lz4_SOURCE_DIR} ${lz4_BINARY_DIR})
+  endif()
 
 #  include (${BINARY_DIR}/LZ4-targets.cmake)
   set (LZ4_LIBRARY "lz4")
 
-  set (LZ4_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (LZ4_INCLUDE_DIR "${SOURCE_DIR}/LZ4")
+  set (LZ4_INCLUDE_DIR_GEN "${lz4_BINARY_DIR}")
+  set (LZ4_INCLUDE_DIR "${lz4_SOURCE_DIR}/LZ4")
   set (LZ4_FOUND 1)
   set (LZ4_LIBRARIES ${LZ4_LIBRARY})
   set (LZ4_INCLUDE_DIRS ${LZ4_INCLUDE_DIR_GEN} ${LZ4_INCLUDE_DIR})

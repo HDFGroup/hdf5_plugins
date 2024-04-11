@@ -23,10 +23,11 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (JPEG_GIT_URL "https://someurl/jpeg.git" CACHE STRING "Use JPEG from HDF repository" FORCE)
-set (JPEG_GIT_BRANCH "jpeg9d" CACHE STRING "" FORCE)
+set (JPEG_GIT_URL "https://github.com/libjpeg-turbo/libjpeg-turbo.git" CACHE STRING "Use JPEG from TurboJPEG" FORCE)
+set (JPEG_GIT_BRANCH "jpeg-9e" CACHE STRING "" FORCE)
 
-set (JPEG_TGZ_NAME "JPEG.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
+set (JPEG_TGZ_ORIGPATH "https://www.ijg.org/files" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (JPEG_TGZ_NAME "jpegsrc.v9e.tar.gz" CACHE STRING "Use JPEG from compressed file" FORCE)
 
 set (JPEG_PACKAGE_NAME "jpeg" CACHE STRING "Name of JPEG package" FORCE)
 set (H5JPEG_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)

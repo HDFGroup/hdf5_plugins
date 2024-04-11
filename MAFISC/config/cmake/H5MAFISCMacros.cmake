@@ -9,81 +9,34 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
+
+include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_MAFISC_LIBRARY compress_type libtype)
-  if (${libtype} MATCHES "SHARED")
-    set (BUILD_EXT_SHARED_LIBS "ON")
-  else ()
-    set (BUILD_EXT_SHARED_LIBS "OFF")
-  endif ()
+macro (EXTERNAL_MAFISC_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    EXTERNALPROJECT_ADD (MAFISC
+    FetchContent_Declare (MAFISC
         GIT_REPOSITORY ${MAFISC_URL}
         GIT_TAG ${MAFISC_BRANCH}
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DMAFISC_PACKAGE_EXT:STRING=${MAFISC_PACKAGE_EXT}
-            -DMAFISC_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    EXTERNALPROJECT_ADD (MAFISC
+    FetchContent_Declare (MAFISC
         URL ${MAFISC_URL}
-        URL_MD5 ""
-        INSTALL_COMMAND ""
-        CMAKE_ARGS
-            -DBUILD_SHARED_LIBS:BOOL=${BUILD_EXT_SHARED_LIBS}
-            -DMAFISC_PACKAGE_EXT:STRING=${MAFISC_PACKAGE_EXT}
-            -DMAFISC_EXTERNALLY_CONFIGURED:BOOL=OFF
-            -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-            -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-            -DCMAKE_PDB_OUTPUT_DIRECTORY:PATH=${CMAKE_PDB_OUTPUT_DIRECTORY}
-            -DCMAKE_ANSI_CFLAGS:STRING=${CMAKE_ANSI_CFLAGS}
-            -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-            -DH5PL_USE_GNU_DIRS:STRING=${H5PL_USE_GNU_DIRS}
-            -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
-            -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE}
+        URL_HASH ""
     )
   endif ()
-  externalproject_get_property (MAFISC BINARY_DIR SOURCE_DIR)
+  FetchContent_GetProperties (MAFISC)
+  if (NOT mafisc_POPULATED)
+    FetchContent_Populate (MAFISC)
 
-  # Create imported target MAFISC
-  add_library (mafisc ${libtype} IMPORTED)
-  HDF_IMPORT_SET_LIB_OPTIONS (mafisc "mafisc" ${libtype} "")
-  add_dependencies (mafisc MAFISC)
+    add_subdirectory (${mafisc_SOURCE_DIR} ${mafisc_BINARY_DIR})
+  endif ()
 
 #  include (${BINARY_DIR}/MAFISC-targets.cmake)
-  set (MAFISC_LIBRARY "mafisc")
+  set (MAFISC_LIBRARY "mafisc-static")
 
-  set (MAFISC_INCLUDE_DIR_GEN "${BINARY_DIR}")
-  set (MAFISC_INCLUDE_DIR "${SOURCE_DIR}/MAFISC")
+  set (MAFISC_INCLUDE_DIR_GEN "${mafisc_BINARY_DIR}")
+  set (MAFISC_INCLUDE_DIR "${mafisc_SOURCE_DIR}/MAFISC")
   set (MAFISC_FOUND 1)
   set (MAFISC_LIBRARIES ${MAFISC_LIBRARY})
   set (MAFISC_INCLUDE_DIRS ${MAFISC_INCLUDE_DIR_GEN} ${MAFISC_INCLUDE_DIR})
-endmacro ()
-
-#-------------------------------------------------------------------------------
-macro (PACKAGE_MAFISC_LIBRARY compress_type)
-  add_custom_target (MAFISC-GenHeader-Copy ALL
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${MAFISC_INCLUDE_DIR}/mafisc.h ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-      COMMENT "Copying ${MAFISC_INCLUDE_DIR}/mafisc.h to ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-  )
-  set (EXTERNAL_HEADER_LIST ${EXTERNAL_HEADER_LIST} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mafisc.h)
-  if (${compress_type} MATCHES "SVN" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (MAFISC-GenHeader-Copy MAFISC)
-  endif ()
 endmacro ()

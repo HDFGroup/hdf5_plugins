@@ -42,7 +42,7 @@ const H5Z_class2_t H5Z_JPEG[1] = {{
     1,                                /* encoder_present flag (set to true) */
 #endif
     1,                                /* decoder_present flag (set to true) */
-    "HDF5 jpeg filter; see http://www.hdfgroup.org/services/contributions.html",
+    "HDF5 jpeg filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
                                       /* Filter name for debugging    */
 #if 0
     (H5Z_can_apply_func_t)(H5Z_jpeg_can_apply),      /* The "can apply" callback     */

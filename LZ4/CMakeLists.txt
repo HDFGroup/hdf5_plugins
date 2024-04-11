@@ -60,7 +60,7 @@ set (H5LZ4_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5LZ4_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5LZ4_PACKAGE_SOVERSION "${H5LZ4_SOVERS_MAJOR}.${H5LZ4_SOVERS_RELEASE}.${H5LZ4_SOVERS_MINOR}")
 set (H5LZ4_PACKAGE_SOVERSION_MAJOR "${H5LZ4_SOVERS_MAJOR}")
-message("Configuring for lz4 HDF5 Plugin version: " ${H5LZ4_PACKAGE_STRING})
+message(STATUS "Configuring for lz4 HDF5 Plugin version: " ${H5LZ4_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -76,7 +76,7 @@ include (${H5LZ4_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5LZ4 link libs: ${LINK_LIBS}")
+message (STATUS "H5LZ4 link libs: ${H5PL_LINK_LIBS}")
 
 #-----------------------------------------------------------------------------
 # Generate the lz4_config.h file containing user settings needed by compilation
@@ -96,10 +96,10 @@ if (NOT BUILD_LZ4_LIBRARY_SOURCE)
       set (LZ4_URL ${LZ4_GIT_URL} CACHE STRING "Path to lz4 git repository")
       set (LZ4_BRANCH ${LZ4_GIT_BRANCH})
     elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      if (NOT TGZPATH)
-        set (TGZPATH ${H5LZ4_SOURCE_DIR})
+      if (NOT H5PL_COMP_TGZPATH)
+        set (H5PL_COMP_TGZPATH ${H5LZ4_SOURCE_DIR})
       endif ()
-      set (LZ4_URL ${TGZPATH}/${LZ4_TGZ_NAME})
+      set (LZ4_URL ${H5PL_COMP_TGZPATH}/${LZ4_TGZ_NAME})
     else ()
       set (LZ4_USE_EXTERNAL 0)
     endif ()
@@ -133,7 +133,7 @@ if (NOT BUILD_LZ4_LIBRARY_SOURCE)
     endif ()
   endif ()
   message (STATUS "lz4 found: INC=${LZ4_INCLUDE_DIR} TOOLS=${LZ4_LIBRARIES}")
-  set (LINK_LIBS ${LINK_LIBS} ${LZ4_LIBRARIES})
+  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZ4_LIBRARIES})
 
   if (LZ4_FOUND)
     PACKAGE_LZ4_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
@@ -155,12 +155,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (LZ4_FOUND AND LZ4_USE_EXTERNAL)
-    add_dependencies (${H5LZ4_LIB_TARGET} LZ4)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5lz4 Examples" OFF)
 if (BUILD_EXAMPLES)

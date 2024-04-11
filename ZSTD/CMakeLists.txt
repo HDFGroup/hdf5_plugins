@@ -60,7 +60,7 @@ set (H5ZSTD_PACKAGE_URL "http://www.hdfgroup.org")
 set (H5ZSTD_PACKAGE_BUGREPORT "help@hdfgroup.org")
 set (H5ZSTD_PACKAGE_SOVERSION "${H5ZSTD_SOVERS_MAJOR}.${H5ZSTD_SOVERS_RELEASE}.${H5ZSTD_SOVERS_MINOR}")
 set (H5ZSTD_PACKAGE_SOVERSION_MAJOR "${H5ZSTD_SOVERS_MAJOR}")
-message("Configuring for zstd HDF5 Plugin version: " ${H5ZSTD_PACKAGE_STRING})
+message(STATUS "Configuring for zstd HDF5 Plugin version: " ${H5ZSTD_PACKAGE_STRING})
 
 #-----------------------------------------------------------------------------
 # Include some macros for reusable code
@@ -76,7 +76,7 @@ include (${H5ZSTD_RESOURCES_DIR}/ConfigureChecks.cmake)
 # HDF5 support
 #-----------------------------------------------------------------------------
 HDF5_SUPPORT (TRUE)
-message (STATUS "H5ZSTD link libs: ${LINK_LIBS}")
+message (STATUS "H5ZSTD link libs: ${H5PL_LINK_LIBS}")
 
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
@@ -87,10 +87,10 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (ZSTD_URL ${ZSTD_GIT_URL} CACHE STRING "Path to zstd git repository")
     set (ZSTD_BRANCH ${ZSTD_GIT_BRANCH})
   elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    if (NOT TGZPATH)
-      set (TGZPATH ${H5ZSTD_SOURCE_DIR})
+    if (NOT H5PL_COMP_TGZPATH)
+      set (H5PL_COMP_TGZPATH ${H5ZSTD_SOURCE_DIR})
     endif ()
-    set (ZSTD_URL ${TGZPATH}/${ZSTD_TGZ_NAME})
+    set (ZSTD_URL ${H5PL_COMP_TGZPATH}/${ZSTD_TGZ_NAME})
   else ()
     set (ZSTD_USE_EXTERNAL 0)
   endif ()
@@ -113,7 +113,7 @@ if (ZSTD_FOUND)
   set (ZSTD_INCLUDE_DIRS ${ZSTD_INCLUDE_DIR})
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    EXTERNAL_ZSTD_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT} STATIC)
+    EXTERNAL_ZSTD_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set (H5ZSTD_HAVE_ZSTD 1)
     message (STATUS "Filter ZSTD is built")
   else ()
@@ -121,7 +121,7 @@ else ()
   endif ()
 endif ()
 message (STATUS "zstd found: INC=${ZSTD_INCLUDE_DIR} LIBS=${ZSTD_LIBRARIES}")
-set (LINK_LIBS ${LINK_LIBS} ${ZSTD_LIBRARIES})
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZSTD_LIBRARIES})
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
@@ -137,12 +137,6 @@ if (BUILD_TESTING)
 endif ()
 
 add_subdirectory (src)
-
-if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  if (ZSTD_FOUND AND ZSTD_USE_EXTERNAL)
-    add_dependencies (${H5ZSTD_LIB_TARGET} ZSTD)
-  endif ()
-endif ()
 
 option (BUILD_EXAMPLES "Build h5zstd Examples" OFF)
 if (BUILD_EXAMPLES)

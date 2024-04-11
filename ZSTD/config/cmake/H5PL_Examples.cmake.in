@@ -15,8 +15,8 @@ cmake_minimum_required(VERSION 3.12)
 # Execute from a command line:
 #     ctest -S H5PL_Examples.cmake,OPTION=VALUE -C Release -VV -O test.log
 ###############################################################################################################
-# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/1.@H5PL_PACKAGE_VERSION_MINOR@/lib/plugin,
-#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/1.@H5PL_PACKAGE_VERSION_MINOR@
+# Minimum where plugins are installed within hdf5 library install, /usr/local/HDF_Group/HDF5/@H5PL_PACKAGE_VERSION@/lib/plugin,
+#                                     then <hdf5 root loaction> is /usr/local/HDF_Group/HDF5/@H5PL_PACKAGE_VERSION@
 #     ctest -S H5PL_Examples.cmake,HDF5INSTALLDIR=<hdf5 root location> -C Release -VV -O test.log
 ###############################################################################################################
 
@@ -57,7 +57,7 @@ set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DCTEST_CONFIGURATION_TYPE:STRING=$
 ##################################################################
 
 if(NOT DEFINED HDF5INSTALLDIR)
-  set (HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/1.@H5PL_PACKAGE_VERSION_MINOR@")
+  set (HDF5INSTALLDIR "${CTEST_DASHBOARD_ROOT}/HDF_Group/HDF5/@H5PL_PACKAGE_VERSION@")
 endif()
 if(NOT DEFINED INSTALLDIR)
   set (INSTALLDIR "${HDF5INSTALLDIR}")
@@ -73,11 +73,6 @@ else(NOT DEFINED STATIC_ONLY)
   set (STATICLIBRARIES "NO")
 endif()
 
-if(NOT DEFINED HDF_LOCAL)
-  set (CDASH_LOCAL "NO")
-else()
-  set (CDASH_LOCAL "YES")
-endif()
 if(NOT DEFINED CTEST_SITE)
   set (CTEST_SITE "local")
 endif()
@@ -88,7 +83,7 @@ set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DSITE:STRING=${CTEST_SITE} -DBUILD
 
 #TAR_SOURCE - name of tarfile
 #if(NOT DEFINED TAR_SOURCE)
-#  set (CTEST_USE_TAR_SOURCE "HDFPLExamples-1.@H5PL_PACKAGE_VERSION_MINOR@-Source")
+#  set (CTEST_USE_TAR_SOURCE "HDFPLExamples-@H5PL_PACKAGE_VERSION@-Source")
 #endif()
 
 ###############################################################################################################
@@ -109,13 +104,14 @@ else()
   set (ENV{PATH} "$ENV{PATH}:${HDF5INSTALLDIR}")
   set (HDF5_PLUGIN_ROOT "${INSTALLDIR}/lib/plugin")
 endif()
-if(${CDASH_LOCAL})
-  set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DCDASH_LOCAL:BOOL=ON")
-endif()
 set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DHDF5_PACKAGE_NAME:STRING=@HDF5_PACKAGE_NAME@")
 set (ENV{HDF5_PLUGIN_PATH} "${HDF5_PLUGIN_ROOT}")
 
 set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DDISABLE_H5PL_ENCODER:BOOL=@DISABLE_H5ZSTD_ENCODER@")
+### use a toolchain file (supported everywhere)       ####
+if("@CMAKE_TOOLCHAIN_FILE@")
+#  set(ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DCMAKE_TOOLCHAIN_FILE:STRING=@CMAKE_TOOLCHAIN_FILE@")
+endif()
 
 ###############################################################################################################
 # For any comments please contact cdashhelp@hdfgroup.org

@@ -26,15 +26,17 @@ set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOSC from Github" FORCE)
 set (BLOSC_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
-set (BLOSC_TGZ_NAME "c-blosc.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
+set (BLOSC_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (BLOSC_TGZ_NAME "c-blosc-1.21.5.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
 
 set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
 set (H5BLOSC_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
-set (BLOSC_ZLIB_GIT_URL "https://someurl/zlib.git" CACHE STRING "Use BLOSC_ZLIB from HDF repo" FORCE)
-set (BLOSC_ZLIB_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (BLOSC_ZLIB_GIT_URL "https://github.com/madler/zlib.git" CACHE STRING "Use ZLIB from  GitHub repository" FORCE)
+set (BLOSC_ZLIB_GIT_BRANCH "develop" CACHE STRING "" FORCE)
 
-set (BLOSC_ZLIB_TGZ_NAME "ZLib.tar.gz" CACHE STRING "Use BLOSC_ZLib from compressed file" FORCE)
+set (BLOSC_ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/releases/download/v1.3" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (BLOSC_ZLIB_TGZ_NAME "zlib-1.3.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
 
 set (BLOSC_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC_ZLIB package" FORCE)
 

@@ -8,3 +8,4 @@ LZ4/autom4te.cache
 LZ4/bin/reconfigure.local
 LZ4/bin/reconfigure.system
 LZ4/build
+/CMakeUserPresets.json

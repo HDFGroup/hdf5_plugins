@@ -65,5 +65,5 @@ if (TEST_EXPECT)
 endif ()
 
 # everything went fine...
-message ("Passed: The output of ${TEST_PROGRAM} matched")
+message (STATUS "Passed: The output of ${TEST_PROGRAM} matched")
 

@@ -1,0 +1,66 @@
+name: hdf5 plugins release build
+
+on:
+  workflow_dispatch:
+    inputs:
+      hdf_tag:
+        description: 'Release hdf5 version tag'
+        type: string
+        required: false
+        default: snapshot
+      use_tag:
+        description: 'Release version tag'
+        type: string
+        required: false
+        default: snapshot
+
+permissions:
+  contents: read
+
+# A workflow run is made up of one or more jobs that can run sequentially or
+# in parallel.
+jobs:
+  log-the-inputs:
+    runs-on: ubuntu-latest
+    outputs:
+      hdf_tag: ${{ steps.get-tag-name.outputs.HDF_TAG }}
+      rel_tag: ${{ steps.get-tag-name.outputs.RELEASE_TAG }}
+    steps:
+    - name: Get tag name
+      id: get-tag-name
+      env:
+        HDFTAG: ${{ inputs.hdf_tag }}
+        TAG: ${{ inputs.use_tag }}
+      run: |
+        echo "HDF_TAG=$HDFTAG" >> $GITHUB_OUTPUT
+        echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
+
+  call-workflow-tarball:
+    needs: log-the-inputs
+    uses: ./.github/workflows/tarball.yml
+    with:
+      use_tag: master
+      use_environ: release
+
+  call-workflow-ctest:
+    needs: [log-the-inputs, call-workflow-tarball]
+    uses: ./.github/workflows/cmake-ctest.yml
+    with:
+      preset_name: ci-StdShar
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      use_hdf: ${{ needs.log-the-inputs.outputs.hdf_tag }}
+      snap_name: hdf5_plugins-${{ needs.call-workflow-tarball.outputs.source_base }}
+      use_environ: release
+
+  call-workflow-release:
+    needs: [log-the-inputs, call-workflow-tarball, call-workflow-ctest]
+    permissions:
+      contents: write # In order to allow tag creation
+    uses: ./.github/workflows/release-files.yml
+    with:
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
+      file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
+      use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
+      use_environ: release
+
