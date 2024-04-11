@@ -49,7 +49,7 @@ jobs:
       preset_name: ci-StdShar
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.log-the-inputs.outputs.hdf_tag }}
-      snap_name: hdf5-${{ needs.call-workflow-tarball.outputs.source_base }}
+      snap_name: hdf5_plugins-${{ needs.call-workflow-tarball.outputs.source_base }}
       use_environ: release
 
   call-workflow-release:
