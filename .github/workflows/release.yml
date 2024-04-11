@@ -1,6 +1,5 @@
 name: hdf5 plugins release build
 
-# Controls when the action will run. Triggers the workflow on a manual run
 on:
   workflow_dispatch:
     inputs:
