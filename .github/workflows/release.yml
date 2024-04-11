@@ -7,12 +7,12 @@ on:
         description: 'Release hdf5 version tag'
         type: string
         required: false
-        default: snapshot
+        default: snapshot-1.14
       use_tag:
         description: 'Release version tag'
         type: string
         required: false
-        default: snapshot
+        default: snapshot-1.14
 
 permissions:
   contents: read
