@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       hdf5-name: ${{ steps.gethdf5base.outputs.HDF5_NAME_BASE }}
+      plugin-name: ${{ steps.gethdf5base.outputs.PLUGIN_NAME_BASE }}
       run-ignore: ${{ steps.getinputs.outputs.INPUTS_IGNORE }}
 
     steps:
@@ -33,11 +34,24 @@ jobs:
         version: 'tags/snapshot'
         file: 'last-file.txt'
 
-    - name: Read base-name file
+    - name: Read HDF5 base-name file
       id: gethdf5base
       run: echo "HDF5_NAME_BASE=$(cat last-file.txt)" >> $GITHUB_OUTPUT
 
     - run: echo "hdf5 base name is ${{ steps.gethdf5base.outputs.HDF5_NAME_BASE }}."
+
+    - name: Get plugin release base name
+      uses: dsaltares/fetch-gh-release-asset@master
+      with:
+        repo: 'HDFGroup/hdf5_plugins'
+        version: 'tags/snapshot'
+        file: 'last-file.txt'
+
+    - name: Read base-name file
+      id: getpluginbase
+      run: echo "PLUGIN_NAME_BASE=$(cat last-file.txt)" >> $GITHUB_OUTPUT
+
+    - run: echo "hdf5 base name is ${{ steps.getpluginbase.outputs.PLUGIN_NAME_BASE }}."
 
     - name: Read inputs
       id: getinputs
@@ -59,7 +73,7 @@ jobs:
     with:
       preset_name: ci-StdShar
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
-      use_hdf: ${{ needs.get-base-names.outputs.hdf5-name }}
+      use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
 #      use_tag: snapshot
       use_environ: snapshots
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
@@ -83,7 +97,7 @@ jobs:
       contents: write # In order to allow file deletion
     uses: ./.github/workflows/remove-files.yml
     with:
-      file_base: ${{ needs.get-old-names.outputs.hdf5-name }}
+      file_base: ${{ needs.get-old-names.outputs.plugin-name }}
       use_tag: snapshot
       use_environ: snapshots
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
