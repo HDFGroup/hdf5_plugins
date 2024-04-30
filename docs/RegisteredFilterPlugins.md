@@ -52,6 +52,8 @@ List of Filters Registered with The HDF Group
 |32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
+|32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | |
+|32030   |<a href="#hcompress">Hcompress</a>    | |
 
 
 ## <center>The Filters</center>
@@ -694,4 +696,44 @@ H5Z-SPERR is the HDF5 filter for SPERR. It's also available on Github: https://g
 #### Contact Information:
 Samuel Li
 Email: shaomeng at ucar dot edu
+
+##
+
+<h2 id="jpeg-2000">Openjpeg JPEG-2000</h2>
+
+#### Filter ID: 32029
+
+#### Filter Description:
+
+Image Compression SoftwareOpenJPEG is an open-source JPEG 2000 codec written in C language. It has been developed in order to promote the use of JPEG 2000, a still-image compression standard from the Joint Photographic Experts Group (JPEG). Since may 2015, it is officially recognized by ISO/IEC and ITU-T as a JPEG 2000 Reference Software.
+
+#### Filter Information:
+
+
+
+#### Contact Information:
+Ronin Institute for Independent Scholarship
+Herbert J. Bernstein
+Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
+
+##
+
+<h2 id="hcompress">Hcompress Image Compression Software</h2>
+
+#### Filter ID: 32030
+
+#### Filter Description:
+
+Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute.  Hcompress was used to compress the STScI Digitized Sky Surveyand has also been used to compress the preview images in the Hubble Data Archive. Briefly, the method used is a wavelet transform called the H-transform (a Haar transform generalized to two dimensions), followed by quantization that discards noise in the image while retaining the signal on all scales, followed by quadtree coding of the quantized coefficients.
+
+The technique gives very good compression for astronomical images and is fast, requiring about 1 second for compression or decompression of a 512x512 image on a Sun SPARCstation 2. (Yes, this software was written a long time ago.) The calculations are carried out using integer arithmetic and are entirely reversible. Consequently, the program can be used for either lossy or lossless compression, with no special approach needed for the lossless case (e.g. there is no need for a file of residuals.) Documentation on the use of the programs and on the compression method is included in the doc subdirectory.
+
+#### Filter Information:
+
+
+
+#### Contact Information:
+Ronin Institute for Independent Scholarship
+Herbert J. Bernstein
+Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
 
