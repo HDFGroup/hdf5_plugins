@@ -699,21 +699,21 @@ Email: shaomeng at ucar dot edu
 
 ##
 
-<h2 id="jpeg-2000">Openjpeg JPEG-2000</h2>
+<h2 id="jpeg-2000">openjpeg JPEG-2000</h2>
 
 #### Filter ID: 32029
 
 #### Filter Description:
 
-Image Compression SoftwareOpenJPEG is an open-source JPEG 2000 codec written in C language. It has been developed in order to promote the use of JPEG 2000, a still-image compression standard from the Joint Photographic Experts Group (JPEG). Since may 2015, it is officially recognized by ISO/IEC and ITU-T as a JPEG 2000 Reference Software.
+OpenJPEG is an open-source JPEG 2000 codec written in C language. It has been developed in order to promote the use of [JPEG 2000](http://www.jpeg.org/jpeg2000), a still-image compression standard from the Joint Photographic Experts Group ([JPEG](http://www.jpeg.org/)). Since may 2015, it is officially recognized by ISO/IEC and ITU-T as a [JPEG 2000 Reference Software](http://www.jpeg.org/jpeg2000/software.html).
 
 #### Filter Information:
 
-
+openjpeg JPEG-2000, [OpenJPEG](https://www.openjpeg.org/)
 
 #### Contact Information:
-Ronin Institute for Independent Scholarship
-Herbert J. Bernstein
+Ronin Institute for Independent Scholarship<br>
+Herbert J. Bernstein<br>
 Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
 
 ##
@@ -724,16 +724,20 @@ Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
 
 #### Filter Description:
 
-Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute.  Hcompress was used to compress the STScI Digitized Sky Surveyand has also been used to compress the preview images in the Hubble Data Archive. Briefly, the method used is a wavelet transform called the H-transform (a Haar transform generalized to two dimensions), followed by quantization that discards noise in the image while retaining the signal on all scales, followed by quadtree coding of the quantized coefficients.
+Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute.  Hcompress was used to compress the [STScI Digitized Sky Survey](https://archive.stsci.edu/cgi-bin/dss_form) and has also been used to compress the preview images in the [Hubble Data Archive](https://archive.stsci.edu). Briefly, the method used is:
+
+* a wavelet transform called the H-transform (a Haar transform generalized to two dimensions), followed by
+* quantization that discards noise in the image while retaining the signal on all scales, followed by
+* quadtree coding of the quantized coefficients.
 
 The technique gives very good compression for astronomical images and is fast, requiring about 1 second for compression or decompression of a 512x512 image on a Sun SPARCstation 2. (Yes, this software was written a long time ago.) The calculations are carried out using integer arithmetic and are entirely reversible. Consequently, the program can be used for either lossy or lossless compression, with no special approach needed for the lossless case (e.g. there is no need for a file of residuals.) Documentation on the use of the programs and on the compression method is included in the doc subdirectory.
 
 #### Filter Information:
 
-
+[Hcompress Image Compression Software](https://www.stsci.edu/software/hcompress.html)
 
 #### Contact Information:
-Ronin Institute for Independent Scholarship
-Herbert J. Bernstein
+Ronin Institute for Independent Scholarship<br>
+Herbert J. Bernstein<br>
 Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
 
