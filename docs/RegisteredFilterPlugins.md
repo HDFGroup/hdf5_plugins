@@ -54,6 +54,8 @@ List of Filters Registered with The HDF Group
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
 |32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | |
 |32030   |<a href="#hcompress">Hcompress</a>    | |
+|32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | OpenJPEG is an open-source JPEG 2000 codec written in C language, capable of lossless compression, but often used as a lossy compression. |
+|32030   |<a href="#hcompress">Hcompress</a>    | Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute, which is particular useful as a compression to retain isolated srtong peaks against a quiet background. |
 
 
 ## <center>The Filters</center>
@@ -729,8 +731,6 @@ Hcompress is the image compression package written by Richard L. White for use a
 * a wavelet transform called the H-transform (a Haar transform generalized to two dimensions), followed by
 * quantization that discards noise in the image while retaining the signal on all scales, followed by
 * quadtree coding of the quantized coefficients.
-
-The technique gives very good compression for astronomical images and is fast, requiring about 1 second for compression or decompression of a 512x512 image on a Sun SPARCstation 2. (Yes, this software was written a long time ago.) The calculations are carried out using integer arithmetic and are entirely reversible. Consequently, the program can be used for either lossy or lossless compression, with no special approach needed for the lossless case (e.g. there is no need for a file of residuals.) Documentation on the use of the programs and on the compression method is included in the doc subdirectory.
 
 #### Filter Information:
 
