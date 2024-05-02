@@ -52,8 +52,6 @@ List of Filters Registered with The HDF Group
 |32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
-|32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | |
-|32030   |<a href="#hcompress">Hcompress</a>    | |
 |32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | OpenJPEG is an open-source JPEG 2000 codec written in C language, capable of lossless compression, but often used as a lossy compression. |
 |32030   |<a href="#hcompress">Hcompress</a>    | Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute, which is particularly useful as a compression to retain isolated strong peaks against a quiet background. |
 
