@@ -55,7 +55,7 @@ List of Filters Registered with The HDF Group
 |32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | |
 |32030   |<a href="#hcompress">Hcompress</a>    | |
 |32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | OpenJPEG is an open-source JPEG 2000 codec written in C language, capable of lossless compression, but often used as a lossy compression. |
-|32030   |<a href="#hcompress">Hcompress</a>    | Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute, which is particular useful as a compression to retain isolated srtong peaks against a quiet background. |
+|32030   |<a href="#hcompress">Hcompress</a>    | Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute, which is particularly useful as a compression to retain isolated strong peaks against a quiet background. |
 
 
 ## <center>The Filters</center>
