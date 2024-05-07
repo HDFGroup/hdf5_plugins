@@ -49,11 +49,9 @@ List of Filters Registered with The HDF Group
 |32023   |<a href="#gbr">Granular</a> |BitRound (GBR) The GBG quantization algorithm is a significant improvement to the BitGroom filter|
 |32024   |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
 |32025   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
-|32026   |<a href="#blosc2">BLOSC2</a>   |The recent new-generation version of the Blosc compression library|
+|32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
-|32029   |<a href="#jpeg-2000">Openjpeg JPEG-2000</a>    | OpenJPEG is an open-source JPEG 2000 codec written in C language, capable of lossless compression, but often used as a lossy compression. |
-|32030   |<a href="#hcompress">Hcompress</a>    | Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute, which is particularly useful as a compression to retain isolated strong peaks against a quiet background. |
 
 
 ## <center>The Filters</center>
@@ -696,46 +694,4 @@ H5Z-SPERR is the HDF5 filter for SPERR. It's also available on Github: https://g
 #### Contact Information:
 Samuel Li
 Email: shaomeng at ucar dot edu
-
-##
-
-<h2 id="jpeg-2000">openjpeg JPEG-2000</h2>
-
-#### Filter ID: 32029
-
-#### Filter Description:
-
-OpenJPEG is an open-source JPEG 2000 codec written in C language. It has been developed in order to promote the use of [JPEG 2000](http://www.jpeg.org/jpeg2000), a still-image compression standard from the Joint Photographic Experts Group ([JPEG](http://www.jpeg.org/)). Since may 2015, it is officially recognized by ISO/IEC and ITU-T as a [JPEG 2000 Reference Software](http://www.jpeg.org/jpeg2000/software.html).
-
-#### Filter Information:
-
-openjpeg JPEG-2000, [OpenJPEG](https://www.openjpeg.org/)
-
-#### Contact Information:
-Ronin Institute for Independent Scholarship<br>
-Herbert J. Bernstein<br>
-Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
-
-##
-
-<h2 id="hcompress">Hcompress Image Compression Software</h2>
-
-#### Filter ID: 32030
-
-#### Filter Description:
-
-Hcompress is the image compression package written by Richard L. White for use at the Space Telescope Science Institute.  Hcompress was used to compress the [STScI Digitized Sky Survey](https://archive.stsci.edu/cgi-bin/dss_form) and has also been used to compress the preview images in the [Hubble Data Archive](https://archive.stsci.edu). Briefly, the method used is:
-
-* a wavelet transform called the H-transform (a Haar transform generalized to two dimensions), followed by
-* quantization that discards noise in the image while retaining the signal on all scales, followed by
-* quadtree coding of the quantized coefficients.
-
-#### Filter Information:
-
-[Hcompress Image Compression Software](https://www.stsci.edu/software/hcompress.html)
-
-#### Contact Information:
-Ronin Institute for Independent Scholarship<br>
-Herbert J. Bernstein<br>
-Email: yayahjb at gmail dot com or hbernstein at bnl dot gov
 

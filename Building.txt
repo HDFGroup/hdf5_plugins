@@ -10,7 +10,7 @@ Example for blosc (in the build folder):
 
 For CMake, you must supply the location of the CMake-built HDF5 configuration files
     in environment variables.
-    In addition, CMake options "BUILD_EXAMPLES" and "BUILD_TESTING" must
+    In addition, CMake options "H5PL_BUILD_EXAMPLES" and "H5PL_BUILD_TESTING" must
     be set "ON" in order to build the example and run the tests.
     The external compression library sources are provided in the PLUGIN_SOURCE folder.
     These can be used with the H5PL_ALLOW_EXTERNAL_SUPPORT option.

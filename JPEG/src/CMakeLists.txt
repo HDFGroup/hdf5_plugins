@@ -42,7 +42,7 @@ target_link_libraries (${H5JPEG_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5JPEG_LIBRARIES_TO_EXPORT ${H5JPEG_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5JPEG" ${H5JPEG_LIB_TARGET} ${H5JPEG_LIB_NAME} MODULE)
 
-if (BUILD_TESTING)
+if (H5PL_BUILD_TESTING)
   #-----------------------------------------------------------------------------
   # Copy plugin library to a plugins folder
   #-----------------------------------------------------------------------------

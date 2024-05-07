@@ -27,8 +27,8 @@ message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
 #-----------------------------------------------------------------------------
-option (BUILD_TESTING "Build H5PL Example Testing" OFF)
-if (BUILD_TESTING)
+option (H5PL_BUILD_TESTING "Build H5PL Example Testing" OFF)
+if (H5PL_BUILD_TESTING)
   set (DART_TESTING_TIMEOUT 1200
       CACHE STRING
       "Timeout in seconds for each test (default 1200=20minutes)"
@@ -53,6 +53,13 @@ if (WIN32 AND MSVC_VERSION GREATER 1600)
   set (BLOSC_AVAILABLE 1)
 elseif (NOT WIN32)
   set (BLOSC_AVAILABLE 1)
+endif ()
+
+# BLOSC2 filter
+if (WIN32 AND MSVC_VERSION GREATER 1600)
+  set (BLOSC2_AVAILABLE 1)
+elseif (NOT WIN32)
+  set (BLOSC2_AVAILABLE 1)
 endif ()
 
 # BZIP2 filter
