@@ -165,11 +165,10 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
+              -D "TEST_MASK_MOD=YES"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-              -D "TEST_FILTER:STRING=SIZE [0-9]* \\[0-9]\\\.[0-9][0-9][0-9]:1 COMPRESSION\\)"
-              -D "TEST_FILTER_REPLACE:STRING=SIZE XXXX (X.XXX:1 COMPRESSION)"
               -P "${H5BLOSC2_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (H5BLOSC2_UD-h5dump-${testname} PROPERTIES DEPENDS H5BLOSC2_UD-${testname})
