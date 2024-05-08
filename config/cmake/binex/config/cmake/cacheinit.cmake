@@ -15,7 +15,7 @@
 # EXTERNAL cache entries
 ########################
 
-set (BUILD_TESTING ON CACHE BOOL "Build HDF5 Unit Testing" FORCE)
+set (H5PL_BUILD_TESTING ON CACHE BOOL "Build HDF5 Unit Testing" FORCE)
 
 set (HDF5_BUILD_TOOLS ON CACHE BOOL "Use HDF5 Build Unit Testing" FORCE)
 

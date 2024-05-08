@@ -27,8 +27,8 @@ message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
 #-----------------------------------------------------------------------------
-option (BUILD_TESTING "Build HDFPL Example Testing" OFF)
-if (BUILD_TESTING)
+option (H5PL_BUILD_TESTING "Build HDFPL Example Testing" OFF)
+if (H5PL_BUILD_TESTING)
   set (DART_TESTING_TIMEOUT 1200
       CACHE STRING
       "Timeout in seconds for each test (default 1200=20minutes)"

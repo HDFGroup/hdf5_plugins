@@ -36,11 +36,11 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
     # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
-    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries" FORCE)
     # Store the old value of the 'BUILD_TESTING'
     set (BUILD_TESTING_OLD ${BUILD_TESTING})
     # Make subproject to use 'BUILD_TESTING=OFF' setting.
-    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
+    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
     add_subdirectory (${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
 
