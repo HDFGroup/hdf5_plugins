@@ -87,7 +87,7 @@ macro (EXTERNAL_BLOSC_ZLIB_LIBRARY compress_type)
     add_subdirectory(${blosc_zlib_SOURCE_DIR} ${blosc_zlib_BINARY_DIR})
   endif()
 
-  set (BLOSC_ZLIB_STATIC_LIBRARY "zlibstatic")
+  set (BLOSC_ZLIB_STATIC_LIBRARY "zlibstat")
   set (BLOSC_ZLIB_LIBRARY ${BLOSC_ZLIB_STATIC_LIBRARY})
   set (BLOSC_ZLIB_LIBRARIES ${BLOSC_ZLIB_LIBRARY})
 
