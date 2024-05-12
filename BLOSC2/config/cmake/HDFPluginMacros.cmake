@@ -156,6 +156,12 @@ macro (BASIC_SETTINGS varname)
   if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
+if (CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
+   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-implicit-function-declaration")
+endif ()
+if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-implicit-function-declaration")
+endif ()
 
   #-----------------------------------------------------------------------------
   # This is in here to help some of the GCC based IDES like Eclipse
