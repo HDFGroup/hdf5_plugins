@@ -39,7 +39,7 @@ macro (EXTERNAL_BLOSC2_LIBRARY compress_type)
     set (BLOSC_INSTALL OFF CACHE BOOL "" FORCE)
 
     add_subdirectory(${blosc2_SOURCE_DIR} ${blosc2_BINARY_DIR})
-    target_compile_options(blosc2_static PRIVATE $<$<CXX_COMPILER_ID:IntelLLVM>:-Wno-implicit-function-declaration>)
+    target_compile_options(blosc2_static PRIVATE $<$<CMAKE_C_COMPILER_ID:IntelLLVM>:-Wno-implicit-function-declaration>)
 
     # Restore the old value of the parameter
     set (BUILD_EXAMPLES ${BUILD_EXAMPLES_OLD} CACHE BOOL "Build EXAMPLES" FORCE)
