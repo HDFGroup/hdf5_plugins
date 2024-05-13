@@ -46,7 +46,7 @@ endif ()
 set_global_variable (H5SZ_LIBRARIES_TO_EXPORT ${H5SZ_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5SZ" ${H5SZ_LIB_TARGET} ${H5SZ_LIB_NAME} MODULE)
 
-if (BUILD_TESTING)
+if (H5PL_BUILD_TESTING)
   #-----------------------------------------------------------------------------
   # Copy plugin library to a plugins folder
   #-----------------------------------------------------------------------------

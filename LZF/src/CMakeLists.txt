@@ -43,7 +43,7 @@ target_link_libraries (${H5LZF_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5LZF_LIBRARIES_TO_EXPORT ${H5LZF_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5LZF" ${H5LZF_LIB_TARGET} ${H5LZF_LIB_NAME} MODULE)
 
-if (BUILD_TESTING)
+if (H5PL_BUILD_TESTING)
   #-----------------------------------------------------------------------------
   # Copy plugin library to a plugins folder
   #-----------------------------------------------------------------------------

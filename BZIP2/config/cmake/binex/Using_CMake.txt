@@ -112,7 +112,7 @@ These steps are described in more detail below.
             * ... [Win32, x64, ARM, ARM64]
 
         <options> is:
-            * BUILD_TESTING:BOOL=ON
+            * H5PL_BUILD_TESTING:BOOL=ON
 
    2. Configure the cache settings
 
@@ -136,7 +136,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
-           cmake -G "Visual Studio 14 2015 Win64" -DBUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 14 2015 Win64" -DH5PL_BUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Plugin examples
 

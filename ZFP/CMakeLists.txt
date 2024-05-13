@@ -236,8 +236,8 @@ configure_file (${H5ZFP_RESOURCES_DIR}/config.h.in ${H5ZFP_BINARY_DIR}/zfp_confi
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
 #-----------------------------------------------------------------------------
-option (BUILD_TESTING "Build h5zfp Unit Testing" OFF)
-if (BUILD_TESTING)
+option (H5PL_BUILD_TESTING "Build h5zfp Unit Testing" OFF)
+if (H5PL_BUILD_TESTING)
   set (DART_TESTING_TIMEOUT 1200 CACHE STRING
        "Timeout in seconds for each test (default 1200=20minutes)")
   enable_testing ()
@@ -248,8 +248,8 @@ endif ()
 
 add_subdirectory (src)
 
-option (BUILD_EXAMPLES "Build h5zfp Examples" OFF)
-if (BUILD_EXAMPLES)
+option (H5PL_BUILD_EXAMPLES "Build h5zfp Examples" OFF)
+if (H5PL_BUILD_EXAMPLES)
   add_subdirectory (example)
 endif ()
 

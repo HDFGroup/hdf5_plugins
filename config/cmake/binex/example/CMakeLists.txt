@@ -16,6 +16,9 @@ set (dyn_examples)
 if (BLOSC_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_blosc)
 endif ()
+if (BLOSC2_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_blosc2)
+endif ()
 if (BSHUF_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_bshuf)
 endif ()
@@ -63,7 +66,7 @@ foreach (example ${dyn_examples} ${extra_examples})
   endif ()
 endforeach ()
 
-if (BUILD_TESTING)
+if (H5PL_BUILD_TESTING)
   macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
