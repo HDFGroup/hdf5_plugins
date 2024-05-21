@@ -298,14 +298,34 @@ jobs:
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'snapshots') }}
+        continue-on-error: true
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-osx12.tar.gz'
+          file: '${{ inputs.use_hdf5 }}-osx.tar.gz'
+      
+      - name: Get hdf5 release osx12
+        if: ${{ (inputs.use_environ == 'snapshots') }}
+        continue-on-error: true
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'HDFGroup/hdf5'
+          version: 'tags/snapshot'
+          file: '${{ inputs.use_hdf5 }}-osx12.tar.gz'
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
+        continue-on-error: true
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'HDFGroup/hdf5'
+          version: 'tags/${{ inputs.use_hdf }}'
+          file: '${{ inputs.use_hdf }}-osx.tar.gz'
+
+      - name: Get hdf5 release
+        if: ${{ (inputs.use_environ == 'release') }}
+        continue-on-error: true
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           repo: 'HDFGroup/hdf5'
@@ -318,7 +338,7 @@ jobs:
               ls ${{ runner.workspace }}
 
       - name: Uncompress gh binary (MacOS)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-osx12.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-osx*.tar.gz
 
       - name: Uncompress hdf5 binary (MacOS)
         run:  |
@@ -369,7 +389,7 @@ jobs:
           cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/README.txt ${{ runner.workspace }}/build/hdf5_plugins
           cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/*.tar.gz ${{ runner.workspace }}/build/hdf5_plugins
           cd "${{ runner.workspace }}/build"
-          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-osx12.tar.gz hdf5_plugins
+          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-osx.tar.gz hdf5_plugins
         shell: bash
 
       - name: List files in the space (MacOS)
@@ -381,6 +401,6 @@ jobs:
       - name: Save published binary (MacOS)
         uses: actions/upload-artifact@v4
         with:
-              name: tgz-osx12-binary
-              path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-osx12.tar.gz
+              name: tgz-osx-binary
+              path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-osx.tar.gz
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
