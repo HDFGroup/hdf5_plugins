@@ -43,7 +43,7 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type)
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
     # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
-    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries" FORCE)
 
     add_subdirectory (${zfp_SOURCE_DIR} ${zfp_BINARY_DIR})
 

@@ -15,9 +15,9 @@
 # EXTERNAL cache entries
 ########################
 
-set (BUILD_TESTING ON CACHE BOOL "Build h5jpeg Unit Testing" FORCE)
+set (H5PL_BUILD_TESTING ON CACHE BOOL "Build h5jpeg Unit Testing" FORCE)
 
-set (BUILD_EXAMPLES ON CACHE BOOL "Build h5jpeg Examples" FORCE)
+set (H5PL_BUILD_EXAMPLES ON CACHE BOOL "Build h5jpeg Examples" FORCE)
 
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 

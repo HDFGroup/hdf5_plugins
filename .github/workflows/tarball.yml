@@ -8,7 +8,7 @@ on:
         description: 'Release version tag'
         type: string
         required: false
-        default: snapshot-1.14
+        default: snapshot
       use_environ:
         description: 'Environment to locate files'
         type: string
@@ -104,9 +104,9 @@ jobs:
           then
             FILE_NAME_BASE=$(echo "hdf5_plugins-${{ needs.check_commits.outputs.branch_ref }}-${{ needs.check_commits.outputs.branch_sha }}")
           else
-            if [[ '${{ inputs.use_tag }}' == 'snapshot-1.14' ]]
+            if [[ '${{ inputs.use_tag }}' == 'snapshot' ]]
             then
-              FILE_NAME_BASE=$(echo "snapshot-1.14")
+              FILE_NAME_BASE=$(echo "snapshot")
             else
               FILE_NAME_BASE=$(echo "hdf5_plugins-${{ steps.version.outputs.SOURCE_TAG }}")
             fi

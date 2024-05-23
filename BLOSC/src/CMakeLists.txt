@@ -16,6 +16,12 @@ project (H5BLOSC_SRC C)
 # Apply Definitions to compiler in this directory and below
 #-----------------------------------------------------------------------------
 add_definitions (${HDF5_EXTRA_C_FLAGS})
+#-----------------------------------------------------------------------------
+# Compiler specific flags : Shouldn't there be compiler tests for these
+#-----------------------------------------------------------------------------
+  if (CMAKE_COMPILER_IS_GNUCC OR (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX))
+    add_definitions ("-Wno-incompatible-pointer-types")
+  endif ()
 
 #-----------------------------------------------------------------------------
 # Setup include Directories
@@ -41,7 +47,7 @@ target_link_libraries (${H5BLOSC_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
 set_global_variable (H5BLOSC_LIBRARIES_TO_EXPORT ${H5BLOSC_LIB_TARGET})
 HDF_SET_LIB_VERSIONS ("H5BLOSC" ${H5BLOSC_LIB_TARGET} ${H5BLOSC_LIB_NAME} MODULE)
 
-if (BUILD_TESTING)
+if (H5PL_BUILD_TESTING)
   #-----------------------------------------------------------------------------
   # Copy plugin library to a plugins folder
   #-----------------------------------------------------------------------------

@@ -31,17 +31,17 @@ macro (EXTERNAL_LZF_LIBRARY compress_type)
     # Copy an additional/replacement files into the populated source
     file(COPY ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${lzf_SOURCE_DIR})
 
-    set (LZF_EXTERNALLY_CONFIGURED OFF CACHE INTERNAL "No package")
-    set (LZF_INSTALL_NO_DEVELOPMENT OFF CACHE INTERNAL "No package")
+    set (LZF_EXTERNALLY_CONFIGURED OFF CACHE INTERNAL "No package" FORCE)
+    set (LZF_INSTALL_NO_DEVELOPMENT OFF CACHE INTERNAL "No package" FORCE)
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
     # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
-    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries")
+    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries" FORCE)
     # Store the old value of the 'BUILD_TESTING'
     set (BUILD_TESTING_OLD ${BUILD_TESTING})
     # Make subproject to use 'BUILD_TESTING=OFF' setting.
-    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
+    set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
     add_subdirectory (${lzf_SOURCE_DIR} ${lzf_BINARY_DIR})
 

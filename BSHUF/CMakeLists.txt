@@ -201,8 +201,8 @@ endif ()
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
 #-----------------------------------------------------------------------------
-option (BUILD_TESTING "Build h5bshuf Unit Testing" OFF)
-if (BUILD_TESTING)
+option (H5PL_BUILD_TESTING "Build h5bshuf Unit Testing" OFF)
+if (H5PL_BUILD_TESTING)
   set (DART_TESTING_TIMEOUT 1200 CACHE STRING
        "Timeout in seconds for each test (default 1200=20minutes)")
   enable_testing ()
@@ -213,8 +213,8 @@ endif ()
 
 add_subdirectory (src)
 
-option (BUILD_EXAMPLES "Build h5bshuf Examples" OFF)
-if (BUILD_EXAMPLES)
+option (H5PL_BUILD_EXAMPLES "Build h5bshuf Examples" OFF)
+if (H5PL_BUILD_EXAMPLES)
   add_subdirectory (example)
 endif ()
 

@@ -17,10 +17,10 @@
 
 set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
-set (BUILD_TESTING ON CACHE BOOL "Build h5blosc Unit Testing" FORCE)
-set (H5PL_BUILD_TESTING ON CACHE BOOL "Enable h5pl examples" FORCE)
+set (H5PL_BUILD_TESTING ON CACHE BOOL "Build h5blosc Unit Testing" FORCE)
+set (H5PL_H5PL_BUILD_TESTING ON CACHE BOOL "Enable h5pl examples" FORCE)
 
-set (BUILD_EXAMPLES ON CACHE BOOL "Build h5pl Examples" FORCE)
+set (H5PL_BUILD_EXAMPLES ON CACHE BOOL "Build h5pl Examples" FORCE)
 
 set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
 
@@ -34,8 +34,8 @@ set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 set (H5PL_GIT_URL "https://github.com/HDFGroup/h5plugin.git" CACHE STRING "Use plugins from HDF repository" FORCE)
 set (H5PL_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
-set (H5PL_TGZ_ORIGPATH "https://github.com/HDFGroup/hdf5_plugins/releases/download/snapshot-1.14" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (H5PL_TGZ_NAME "hdf5_plugins-1_14.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)
+set (H5PL_TGZ_ORIGPATH "https://github.com/HDFGroup/hdf5_plugins/releases/download/snapshots" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (H5PL_TGZ_NAME "hdf5_plugins-master.tar.gz" CACHE STRING "Use plugins from compressed file" FORCE)
 
 set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
 set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
@@ -69,6 +69,24 @@ set (BLOSC_ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/releases/download/v
 set (BLOSC_ZLIB_TGZ_NAME "zlib-1.3.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
 
 set (BLOSC_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC_ZLIB package" FORCE)
+
+############################# blosc2 ################################################
+
+set (BLOSC2_GIT_URL "https://github.com/Blosc/c-blosc2.git" CACHE STRING "Use BLOSC2 from Github repository" FORCE)
+set (BLOSC2_GIT_BRANCH "main" CACHE STRING "" FORCE)
+
+set (BLOSC2_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc2/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (BLOSC2_TGZ_NAME "c-blosc2-2.14.4.tar.gz" CACHE STRING "Use BLOSC2 from compressed file" FORCE)
+
+set (BLOSC2_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC2 package" FORCE)
+
+set (BLOSC2_ZLIB_GIT_URL "https://github.com/madler/zlib.git" CACHE STRING "Use ZLIB from  GitHub repository" FORCE)
+set (BLOSC2_ZLIB_GIT_BRANCH "develop" CACHE STRING "" FORCE)
+
+set (BLOSC2_ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/releases/download/v1.3" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (BLOSC2_ZLIB_TGZ_NAME "zlib-1.3.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
+
+set (BLOSC2_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC2_ZLIB package" FORCE)
 
 ############################# bzip2 ################################################
 

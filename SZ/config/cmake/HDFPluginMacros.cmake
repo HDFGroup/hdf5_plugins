@@ -322,7 +322,7 @@ macro (INSTALL_SUPPORT varname)
     #-----------------------------------------------------------------------------
     # Configure the H5PL_Examples.cmake file and the examples
     #-----------------------------------------------------------------------------
-    if (${PLUGIN_PACKAGE_NAME}_BUILD_TESTING)
+    if (${PLUGIN_PACKAGE_NAME}_H5PL_BUILD_TESTING)
       configure_file (
           ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
           ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY

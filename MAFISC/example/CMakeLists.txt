@@ -32,7 +32,7 @@ foreach (example ${dyn_examples})
   endif ()
 endforeach ()
 
-if (BUILD_TESTING)
+if (H5PL_BUILD_TESTING)
   macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
