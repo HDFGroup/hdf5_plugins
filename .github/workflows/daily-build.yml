@@ -31,7 +31,7 @@ jobs:
       uses: dsaltares/fetch-gh-release-asset@master
       with:
         repo: 'HDFGroup/hdf5'
-        version: 'tags/snapshot'
+        version: 'tags/snapshot-1.14'
         file: 'last-file.txt'
 
     - name: Read HDF5 base-name file
@@ -44,7 +44,7 @@ jobs:
       uses: dsaltares/fetch-gh-release-asset@master
       with:
         repo: 'HDFGroup/hdf5_plugins'
-        version: 'tags/snapshot'
+        version: 'tags/snapshot-1.14'
         file: 'last-file.txt'
 
     - name: Read base-name file
@@ -64,7 +64,7 @@ jobs:
     needs: [get-old-names]
     uses: ./.github/workflows/tarball.yml
     with:
-      use_tag: snapshot
+      use_tag: snapshot-1.14
       use_environ: snapshots
 
   call-workflow-ctest:
@@ -74,7 +74,7 @@ jobs:
       preset_name: ci-StdShar
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
-#      use_tag: snapshot
+#      use_tag: snapshot-1.14
       use_environ: snapshots
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
 
@@ -87,7 +87,7 @@ jobs:
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
       file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
-      use_tag: snapshot
+      use_tag: snapshot-1.14
       use_environ: snapshots
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
 
@@ -98,7 +98,7 @@ jobs:
     uses: ./.github/workflows/remove-files.yml
     with:
       file_base: ${{ needs.get-old-names.outputs.plugin-name }}
-      use_tag: snapshot
+      use_tag: snapshot-1.14
       use_environ: snapshots
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
 
