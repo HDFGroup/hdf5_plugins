@@ -303,7 +303,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf5 }}-osx.tar.gz'
+          file: '${{ inputs.use_hdf }}-osx.tar.gz'
       
       - name: Get hdf5           snapshot osx12
         if: ${{ (inputs.use_environ == 'snapshots') }}
@@ -312,7 +312,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf5 }}-osx12.tar.gz'
+          file: '${{ inputs.use_hdf }}-osx12.tar.gz'
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
