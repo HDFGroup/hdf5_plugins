@@ -401,6 +401,6 @@ jobs:
       - name: Save published binary (MacOS)
         uses: actions/upload-artifact@v4
         with:
-              name: tgz-osx12-binary
+              name: tgz-osx-binary
               path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-osx12.tar.gz
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
