@@ -52,6 +52,7 @@ List of Filters Registered with The HDF Group
 |32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
+|32029   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
 
 
 ## <center>The Filters</center>
@@ -689,9 +690,29 @@ SPERR is a wavelet-based lossy compressor for floating-point scientific data; it
 
 #### Filter Information:
 
-H5Z-SPERR is the HDF5 filter for SPERR. It's also available on Github: https://github.com/NCAR/H5Z-SPERR
+H5Z-SPERR is the HDF5 filter for SPERR. It is also available on Github: https://github.com/NCAR/H5Z-SPERR
 
 #### Contact Information:
 Samuel Li
 Email: shaomeng at ucar dot edu
+
+##
+
+<h2 id="trpx">TERSE/PROLIX (or TRPX) Filter</h2>
+
+#### Filter ID: 32029
+
+#### Filter Description:
+
+A new compression algorithm (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10626653/ ), which is specifically tailored for the lossless and fast compression of the diffraction data.
+
+#### Filter Information:
+
+GitHub repo of the algorithm: https://github.com/Senikm/trpx
+
+#### Contact Information:
+Jan Pieter Abrahams
+Email: jp.abrahams@unibas.ch
+Senik Matinyan
+Email: senik.matinyan@unibas.ch
 
