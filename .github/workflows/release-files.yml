@@ -1,6 +1,6 @@
 name: hdf5 plugins release-files
 
-# Controls when the action will run. Triggers the workflow on a schedule
+# Triggers the workflow on a call from another workflow
 on:
   workflow_call:
     inputs:
@@ -40,7 +40,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Get Sources
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -58,7 +58,6 @@ jobs:
           message: "Latest snapshot"
         if: ${{ inputs.use_environ == 'snapshots' }}
 
-      # Print result using the action output.
       - run: |
           echo "Tag already present: ${{ steps.tag_create.outputs.tag_exists }}"
 

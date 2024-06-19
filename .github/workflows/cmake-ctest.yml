@@ -1,6 +1,6 @@
 name: hdf5 plugins ctest runs
 
-# Controls when the action will run. Triggers the workflow on a call
+# Triggers the workflow on a call
 on:
   workflow_call:
     inputs:
