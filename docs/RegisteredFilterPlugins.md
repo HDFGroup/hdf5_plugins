@@ -704,7 +704,7 @@ Email: shaomeng at ucar dot edu
 
 #### Filter Description:
 
-A new compression algorithm (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10626653/ ), which is specifically tailored for the lossless and fast compression of the diffraction data.
+A new compression algorithm (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10626653/), which is specifically tailored for the lossless and fast compression of the diffraction data.
 
 #### Filter Information:
 
@@ -713,6 +713,7 @@ GitHub repo of the algorithm: https://github.com/Senikm/trpx
 #### Contact Information:
 Jan Pieter Abrahams
 Email: jp.abrahams@unibas.ch
+
 Senik Matinyan
 Email: senik.matinyan@unibas.ch
 
