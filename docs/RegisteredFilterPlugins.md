@@ -712,7 +712,7 @@ GitHub repo of the algorithm: https://github.com/Senikm/trpx
 
 #### Contact Information:
 Jan Pieter Abrahams
-Email: jp.abrahams@unibas.ch
+Email: jp.abrahams at unibas dot ch
 Senik Matinyan
-Email: senik.matinyan@unibas.ch
+Email: senik.matinyan at unibas dot ch
 
