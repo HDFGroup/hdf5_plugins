@@ -17,19 +17,25 @@ macro (EXTERNAL_LZF_LIBRARY compress_type)
     FetchContent_Declare (LZF
         GIT_REPOSITORY ${LZF_URL}
         GIT_TAG ${LZF_BRANCH}
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
     FetchContent_Declare (LZF
         URL ${LZF_URL}
         URL_HASH ""
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   endif ()
-  FetchContent_GetProperties (LZF)
-  if (NOT lzf_POPULATED)
-    FetchContent_Populate (LZF)
+#  FetchContent_GetProperties (LZF)
+#  if (NOT lzf_POPULATED)
+#    FetchContent_Populate (LZF)
 
     # Copy an additional/replacement files into the populated source
-    file(COPY ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${lzf_SOURCE_DIR})
+#    file(COPY ${H5LZF_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${lzf_SOURCE_DIR})
 
     set (LZF_EXTERNALLY_CONFIGURED OFF CACHE INTERNAL "No package" FORCE)
     set (LZF_INSTALL_NO_DEVELOPMENT OFF CACHE INTERNAL "No package" FORCE)
@@ -43,13 +49,14 @@ macro (EXTERNAL_LZF_LIBRARY compress_type)
     # Make subproject to use 'BUILD_TESTING=OFF' setting.
     set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
-    add_subdirectory (${lzf_SOURCE_DIR} ${lzf_BINARY_DIR})
+#    add_subdirectory (${lzf_SOURCE_DIR} ${lzf_BINARY_DIR})
+  FetchContent_MakeAvailable (LZF)
 
     # Restore the old value of the parameter
     set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
     # Restore the old value of the parameter
     set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-  endif ()
+#  endif ()
 
 #  include (${BINARY_DIR}/LZF-targets.cmake)
   set (LZF_LIBRARY "lzf-static")

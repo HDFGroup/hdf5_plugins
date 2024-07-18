@@ -24,9 +24,9 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type)
         URL_HASH ""
     )
   endif ()
-  FetchContent_GetProperties(BLOSC)
-  if(NOT blosc_POPULATED)
-    FetchContent_Populate(BLOSC)
+#  FetchContent_GetProperties(BLOSC)
+#  if(NOT blosc_POPULATED)
+#    FetchContent_Populate(BLOSC)
     set (BUILD_SHARED OFF CACHE BOOL "" FORCE)
     set (BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set (BUILD_FUZZERS OFF CACHE BOOL "" FORCE)
@@ -38,8 +38,9 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type)
     set (BLOSC_IS_SUBPROJECT ON CACHE BOOL "" FORCE)
     set (BLOSC_INSTALL OFF CACHE BOOL "" FORCE)
 
-    add_subdirectory(${blosc_SOURCE_DIR} ${blosc_BINARY_DIR})
-  endif()
+#    add_subdirectory(${blosc_SOURCE_DIR} ${blosc_BINARY_DIR})
+#  endif()
+  FetchContent_MakeAvailable(BLOSC)
 
 ##include (${BINARY_DIR}/${BLOSC_PACKAGE_NAME}${H5BLOSC_PACKAGE_EXT}-targets.cmake)
   set (BLOSC_STATIC_LIBRARY "blosc_static")
@@ -69,23 +70,30 @@ macro (EXTERNAL_BLOSC_ZLIB_LIBRARY compress_type)
     FetchContent_Declare (BLOSC_ZLIB
         GIT_REPOSITORY ${BLOSC_ZLIB_URL}
         GIT_TAG ${BLOSC_ZLIB_BRANCH}
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5BLOSC_SOURCE_DIR}/config/zlib-CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
     FetchContent_Declare (BLOSC_ZLIB
         URL ${BLOSC_ZLIB_URL}
         URL_HASH ""
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5BLOSC_SOURCE_DIR}/config/zlib-CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   endif ()
-  FetchContent_GetProperties(BLOSC_ZLIB)
-  if(NOT blosc_zlib_POPULATED)
-    FetchContent_Populate(BLOSC_ZLIB)
-
-    # Copy an additional/replacement files into the populated source
-    file(COPY ${H5BLOSC_SOURCE_DIR}/config/zlib-CMakeLists.txt DESTINATION ${blosc_zlib_SOURCE_DIR})
-    file(RENAME ${blosc_zlib_SOURCE_DIR}/zlib-CMakeLists.txt ${blosc_zlib_SOURCE_DIR}/CMakeLists.txt)
-
-    add_subdirectory(${blosc_zlib_SOURCE_DIR} ${blosc_zlib_BINARY_DIR})
-  endif()
+  FetchContent_MakeAvailable(BLOSC_ZLIB)
+#  FetchContent_GetProperties(BLOSC_ZLIB)
+#  if(NOT blosc_zlib_POPULATED)
+#    FetchContent_Populate(BLOSC_ZLIB)
+#
+#    # Copy an additional/replacement files into the populated source
+#    file(COPY ${H5BLOSC_SOURCE_DIR}/config/zlib-CMakeLists.txt DESTINATION ${blosc_zlib_SOURCE_DIR})
+#    file(RENAME ${blosc_zlib_SOURCE_DIR}/zlib-CMakeLists.txt ${blosc_zlib_SOURCE_DIR}/CMakeLists.txt)
+#
+#    add_subdirectory(${blosc_zlib_SOURCE_DIR} ${blosc_zlib_BINARY_DIR})
+#  endif()
 
   set (BLOSC_ZLIB_STATIC_LIBRARY "zlibstat")
   set (BLOSC_ZLIB_LIBRARY ${BLOSC_ZLIB_STATIC_LIBRARY})

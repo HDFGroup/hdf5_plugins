@@ -97,10 +97,10 @@ macro (BASIC_SETTINGS varname)
   #-----------------------------------------------------------------------------
   # Compiler specific flags : Shouldn't there be compiler tests for these
   #-----------------------------------------------------------------------------
-  if (CMAKE_COMPILER_IS_GNUCC)
+  if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     set (CMAKE_C_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_C_FLAGS} -std=c99 -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
-  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set (CMAKE_CXX_FLAGS "${CMAKE_ANSI_CFLAGS} ${CMAKE_CXX_FLAGS} -fomit-frame-pointer -finline-functions -fno-common")
   endif ()
 
@@ -138,10 +138,10 @@ macro (BASIC_SETTINGS varname)
   # This is in here to help some of the GCC based IDES like Eclipse
   # and code blocks parse the compiler errors and warnings better.
   #-----------------------------------------------------------------------------
-  if (CMAKE_COMPILER_IS_GNUCC)
+  if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
   endif ()
-  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX)
+  if (CMAKE_CXX_COMPILER_LOADED AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
   endif ()
 

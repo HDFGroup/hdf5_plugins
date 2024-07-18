@@ -17,19 +17,25 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type)
     FetchContent_Declare (BZ2
         GIT_REPOSITORY ${BZ2_URL}
         GIT_TAG ${BZ2_BRANCH}
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5BZ2_SOURCE_DIR}/config/CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
     FetchContent_Declare (BZ2
         URL ${BZ2_URL}
         URL_HASH ""
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5BZ2_SOURCE_DIR}/config/CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   endif ()
-  FetchContent_GetProperties(BZ2)
-  if(NOT bz2_POPULATED)
-    FetchContent_Populate(BZ2)
+#  FetchContent_GetProperties(BZ2)
+#  if(NOT bz2_POPULATED)
+#    FetchContent_Populate(BZ2)
 
     # Copy an additional/replacement files into the populated source
-    file(COPY ${H5BZ2_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${bz2_SOURCE_DIR})
+#    file(COPY ${H5BZ2_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${bz2_SOURCE_DIR})
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
@@ -40,13 +46,13 @@ macro (EXTERNAL_BZ2_LIBRARY compress_type)
     # Make subproject to use 'H5PL_BUILD_TESTING=OFF' setting.
     set (H5PL_BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
-    add_subdirectory(${bz2_SOURCE_DIR} ${bz2_BINARY_DIR})
-
+#    add_subdirectory(${bz2_SOURCE_DIR} ${bz2_BINARY_DIR})
+  FetchContent_MakeAvailable(BZ2)
     # Restore the old value of the parameter
     set (H5PL_BUILD_TESTING ${H5PL_BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
     # Restore the old value of the parameter
     set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-  endif ()
+#  endif ()
 
 #  include (${BINARY_DIR}/BZ2-targets.cmake)
   set (BZ2_LIBRARY "bz2-static")

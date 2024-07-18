@@ -24,9 +24,9 @@ macro (EXTERNAL_SZ_LIBRARY compress_type)
         URL_HASH ""
     )
   endif ()
-  FetchContent_GetProperties (SZF)
-  if (NOT szf_POPULATED)
-    FetchContent_Populate (SZF)
+#  FetchContent_GetProperties (SZF)
+#  if (NOT szf_POPULATED)
+#    FetchContent_Populate (SZF)
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
@@ -37,13 +37,14 @@ macro (EXTERNAL_SZ_LIBRARY compress_type)
     # Make subproject to use 'BUILD_TESTING=OFF' setting.
     set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing")
 
-    add_subdirectory (${szf_SOURCE_DIR} ${szf_BINARY_DIR})
+#    add_subdirectory (${szf_SOURCE_DIR} ${szf_BINARY_DIR})
+  FetchContent_MakeAvailable (SZF)
 
     # Restore the old value of the parameter
     set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
     # Restore the old value of the parameter
     set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-  endif ()
+#  endif ()
 
 #  include (${BINARY_DIR}/SZ-targets.cmake)
   set (SZ_LIBRARY "SZ;zstd;ZLIB")

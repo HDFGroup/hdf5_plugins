@@ -24,9 +24,9 @@ macro (EXTERNAL_BSHUF_LIBRARY compress_type)
         URL_HASH ""
     )
   endif ()
-  FetchContent_GetProperties(BSHUF)
-  if(NOT bshuf_POPULATED)
-    FetchContent_Populate(BSHUF)
+#  FetchContent_GetProperties(BSHUF)
+#  if(NOT bshuf_POPULATED)
+#    FetchContent_Populate(BSHUF)
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
@@ -37,13 +37,14 @@ macro (EXTERNAL_BSHUF_LIBRARY compress_type)
     # Make subproject to use 'H5PL_BUILD_TESTING=OFF' setting.
     set (H5PL_BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
-    add_subdirectory(${bshuf_SOURCE_DIR} ${bshuf_BINARY_DIR})
+#    add_subdirectory(${bshuf_SOURCE_DIR} ${bshuf_BINARY_DIR})
+  FetchContent_MakeAvailable(BSHUF)
 
     # Restore the old value of the parameter
     set (H5PL_BUILD_TESTING ${H5PL_BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
     # Restore the old value of the parameter
     set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-  endif()
+ # endif()
 
 #  include (${BINARY_DIR}/BSHUF-targets.cmake)
   set (BSHUF_LIBRARY "bshuf")
@@ -80,12 +81,13 @@ macro (EXTERNAL_LZ4_LIBRARY compress_type)
         URL_HASH ""
     )
   endif ()
-  FetchContent_GetProperties(LZ4)
-  if(NOT lz4_POPULATED)
-    FetchContent_Populate(LZ4)
-
-    add_subdirectory(${lz4_SOURCE_DIR} ${lz4_BINARY_DIR})
-  endif()
+  FetchContent_MakeAvailable(LZ4)
+#  FetchContent_GetProperties(LZ4)
+#  if(NOT lz4_POPULATED)
+#    FetchContent_Populate(LZ4)
+#
+#    add_subdirectory(${lz4_SOURCE_DIR} ${lz4_BINARY_DIR})
+#  endif()
 
 #  include (${BINARY_DIR}/LZ4-targets.cmake)
   set (LZ4_LIBRARY "lz4")

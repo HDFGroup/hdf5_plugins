@@ -17,20 +17,28 @@ macro (EXTERNAL_JPEG_LIBRARY compress_type)
     FetchContent_Declare (JPEG
         GIT_REPOSITORY ${JPEG_URL}
         GIT_TAG ${JPEG_BRANCH}
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5JPEG_SOURCE_DIR}/config/CMakeLists.txt
+            ${H5JPEG_SOURCE_DIR}/config/jconfig.h.in
+            <SOURCE_DIR>
     )
   elseif (${compress_type} MATCHES "TGZ")
     FetchContent_Declare (JPEG
         URL ${JPEG_URL}
         URL_HASH ""
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5JPEG_SOURCE_DIR}/config/CMakeLists.txt
+            ${H5JPEG_SOURCE_DIR}/config/jconfig.h.in
+            <SOURCE_DIR>
     )
   endif ()
-  FetchContent_GetProperties(JPEG)
-  if(NOT jpeg_POPULATED)
-    FetchContent_Populate(JPEG)
+#  FetchContent_GetProperties(JPEG)
+#  if(NOT jpeg_POPULATED)
+#    FetchContent_Populate(JPEG)
 
     # Copy an additional/replacement files into the populated source
-    file(COPY ${H5JPEG_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${jpeg_SOURCE_DIR})
-    file(COPY ${H5JPEG_SOURCE_DIR}/config/jconfig.h.in DESTINATION ${jpeg_SOURCE_DIR})
+#    file(COPY ${H5JPEG_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${jpeg_SOURCE_DIR})
+#    file(COPY ${H5JPEG_SOURCE_DIR}/config/jconfig.h.in DESTINATION ${jpeg_SOURCE_DIR})
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
@@ -41,13 +49,14 @@ macro (EXTERNAL_JPEG_LIBRARY compress_type)
     # Make subproject to use 'H5PL_BUILD_TESTING=OFF' setting.
     set (H5PL_BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
-    add_subdirectory(${jpeg_SOURCE_DIR} ${jpeg_BINARY_DIR})
+#    add_subdirectory(${jpeg_SOURCE_DIR} ${jpeg_BINARY_DIR})
+  FetchContent_MakeAvailable(JPEG)
 
     # Restore the old value of the parameter
     set (H5PL_BUILD_TESTING ${H5PL_BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
     # Restore the old value of the parameter
     set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-  endif ()
+#  endif ()
 
 #  include (${BINARY_DIR}/JPEG-targets.cmake)
   set (JPEG_LIBRARY "jpeg-static")

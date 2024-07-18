@@ -17,21 +17,35 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
     FetchContent_Declare (ZSTD
         GIT_REPOSITORY ${ZSTD_URL}
         GIT_TAG ${ZSTD_BRANCH}
+        SOURCE_SUBDIR this-directory-does-not-exist
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt
+            <SOURCE_DIR>/build/cmake/CMakeLists.txt
+            ${H5ZSTD_SOURCE_DIR}/config/lib${CMAKE_COMMAND} -E copy
+            CMakeLists.txt
+            <SOURCE_DIR>/build/cmake/lib/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
     FetchContent_Declare (ZSTD
         URL ${ZSTD_URL}
         URL_HASH ""
+        SOURCE_SUBDIR build/cmake
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt
+            <SOURCE_DIR>/build/cmake/CMakeLists.txt
+            && ${CMAKE_COMMAND} -E copy
+            ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt
+            <SOURCE_DIR>/build/cmake/lib/CMakeLists.txt
     )
   endif ()
-  FetchContent_GetProperties (ZSTD)
-  if (NOT zstd_POPULATED)
-    FetchContent_Populate (ZSTD)
+#  FetchContent_GetProperties (ZSTD)
+#  if (NOT zstd_POPULATED)
+#    FetchContent_Populate (ZSTD)
 
     # Copy an additional/replacement files into the populated source
-    file(COPY ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake)
-    file(COPY ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake/lib)
-    file(RENAME ${zstd_SOURCE_DIR}/build/cmake/lib/libCMakeLists.txt ${zstd_SOURCE_DIR}/build/cmake/lib/CMakeLists.txt)
+#    file(COPY ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake)
+#    file(COPY ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt DESTINATION ${zstd_SOURCE_DIR}/build/cmake/lib)
+#    file(RENAME ${zstd_SOURCE_DIR}/build/cmake/lib/libCMakeLists.txt ${zstd_SOURCE_DIR}/build/cmake/lib/CMakeLists.txt)
 
     # Store the old value of the 'BUILD_SHARED_LIBS'
     set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
@@ -42,13 +56,14 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
     # Make subproject to use 'BUILD_TESTING=OFF' setting.
     set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
-    add_subdirectory (${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
+#    add_subdirectory (${zstd_SOURCE_DIR}/build/cmake ${zstd_BINARY_DIR})
+  FetchContent_MakeAvailable (ZSTD)
 
     # Restore the old value of the parameter
     set (BUILD_TESTING ${BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
     # Restore the old value of the parameter
     set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-  endif ()
+#  endif ()
 
 #  include (${BINARY_DIR}/ZSTD-targets.cmake)
   set (ZSTD_LIBRARY "libzstd_static")
