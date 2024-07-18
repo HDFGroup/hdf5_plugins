@@ -39,30 +39,20 @@ macro (EXTERNAL_ZFP_LIBRARY compress_type)
             <SOURCE_DIR>/src/CMakeLists.txt
     )
   endif ()
-#  FetchContent_GetProperties (ZFP)
-#  if (NOT zfp_POPULATED)
-#    FetchContent_Populate (ZFP)
 
-    # Copy an additional/replacement files into the populated source
-#    file(COPY ${H5ZFP_SOURCE_DIR}/config/CMakeLists.txt DESTINATION ${zfp_SOURCE_DIR})
-#    file(COPY ${H5ZFP_SOURCE_DIR}/config/srcCMakeLists.txt DESTINATION ${zfp_SOURCE_DIR}/src)
-#    file(RENAME ${zfp_SOURCE_DIR}/src/srcCMakeLists.txt ${zfp_SOURCE_DIR}/src/CMakeLists.txt)
+  set (ZFP_WITH_OPENMP OFF CACHE BOOL "")
+  set (ZFP_BIT_STREAM_WORD_SIZE 8 CACHE STRING "")
+  set (ZFP_LIBRARY_PREFIX ${ZFP_LIBRARY_PREFIX} CACHE STRING "")
 
-    set (ZFP_WITH_OPENMP OFF CACHE BOOL "")
-    set (ZFP_BIT_STREAM_WORD_SIZE 8 CACHE STRING "")
-    set (ZFP_LIBRARY_PREFIX ${ZFP_LIBRARY_PREFIX} CACHE STRING "")
+  # Store the old value of the 'BUILD_SHARED_LIBS'
+  set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
+  # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
+  set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries" FORCE)
 
-    # Store the old value of the 'BUILD_SHARED_LIBS'
-    set (BUILD_SHARED_LIBS_OLD ${BUILD_SHARED_LIBS})
-    # Make subproject to use 'BUILD_SHARED_LIBS=OFF' setting.
-    set (BUILD_SHARED_LIBS OFF CACHE INTERNAL "Build SHARED libraries" FORCE)
-
-#    add_subdirectory (${zfp_SOURCE_DIR} ${zfp_BINARY_DIR})
   FetchContent_MakeAvailable (ZFP)
 
-    # Restore the old value of the parameter
-    set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
-#  endif ()
+  # Restore the old value of the parameter
+  set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
 
 #  include (${BINARY_DIR}/ZFP-targets.cmake)
   set (ZFP_LIBRARY "zfp")
