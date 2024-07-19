@@ -42,4 +42,6 @@ endif ()
 #-----------------------------------------------------------------------------
 # Build examples
 #-----------------------------------------------------------------------------
-add_subdirectory (example)
+if (H5PL_BUILD_EXAMPLES)
+  add_subdirectory (example)
+endif ()

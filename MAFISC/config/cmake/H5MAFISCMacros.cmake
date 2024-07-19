@@ -24,12 +24,7 @@ macro (EXTERNAL_MAFISC_LIBRARY compress_type)
         URL_HASH ""
     )
   endif ()
-  FetchContent_GetProperties (MAFISC)
-  if (NOT mafisc_POPULATED)
-    FetchContent_Populate (MAFISC)
-
-    add_subdirectory (${mafisc_SOURCE_DIR} ${mafisc_BINARY_DIR})
-  endif ()
+  FetchContent_MakeAvailable (MAFISC)
 
 #  include (${BINARY_DIR}/MAFISC-targets.cmake)
   set (MAFISC_LIBRARY "mafisc-static")

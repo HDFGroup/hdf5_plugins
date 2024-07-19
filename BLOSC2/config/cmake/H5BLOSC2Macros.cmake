@@ -24,28 +24,25 @@ macro (EXTERNAL_BLOSC2_LIBRARY compress_type)
         URL_HASH ""
     )
   endif ()
-  FetchContent_GetProperties(BLOSC2)
-  if(NOT blosc2_POPULATED)
-    FetchContent_Populate(BLOSC2)
-    set (BUILD_SHARED OFF CACHE BOOL "" FORCE)
-    set (BUILD_TESTS OFF CACHE BOOL "" FORCE)
-    set (BUILD_FUZZERS OFF CACHE BOOL "" FORCE)
-    set (BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
-    # Store the old value of the 'BUILD_EXAMPLES'
-    set (BUILD_EXAMPLES_OLD ${BUILD_EXAMPLES})
-    set (BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-    set (BUILD_PLUGINS OFF CACHE BOOL "" FORCE)
-    set (BLOSC_IS_SUBPROJECT ON CACHE BOOL "" FORCE)
-    set (BLOSC_INSTALL OFF CACHE BOOL "" FORCE)
 
-    add_subdirectory(${blosc2_SOURCE_DIR} ${blosc2_BINARY_DIR})
-    if (WIN32 AND CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
-      target_compile_options(blosc2_static PRIVATE -Wno-implicit-function-declaration)
-    endif ()
+  set (BUILD_SHARED OFF CACHE BOOL "" FORCE)
+  set (BUILD_TESTS OFF CACHE BOOL "" FORCE)
+  set (BUILD_FUZZERS OFF CACHE BOOL "" FORCE)
+  set (BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
+  # Store the old value of the 'BUILD_EXAMPLES'
+  set (BUILD_EXAMPLES_OLD ${BUILD_EXAMPLES})
+  set (BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+  set (BUILD_PLUGINS OFF CACHE BOOL "" FORCE)
+  set (BLOSC_IS_SUBPROJECT ON CACHE BOOL "" FORCE)
+  set (BLOSC_INSTALL OFF CACHE BOOL "" FORCE)
 
-    # Restore the old value of the parameter
-    set (BUILD_EXAMPLES ${BUILD_EXAMPLES_OLD} CACHE BOOL "Build EXAMPLES" FORCE)
-  endif()
+  FetchContent_MakeAvailable(BLOSC2)
+  if (WIN32 AND CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
+    target_compile_options(blosc2_static PRIVATE -Wno-implicit-function-declaration)
+  endif ()
+
+  # Restore the old value of the parameter
+  set (BUILD_EXAMPLES ${BUILD_EXAMPLES_OLD} CACHE BOOL "Build EXAMPLES" FORCE)
 
 ##include (${BINARY_DIR}/${BLOSC2_PACKAGE_NAME}${H5BLOSC2_PACKAGE_EXT}-targets.cmake)
   set (BLOSC2_STATIC_LIBRARY "blosc2_static")
