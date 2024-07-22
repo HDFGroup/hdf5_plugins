@@ -1,15 +1,15 @@
-name: hdf5 plugins publishrelease
+name: hdf5 plugins publish files in PLUGINS folder from branch to S3
 
 # Triggers the workflow on demand
 on:
   workflow_dispatch:
     inputs:
-      use_tag:
-        description: 'HDF5 Plugins Release version tag'
+      local_dir:
+        description: 'hdf5 PLUGINS local directory'
         type: string
         required: true
       target_dir:
-        description: 'HDF5 Plugins target bucket directory'
+        description: 'hdf5 plugins target bucket directory'
         type: string
         required: true
     permissions:
@@ -26,14 +26,10 @@ jobs:
             fetch-depth: 0
             ref: '${{ github.head_ref || github.ref_name }}'
 
-        - name: Get plugins release
-          uses: dsaltares/fetch-gh-release-asset@master
-          with:
-            repo: 'HDFGroup/hdf5_plugins'
-            version: 'tags/${{ inputs.use_tag }}'
-            regex: true
-            target: 'PLUGINS/'
-            file: '${{ inputs.use_hdf }}-*.*'
+        - name: List files for the space
+          run: |
+              ls -l ${{ github.workspace }}
+              ls ${{ github.workspace }}/HDF4
 
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v4
@@ -42,7 +38,7 @@ jobs:
                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                  aws-region: ${{ secrets.AWS_REGION }}
 
-        - name: Sync release to S3 bucket
+        - name: Sync dir to S3 bucket
           run: |
-                aws s3 sync ./PLUGINS s3://${{ secrets.AWS_S3_BUCKET }}/${{ vars.TARGET_PATH }}/${{ inputs.target_dir }}/downloads --delete
+                aws s3 sync ./PLUGINS/${{ inputs.local_dir }} s3://${{ secrets.AWS_S3_BUCKET }}/${{ vars.TARGET_PATH }}/${{ inputs.target_dir }}
 
