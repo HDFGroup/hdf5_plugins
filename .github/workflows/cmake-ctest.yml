@@ -108,7 +108,7 @@ jobs:
 
       # Get files created by release script
       - name: Get zip-tarball (Windows)
-        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
         with:
               name: zip-tarball
               path: ${{ github.workspace }}
@@ -228,7 +228,7 @@ jobs:
 
       # Get files created by release script
       - name: Get tgz-tarball (Linux)
-        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
         with:
               name: tgz-tarball
               path: ${{ github.workspace }}
@@ -278,7 +278,7 @@ jobs:
   # MacOS w/ Clang + CMake
   #
     name: "MacOS Clang CMake"
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: Install Dependencies (MacOS)
         run: brew install ninja
@@ -296,41 +296,21 @@ jobs:
           fi
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
 
-      - name: Get hdf5           snapshot
+      - name: Get hdf5 snapshot
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        continue-on-error: true
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
           file: '${{ inputs.use_hdf }}-osx.tar.gz'
-      
-      - name: Get hdf5           snapshot osx12
-        if: ${{ (inputs.use_environ == 'snapshots') }}
-        continue-on-error: true
-        uses: dsaltares/fetch-gh-release-asset@master
-        with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-osx12.tar.gz'
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
-        continue-on-error: true
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
           file: '${{ inputs.use_hdf }}-osx.tar.gz'
-
-      - name: Get hdf5 release osx12
-        if: ${{ (inputs.use_environ == 'release') }}
-        continue-on-error: true
-        uses: dsaltares/fetch-gh-release-asset@master
-        with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-osx12.tar.gz'
 
       - name: List files for the space (MacOS)
         run: |
@@ -392,6 +372,18 @@ jobs:
           tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-osx.tar.gz hdf5_plugins
         shell: bash
 
+      - name: Publish dmg binary (MacOS)
+        id: publish-ctest-dmg-binary
+        run: |
+          mkdir "${{ runner.workspace }}/build"
+          mkdir "${{ runner.workspace }}/build/hdf5_plugins"
+          cp ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/COPYING ${{ runner.workspace }}/build/hdf5_plugins
+          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/README.txt ${{ runner.workspace }}/build/hdf5_plugins
+          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/*.dmg ${{ runner.workspace }}/build/hdf5_plugins
+          cd "${{ runner.workspace }}/build"
+          tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-osx.dmg.tar.gz hdf5_plugins
+        shell: bash
+
       - name: List files in the space (MacOS)
         run: |
               ls ${{ github.workspace }}
@@ -403,4 +395,11 @@ jobs:
         with:
               name: tgz-osx-binary
               path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-osx.tar.gz
+              if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+
+      - name: Save published dmg binary (MacOS)
+        uses: actions/upload-artifact@v4
+        with:
+              name: tgz-osx-dmg-binary
+              path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-osx.dmg.tar.gz
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
