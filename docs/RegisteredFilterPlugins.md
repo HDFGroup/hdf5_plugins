@@ -53,6 +53,7 @@ List of Filters Registered with The HDF Group
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
 |32029   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
+|32030   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 
 
 ## <center>The Filters</center>
@@ -716,4 +717,22 @@ Email: jp.abrahams at unibas dot ch
 
 Senik Matinyan
 Email: senik.matinyan at unibas dot ch
+
+##
+
+<h2 id="ffmpeg">FFMPEG Filter</h2>
+
+#### Filter ID: 32030
+
+#### Filter Description:
+
+A lossy compression filter based on ffmpeg video library.
+
+#### Filter Information:
+
+https://github.com/Cai-Lab-at-University-of-Michigan/ffmpeg_HDF5_filter
+License: Under MIT License
+
+#### Contact Information:
+Cai Lab at University of Michigan: https://www.cai-lab.org
 
