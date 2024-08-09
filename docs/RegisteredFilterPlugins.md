@@ -731,6 +731,7 @@ A lossy compression filter based on ffmpeg video library.
 #### Filter Information:
 
 https://github.com/Cai-Lab-at-University-of-Michigan/ffmpeg_HDF5_filter
+
 License: Under MIT License
 
 #### Contact Information:
