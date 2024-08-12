@@ -63,10 +63,12 @@ jobs:
         run: |
           if [[ '${{ env.super_secret }}' == '' ]]
           then
-            echo "BINSIGN=false" >> $GITHUB_OUTPUT
+            SIGN_VAL=$(echo "false")
           else
-            echo "BINSIGN=true" >> $GITHUB_OUTPUT
+            SIGN_VAL=$(echo "true")
           fi
+          echo "BINSIGN=$SIGN_VAL" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Set file base name (Windows)
         id: set-file-base
@@ -219,7 +221,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
               name: msi-vs2022_cl-binary
-              path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi.zip
+              path: ${{ runner.workspace }}/buildmsi/${{ steps.set-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi.zip
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
   build_and_test_linux:
