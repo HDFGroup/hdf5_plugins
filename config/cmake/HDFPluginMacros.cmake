@@ -260,6 +260,12 @@ macro (HDF5_SUPPORT link_hdf)
           set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
         endif()
       endif ()
+      # Determine if a threading package is available on this system
+      if (HDF5_ENABLE_THREADS)
+        find_package (Threads)
+      else ()
+        message (FATAL_ERROR " **** thread support requires C11 threads, Win32 threads or Pthreads **** ")
+      endif ()
     else ()
       find_package (HDF5) # Legacy find
       #Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
