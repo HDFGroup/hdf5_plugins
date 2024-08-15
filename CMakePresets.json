@@ -92,15 +92,15 @@
         "ci-CPP",
         "ci-StdShar"
       ]
-  },
-  {
-    "name": "ci-StdShar-Intel",
-    "description": "Intel Standard Config for x64 (Release)",
-    "inherits": [
-      "ci-x64-Release-Intel",
-      "ci-CPP",
-      "ci-StdShar"
-    ]
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "description": "Intel Standard Config for x64 (Release)",
+      "inherits": [
+        "ci-x64-Release-Intel",
+        "ci-CPP",
+        "ci-StdShar"
+      ]
     }
   ],
   "buildPresets": [

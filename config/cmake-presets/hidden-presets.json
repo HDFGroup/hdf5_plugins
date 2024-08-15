@@ -164,30 +164,28 @@
         "ci-Release",
         "ci-GNUC"
       ]
-  },
-  {
-    "name": "ci-x64-Debug-Intel",
-    "description": "Intel for x64 (Debug)",
-    "hidden": true,
-    "inherits": [
-      "ci-base",
-      "ci-x64",
-      "ci-Debug",
-      "ci-Intel"
-    ]
-  },
-  {
-    "name": "ci-x64-Release-Intel",
-    "description": "Intel for x64 (Release)",
-    "hidden": true,
-    "inherits": [
-      "ci-base",
-      "ci-x64",
-      "ci-Release",
-      "ci-Intel"
-    ]
-  },
-  {
+    },
+    {
+      "name": "ci-x64-Debug-Intel",
+      "description": "Intel for x64 (Debug)",
+      "hidden": true,
+      "inherits": [
+        "ci-base",
+        "ci-x64",
+        "ci-Debug",
+        "ci-Intel"
+      ]
+    },
+    {
+      "name": "ci-x64-Release-Intel",
+      "description": "Intel for x64 (Release)",
+      "hidden": true,
+      "inherits": [
+        "ci-base",
+        "ci-x64",
+        "ci-Release",
+        "ci-Intel"
+      ]
     }
   ],
   "buildPresets": [
