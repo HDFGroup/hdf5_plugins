@@ -241,6 +241,12 @@ if (H5PL_BUILD_TESTING)
 endif ()
 
 #-----------------------------------------------------------------------------
+# Community Filters
+#-----------------------------------------------------------------------------
+option (H5PL_COMMUNITY "Enable building community filters" OFF)
+add_subdirectory (community)
+
+#-----------------------------------------------------------------------------
 # Add file(s) to CMake Install
 #-----------------------------------------------------------------------------
 option (H5PL_CPACK_ENABLE "Enable the CPACK include and components" ON)
