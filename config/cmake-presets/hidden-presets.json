@@ -245,26 +245,24 @@
       "inherits": [
         "ci-base"
       ]
-  },
-  {
-    "name": "ci-x64-Debug-Intel",
-    "configurePreset": "ci-x64-Debug-Intel",
-    "hidden": true,
-    "inherits": [
-      "ci-base"
-    ],
-    "configuration": "Debug"
-  },
-  {
-    "name": "ci-x64-Release-Intel",
-    "configurePreset": "ci-x64-Release-Intel",
-    "hidden": true,
-    "inherits": [
-      "ci-base"
-    ],
-    "configuration": "RelWithDebInfo"
-  },
-  {
+    },
+    {
+      "name": "ci-x64-Debug-Intel",
+      "configurePreset": "ci-x64-Debug-Intel",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ],
+      "configuration": "Debug"
+    },
+    {
+      "name": "ci-x64-Release-Intel",
+      "configurePreset": "ci-x64-Release-Intel",
+      "hidden": true,
+      "inherits": [
+       "ci-base"
+      ],
+      "configuration": "RelWithDebInfo"
     }
   ],
   "testPresets": [
@@ -332,24 +330,22 @@
       "inherits": [
         "ci-base"
       ]
-  },
-  {
-    "name": "ci-x64-Debug-Intel",
-    "configurePreset": "ci-x64-Debug-Intel",
-    "hidden": true,
-    "inherits": [
-      "ci-base"
-    ]
-  },
-  {
-    "name": "ci-x64-Release-Intel",
-    "configurePreset": "ci-x64-Release-Intel",
-    "hidden": true,
-    "inherits": [
-      "ci-base"
-    ]
-  },
-  {
+    },
+    {
+      "name": "ci-x64-Debug-Intel",
+      "configurePreset": "ci-x64-Debug-Intel",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
+    },
+    {
+      "name": "ci-x64-Release-Intel",
+      "configurePreset": "ci-x64-Release-Intel",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
     }
   ],
   "packagePresets": [
