@@ -49,7 +49,7 @@ List of Filters Registered with The HDF Group
 |32023   |<a href="#gbr">Granular</a> |BitRound (GBR) The GBG quantization algorithm is a significant improvement to the BitGroom filter|
 |32024   |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
 |32025   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
-|32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
+|32026   |<a href="#blosc2">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
 |32029   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
