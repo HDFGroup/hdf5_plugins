@@ -10,7 +10,7 @@
       "binaryDir": "${sourceParentDir}/build/${presetName}",
       "installDir": "${sourceParentDir}/install/${presetName}"
     },
-   {
+    {
       "name": "ci-x64",
       "architecture": {
         "value": "x64",
@@ -21,7 +21,15 @@
     {
       "name": "ci-x86",
       "architecture": {
-        "value": "x86",
+        "value": "Win32",
+        "strategy": "external"
+      },
+      "hidden": true
+    },
+    {
+      "name": "ci-arm64",
+      "architecture": {
+        "value": "ARM64",
         "strategy": "external"
       },
       "hidden": true
@@ -47,10 +55,6 @@
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
       },
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "external"
-      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -58,14 +62,22 @@
       }
     },
     {
+      "name": "ci-macos",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
       "name": "ci-Clang",
       "hidden": true,
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "config/toolchain/clang.cmake"
-      },
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "external"
       }
     },
     {
@@ -78,10 +90,6 @@
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Linux"
-      },
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "external"
       }
     },
     {
@@ -166,25 +174,47 @@
       ]
     },
     {
-      "name": "ci-x64-Debug-Intel",
-      "description": "Intel for x64 (Debug)",
+      "name": "ci-macos-Debug-Clang",
+      "description": "Clang/LLVM for x64 (Debug)",
       "hidden": true,
       "inherits": [
         "ci-base",
-        "ci-x64",
+        "ci-macos",
         "ci-Debug",
-        "ci-Intel"
+        "ci-Clang"
       ]
     },
     {
-      "name": "ci-x64-Release-Intel",
-      "description": "Intel for x64 (Release)",
+      "name": "ci-macos-Release-Clang",
+      "description": "Clang/LLVM for x64 (Release)",
       "hidden": true,
       "inherits": [
         "ci-base",
-        "ci-x64",
+        "ci-macos",
         "ci-Release",
-        "ci-Intel"
+        "ci-Clang"
+      ]
+    },
+    {
+      "name": "ci-macos-Debug-GNUC",
+      "description": "GNUC for x64 (Debug)",
+      "hidden": true,
+      "inherits": [
+        "ci-base",
+        "ci-macos",
+        "ci-Debug",
+        "ci-GNUC"
+      ]
+    },
+    {
+      "name": "ci-macos-Release-GNUC",
+      "description": "GNUC for x64 (Release)",
+      "hidden": true,
+      "inherits": [
+        "ci-base",
+        "ci-macos",
+        "ci-Release",
+        "ci-GNUC"
       ]
     }
   ],
@@ -247,22 +277,36 @@
       ]
     },
     {
-      "name": "ci-x64-Debug-Intel",
-      "configurePreset": "ci-x64-Debug-Intel",
+      "name": "ci-macos-Debug-Clang",
+      "configurePreset": "ci-macos-Debug-Clang",
       "hidden": true,
       "inherits": [
         "ci-base"
-      ],
-      "configuration": "Debug"
+      ]
     },
     {
-      "name": "ci-x64-Release-Intel",
-      "configurePreset": "ci-x64-Release-Intel",
+      "name": "ci-macos-Release-Clang",
+      "configurePreset": "ci-macos-Release-Clang",
       "hidden": true,
       "inherits": [
-       "ci-base"
-      ],
-      "configuration": "RelWithDebInfo"
+        "ci-base"
+      ]
+    },
+    {
+      "name": "ci-macos-Debug-GNUC",
+      "configurePreset": "ci-macos-Debug-GNUC",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
+    },
+    {
+      "name": "ci-macos-Release-GNUC",
+      "configurePreset": "ci-macos-Release-GNUC",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
     }
   ],
   "testPresets": [
@@ -332,16 +376,32 @@
       ]
     },
     {
-      "name": "ci-x64-Debug-Intel",
-      "configurePreset": "ci-x64-Debug-Intel",
+      "name": "ci-macos-Debug-Clang",
+      "configurePreset": "ci-macos-Debug-Clang",
       "hidden": true,
       "inherits": [
         "ci-base"
       ]
     },
     {
-      "name": "ci-x64-Release-Intel",
-      "configurePreset": "ci-x64-Release-Intel",
+      "name": "ci-macos-Release-Clang",
+      "configurePreset": "ci-macos-Release-Clang",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
+    },
+    {
+      "name": "ci-macos-Debug-GNUC",
+      "configurePreset": "ci-macos-Debug-GNUC",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
+    },
+    {
+      "name": "ci-macos-Release-GNUC",
+      "configurePreset": "ci-macos-Release-GNUC",
       "hidden": true,
       "inherits": [
         "ci-base"
@@ -376,8 +436,14 @@
       "inherits": "ci-base"
     },
     {
-      "name": "ci-x64-Release-Intel",
-      "configurePreset": "ci-x64-Release-Intel",
+      "name": "ci-macos-Release-Clang",
+      "configurePreset": "ci-macos-Release-Clang",
+      "hidden": true,
+      "inherits": "ci-base"
+    },
+    {
+      "name": "ci-macos-Release-GNUC",
+      "configurePreset": "ci-macos-Release-GNUC",
       "hidden": true,
       "inherits": "ci-base"
     }

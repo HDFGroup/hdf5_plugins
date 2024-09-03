@@ -421,6 +421,11 @@ macro (INSTALL_SUPPORT varname)
         set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
       endif ()
 
+      set (CPACK_EXPORT_LIBRARIES ${${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT})
+      if ("$ENV{BINSIGN}" STREQUAL "exists")
+        set (CPACK_PRE_BUILD_SCRIPTS ${CMAKE_SOURCE_DIR}/config/cmake/SignPackageFiles.cmake)
+      endif ()
+
       set (CPACK_GENERATOR "TGZ")
       if (WIN32)
         set (CPACK_GENERATOR "ZIP")
