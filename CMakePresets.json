@@ -110,6 +110,15 @@
         "ci-CPP",
         "ci-StdShar"
       ]
+  },
+  {
+    "name": "ci-StdShar-Intel",
+    "description": "Intel Standard Config for x64 (Release)",
+    "inherits": [
+      "ci-x64-Release-Intel",
+      "ci-CPP",
+      "ci-StdShar"
+    ]
     }
   ],
   "buildPresets": [
@@ -154,15 +163,15 @@
       "inherits": [
         "ci-macos-Release-GNUC"
       ]
-  },
-  {
-    "name": "ci-StdShar-Intel",
-    "description": "Intel Standard Build for x64 (Release)",
-    "configurePreset": "ci-StdShar-Intel",
-    "verbose": true,
-    "inherits": [
-      "ci-x64-Release-Intel"
-    ]
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "description": "Intel Standard Build for x64 (Release)",
+      "configurePreset": "ci-StdShar-Intel",
+      "verbose": true,
+      "inherits": [
+        "ci-x64-Release-Intel"
+      ]
     }
   ],
   "testPresets": [
@@ -226,6 +235,11 @@
       "inherits": "ci-x64-Release-Clang"
     },
     {
+      "name": "ci-StdShar-GNUC",
+      "configurePreset": "ci-StdShar-GNUC",
+      "inherits": "ci-x64-Release-GNUC"
+    },
+    {
       "name": "ci-StdShar-macos-Clang",
       "configurePreset": "ci-StdShar-macos-Clang",
       "inherits": "ci-macos-Release-Clang"
@@ -234,11 +248,6 @@
       "name": "ci-StdShar-macos-GNUC",
       "configurePreset": "ci-StdShar-macos-GNUC",
       "inherits": "ci-macos-Release-GNUC"
-    },
-    {
-      "name": "ci-StdShar-GNUC",
-      "configurePreset": "ci-StdShar-GNUC",
-      "inherits": "ci-x64-Release-GNUC"
     },
     {
       "name": "ci-StdShar-Intel",
@@ -281,6 +290,15 @@
         {"type": "build", "name": "ci-StdShar-GNUC"},
         {"type": "test", "name": "ci-StdShar-GNUC"},
         {"type": "package", "name": "ci-StdShar-GNUC"}
+      ]
+    },
+    {
+      "name": "ci-StdShar-macos-GNUC",
+      "steps": [
+        {"type": "configure", "name": "ci-StdShar-macos-GNUC"},
+        {"type": "build", "name": "ci-StdShar-macos-GNUC"},
+        {"type": "test", "name": "ci-StdShar-macos-GNUC"},
+        {"type": "package", "name": "ci-StdShar-macos-GNUC"}
       ]
     },
     {
