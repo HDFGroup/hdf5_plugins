@@ -1,26 +1,34 @@
 # This script signs the targets for the package
 message(STATUS "Signing script for ${CPACK_EXPORT_LIBRARIES}")
-foreach (target "${CPACK_EXPORT_LIBRARIES}")
+foreach (target IN LISTS CPACK_EXPORT_LIBRARIES)
     if (WIN32)
         # Sign the targets
         execute_process(COMMAND $ENV{SIGNTOOLDIR}/signtool
           sign /v /debug /fd SHA256 /tr http://timestamp.acs.microsoft.com /td SHA256
           /dlib "Microsoft.Trusted.Signing.Client/bin/x64/Azure.CodeSigning.Dlib.dll" /dmdf ${CMAKE_CURRENT_SOURCE_DIR}/credentials.json
           $<TARGET_FILE:${target}>
-          WORKING_DIRECTORY ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/ALL_COMPONENTS_IN_ONE/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin
+          WORKING_DIRECTORY ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin
         )
-        message(STATUS "Signing the target ${target}")
+        set (target_path ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin)
+        execute_process(
+          COMMAND ${CMAKE_COMMAND} -E echo "Signing the target $<TARGET_FILE:${target}> using ${target_path}"
+        )
     elseif (APPLE)
         # Sign the targets
         execute_process(COMMAND codesign
           --force --timestamp --options runtime --entitlements ${CMAKE_CURRENT_SOURCE_DIR}/config/cmake/distribution.entitlements 
           --verbose=4 --strict --sign "$ENV{SIGNER}"
           $<TARGET_FILE:${target}>
-          WORKING_DIRECTORY ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/ALL_COMPONENTS_IN_ONE/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin
+          WORKING_DIRECTORY ${CPACK_TEMPORARY_INSTALL_DIRECTORY}//${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin
         )
-        message(STATUS "Signing the target ${target}")
+        set (target_path ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin)
+        execute_process(
+          COMMAND ${CMAKE_COMMAND} -E echo "Signing the target $<TARGET_FILE:${target}> using ${target_path}"
+        )
     else ()
-        set (target_path ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/ALL_COMPONENTS_IN_ONE/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin)
-        message(STATUS "Signing the target ${target} using ${target_path}")
+        set (target_path ${CPACK_TEMPORARY_INSTALL_DIRECTORY}/${CPACK_PACKAGE_INSTALL_DIRECTORY}/lib/plugin)
+        execute_process(
+          COMMAND ${CMAKE_COMMAND} -E echo "Signing the target $<TARGET_FILE:${target}> using ${target_path}"
+        )
     endif ()
 endforeach ()
