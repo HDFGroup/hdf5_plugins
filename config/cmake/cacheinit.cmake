@@ -139,24 +139,6 @@ set (LZF_TGZ_NAME "liblzf-3.6.tar.gz" CACHE STRING "Use LZF from compressed file
 
 set (LZF_PACKAGE_NAME "lzf" CACHE STRING "Name of LZF package" FORCE)
 
-############################# mafisc ################################################
-
-#set (BUILD_MAFISC_LIBRARY_SOURCE OFF CACHE BOOL "build the mafisc library within the plugin" FORCE)
-
-#set (MAFISC_TGZ_ORIGPATH "" CACHE STRING "Use PLUGINS from original location" FORCE)
-#set (MAFISC_TGZ_NAME ".tar.gz" CACHE STRING "Use MAFISC from compressed file" FORCE)
-#set (MAFISC_PACKAGE_NAME "mafisc" CACHE STRING "Name of MAFISC package" FORCE)
-
-############################# sz ################################################
-
-set (SZ_GIT_URL "https://github.com/szcompressor/SZ.git" CACHE STRING "Use SZ filter from  GitHub repository" FORCE)
-set (SZ_GIT_BRANCH "master" CACHE STRING "" FORCE)
-
-set (SZ_TGZ_ORIGPATH "https://github.com/szcompressor/SZ/releases/download/v2.1.12.5" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (SZ_TGZ_NAME "SZ-2.1.12.5.tar.gz" CACHE STRING "Use SZ filter from compressed file" FORCE)
-
-set (SZ_PACKAGE_NAME "SZ" CACHE STRING "Name of SZ filter package" FORCE)
-
 ############################# zfp ################################################
 
 set (ZFP_GIT_URL "https://github.com/LLNL/zfp.git" CACHE STRING "Use ZFP from  GitHub repository" FORCE)
