@@ -154,6 +154,15 @@
       "inherits": [
         "ci-macos-Release-GNUC"
       ]
+  },
+  {
+    "name": "ci-StdShar-Intel",
+    "description": "Intel Standard Build for x64 (Release)",
+    "configurePreset": "ci-StdShar-Intel",
+    "verbose": true,
+    "inherits": [
+      "ci-x64-Release-Intel"
+    ]
     }
   ],
   "testPresets": [
