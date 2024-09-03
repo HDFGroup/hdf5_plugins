@@ -50,6 +50,9 @@ jobs:
               ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.tar.gz
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb.tar.gz
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.zip
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi.zip
               ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
               

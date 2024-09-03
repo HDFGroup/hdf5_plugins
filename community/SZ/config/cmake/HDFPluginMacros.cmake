@@ -322,7 +322,7 @@ macro (INSTALL_SUPPORT varname)
     #-----------------------------------------------------------------------------
     # Configure the H5PL_Examples.cmake file and the examples
     #-----------------------------------------------------------------------------
-    if (${PLUGIN_PACKAGE_NAME}_H5PL_BUILD_TESTING)
+    if (${PLUGIN_PACKAGE_NAME}_BUILD_TESTING)
       configure_file (
           ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/H5PL_Examples.cmake.in
           ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake @ONLY
@@ -419,6 +419,11 @@ macro (INSTALL_SUPPORT varname)
         set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${PLUGIN_HDF5_PACKAGE_NAME}/${H5PL_OVERRIDE_VERSION}")
       else ()
         set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
+      endif ()
+
+      set (CPACK_EXPORT_LIBRARIES ${${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT})
+      if ("$ENV{BINSIGN}" STREQUAL "exists")
+        set (CPACK_PRE_BUILD_SCRIPTS ${CMAKE_SOURCE_DIR}/config/cmake/SignPackageFiles.cmake)
       endif ()
 
       set (CPACK_GENERATOR "TGZ")
