@@ -94,11 +94,7 @@
     },
     {
       "name": "ci-Intel",
-      "hidden": true,
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "external"
-      }
+      "hidden": true
     },
     {
       "name": "ci-CPP",
@@ -216,6 +212,17 @@
         "ci-Release",
         "ci-GNUC"
       ]
+  },
+  {
+    "name": "ci-x64-Release-Intel",
+    "description": "Intel for x64 (Release)",
+    "hidden": true,
+    "inherits": [
+      "ci-base",
+      "ci-x64",
+      "ci-Release",
+      "ci-Intel"
+    ]
     }
   ],
   "buildPresets": [
@@ -307,6 +314,15 @@
       "inherits": [
         "ci-base"
       ]
+    },
+    {
+      "name": "ci-x64-Release-Intel",
+      "configurePreset": "ci-x64-Release-Intel",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ],
+      "configuration": "RelWithDebInfo"
     }
   ],
   "testPresets": [
@@ -406,6 +422,14 @@
       "inherits": [
         "ci-base"
       ]
+    },
+    {
+      "name": "ci-x64-Release-Intel",
+      "configurePreset": "ci-x64-Release-Intel",
+      "hidden": true,
+      "inherits": [
+        "ci-base"
+      ]
     }
   ],
   "packagePresets": [
@@ -444,6 +468,12 @@
     {
       "name": "ci-macos-Release-GNUC",
       "configurePreset": "ci-macos-Release-GNUC",
+      "hidden": true,
+      "inherits": "ci-base"
+    },
+    {
+      "name": "ci-x64-Release-Intel",
+      "configurePreset": "ci-x64-Release-Intel",
       "hidden": true,
       "inherits": "ci-base"
     }
