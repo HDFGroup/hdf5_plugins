@@ -551,9 +551,9 @@ macro (INSTALL_SUPPORT varname)
 
 The HDF5 data model, file format, API, library, and tools are open and distributed without charge.
 "
-      )
+        )
+        endif ()
       endif ()
-
       set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
       set (CPACK_ALL_INSTALL_TYPES Full User)
       set (CPACK_INSTALL_TYPE_FULL_DISPLAY_NAME "Everything")
