@@ -260,6 +260,13 @@ macro (HDF5_SUPPORT link_hdf)
           set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
         endif()
       endif ()
+      # Determine if a threading package is available on this system
+      if (HDF5_ENABLE_THREADS)
+        find_package (Threads)
+        if (NOT Threads_FOUND)
+          message (FATAL_ERROR " **** thread support requires C11 threads, Win32 threads or Pthreads **** ")
+        endif ()
+      endif ()
     else ()
       find_package (HDF5) # Legacy find
       #Legacy find_package does not set HDF5_TOOLS_DIR, so we set it here
@@ -421,7 +428,7 @@ macro (INSTALL_SUPPORT varname)
         set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
       endif ()
 
-      set (CPACK_EXPORT_LIBRARIES ${${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT})
+      set (CPACK_ORIG_SOURCE_DIR ${CMAKE_SOURCE_DIR})
       if ("$ENV{BINSIGN}" STREQUAL "exists")
         set (CPACK_PRE_BUILD_SCRIPTS ${CMAKE_SOURCE_DIR}/config/cmake/SignPackageFiles.cmake)
       endif ()
@@ -508,11 +515,43 @@ macro (INSTALL_SUPPORT varname)
 
         set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
         set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${${PLUGIN_PACKAGE_NAME}_PACKAGE_BUGREPORT}")
+    
+        find_program (DPKGSHLIB_EXE dpkg-shlibdeps)
+        if (DPKGSHLIB_EXE)
+          list (APPEND CPACK_GENERATOR "DEB")
+          set (CPACK_DEBIAN_PACKAGE_SECTION "Libraries")
+          set (CPACK_DEBIAN_PACKAGE_MAINTAINER "${H5PL_PACKAGE_BUGREPORT}")
+        endif ()
+    
+        find_program (RPMBUILD_EXE rpmbuild)
+        if (RPMBUILD_EXE)
+          list (APPEND CPACK_GENERATOR "RPM")
+          set (CPACK_RPM_PACKAGE_RELEASE "1")
+          set (CPACK_RPM_PACKAGE_RELEASE_DIST ON)
+          set (CPACK_RPM_COMPONENT_INSTALL ON)
+          set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
+          set (CPACK_RPM_FILE_NAME "RPM-DEFAULT")
+          set (CPACK_RPM_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
+          set (CPACK_RPM_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION}")
+          set (CPACK_RPM_PACKAGE_VENDOR "${CPACK_PACKAGE_VENDOR}")
+          set (CPACK_RPM_PACKAGE_LICENSE "BSD-style")
+          set (CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
+          set (CPACK_RPM_PACKAGE_URL "${H5PL_PACKAGE_URL}")
+          set (CPACK_RPM_PACKAGE_SUMMARY "HDF5 Plugins are a suite of filters supporting registered compression libraries.")
+          set (CPACK_RPM_PACKAGE_DESCRIPTION
+        "The HDF5 technology suite includes:
 
-#          list (APPEND CPACK_GENERATOR "RPM")
-        set (CPACK_RPM_PACKAGE_RELEASE "1")
-        set (CPACK_RPM_COMPONENT_INSTALL ON)
-        set (CPACK_RPM_PACKAGE_RELOCATABLE ON)
+    * A versatile data model that can represent very complex data objects and a wide variety of metadata.
+
+    * A completely portable file format with no limit on the number or size of data objects in the collection.
+
+    * A software library that runs on a range of computational platforms, from laptops to massively parallel systems, and implements a high-level API with C, C++, Fortran 90, and Java interfaces.
+
+    * A rich set of integrated performance features that allow for access time and storage space optimizations.
+
+The HDF5 data model, file format, API, library, and tools are open and distributed without charge.
+"
+      )
       endif ()
 
       set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")

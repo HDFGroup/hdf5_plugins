@@ -428,7 +428,7 @@ macro (INSTALL_SUPPORT varname)
         set (CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_VENDOR}/${CPACK_PACKAGE_NAME}/${CPACK_PACKAGE_VERSION}")
       endif ()
 
-      set (CPACK_EXPORT_LIBRARIES ${${PLUGIN_PACKAGE_NAME}_LIBRARIES_TO_EXPORT})
+      set (CPACK_ORIG_SOURCE_DIR ${CMAKE_SOURCE_DIR})
       if ("$ENV{BINSIGN}" STREQUAL "exists")
         set (CPACK_PRE_BUILD_SCRIPTS ${CMAKE_SOURCE_DIR}/config/cmake/SignPackageFiles.cmake)
       endif ()
@@ -549,12 +549,9 @@ macro (INSTALL_SUPPORT varname)
 
     * A rich set of integrated performance features that allow for access time and storage space optimizations.
 
-    * Tools and applications for managing, manipulating, viewing, and analyzing the data in the collection.
-
 The HDF5 data model, file format, API, library, and tools are open and distributed without charge.
 "
-          )
-        endif ()
+      )
       endif ()
 
       set (CPACK_INSTALL_CMAKE_PROJECTS "${CPACK_INSTALL_CMAKE_PROJECTS};${${PLUGIN_PACKAGE_NAME}_BINARY_DIR};${PLUGIN_NAME};ALL;/")
