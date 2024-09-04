@@ -84,7 +84,6 @@ message (STATUS "H5BSHUF link libs: ${H5PL_LINK_LIBS}")
 configure_file (${H5BSHUF_RESOURCES_DIR}/config.h.in ${H5BSHUF_BINARY_DIR}/bshuf_config.h @ONLY)
 
 include (ExternalProject)
-option (H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
