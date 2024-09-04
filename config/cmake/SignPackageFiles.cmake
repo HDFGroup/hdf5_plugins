@@ -4,6 +4,10 @@ message(STATUS "Signing script for ${CPACK_EXPORT_LIBRARIES} in ${CPACK_TEMPORAR
 # RPM needs ALL_COMPONENTS_IN_ONE added to path between ${CPACK_TEMPORARY_INSTALL_DIRECTORY} and ${CPACK_PACKAGE_INSTALL_DIRECTORY}
 if (CPACK_GENERATOR MATCHES "RPM")
     set (CPACK_TARGET_FILE_DIRECTORY "${CPACK_TEMPORARY_INSTALL_DIRECTORY}/ALL_COMPONENTS_IN_ONE/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
+elseif (CPACK_GENERATOR MATCHES "WIX" OR CPACK_GENERATOR MATCHES "NSIS")
+    set (CPACK_TARGET_FILE_DIRECTORY "${CPACK_TEMPORARY_INSTALL_DIRECTORY}/libraries")
+elseif (CPACK_GENERATOR MATCHES "ZIP")
+    set (CPACK_TARGET_FILE_DIRECTORY "${CPACK_TEMPORARY_INSTALL_DIRECTORY}")
 else ()
     set (CPACK_TARGET_FILE_DIRECTORY "${CPACK_TEMPORARY_INSTALL_DIRECTORY}/${CPACK_PACKAGE_INSTALL_DIRECTORY}")
 endif ()
@@ -21,11 +25,11 @@ foreach (targetfile IN LISTS target_list)
         )
     elseif (APPLE)
         # Sign the targets
-        #execute_process (COMMAND codesign
-        #  --force --timestamp --options runtime --entitlements ${CMAKE_CURRENT_SOURCE_DIR}/config/cmake/distribution.entitlements 
-        #  --verbose=4 --strict --sign "$ENV{SIGNER}"
-        #  ${targetfile}
-        #)
+        execute_process (COMMAND codesign
+          --force --timestamp --options runtime --entitlements ${CMAKE_CURRENT_SOURCE_DIR}/config/cmake/distribution.entitlements 
+          --verbose=4 --strict --sign "$ENV{SIGNER}"
+          ${targetfile}
+        )
         execute_process (
           COMMAND ${CMAKE_COMMAND} -E echo "Signing the target ${targetfile}"
         )
