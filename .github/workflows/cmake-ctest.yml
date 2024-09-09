@@ -612,8 +612,8 @@ jobs:
           mkdir "${{ runner.workspace }}/build"
           mkdir "${{ runner.workspace }}/build/hdf5_plugins"
           cp ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/COPYING ${{ runner.workspace }}/build/hdf5_plugins
-          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/README.txt ${{ runner.workspace }}/build/hdf5_plugins
-          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/*.tar.gz ${{ runner.workspace }}/build/hdf5_plugins
+          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-macos-Clang/README.txt ${{ runner.workspace }}/build/hdf5_plugins
+          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-macos-Clang/*.tar.gz ${{ runner.workspace }}/build/hdf5_plugins
           cd "${{ runner.workspace }}/build"
           tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-macos14_clang.tar.gz hdf5_plugins
         shell: bash
@@ -624,8 +624,8 @@ jobs:
           mkdir "${{ runner.workspace }}/builddmg"
           mkdir "${{ runner.workspace }}/builddmg/hdf5_plugins"
           cp ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/COPYING ${{ runner.workspace }}/builddmg/hdf5_plugins
-          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/README.txt ${{ runner.workspace }}/builddmg/hdf5_plugins
-          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-Clang/*.dmg ${{ runner.workspace }}/builddmg/hdf5_plugins
+          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-macos-Clang/README.txt ${{ runner.workspace }}/builddmg/hdf5_plugins
+          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-macos-Clang/*.dmg ${{ runner.workspace }}/builddmg/hdf5_plugins
           cd "${{ runner.workspace }}/builddmg"
           tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-macos14_clang.dmg.tar.gz hdf5_plugins
         shell: bash
