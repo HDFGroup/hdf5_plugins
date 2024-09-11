@@ -40,9 +40,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Get Sources
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@9a9194f87191a7e9055e3e9b95b8cfb13023bb08 # v4.1.7
         with:
           fetch-depth: 0
+          ref: '${{ github.head_ref || github.ref_name }}'
 
       - name: Get Commit
         if: ${{ (inputs.use_environ == 'snapshots') }}
@@ -136,12 +137,12 @@ jobs:
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}.zip >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
-          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
-          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
-          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.zip >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
-          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi.zip >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
 
       - name: Store snapshot name
         run: |
@@ -159,12 +160,12 @@ jobs:
               ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}.zip
               ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg.tar.gz
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg
               ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm.tar.gz
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm
               ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.zip
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi.zip
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi
               ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
@@ -179,12 +180,12 @@ jobs:
               ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}.zip
               ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg.tar.gz
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-macos14_clang.dmg
               ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm.tar.gz
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.deb
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-ubuntu-2204_gcc.rpm
               ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.zip
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi.zip
+              ${{ steps.get-file-base.outputs.FILE_BASE }}-win-vs2022_cl.msi
               ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
