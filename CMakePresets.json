@@ -92,6 +92,33 @@
         "ci-CPP",
         "ci-StdShar"
       ]
+    },
+    {
+      "name": "ci-StdShar-macos-Clang",
+      "description": "Clang Standard Config for macos (Release)",
+      "inherits": [
+        "ci-macos-Release-Clang",
+        "ci-CPP",
+        "ci-StdShar"
+      ]
+    },
+    {
+      "name": "ci-StdShar-macos-GNUC",
+      "description": "GNUC Standard Config for macos (Release)",
+      "inherits": [
+        "ci-macos-Release-GNUC",
+        "ci-CPP",
+        "ci-StdShar"
+      ]
+  },
+  {
+    "name": "ci-StdShar-Intel",
+    "description": "Intel Standard Config for x64 (Release)",
+    "inherits": [
+      "ci-x64-Release-Intel",
+      "ci-CPP",
+      "ci-StdShar"
+    ]
     }
   ],
   "buildPresets": [
@@ -119,6 +146,32 @@
       "inherits": [
         "ci-x64-Release-GNUC"
       ]
+    },
+    {
+      "name": "ci-StdShar-macos-Clang",
+      "description": "Clang Standard Build for macos (Release)",
+      "configurePreset": "ci-StdShar-macos-Clang",
+      "inherits": [
+        "ci-macos-Release-Clang"
+      ]
+    },
+    {
+      "name": "ci-StdShar-macos-GNUC",
+      "description": "GNUC Standard Build for macos (Release)",
+      "configurePreset": "ci-StdShar-macos-GNUC",
+      "verbose": true,
+      "inherits": [
+        "ci-macos-Release-GNUC"
+      ]
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "description": "Intel Standard Build for x64 (Release)",
+      "configurePreset": "ci-StdShar-Intel",
+      "verbose": true,
+      "inherits": [
+        "ci-x64-Release-Intel"
+      ]
     }
   ],
   "testPresets": [
@@ -137,10 +190,36 @@
       ]
     },
     {
+      "name": "ci-StdShar-macos-Clang",
+      "configurePreset": "ci-StdShar-macos-Clang",
+      "inherits": [
+        "ci-macos-Release-Clang"
+      ],
+      "execution": {
+        "noTestsAction": "error",
+        "timeout": 180,
+        "jobs": 2
+      }
+    },
+    {
+      "name": "ci-StdShar-macos-GNUC",
+      "configurePreset": "ci-StdShar-macos-GNUC",
+      "inherits": [
+        "ci-macos-Release-GNUC"
+      ]
+    },
+    {
       "name": "ci-StdShar-GNUC",
       "configurePreset": "ci-StdShar-GNUC",
       "inherits": [
         "ci-x64-Release-GNUC"
+      ]
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "configurePreset": "ci-StdShar-Intel",
+      "inherits": [
+        "ci-x64-Release-Intel"
       ]
     }
   ],
@@ -159,6 +238,21 @@
       "name": "ci-StdShar-GNUC",
       "configurePreset": "ci-StdShar-GNUC",
       "inherits": "ci-x64-Release-GNUC"
+    },
+    {
+      "name": "ci-StdShar-macos-Clang",
+      "configurePreset": "ci-StdShar-macos-Clang",
+      "inherits": "ci-macos-Release-Clang"
+    },
+    {
+      "name": "ci-StdShar-macos-GNUC",
+      "configurePreset": "ci-StdShar-macos-GNUC",
+      "inherits": "ci-macos-Release-GNUC"
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "configurePreset": "ci-StdShar-Intel",
+      "inherits": "ci-x64-Release-Intel"
     }
   ],
   "workflowPresets": [
@@ -181,12 +275,39 @@
       ]
     },
     {
+      "name": "ci-StdShar-macos-Clang",
+      "steps": [
+        {"type": "configure", "name": "ci-StdShar-macos-Clang"},
+        {"type": "build", "name": "ci-StdShar-macos-Clang"},
+        {"type": "test", "name": "ci-StdShar-macos-Clang"},
+        {"type": "package", "name": "ci-StdShar-macos-Clang"}
+      ]
+    },
+    {
       "name": "ci-StdShar-GNUC",
       "steps": [
         {"type": "configure", "name": "ci-StdShar-GNUC"},
         {"type": "build", "name": "ci-StdShar-GNUC"},
         {"type": "test", "name": "ci-StdShar-GNUC"},
         {"type": "package", "name": "ci-StdShar-GNUC"}
+      ]
+    },
+    {
+      "name": "ci-StdShar-macos-GNUC",
+      "steps": [
+        {"type": "configure", "name": "ci-StdShar-macos-GNUC"},
+        {"type": "build", "name": "ci-StdShar-macos-GNUC"},
+        {"type": "test", "name": "ci-StdShar-macos-GNUC"},
+        {"type": "package", "name": "ci-StdShar-macos-GNUC"}
+      ]
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "steps": [
+        {"type": "configure", "name": "ci-StdShar-Intel"},
+        {"type": "build", "name": "ci-StdShar-Intel"},
+        {"type": "test", "name": "ci-StdShar-Intel"},
+        {"type": "package", "name": "ci-StdShar-Intel"}
       ]
     }
   ]

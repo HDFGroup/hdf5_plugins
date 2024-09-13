@@ -49,9 +49,11 @@ List of Filters Registered with The HDF Group
 |32023   |<a href="#gbr">Granular</a> |BitRound (GBR) The GBG quantization algorithm is a significant improvement to the BitGroom filter|
 |32024   |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
 |32025   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
-|32026   |<a href="#blosc">BLOSC</a>   |The recent new-generation version of the Blosc compression library|
+|32026   |<a href="#blosc2">BLOSC2</a>   |The recent new-generation version of the Blosc compression library|
 |32027   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
 |32028   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
+|32029   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
+|32030   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 
 
 ## <center>The Filters</center>
@@ -689,9 +691,49 @@ SPERR is a wavelet-based lossy compressor for floating-point scientific data; it
 
 #### Filter Information:
 
-H5Z-SPERR is the HDF5 filter for SPERR. It's also available on Github: https://github.com/NCAR/H5Z-SPERR
+H5Z-SPERR is the HDF5 filter for SPERR. It is also available on Github: https://github.com/NCAR/H5Z-SPERR
 
 #### Contact Information:
 Samuel Li
 Email: shaomeng at ucar dot edu
+
+##
+
+<h2 id="trpx">TERSE/PROLIX (or TRPX) Filter</h2>
+
+#### Filter ID: 32029
+
+#### Filter Description:
+
+A new compression algorithm (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10626653/), which is specifically tailored for the lossless and fast compression of the diffraction data.
+
+#### Filter Information:
+
+GitHub repo of the algorithm: https://github.com/Senikm/trpx
+
+#### Contact Information:
+Jan Pieter Abrahams
+Email: jp.abrahams at unibas dot ch
+
+Senik Matinyan
+Email: senik.matinyan at unibas dot ch
+
+##
+
+<h2 id="ffmpeg">FFMPEG Filter</h2>
+
+#### Filter ID: 32030
+
+#### Filter Description:
+
+A lossy compression filter based on ffmpeg video library.
+
+#### Filter Information:
+
+https://github.com/Cai-Lab-at-University-of-Michigan/ffmpeg_HDF5_filter
+
+License: Under MIT License
+
+#### Contact Information:
+Cai Lab at University of Michigan: https://www.cai-lab.org
 

@@ -47,7 +47,7 @@ if (NOT H5PL_VERS_MINOR)
   set (H5PL_VERS_MINOR "14")
 endif ()
 if (NOT H5PL_VERS_RELEASE)
-  set (H5PL_VERS_RELEASE "5")
+  set (H5PL_VERS_RELEASE "3")
 endif ()
 set (H5PL_OVERRIDE_VERSION "${H5PL_VERS_MAJOR}.${H5PL_VERS_MINOR}.${H5PL_VERS_RELEASE}")
 
@@ -122,10 +122,10 @@ if (WIN32)
     set (ENABLE_BLOSC2 OFF CACHE BOOL "" FORCE)
   endif ()
 elseif (APPLE)
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
+  if (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
     FILTER_OPTION (BLOSC2)
-  elseif (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-    FILTER_OPTION (BLOSC2)
+  elseif (NOT CMAKE_C_COMPILER_ID MATCHES "Intel" AND NOT CMAKE_C_COMPILER_ID MATCHES "Apple[Cc]lang")
+      FILTER_OPTION (BLOSC2)
   else ()
     set (ENABLE_BLOSC2 OFF CACHE BOOL "" FORCE)
   endif ()
@@ -179,38 +179,6 @@ else ()
   set (ENABLE_LZF OFF CACHE BOOL "" FORCE)
 endif ()
 
-#if (WIN32 AND MSVC_VERSION GREATER 1600)
-#  # MAFISC filter
-#  FILTER_OPTION (MAFISC)
-#elseif (NOT WIN32)
-#  FILTER_OPTION (MAFISC)
-#else ()
-#  set (ENABLE_MAFISC OFF CACHE BOOL "" FORCE)
-#endif ()
-
-# SZ filter
-#if (WIN32 AND MSVC_VERSION GREATER_EQUAL 1930)
-  #if (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-  #  FILTER_OPTION (SZ)
-  #else ()
-#    set (ENABLE_SZ OFF CACHE BOOL "" FORCE)
-  #endif ()
-#elseif (WIN32 AND MSVC_VERSION GREATER 1900)
-#  if (CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-#    FILTER_OPTION (SZ)
-#  else ()
-#    set (ENABLE_SZ OFF CACHE BOOL "" FORCE)
-#  endif ()
-#elseif (NOT WIN32)
-#  if(CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND NOT CMAKE_C_COMPILER_ID MATCHES "Apple[Cc]lang")
-#    FILTER_OPTION (SZ)
-#  else ()
-#    set (ENABLE_SZ OFF CACHE BOOL "" FORCE)
-#  endif ()
-#else ()
-  set (ENABLE_SZ OFF CACHE BOOL "" FORCE)
-#endif ()
-
 # ZFP filter
 FILTER_OPTION (ZFP)
 
@@ -239,6 +207,12 @@ if (H5PL_BUILD_TESTING)
   include (${PROJECT_SOURCE_DIR}/CTestConfig.cmake)
   configure_file (${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
 endif ()
+
+#-----------------------------------------------------------------------------
+# Community Filters
+#-----------------------------------------------------------------------------
+option (H5PL_COMMUNITY "Enable building community filters" OFF)
+add_subdirectory (community)
 
 #-----------------------------------------------------------------------------
 # Add file(s) to CMake Install

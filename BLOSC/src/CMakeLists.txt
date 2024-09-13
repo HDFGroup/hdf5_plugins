@@ -19,7 +19,7 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Compiler specific flags : Shouldn't there be compiler tests for these
 #-----------------------------------------------------------------------------
-  if (CMAKE_COMPILER_IS_GNUCC OR (CMAKE_CXX_COMPILER_LOADED AND CMAKE_COMPILER_IS_GNUCXX))
+  if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_LOADED AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU"))
     add_definitions ("-Wno-incompatible-pointer-types")
   endif ()
 

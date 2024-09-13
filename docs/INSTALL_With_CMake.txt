@@ -439,6 +439,17 @@ These five steps are described in detail below.
                 set (BLOSC_ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/releases/download/v1.3" CACHE STRING "Use PLUGINS from original location" FORCE)
                 set (BLOSC_ZLIB_TGZ_NAME "zlib-1.3.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
                 set (BLOSC_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC_ZLIB package" FORCE)
+                ############################# blosc2 ################################################
+                set (BLOSC2_GIT_URL "https://github.com/Blosc/c-blosc2.git" CACHE STRING "Use BLOSC2 from Github repository" FORCE)
+                set (BLOSC2_GIT_BRANCH "main" CACHE STRING "" FORCE)
+                set (BLOSC2_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc2/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
+                set (BLOSC2_TGZ_NAME "c-blosc2-2.14.4.tar.gz" CACHE STRING "Use BLOSC2 from compressed file" FORCE)
+                set (BLOSC2_PACKAGE_NAME "blosc2" CACHE STRING "Name of BLOSC2 package" FORCE)
+                set (BLOSC2_ZLIB_GIT_URL "https://github.com/madler/zlib.git" CACHE STRING "Use ZLIB from  GitHub repository" FORCE)
+                set (BLOSC2_ZLIB_GIT_BRANCH "develop" CACHE STRING "" FORCE)
+                set (BLOSC2_ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/releases/download/v1.3" CACHE STRING "Use PLUGINS from original location" FORCE)
+                set (BLOSC2_ZLIB_TGZ_NAME "zlib-1.3.tar.gz" CACHE STRING "Use ZLib from compressed file" FORCE)
+                set (BLOSC2_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC2_ZLIB package" FORCE)
                 ############################# bzip2 ################################################
                 set (BZ2_GIT_URL "https://github.com/libarchive/bzip2.git" CACHE STRING "Use BZ2 from  GitHub repository" FORCE)
                 set (BZ2_GIT_BRANCH "bzip2-1.0.8" CACHE STRING "" FORCE)
@@ -664,6 +675,12 @@ HDF_ENABLE_BLOSC_ZLIB_SUPPORT "Enable Zlib Filters"                            O
 BLOSC_ZLIB_USE_EXTERNAL       "Use External Library Building for ZLIB"         1
 BLOSC_USE_EXTERNAL            "Use External Library Building for BLOSC"        1
 
+------ BLOSC2 ------
+HDF_ENABLE_BLOSC2_SUPPORT      "Enable blosc2"                                  ON
+HDF_ENABLE_BLOSC2_ZLIB_SUPPORT "Enable Zlib Filters"                            ON
+BLOSC2_ZLIB_USE_EXTERNAL       "Use External Library Building for ZLIB"         1
+BLOSC2_USE_EXTERNAL            "Use External Library Building for BLOSC2"       1
+
 ------ BSHUF ------
 BUILD_BSHUF_LZ4_LIBRARY_SOURCE "build the lz4 library within the BSHUF plugin"  ON
 BUILD_BSHUF_LIBRARY_SOURCE     "build the bitshuffle library within the plugin" ON
@@ -682,32 +699,6 @@ LZ4_USE_EXTERNAL            "Use External Library Building for LZ4"          1
 
 ------ LZF ------
 LZF_USE_EXTERNAL            "Use External Library Building for LZF"          1
-
------- MAFISC ------
-COND_MAIN_ENCODER           "Enable encoding"                ON
-COND_MAIN_DECODER           "Enable decoding"                ON
-COND_CHECK_CRC32            "Enable check crc32"             ON
-COND_CHECK_CRC64            "Enable check crc64"             ON
-COND_CHECK_SHA256           "Enable check sha256"            ON
-COND_FILTER_LZ              "Enable lz filter"               ON
-COND_ENCODER_LZ             "Enable lz encoder"              ON
-COND_DECODER_LZ             "Enable lz decoder"              ON
-COND_FILTER_LZMA1           "Enable lzma1 filter"            ON
-COND_ENCODER_LZMA1          "Enable lzma1 encoder"           ON
-COND_DECODER_LZMA1          "Enable lzma1 decoder"           ON
-COND_ENCODER_LZMA2          "Enable lzma2 encoder"           ON
-COND_DECODER_LZMA2          "Enable lzma2 decoder"           ON
-COND_FILTER_DELTA           "Enable delta filter"            ON
-COND_ENCODER_SIMPLE         "Enable delta encoder"           ON
-COND_DECODER_DELTA          "Enable delta decoder"           ON
-COND_FILTER_SIMPLE          "Enable simple filter"           ON
-COND_ENCODER_SIMPLE         "Enable simple encoder"          ON
-COND_DECODER_SIMPLE         "Enable simple decoder"          ON
-BUILD_MAFISC_LIBRARY_SOURCE "build the mafisc library within the plugin"     ON
-MAFISC_USE_EXTERNAL         "Use External Library Building for MAFISC"       1
-
------- SZ ------
-SZ_USE_EXTERNAL            "Use External Library Building for SZ"          1
 
 ------ ZFP ------
 COND_MAIN_ENCODER           "Enable encoding"                ON
@@ -730,6 +721,9 @@ COND_FILTER_SIMPLE          "Enable simple filter"           ON
 COND_ENCODER_SIMPLE         "Enable simple encoder"          ON
 COND_DECODER_SIMPLE         "Enable simple decoder"          ON
 ZFP_USE_EXTERNAL            "Use External Library Building for ZFP"          0
+
+------ ZSTD ------
+ZSTD_USE_EXTERNAL           "Use External Library Building for ZSTD"         1
 
 
 ========================================================================

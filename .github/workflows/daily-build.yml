@@ -1,5 +1,6 @@
 name: hdf5 plugins daily build
 
+# Triggers the workflow on a pull request or on demand
 on:
   workflow_dispatch:
     inputs:
@@ -14,8 +15,6 @@ on:
 permissions:
   contents: read
 
-# A workflow run is made up of one or more jobs that can run sequentially or
-# in parallel.
 jobs:
   get-old-names:
     runs-on: ubuntu-latest
@@ -25,7 +24,7 @@ jobs:
       run-ignore: ${{ steps.getinputs.outputs.INPUTS_IGNORE }}
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.7
 
     - name: Get hdf5 release base name
       uses: dsaltares/fetch-gh-release-asset@master
@@ -76,6 +75,16 @@ jobs:
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
 #      use_tag: snapshot-1.14
       use_environ: snapshots
+    secrets:
+        APPLE_CERTS_BASE64: ${{ secrets.APPLE_CERTS_BASE64 }}
+        APPLE_CERTS_BASE64_PASSWD: ${{ secrets.APPLE_CERTS_BASE64_PASSWD }}
+        KEYCHAIN_PASSWD: ${{ secrets.KEYCHAIN_PASSWD }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+        AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
+        AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-release:
