@@ -55,7 +55,7 @@ jobs:
     - name: Read inputs
       id: getinputs
       run: |
-        echo "INPUTS_IGNORE=${{ ((github.event.inputs.use_ignore == '' && github.event.inputs.use_ignore)  || 'ignore') }}" >> $GITHUB_OUTPUT
+        echo "INPUTS_IGNORE=${{ github.event.inputs.use_ignore }}" >> $GITHUB_OUTPUT
 
     - run: echo "use_ignore is ${{ steps.getinputs.outputs.INPUTS_IGNORE }}."
 
@@ -109,5 +109,5 @@ jobs:
       file_base: ${{ needs.get-old-names.outputs.plugin-name }}
       use_tag: snapshot
       use_environ: snapshots
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) && (needs.get-old-names.outputs.hdf5-name != needs.call-workflow-tarball.outputs.file_base) }}
 
