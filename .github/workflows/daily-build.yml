@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       use_ignore:
-        description: 'Ignore has changes check'
+        description: 'Ignore has_changes check'
         type: string
         required: false
         default: check
@@ -55,7 +55,7 @@ jobs:
     - name: Read inputs
       id: getinputs
       run: |
-        echo "INPUTS_IGNORE=${{ github.event.inputs.use_ignore }}" >> $GITHUB_OUTPUT
+        echo "INPUTS_IGNORE=${{ inputs.use_ignore }}" >> $GITHUB_OUTPUT
 
     - run: echo "use_ignore is ${{ steps.getinputs.outputs.INPUTS_IGNORE }}."
 
@@ -63,8 +63,18 @@ jobs:
     needs: [get-old-names]
     uses: ./.github/workflows/tarball.yml
     with:
+      use_ignore: ${{ needs.get-old-names.outputs.run-ignore }}
       use_tag: snapshot
       use_environ: snapshots
+
+  call-workflow-c-script:
+    needs: [get-old-names, call-workflow-tarball]
+    uses: ./.github/workflows/cmake-script.yml
+    with:
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
+      use_environ: snapshots
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-ctest:
     needs: [get-old-names, call-workflow-tarball]
