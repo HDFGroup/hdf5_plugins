@@ -154,7 +154,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5config.cmake,CTEST_SITE_EXT=GH,LOCAL_SUBMIT=ON,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH,LOCAL_SUBMIT=ON,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
@@ -247,8 +247,8 @@ jobs:
 
       - name: Copy script files for the space (Linux)
         run: |
-          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/CTestScript.cmake ${{ runner.workspace }}/hdf5_plugins
-          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/HDF5PLconfig.cmake ${{ runner.workspace }}/hdf5_plugins
+          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/CTestScript.cmake ${{ runner.workspace }}/hdf5_plugins
+          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/HDF5PLconfig.cmake ${{ runner.workspace }}/hdf5_plugins
 
       - name: List files for the hdf5_plugins (Linux)
         run: |
@@ -274,7 +274,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5config.cmake,CTEST_SITE_EXT=GH-GCC,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-GCC,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
@@ -365,8 +365,8 @@ jobs:
 
       - name: Copy script files for the space (MacOS_latest)
         run: |
-          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/CTestScript.cmake ${{ runner.workspace }}/hdf5_plugins
-          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/HDF5PLconfig.cmake ${{ runner.workspace }}/hdf5_plugins
+          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/CTestScript.cmake ${{ runner.workspace }}/hdf5_plugins
+          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/HDF5PLconfig.cmake ${{ runner.workspace }}/hdf5_plugins
 
       - name: List files for the hdf5_plugins (MacOS_latest)
         run: |
@@ -393,7 +393,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5config.cmake,CTEST_SITE_EXT=GH-Clang,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-Clang,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
@@ -460,8 +460,8 @@ jobs:
 
       - name: Copy script files for the space (Windows_intel)
         run: |
-          Copy-Item -Path ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/CTestScript.cmake -Destination ${{ runner.workspace }}/hdf5_plugins/
-          Copy-Item -Path ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/HDF5PLconfig.cmake -Destination ${{ runner.workspace }}/hdf5_plugins/
+          Copy-Item -Path ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/CTestScript.cmake -Destination ${{ runner.workspace }}/hdf5_plugins/
+          Copy-Item -Path ${{ runner.workspace }}/hdf5_plugins/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/HDF5PLconfig.cmake -Destination ${{ runner.workspace }}/hdf5_plugins/
         shell: pwsh
 
       - name: List files for the hdf5 (Windows_intel)
@@ -492,7 +492,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5config.cmake,CTEST_SITE_EXT=GH-Intel,LOCAL_SUBMIT=ON,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-Intel,LOCAL_SUBMIT=ON,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: pwsh
         continue-on-error: true
 
@@ -552,8 +552,8 @@ jobs:
 
       - name: Copy script files for the space (Linux_intel)
         run: |
-          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/CTestScript.cmake ${{ runner.workspace }}/hdf5_plugins
-          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/scripts/HDF5PLconfig.cmake ${{ runner.workspace }}/hdf5_plugins
+          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/CTestScript.cmake ${{ runner.workspace }}/hdf5_plugins
+          cp ${{ github.workspace }}/${{ steps.set-file-base.outputs.SOURCE_BASE }}/config/cmake/HDF5PLconfig.cmake ${{ runner.workspace }}/hdf5_plugins
 
       - name: List files for the hdf5 (Linux_Linux)
         run: |
@@ -582,7 +582,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5config.cmake,CTEST_SITE_EXT=GH-Intel,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-Intel,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
