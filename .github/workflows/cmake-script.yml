@@ -53,7 +53,7 @@ jobs:
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Get hdf5 release
+      - name: Get hdf5 snapshot
         if: ${{ (inputs.use_environ == 'snapshots') }}
         uses: dsaltares/fetch-gh-release-asset@master
         with:
@@ -436,6 +436,55 @@ jobs:
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
         shell: bash
 
+      - name: Get hdf5 snapshot(Windows_intel)
+        if: ${{ (inputs.use_environ == 'snapshots') }}
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'HDFGroup/hdf5'
+          version: 'tags/snapshot'
+          file: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+
+      - name: Get hdf5 release(Windows_intel)
+        if: ${{ (inputs.use_environ == 'release') }}
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'HDFGroup/hdf5'
+          version: 'tags/${{ inputs.use_hdf }}'
+          file: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+
+      - name: Uncompress gh binary (Windows_intel)
+        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win-vs2022_intel.zip
+
+      - name: Uncompress hdf5 binary (Windows_intel)
+        working-directory: ${{ github.workspace }}/hdf5
+        run: 7z x HDF5-*-win64.zip
+        shell: bash
+
+      - name: List files for the space (Windows_intel)
+        run: |
+            ls -l ${{ github.workspace }}/hdf5
+
+      - name: create hdf5 location (Windows_intel)
+        working-directory: ${{ github.workspace }}/hdf5
+        run: |
+          New-Item -Path "${{ github.workspace }}/HDF_Group/HDF5" -ItemType Directory
+          Copy-Item -Path "${{ github.workspace }}/hdf5/HDF*/*" -Destination "${{ github.workspace }}/HDF_Group/HDF5" -Recurse
+        shell: pwsh
+
+      - name: List files for the space (Windows_intel)
+        run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
+
+      - name: set hdf5lib name
+        id: set-hdf5lib-name
+        run: |
+          HDF5DIR="${{ github.workspace }}/HDF_Group/HDF5"
+          echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: List files for the binaries (Windows_intel)
+        run: |
+            ls -l ${{ github.workspace }}/HDF_Group/HDF5
+
       # Get files created by release script
       - name: Get zip-tarball (Windows_intel)
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
@@ -443,7 +492,7 @@ jobs:
               name: zip-tarball
               path: ${{ github.workspace }}
 
-      - name: using powershell
+      - name: using powershell (Windows_intel)
         shell: pwsh
         run: Get-Location
 
@@ -515,7 +564,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install ninja-build doxygen graphviz curl
 
-      - name: add oneAPI to env
+      - name: add oneAPI to env (Linux_intel)
         uses: fortran-lang/setup-fortran@v1
         id: setup-fortran
         with:
@@ -535,43 +584,43 @@ jobs:
           fi
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
 
-      - name: Get hdf5 release
+      - name: Get hdf5 release (Linux_intel)
         if: ${{ (inputs.use_environ == 'snapshots') }}
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2204_intel.tar.gz'
 
-      - name: Get hdf5 release
+      - name: Get hdf5 release (Linux_intel)
         if: ${{ (inputs.use_environ == 'release') }}
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2204_intel.tar.gz'
 
-      - name: List files for the space (Linux)
+      - name: List files for the space (Linux_intel)
         run: |
               ls -l ${{ github.workspace }}
               ls ${{ runner.workspace }}
 
-      - name: Uncompress gh binary (Linux)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz
+      - name: Uncompress gh binary (Linux_intel)
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2204_intel.tar.gz
 
-      - name: Uncompress hdf5 binary (Linux)
+      - name: Uncompress hdf5 binary (Linux_intel)
         run:  |
             cd "${{ github.workspace }}/hdf5"
             tar -zxvf ${{ github.workspace }}/hdf5/HDF5-*-Linux.tar.gz --strip-components 1
 
-      - name: set hdf5lib name
+      - name: set hdf5lib name (Linux_intel)
         id: set-hdf5lib-name
         run: |
           HDF5DIR=${{ github.workspace }}/hdf5/HDF_Group/HDF5/
           FILE_NAME_HDF5=$(ls ${{ github.workspace }}/hdf5/HDF_Group/HDF5)
           echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
 
-      - name: List files for the binaries (Linux)
+      - name: List files for the binaries (Linux_intel)
         run: |
               ls -l ${{ github.workspace }}/hdf5/HDF_Group/HDF5
 
