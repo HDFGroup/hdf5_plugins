@@ -137,7 +137,7 @@ else ()
   set (CTEST_CONFIGURE_ARCHITECTURE)
 endif()
 set (CTEST_CONFIGURE_COMMAND
-    "${CTEST_CMAKE_COMMAND} -C \"${CTEST_SOURCE_DIRECTORY}/config/cmake/cacheinit.cmake\" -DCMAKE_BUILD_TYPE:STRING=${CTEST_CONFIGURATION_TYPE} ${BUILD_OPTIONS} \"-G${CTEST_CMAKE_GENERATOR}\" \"${CTEST_CONFIGURE_ARCHITECTURE}\" \"${CTEST_CONFIGURE_TOOLSET}\" \"${CTEST_SOURCE_DIRECTORY}\""
+    "${CTEST_CMAKE_COMMAND} -C \"${CTEST_SOURCE_DIRECTORY}/config/cmake/cacheinit.cmake\" -DCMAKE_BUILD_TYPE:STRING=${CTEST_CONFIGURATION_TYPE} ${BUILD_OPTIONS} \"-G${CTEST_CMAKE_GENERATOR}\" ${CTEST_CONFIGURE_ARCHITECTURE} ${CTEST_CONFIGURE_TOOLSET} \"${CTEST_SOURCE_DIRECTORY}\""
 )
 #-----------------------------------------------------------------------------
 
@@ -199,5 +199,8 @@ endif ()
   endif ()
   if (${res} LESS 0 OR ${res} GREATER 0)
     file (APPEND ${CTEST_SCRIPT_DIRECTORY}/FailedCTest.txt "Failed Tests: ${res}\n")
+  endif ()
+  if (LOCAL_SUBMIT)
+    ctest_submit (PARTS Done)
   endif ()
 #-----------------------------------------------------------------------------
