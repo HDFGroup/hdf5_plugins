@@ -257,7 +257,7 @@ jobs:
       - name: Create options file (Linux)
         uses: "DamianReeves/write-file-action@master"
         with:
-          path: ${{ runner.workspace }}/hdf5/HDF5PLoptions.cmake
+          path: ${{ runner.workspace }}/hdf5_plugins/HDF5PLoptions.cmake
           write-mode: overwrite
           contents: |
             #set (CTEST_DROP_SITE_INIT "my.cdash.org")
@@ -472,7 +472,7 @@ jobs:
       - name: Create options file (Windows_intel)
         uses: "DamianReeves/write-file-action@master"
         with:
-          path: ${{ runner.workspace }}/hdf5/HDF5PLoptions.cmake
+          path: ${{ runner.workspace }}/hdf5_plugins/HDF5PLoptions.cmake
           write-mode: overwrite
           contents: |
             #set (CTEST_DROP_SITE_INIT "my.cdash.org")
@@ -562,7 +562,7 @@ jobs:
       - name: Create options file (Linux_intel)
         uses: "DamianReeves/write-file-action@master"
         with:
-          path: ${{ runner.workspace }}/hdf5/HDF5PLoptions.cmake
+          path: ${{ runner.workspace }}/hdf5_plugins/HDF5PLoptions.cmake
           write-mode: overwrite
           contents: |
             #set (CTEST_DROP_SITE_INIT "my.cdash.org")
