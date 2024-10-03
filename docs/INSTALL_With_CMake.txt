@@ -24,7 +24,7 @@ Obtaining HDF5 Filter source code
    2. Obtain HDF5 Filter source from Github
          development branch:  https://github.com/HDFGroup/hdf5_plugins
          last release:        https://github.com/HDFGroup/hdf5_plugins/releases/latest
-             hdf5_plugins-1.14."X".tar.gz or hdf5_plugins-1.14."X".zip
+             hdf5_plugins-1.16."X".tar.gz or hdf5_plugins-1.16."X".zip
 
       and put it in "myhdfstuff".
       Uncompress the file. There should be a hdf5_plugins-1."Y.X" folder.
@@ -783,16 +783,16 @@ For instance, to change the support files to use a local directory, edit CMakeUs
   "version": 6,
   "configurePresets": [
     {
-      "name": "my-HDF5114",
+      "name": "my-HDF5116",
       "hidden": true,
       "environment": {
-        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/1.14.4"
+        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/1.16.0"
       },
       "cacheVariables": {
-        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/1.14.4"},
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/1.16.0"},
         "H5PL_VERS_MAJOR": {"type": "STRING", "value": "1"},
-        "H5PL_VERS_MINOR": {"type": "STRING", "value": "14"},
-        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "4"},
+        "H5PL_VERS_MINOR": {"type": "STRING", "value": "16"},
+        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "0"},
         "H5PL_BUILD_TESTING": "ON",
         "H5PL_BUILD_EXAMPLES": "ON"
       }
@@ -801,10 +801,10 @@ For instance, to change the support files to use a local directory, edit CMakeUs
       "name": "my-HDF5Dev",
       "hidden": true,
       "environment": {
-        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/1.15.0"
+        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/1.17.0"
       },
       "cacheVariables": {
-        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/1.15.0"},
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/1.17.0"},
         "H5PL_BUILD_TESTING": "ON",
         "H5PL_BUILD_EXAMPLES": "ON"
       }
