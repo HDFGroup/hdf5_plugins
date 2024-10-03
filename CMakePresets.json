@@ -10,7 +10,7 @@
       "inherits": "ci-base",
       "cacheVariables": {
         "H5PL_VERS_MAJOR": {"type": "STRING", "value": "1"},
-        "H5PL_VERS_MINOR": {"type": "STRING", "value": "17"},
+        "H5PL_VERS_MINOR": {"type": "STRING", "value": "16"},
         "H5PL_VERS_RELEASE": {"type": "STRING", "value": "0"},
         "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
         "H5PL_COMP_TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"},
