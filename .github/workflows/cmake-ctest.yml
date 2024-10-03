@@ -99,7 +99,7 @@ jobs:
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Get hdf5 release
+      - name: Get hdf5 snapshot
         if: ${{ (inputs.use_environ == 'snapshots') }}
         uses: dsaltares/fetch-gh-release-asset@master
         with:
@@ -278,7 +278,7 @@ jobs:
           fi
           echo "SOURCE_BASE=$SOURCE_NAME_BASE" >> $GITHUB_OUTPUT
 
-      - name: Get hdf5 release
+      - name: Get hdf5 snapshot
         if: ${{ (inputs.use_environ == 'snapshots') }}
         uses: dsaltares/fetch-gh-release-asset@master
         with:
