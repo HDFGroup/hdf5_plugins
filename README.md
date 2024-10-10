@@ -8,7 +8,7 @@ HDF5® data model API. The HDF5® data model has been adopted across
 many industries and this implementation has become a de facto data management standard
 in science, engineering, and research communities worldwide.
 
-Compression plugins are divided into two categories:
+HDF5 compression plugins are divided into two categories:
 
 1) Maintained
 
@@ -23,6 +23,9 @@ filters found in the wild, with links to code and maintainers. The hope is that,
 if the filters become unmaintained, enough information can be found here to decode
 the data in the file, even if that would require more effort, such as having to
 adapt code that hasn't been maintained in a long time.
+
+This repository only contains information about compression plugins. VFDs and VOL
+connectors are not maintained here.
 
 The HDF Group is the developer, maintainer, and steward of HDF5 software. Find more
 information about The HDF Group, the HDF5 Community, and other HDF5 software projects,
