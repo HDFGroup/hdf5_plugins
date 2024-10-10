@@ -1,4 +1,5 @@
 HDF5 Compression Plugins
+------------------------
 
 *Please refer to the Building.txt file for installation instructions.*
 
@@ -6,6 +7,22 @@ This repository contains compression plugin code for the library that implement 
 HDF5® data model API. The HDF5® data model has been adopted across
 many industries and this implementation has become a de facto data management standard
 in science, engineering, and research communities worldwide.
+
+Compression plugins are divided into two categories:
+
+1) Maintained
+
+These filters get their own directory off the root, are actively maintained,
+and are deployed with the HDF5 library when we create a release.
+
+2) Community
+
+These are located in the `community` directory and may not be actively maintained.
+This directory is instead intended to be a one-stop-shopping location for information about
+filters found in the wild, with links to code and maintainers. The hope is that, even
+if the filters become unmaintained, enough information can be found here to decode
+the data in the file, even if that would require more effort, such as having to
+adapt code that hasn't been maintained in a long time.
 
 The HDF Group is the developer, maintainer, and steward of HDF5 software. Find more
 information about The HDF Group, the HDF5 Community, and other HDF5 software projects,
