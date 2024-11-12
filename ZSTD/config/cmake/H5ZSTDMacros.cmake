@@ -21,8 +21,8 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy
             ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt
             <SOURCE_DIR>/build/cmake/CMakeLists.txt
-            ${H5ZSTD_SOURCE_DIR}/config/lib${CMAKE_COMMAND} -E copy
-            CMakeLists.txt
+            && ${CMAKE_COMMAND} -E copy
+            ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt
             <SOURCE_DIR>/build/cmake/lib/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
