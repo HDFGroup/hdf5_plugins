@@ -19,7 +19,7 @@ jobs:
 
     - name: Report bitshuffle release version
       run: |
-        echo "BSHUF=bitshuffle:${{ steps.get-bitshuffle-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "BSHUF=${{ steps.get-bitshuffle-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get blosc release version
       id: get-blosc-release
@@ -32,7 +32,7 @@ jobs:
 
     - name: Report blosc release version
       run: |
-        echo "BLOSC=blosc: ${{ steps.get-blosc-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "BLOSC=${{ steps.get-blosc-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get blosc2 release version
       id: get-blosc2-release
@@ -71,7 +71,7 @@ jobs:
 
     - name: Report fpzip release version
       run: |
-        echo "FPZIP=fpzip: ${{ steps.get-fpzip-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "FPZIP=${{ steps.get-fpzip-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get libjpeg release version
       id: get-libjpeg-release
@@ -84,7 +84,7 @@ jobs:
 
     - name: Report libjpeg release version
       run: |
-        echo "JPEG=libjpeg: ${{ steps.get-libjpeg-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "JPEG=${{ steps.get-libjpeg-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get lz4 release version
       id: get-lz4-release
@@ -97,7 +97,7 @@ jobs:
 
     - name: Report lz4 release version
       run: |
-        echo "LZ4=lz4: ${{ steps.get-lz4-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "LZ4=${{ steps.get-lz4-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get zfp release version
       id: get-zfp-release
@@ -110,7 +110,7 @@ jobs:
 
     - name: Report zfp release version
       run: |
-        echo "ZFP=zfp: ${{ steps.get-zfp-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "ZFP=${{ steps.get-zfp-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get zstd release version
       id: get-zstd-release
@@ -123,7 +123,7 @@ jobs:
 
     - name: Report zstd release version
       run: |
-        echo "ZSTD=zstd: ${{ steps.get-zstd-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "ZSTD=${{ steps.get-zstd-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get zlib release version
       id: get-zlib-release
@@ -136,7 +136,7 @@ jobs:
 
     - name: Report zlib release version
       run: |
-        echo "ZLIB=zlib: ${{ steps.get-zlib-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "ZLIB=${{ steps.get-zlib-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get zlib-ng release version
       id: get-zlib-ng-release
@@ -149,5 +149,22 @@ jobs:
 
     - name: Report zlib-ng release version
       run: |
-        echo "ZLIBNG=zlib-ng: ${{ steps.get-zlib-ng-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+        echo "ZLIBNG=${{ steps.get-zlib-ng-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "versions-file.json"
+        json: '{"bitshuffle":"${{ steps.get-bitshuffle-release.outputs.tag_name }}"",
+                "blosc":"${{ steps.get-blosc-release.outputs.tag_name }}"
+                "blosc2":"${{ steps.get-blosc2-release.outputs.tag_name }}"
+                "fpzip":"${{ steps.get-fpzip-release.outputs.tag_name }}"
+                "libjpeg":"${{ steps.get-libjpeg-release.outputs.tag_name }}"
+                "lz4":"${{ steps.get-lz4-release.outputs.tag_name }}"
+                "zfp":"${{ steps.get-zfp-release.outputs.tag_name }}"
+                "zstd":"${{ steps.get-zstd-release.outputs.tag_name }}"
+                "zlib":"${{ steps.get-zlib-release.outputs.tag_name }}"
+                "zlib-ng":"${{ steps.get-zlib-ng-release.outputs.tag_name }}"
+               }'
 
