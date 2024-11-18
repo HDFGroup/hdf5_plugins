@@ -54,7 +54,6 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         repo: 'libarchive/bzip2'
-        latest: true
 
     - name: Report bzip2 release version
       run: |
