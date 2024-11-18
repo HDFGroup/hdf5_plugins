@@ -47,17 +47,18 @@ jobs:
       run: |
         echo "BLOSC2=${{ steps.get-blosc2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
-    - name: Get bzip2 release version
-      id: get-bzip2-release
-      uses: cardinalby/git-get-release-action@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        repo: 'libarchive/bzip2'
-
-    - name: Report bzip2 release version
-      run: |
-        echo "BZIP2=bzip2: ${{ steps.get-bzip2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+#    - name: Get bzip2 release version
+#      id: get-bzip2-release
+#      uses: cardinalby/git-get-release-action@v1
+#      env:
+#        GITHUB_TOKEN: ${{ github.token }}
+#      with:
+#        repo: 'libarchive/bzip2'
+#        latest: true
+#
+#    - name: Report bzip2 release version
+#      run: |
+#        echo "BZIP2=bzip2: ${{ steps.get-bzip2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
 
     - name: Get fpzip release version
       id: get-fpzip-release
