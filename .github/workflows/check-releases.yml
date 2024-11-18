@@ -1,0 +1,131 @@
+name: hdf5 plugins check compression releases
+
+# Triggers the workflow on a call from another workflow
+on:
+  workflow_call:
+
+jobs:
+  check-compression-releases:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get bitshuffle release version
+      id: get-bitshuffle-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'kiyo-masui/bitshuffle'
+        latest: true
+
+    - name: Report bitshuffle release version
+      run: |
+        echo "bitshuffle:${{ steps.get-bitshuffle-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get blosc release version
+      id: get-blosc-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'Blosc/c-blosc'
+        latest: true
+
+    - name: Report blosc release version
+      run: |
+        echo "blosc: ${{ steps.get-blosc-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get blosc2 release version
+      id: get-blosc2-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'Blosc/c-blosc2'
+        latest: true
+
+    - name: Report blosc2 release version
+      run: |
+        echo "${{ steps.get-blosc2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get bzip2 release version
+      id: get-bzip2-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'libarchive/bzip2'
+        latest: true
+
+    - name: Report bzip2 release version
+      run: |
+        echo "bzip2: ${{ steps.get-bzip2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get fpzip release version
+      id: get-fpzip-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'LLNL/fpzip'
+        latest: true
+
+    - name: Report fpzip release version
+      run: |
+        echo "fpzip: ${{ steps.get-fpzip-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get libjpeg release version
+      id: get-libjpeg-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'libjpeg-turbo/libjpeg-turbo'
+        latest: true
+
+    - name: Report libjpeg release version
+      run: |
+        echo "libjpeg: ${{ steps.get-libjpeg-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get lz4 release version
+      id: get-lz4-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'lz4/lz4'
+        latest: true
+
+    - name: Report lz4 release version
+      run: |
+        echo "lz4: ${{ steps.get-lz4-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zfp release version
+      id: get-zfp-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'LLNL/zfp'
+        latest: true
+
+    - name: Report zfp release version
+      run: |
+        echo "zfp: ${{ steps.get-zfp-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zstd release version
+      id: get-zstd-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'facebook/zstd'
+        latest: true
+
+    - name: Report zstd release version
+      run: |
+        echo "zstd: ${{ steps.get-zstd-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zlib release version
+      id: get-zlib-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'madler/zlib'
+        latest: true
+
+    - name: Report zlib release version
+      run: |
+        echo "zlib: ${{ steps.get-zlib-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zlib-ng release version
+      id: get-zlib-ng-release
+      uses: cardinalby/git-get-release-action@v1
+      with:
+        repo: 'zlib-ng/zlib-ng'
+        latest: true
+
+    - name: Report zlib-ng release version
+      run: |
+        echo "zlib-ng: ${{ steps.get-zlib-ng-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
