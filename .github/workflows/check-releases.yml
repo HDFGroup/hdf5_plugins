@@ -168,3 +168,11 @@ jobs:
                 "zlib-ng":"${{ steps.get-zlib-ng-release.outputs.tag_name }}"
                }'
 
+               # Save json report
+    - name: Save json report
+      uses: actions/upload-artifact@v4
+      with:
+        name: compression-versions
+        path: versions-file.json
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+
