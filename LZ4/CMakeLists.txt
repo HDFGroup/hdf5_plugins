@@ -83,36 +83,33 @@ message (STATUS "H5LZ4 link libs: ${H5PL_LINK_LIBS}")
 #-----------------------------------------------------------------------------
 configure_file (${H5LZ4_RESOURCES_DIR}/config.h.in ${H5LZ4_BINARY_DIR}/lz4_config.h @ONLY)
 
-INCLUDE_DIRECTORIES (${HDF5_INCLUDE_DIR})
-
-option (BUILD_LZ4_LIBRARY_SOURCE "build the lz4 library within the plugin" ON)
-if (NOT BUILD_LZ4_LIBRARY_SOURCE)
-  include (ExternalProject)
-  set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
-  set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
-  if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-    option (LZ4_USE_EXTERNAL "Use External Library Building for LZ4" 1)
-    if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
-      set (LZ4_URL ${LZ4_GIT_URL} CACHE STRING "Path to lz4 git repository")
-      set (LZ4_BRANCH ${LZ4_GIT_BRANCH})
-    elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-      if (NOT H5PL_COMP_TGZPATH)
-        set (H5PL_COMP_TGZPATH ${H5LZ4_SOURCE_DIR})
-      endif ()
-      set (LZ4_URL ${H5PL_COMP_TGZPATH}/${LZ4_TGZ_NAME})
-    else ()
-      set (LZ4_USE_EXTERNAL 0)
+include (ExternalProject)
+set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
+set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
+if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+  option (LZ4_USE_EXTERNAL "Use External Library Building for LZ4" 1)
+  if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+    set (LZ4_URL ${LZ4_GIT_URL} CACHE STRING "Path to lz4 git repository")
+    set (LZ4_BRANCH ${LZ4_GIT_BRANCH})
+  elseif (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
+    if (NOT H5PL_COMP_TGZPATH)
+      set (H5PL_COMP_TGZPATH ${H5LZ4_SOURCE_DIR})
     endif ()
+    set (LZ4_URL ${H5PL_COMP_TGZPATH}/${LZ4_TGZ_NAME})
+  else ()
+    set (LZ4_USE_EXTERNAL 0)
   endif ()
-  #-----------------------------------------------------------------------------
-  # lz4 Library Settings
-  #-----------------------------------------------------------------------------
+endif ()
+#-----------------------------------------------------------------------------
+# lz4 Library Settings
+#-----------------------------------------------------------------------------
+if (NOT H5_LZ4_HEADER)
   if (NOT LZ4_USE_EXTERNAL)
     find_package (LZ4 NAMES ${LZ4_PACKAGE_NAME})
     if (NOT LZ4_FOUND)
       find_package (LZ4) # Legacy find
-      if (NOT LZ4_FOUND)
-        message (FATAL_ERROR " lz4 is Required for ${H5LZ4_PACKAGE_NAME} library")
+      if (LZ4_FOUND)
+        set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZ4_LIBRARIES})
       endif ()
     endif ()
   endif ()
@@ -132,13 +129,12 @@ if (NOT BUILD_LZ4_LIBRARY_SOURCE)
       message (FATAL_ERROR " LZ4 is Required for ${H5LZ4_PACKAGE_NAME} library")
     endif ()
   endif ()
-  message (STATUS "lz4 found: INC=${LZ4_INCLUDE_DIR} TOOLS=${LZ4_LIBRARIES}")
-  set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZ4_LIBRARIES})
-
-  if (LZ4_FOUND)
-    PACKAGE_LZ4_LIBRARY (${H5PL_ALLOW_EXTERNAL_SUPPORT})
-  endif ()
+else ()
+  # This project is being called from within another and LZ4 is already configured
+  set (H5_HAVE_LZ4_H 1)
 endif ()
+message (STATUS "lz4 found: INC=${LZ4_INCLUDE_DIR} TOOLS=${LZ4_LIBRARIES}")
+set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${LZ4_LIBRARIES})
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------

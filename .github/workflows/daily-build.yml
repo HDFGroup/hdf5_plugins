@@ -121,3 +121,6 @@ jobs:
       use_environ: snapshots
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) && (needs.get-old-names.outputs.hdf5-name != needs.call-workflow-tarball.outputs.file_base) }}
 
+  call-workflow-versions:
+    uses: ./.github/workflows/check-releases.yml
+

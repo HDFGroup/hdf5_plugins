@@ -27,7 +27,7 @@ set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOS
 set (BLOSC_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
 set (BLOSC_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BLOSC_TGZ_NAME "c-blosc-1.21.5.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
+set (BLOSC_TGZ_NAME "c-blosc-1.21.6.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
 
 set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
 set (H5BLOSC_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)

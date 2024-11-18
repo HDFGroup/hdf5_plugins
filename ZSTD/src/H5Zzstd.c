@@ -56,7 +56,7 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts,
 
     if (flags & H5Z_FLAG_REVERSE) {
         /* We're decompressing */
-        size_t decompSize = ZSTD_getDecompressedSize(*buf, origSize);
+        size_t decompSize = ZSTD_getFrameContentSize(*buf, origSize);
         if (NULL == (outbuf = malloc(decompSize)))
             goto error;
 
