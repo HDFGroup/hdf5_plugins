@@ -361,7 +361,7 @@ zfp is a BSD licensed open source C++ library for compressed floating-point arra
 
 https://github.com/LLNL/H5Z-ZFP
 
-For more information see: http://computation.llnl.gov/projects/floating-point-compression/
+For more information see: http://computing.llnl.gov/projects/floating-point-compression/
 
 #### Contact Information:
 
