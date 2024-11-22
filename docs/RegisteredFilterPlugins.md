@@ -13,10 +13,7 @@ To register a filter please contact The HDF Helpdesk with the following informat
 * Links to any relevant information including licensing information
 
 Here is the current policy regarding filter identifier assignment:
-The filter identifier is designed to be a unique identifier for the filter.
-Values from `0` to `255` are reserved for internal use by The HDF Group for filters that are part of the HDF5 library itself.
-Values from `256` to `511` are available for testing new VOL connectors.
-Values from `512` to `32,767` are reserved for filters managed by The HDF Group but are nominally requested, developed, and supported by third parties.
+The filter identifier is designed to be a unique identifier for the filter. Values from `zero` through `32,767` are reserved for filters supported by The HDF Group in the HDF5 library and for filters requested and supported by the 3rd party.
 Values from `32768` to `65535` are reserved for non-distributed uses (e.g., internal company usage) or for application usage when testing a feature. The HDF Group does not track or document the usage of filters with identifiers from this range.
 Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
 
@@ -408,7 +405,7 @@ Filter number 258 appeared in the Silo headers, but may not have been used in ac
 
 #### Filter Information:
 
-For more information see: http://computing.llnl.gov/projects/floating-point-compression/
+For more information see: http://computation.llnl.gov/projects/floating-point-compression/
 
 #### Contact Information:
 
