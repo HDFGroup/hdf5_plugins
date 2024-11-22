@@ -16,7 +16,7 @@ The current policy for filter identifier assignment is as follows:
 
  <table>
   <tr>
-    <th>Values for <code>#H5Z_filter_t</code></th><th>Description</th>
+    <th>Filter Identifier Values</th><th>Description</th>
   </tr>
   <tr>
     <td><code>0-255</code></td>
