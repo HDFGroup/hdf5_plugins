@@ -41,8 +41,7 @@ The current policy for filter identifier assignment is as follows:
     <td><code>32,768-65,535</code></td>
     <td>Filter values in this range are designated for internal company use or
         application testing when assessing a feature. The HDF Group does not
-        track or document the use of filters within this range.
-    </td>
+        track or document the use of filters within this range.</td>
   </tr>
   </table>
 
