@@ -85,10 +85,8 @@ List of Filters Registered with The HDF Group
 |32029   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
 |32030   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 
----
-**NOTE**
-Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
----
+> [!NOTE] 
+> Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
 
 ## <center>The Filters</center>
 
