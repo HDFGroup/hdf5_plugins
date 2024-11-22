@@ -21,6 +21,8 @@ List of Filters Registered with The HDF Group
 ---------------------------------------------
 |Filter  |Identifier Name |Short Description|
 |--------|----------------|---------------------|
+|257     |<a href="#hzip">hzip</a> |hzip compression used in Silo|
+|258     |<a href="#fpzip">fpzip</a> |Duplicate of 32014 (fpzip, below)|
 |305     |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
 |307     |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
 |32000   |<a href="#lzf">LZF</a> |LZF lossless compression used by H5Py project|
@@ -58,6 +60,25 @@ List of Filters Registered with The HDF Group
 
 ## <center>The Filters</center>
 
+<h2 id="hzip">hzip Filter</h2>
+
+#### Filter ID: 257
+
+#### Filter Description:
+hzip is a compression algorithm for lossless compression of structured and unstructured meshes composed of cells with hypercube topology.
+
+#### Filter Information:
+hzip was written by Peter Lindstrom at LLNL, and is based on the algorithm described in the following paper:
+
+Peter Lindstrom and Martin Isenburg, "Lossless Compression of Hexahedral Meshes," IEEE Data Compression Conference, March 2008, 192-201.
+
+https://computing.llnl.gov/projects/hzip
+
+#### Contact Information:
+Mark Miller
+Email: miller86 at llnl dot gov
+
+##
 <h2 id="lzo">LZO Filter</h2>
 
 #### Filter ID: 305
@@ -375,10 +396,12 @@ Email: pl at llnl dot gov
 
 <h2 id="fpzip">fpzip</h2>
 
-#### Filter ID: 32014
+#### Filter ID: 32014 (and 258)
 
 #### Filter Description:
 fpzip is a library for lossless or lossy compression of 2D or 3D floating-point scalar fields. Although written in C++, fpzip has a C interface. fpzip was developed by Peter Lindstrom at LLNL.
+
+Filter number 258 appeared in the Silo headers, but may not have been used in actual HDF5 files.
 
 #### Filter Information:
 
