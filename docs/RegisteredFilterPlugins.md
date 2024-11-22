@@ -12,12 +12,7 @@ To register a filter please contact The HDF Helpdesk with the following informat
 * Short description of the new filter
 * Links to any relevant information including licensing information
 
-Here is the current policy regarding filter identifier assignment:
-The filter identifier is designed to be a unique identifier for the filter.
-Values from `0` to `255` are reserved for internal use by The HDF Group for filters that are part of the HDF5 library itself.
-Values from `256` to `511` are available for testing new VOL connectors.
-Values from `512` to `32,767` are reserved for filters managed by The HDF Group but are nominally requested, developed, and supported by third parties.
-Values from `32768` to `65535` are reserved for non-distributed uses (e.g., internal company usage) or for application usage when testing a feature. The HDF Group does not track or document the usage of filters with identifiers from this range.
+The current policy for filter identifier assignment is as follows: Values ranging from 0 to 32,767 are reserved for filters supported by The HDF Group within the HDF5 library and for filters requested and supported by third parties. Additionally, values from 32,768 to 65,535 are allocated for non-distributed uses, such as internal company usage or feature application testing. Please note that The HDF Group does not track or document the usage of filters with identifiers in this reserved range.
 Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
 
 List of Filters Registered with The HDF Group
