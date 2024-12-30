@@ -180,7 +180,15 @@ else ()
 endif ()
 
 # ZFP filter
-FILTER_OPTION (ZFP)
+if (WIN32)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]" AND NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
+    FILTER_OPTION (ZFP)
+  else ()
+    set (ENABLE_ZFP OFF CACHE BOOL "" FORCE)
+  endif ()
+else ()
+  FILTER_OPTION (ZFP)
+endif ()
 
 # ZSTD filter
 if (WIN32)
