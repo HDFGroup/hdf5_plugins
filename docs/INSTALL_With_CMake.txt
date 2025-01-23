@@ -58,7 +58,7 @@ CMake build script from https://github.com/HDFGroup/hdf5_plugins/blob/master/con
 
 Configuration files from https://github.com/HDFGroup/hdf5_plugins/blob/master/config/cmake:
     HDF5PLconfig.cmake
-    HDFoptions.cmake
+    HDFPLoptions.cmake
 
 External compression libraries are in the source libs folder.
 
@@ -75,7 +75,7 @@ To build HDF5 Filter libraries you will need to:
    3. Change to the source directory "hdf5_plugins-1.y.x".
       CTestScript.cmake file should not be modified.
 
-   4. Edit the platform configuration file, HDFoptions.cmake, if you want to change
+   4. Edit the platform configuration file, HDFPLoptions.cmake, if you want to change
       the default build environment. The file is a compilation of the most used
       options and by commenting/uncommenting lines the options can easily be changed.
 
@@ -306,7 +306,7 @@ IV. Further considerations
       See the CMake help for more information on using toolchain files.
 
       To use a toolchain file with the supplied cmake scripts, see the
-      HDFoptions.cmake file under the toolchain section.
+      HDFPLoptions.cmake file under the toolchain section.
 
 Notes: CMake and HDF5
 
