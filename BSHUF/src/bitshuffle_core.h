@@ -3,7 +3,7 @@
  *
  * This file is part of Bitshuffle
  * Author: Kiyoshi Masui <kiyo@physics.ubc.ca>
- * Website: http://www.github.com/kiyo-masui/bitshuffle
+ * Website: https://www.github.com/kiyo-masui/bitshuffle
  * Created: 2014
  *
  * See LICENSE file for details about copyright and rights to use.
@@ -19,6 +19,7 @@
  *      -11   : Missing SSE.
  *      -12   : Missing AVX.
  *      -13   : Missing Arm Neon.
+ *      -14   : Missing AVX512.
  *      -80   : Input size not a multiple of 8.
  *      -81   : block_size not multiple of 8.
  *      -91   : Decompression error, wrong number of bytes processed.
@@ -47,8 +48,8 @@
 // These are usually set in the setup.py.
 #ifndef BSHUF_VERSION_MAJOR
 #define BSHUF_VERSION_MAJOR 0
-#define BSHUF_VERSION_MINOR 3
-#define BSHUF_VERSION_POINT 5
+#define BSHUF_VERSION_MINOR 4
+#define BSHUF_VERSION_POINT 0
 #endif
 
 #ifdef __cplusplus
@@ -67,6 +68,18 @@ extern "C" {
 int bshuf_using_SSE2(void);
 
 
+/* ---- bshuf_using_NEON ----
+ *
+ * Whether routines where compiled with the NEON instruction set.
+ *
+ * Returns
+ * -------
+ *  1 if using NEON, 0 otherwise.
+ *
+ */
+int bshuf_using_NEON(void);
+
+
 /* ---- bshuf_using_AVX2 ----
  *
  * Whether routines where compiled with the AVX2 instruction set.
@@ -77,6 +90,18 @@ int bshuf_using_SSE2(void);
  *
  */
 int bshuf_using_AVX2(void);
+
+
+/* ---- bshuf_using_AVX512 ----
+ *
+ * Whether routines where compiled with the AVX512 instruction set.
+ *
+ * Returns
+ * -------
+ *  1 if using AVX512, 0 otherwise.
+ *
+ */
+int bshuf_using_AVX512(void);
 
 
 /* ---- bshuf_default_block_size ----
