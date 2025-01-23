@@ -144,6 +144,8 @@ jobs:
               #set (CTEST_DROP_SITE_INIT "my.cdash.org")
               # Change following line to submit to your CDash dashboard to a different CDash project
               #set (CTEST_DROP_LOCATION_INIT "/submit.php?project=HDF5")
+              set (MODEL "GHDaily")
+              set (GROUP "GHDaily")
               set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
               set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
               set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
@@ -154,7 +156,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH,LOCAL_SUBMIT=ON,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }},LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
@@ -175,7 +177,7 @@ jobs:
       - name: Install CMake Dependencies (Linux)
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build doxygen graphviz curl
+          sudo apt-get install ninja-build graphviz curl
 
       - name: Set file base name (Linux)
         id: set-file-base
@@ -196,7 +198,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
@@ -204,7 +206,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
 
       - name: List files for the space (Linux)
         run: |
@@ -212,7 +214,7 @@ jobs:
               ls ${{ runner.workspace }}
 
       - name: Uncompress gh binary (Linux)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2204_gcc.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz
 
       - name: Uncompress hdf5 binary (Linux)
         run:  |
@@ -263,18 +265,19 @@ jobs:
             #set (CTEST_DROP_SITE_INIT "my.cdash.org")
             # Change following line to submit to your CDash dashboard to a different CDash project
             #set (CTEST_DROP_LOCATION_INIT "/submit.php?project=HDF5")
+            set (MODEL "GHDaily")
+            set (GROUP "GHDaily")
             set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
-            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
 
       - name: Run ctest (Linux)
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-GCC,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }}-GCC,LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
@@ -382,10 +385,11 @@ jobs:
             # Change following line to submit to your CDash dashboard to a different CDash project
             #set (CTEST_DROP_LOCATION_INIT "/submit.php?project=HDF5")
             set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
+            set (MODEL "GHDaily")
+            set (GROUP "GHDaily")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
-            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
 
       - name: Run ctest (MacOS_latest)
         id: run-ctest
@@ -393,7 +397,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-Clang,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }}-Clang,LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
@@ -527,11 +531,13 @@ jobs:
             #set (CTEST_DROP_SITE_INIT "my.cdash.org")
             # Change following line to submit to your CDash dashboard to a different CDash project
             #set (CTEST_DROP_LOCATION_INIT "/submit.php?project=HDF5")
-            set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
             #set (CMAKE_GENERATOR_TOOLSET "Intel C++ Compiler 2024,fortran=ifx")
+            set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
+            set (MODEL "GHDaily")
+            set (GROUP "GHDaily")
+            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
-            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
 
       - name: Run ctest (Windows_intel) with oneapi
         env:
@@ -541,7 +547,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-Intel,LOCAL_SUBMIT=ON,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }}-Intel,LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: pwsh
         continue-on-error: true
 
@@ -590,7 +596,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204_intel.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
 
       - name: Get hdf5 release (Linux_intel)
         if: ${{ (inputs.use_environ == 'release') }}
@@ -598,7 +604,7 @@ jobs:
         with:
           repo: 'HDFGroup/hdf5'
           version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-ubuntu-2204_intel.tar.gz'
+          file: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
 
       - name: List files for the space (Linux_intel)
         run: |
@@ -606,7 +612,7 @@ jobs:
               ls ${{ runner.workspace }}
 
       - name: Uncompress gh binary (Linux_intel)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2204_intel.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz
 
       - name: Uncompress hdf5 binary (Linux_intel)
         run:  |
@@ -658,10 +664,11 @@ jobs:
             # Change following line to submit to your CDash dashboard to a different CDash project
             #set (CTEST_DROP_LOCATION_INIT "/submit.php?project=HDF5")
             set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
+            set (MODEL "GHDaily")
+            set (GROUP "GHDaily")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
-            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
 
       - name: Run ctest (Linux_intel)
         env:
@@ -671,7 +678,7 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-Intel,LOCAL_SUBMIT=ON,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }}-Intel,LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=Unix,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
