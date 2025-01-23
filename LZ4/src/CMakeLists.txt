@@ -21,8 +21,8 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 # Setup include Directories
 #-----------------------------------------------------------------------------
 set (H5LZ4_INCLUDE_DIRS ${H5LZ4_INCLUDE_DIRS}
-    ${H5PL_HDF5_INCLUDE_DIRS} ${H5LZ4_BINARY_DIR} ${LZ4_BINARY_DIR}
-    ${H5LZ4_SRC_SOURCE_DIR}/lib
+    ${H5PL_HDF5_INCLUDE_DIRS} ${H5LZ4_BINARY_DIR}
+    ${H5LZ4_SRC_SOURCE_DIR}
     ${LZ4_INCLUDE_DIRS}
 )
 
@@ -32,19 +32,6 @@ set (H5LZ4_INCLUDE_DIRS ${H5LZ4_INCLUDE_DIRS}
 set (H5LZ4_SRCS
     ${H5LZ4_SRC_SOURCE_DIR}/H5Zlz4.c
 )
-if (BUILD_LZ4_LIBRARY_SOURCE)
-  set (H5LZ4_SRCS ${H5LZ4_SRCS}
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4.c
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4.h
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4hc.c
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4hc.h
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame.c
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame.h
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/lz4frame_static.h
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/xxhash.c
-      ${H5LZ4_SRC_SOURCE_DIR}/lib/xxhash.h
-  )
-endif ()
 
 add_library (${H5LZ4_LIB_TARGET} MODULE ${H5LZ4_SRCS})
 if (DISABLE_H5LZ4_ENCODER)

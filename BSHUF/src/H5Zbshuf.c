@@ -1,5 +1,4 @@
 /*
- * This file is an example of an HDF5 filter plugin.
  * The filter function  H5Z_filter_bshuf was adopted from
  * https://github.com/kiyo-masui/bitshuffle
  * The plugin can be used with the HDF5 library vesrion 1.8.11+ to read
@@ -7,13 +6,32 @@
  */
 
 /*
+ * Bitshuffle HDF5 filter
  *
  * This file is part of Bitshuffle
  * Author: Kiyoshi Masui <kiyo@physics.ubc.ca>
- * Website: http://www.github.com/kiyo-masui/bitshuffle
+ * Website: https://www.github.com/kiyo-masui/bitshuffle
  * Created: 2014
  *
  * See LICENSE file for details about copyright and rights to use.
+ *
+ *
+ * Header File
+ *
+ * Filter Options
+ * --------------
+ *  block_size (option slot 0) : integer (optional)
+ *      What block size to use (in elements not bytes). Default is 0,
+ *      for which bitshuffle will pick a block size with a target of 8kb.
+ *  Compression (option slot 1) : 0 or BSHUF_H5_COMPRESS_LZ4
+ *      Whether to apply LZ4 compression to the data after bitshuffling.
+ *      This is much faster than applying compression as a second filter
+ *      because it is done when the small block of data is already in the
+ *      L1 cache.
+ *
+ *      For LZ4 compression, the compressed format of the data is the same as
+ *      for the normal LZ4 filter described in
+ *      https://support.hdfgroup.org/services/filters/HDF5_LZ4.pdf.
  *
  */
 
@@ -59,23 +77,12 @@
 #include "bitshuffle.h"
 
 #define BSHUF_H5_COMPRESS_LZ4 2
+#define BSHUF_H5_COMPRESS_ZSTD 3
 
 /* Filter ID registered with the HDF Group */
 #define BSHUF_H5FILTER 32008
 
-#if 0
-#if defined(__GNUC__)
-#define PUSH_ERR(func, minor, str, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, ##__VA_ARGS__)
-#elif defined(_MSC_VER)
-#define PUSH_ERR(func, minor, str, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, __VA_ARGS__)
-#else
-/* This version is portable but it's better to use compiler-supported
-   approaches for handling the trailing comma issue when possible. */
-#define PUSH_ERR(func, minor, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
-#endif    /* defined(__GNUC__) */
-#else
 #define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
-#endif
 
 // Prototypes from bitshuffle.c
 void bshuf_write_uint64_BE(void* buf, uint64_t num);
@@ -136,7 +143,9 @@ herr_t H5Z_bshuf_set_local(hid_t dcpl, hid_t type, hid_t space) {
     values[1] = BSHUF_VERSION_MINOR;
 
     elem_size = H5Tget_size(type);
+#ifdef BSHUF_DEBUG
     fprintf(stderr, "BSHUF: Computed elem_size %d\n", elem_size);
+#endif
     if(elem_size <= 0) {
         PUSH_ERR("bshuf_h5_set_local", H5E_CALLBACK, "Invalid element size.");
         return -1;
@@ -159,6 +168,10 @@ herr_t H5Z_bshuf_set_local(hid_t dcpl, hid_t type, hid_t space) {
                 break;
             case BSHUF_H5_COMPRESS_LZ4:
                 break;
+            #ifdef ZSTD_SUPPORT
+            case BSHUF_H5_COMPRESS_ZSTD:
+                break;
+            #endif
             default:
                 PUSH_ERR("bshuf_h5_set_local", H5E_CALLBACK, "Invalid bitshuffle compression.");
         }
@@ -176,7 +189,7 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
            size_t *buf_size, void **buf) {
 
     size_t size, elem_size;
-    int err;
+    int err = -1;
     char msg[80];
     size_t block_size = 0;
     size_t buf_size_out, nbytes_uncomp, nbytes_out;
@@ -189,14 +202,25 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
         return 0;
     }
     elem_size = cd_values[2];
+#ifdef ZSTD_SUPPORT
+    const int comp_lvl = cd_values[5];
+#endif
 
     // User specified block size.
     if (cd_nelmts > 3) block_size = cd_values[3];
 
     if (block_size == 0) block_size = bshuf_default_block_size(elem_size);
 
+#ifndef ZSTD_SUPPORT
+    if (cd_nelmts > 4 && (cd_values[4] == BSHUF_H5_COMPRESS_ZSTD)) {
+        PUSH_ERR("bshuf_h5_filter", H5E_CALLBACK,
+                "ZSTD compression filter chosen but ZSTD support not installed.");
+        return 0;
+    }
+#endif
+
     // Compression in addition to bitshiffle.
-    if (cd_nelmts > 4 && cd_values[4] == BSHUF_H5_COMPRESS_LZ4) {
+    if (cd_nelmts > 4 && (cd_values[4] == BSHUF_H5_COMPRESS_LZ4 || cd_values[4] == BSHUF_H5_COMPRESS_ZSTD)) {
         if (flags & H5Z_FLAG_REVERSE) {
             // First eight bytes is the number of bytes in the output buffer,
             // little endian.
@@ -209,8 +233,17 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
         }
         else {
             nbytes_uncomp = nbytes;
-            buf_size_out = bshuf_compress_lz4_bound(nbytes_uncomp / elem_size,
-                    elem_size, block_size) + 12;
+            // Pick which compressions library to use
+            if(cd_values[4] == BSHUF_H5_COMPRESS_LZ4) {
+              buf_size_out = bshuf_compress_lz4_bound(nbytes_uncomp / elem_size,
+                  elem_size, block_size) + 12;
+            }
+#ifdef ZSTD_SUPPORT
+            else if (cd_values[4] == BSHUF_H5_COMPRESS_ZSTD) {
+              buf_size_out = bshuf_compress_zstd_bound(nbytes_uncomp / elem_size,
+                  elem_size, block_size) + 12;
+            }
+#endif
         }
     }
     else {
@@ -233,10 +266,18 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
         return 0;
     }
 
-    if (cd_nelmts > 4 && cd_values[4] == BSHUF_H5_COMPRESS_LZ4) {
+    if (cd_nelmts > 4 && (cd_values[4] == BSHUF_H5_COMPRESS_LZ4 || cd_values[4] == BSHUF_H5_COMPRESS_ZSTD)) {
         if (flags & H5Z_FLAG_REVERSE) {
             // Bit unshuffle/decompress.
-            err = bshuf_decompress_lz4(in_buf, out_buf, size, elem_size, block_size);
+            // Pick which compressions library to use
+            if(cd_values[4] == BSHUF_H5_COMPRESS_LZ4) {
+              err = bshuf_decompress_lz4(in_buf, out_buf, size, elem_size, block_size);
+            }
+#ifdef ZSTD_SUPPORT
+            else if (cd_values[4] == BSHUF_H5_COMPRESS_ZSTD) {
+              err = bshuf_decompress_zstd(in_buf, out_buf, size, elem_size, block_size);
+            }
+#endif
             nbytes_out = nbytes_uncomp;
         }
         else {
@@ -248,15 +289,32 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
             // have the same representation.
             bshuf_write_uint64_BE(out_buf, nbytes_uncomp);
             bshuf_write_uint32_BE((char*) out_buf + 8, block_size * elem_size);
-            err = bshuf_compress_lz4(in_buf, (char*) out_buf + 12, size,
-                    elem_size, block_size); nbytes_out = err + 12; } } else {
-                if (flags & H5Z_FLAG_REVERSE) {
+            if(cd_values[4] == BSHUF_H5_COMPRESS_LZ4) {
+                err = bshuf_compress_lz4(in_buf, (char*) out_buf + 12, size,
+                        elem_size, block_size);
+            }
+#ifdef ZSTD_SUPPORT
+            else if (cd_values[4] == BSHUF_H5_COMPRESS_ZSTD) {
+                err = bshuf_compress_zstd(in_buf, (char*) out_buf + 12, size,
+                        elem_size, block_size, comp_lvl);
+            }
+#endif
+            nbytes_out = err + 12;
+        }
+    }
+    else {
+        if (flags & H5Z_FLAG_REVERSE) {
             // Bit unshuffle.
             err = bshuf_bitunshuffle(in_buf, out_buf, size, elem_size,
-                    block_size); } else {
+                    block_size);
+        }
+        else {
             // Bit shuffle.
             err = bshuf_bitshuffle(in_buf, out_buf, size, elem_size,
-                    block_size); } nbytes_out = nbytes; }
+                    block_size);
+        }
+        nbytes_out = nbytes;
+    }
     //printf("nb_in %d, nb_uncomp %d, nb_out %d, buf_out %d, block %d\n",
     //nbytes, nbytes_uncomp, nbytes_out, buf_size_out, block_size);
 

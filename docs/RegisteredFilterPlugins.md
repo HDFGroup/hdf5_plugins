@@ -12,15 +12,22 @@ To register a filter please contact The HDF Helpdesk with the following informat
 * Short description of the new filter
 * Links to any relevant information including licensing information
 
-Here is the current policy regarding filter identifier assignment:
-The filter identifier is designed to be a unique identifier for the filter. Values from `zero` through `32,767` are reserved for filters supported by The HDF Group in the HDF5 library and for filters requested and supported by the 3rd party.
-Values from `32768` to `65535` are reserved for non-distributed uses (e.g., internal company usage) or for application usage when testing a feature. The HDF Group does not track or document the usage of filters with identifiers from this range.
-Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
+The current policy for filter identifier assignment is as follows:
+
+| Filter Identifier Values | Description |
+|--------------------------|-------------|
+| `0-255`                  | These values are reserved for filters predefined and registered by the HDF5 library and of use to the general public. |
+| `256-511`                | Filter values in this range are intended for testing only and can be temporarily used by any organization. No attempts are made to resolve numbering conflicts, as all definitions are temporary. |
+| `512-32,767`             | Filter values within this range are designated for filters managed by The HDF Group, but they are nominally requested, developed, and supported by third parties. Please contact the [HDF5 development team](mailto:help@hdfgroup.org) to reserve a value or range of values for use by your filters. |
+| `32,768-65,535`          | Filter values in this range are designated for internal company use or application testing when assessing a feature. The HDF Group does not track or document the use of filters within this range. |
+
 
 List of Filters Registered with The HDF Group
 ---------------------------------------------
 |Filter  |Identifier Name |Short Description|
 |--------|----------------|---------------------|
+|257     |<a href="#hzip">hzip</a> |hzip compression used in Silo|
+|258     |<a href="#fpzip">fpzip</a> |Duplicate of 32014 (fpzip, below)|
 |305     |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
 |307     |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
 |32000   |<a href="#lzf">LZF</a> |LZF lossless compression used by H5Py project|
@@ -55,9 +62,30 @@ List of Filters Registered with The HDF Group
 |32029   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
 |32030   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 
+> [!NOTE]
+> Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
 
 ## <center>The Filters</center>
 
+<h2 id="hzip">hzip Filter</h2>
+
+#### Filter ID: 257
+
+#### Filter Description:
+hzip is a compression algorithm for lossless compression of structured and unstructured meshes composed of cells with hypercube topology.
+
+#### Filter Information:
+hzip was written by Peter Lindstrom at LLNL, and is based on the algorithm described in the following paper:
+
+Peter Lindstrom and Martin Isenburg, "Lossless Compression of Hexahedral Meshes," IEEE Data Compression Conference, March 2008, 192-201.
+
+https://computing.llnl.gov/projects/hzip
+
+#### Contact Information:
+Mark Miller
+Email: miller86 at llnl dot gov
+
+##
 <h2 id="lzo">LZO Filter</h2>
 
 #### Filter ID: 305
@@ -161,8 +189,8 @@ http://wr.informatik.uni-hamburg.de/research/projects/icomex/mafisc
 
 #### Contact Information:
 
-Nathanael Huebbe 
-Email: nathanael.huebbe at informatik dot uni-hamburg dot de 
+Nathanael Huebbe
+Email: nathanael.huebbe at informatik dot uni-hamburg dot de
 
 ##
 
@@ -221,7 +249,7 @@ Appears to be no longer available
 #### Filter ID: 32006
 
 #### Filter Description:
-All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Vesrsion 2, Byte Offset and Nibble Offset. 
+All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Vesrsion 2, Byte Offset and Nibble Offset.
 License Information: GPL and LGPL
 
 #### Contact Information:
@@ -245,7 +273,7 @@ JPEG-XR Filter for HDF5
 
 #### Contact Information:
 
-Marvin Albert 
+Marvin Albert
 Email: marvin dot albert at gmail dot com
 
 ##
@@ -361,7 +389,7 @@ zfp is a BSD licensed open source C++ library for compressed floating-point arra
 
 https://github.com/LLNL/H5Z-ZFP
 
-For more information see: http://computation.llnl.gov/projects/floating-point-compression/
+For more information see: http://computing.llnl.gov/projects/floating-point-compression/
 
 #### Contact Information:
 
@@ -375,14 +403,16 @@ Email: pl at llnl dot gov
 
 <h2 id="fpzip">fpzip</h2>
 
-#### Filter ID: 32014
+#### Filter ID: 32014 (and 258)
 
 #### Filter Description:
 fpzip is a library for lossless or lossy compression of 2D or 3D floating-point scalar fields. Although written in C++, fpzip has a C interface. fpzip was developed by Peter Lindstrom at LLNL.
 
+Filter number 258 appeared in the Silo headers, but may not have been used in actual HDF5 files.
+
 #### Filter Information:
 
-For more information see: http://computation.llnl.gov/projects/floating-point-compression/
+For more information see: http://computing.llnl.gov/projects/floating-point-compression/
 
 #### Contact Information:
 
@@ -516,7 +546,7 @@ This filter is used by Oxford Nanopore specifically to compress raw dna signal d
 
 streamvbyte (https://github.com/lemire/streamvbyte)
 
-zstd  (https://github.com/facebook/zstd) 
+zstd  (https://github.com/facebook/zstd)
 
 #### Contact Information:
 
@@ -598,13 +628,13 @@ Charlie Zender  (University of California, Irvine)
 
 #### Filter Description:
 
-SZ3 is a modular error-bounded lossy compression framework for scientific datasets, which allows users to customize their own compression pipeline to adapt to diverse datasets and user-requirements. Compared with SZ2 (filter id: 32017), SZ3 has integrated a more effective prediction such that its compression qualities/ratios are much higher than that of SZ2 in most of cases.  
+SZ3 is a modular error-bounded lossy compression framework for scientific datasets, which allows users to customize their own compression pipeline to adapt to diverse datasets and user-requirements. Compared with SZ2 (filter id: 32017), SZ3 has integrated a more effective prediction such that its compression qualities/ratios are much higher than that of SZ2 in most of cases.
 
 #### Filter Information:
 
 This filter is documented, implemented, and maintained in github: https://github.com/szcompressor/SZ3.
 
-License: https://github.com/szcompressor/SZ/blob/master/copyright-and-BSD-license.txt 
+License: https://github.com/szcompressor/SZ/blob/master/copyright-and-BSD-license.txt
 
 #### Contact Information:
 
@@ -622,7 +652,7 @@ Email: cappello at mcs dot anl dot gov
 
 #### Filter Description:
 
-Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding.  
+Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding.
 
 #### Filter Information:
 
@@ -631,7 +661,7 @@ This filter is documented, implemented, and maintained at: https://gitlab.com/dg
 #### Contact Information:
 
 David Mathews
-Email: david dot mathews dot 1994 at gmail dot com 
+Email: david dot mathews dot 1994 at gmail dot com
 
 ##
 
@@ -736,4 +766,3 @@ License: Under MIT License
 
 #### Contact Information:
 Cai Lab at University of Michigan: https://www.cai-lab.org
-

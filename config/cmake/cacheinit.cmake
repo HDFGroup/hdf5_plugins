@@ -125,8 +125,8 @@ set (BUILD_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the pl
 set (LZ4_GIT_URL "https://github.com/lz4/lz4.git" CACHE STRING "Use LZ4 from  GitHub repository" FORCE)
 set (LZ4_GIT_BRANCH "dev" CACHE STRING "" FORCE)
 
-set (LZ4_TGZ_ORIGPATH "https://github.com/lz4/lz4/releases/download/v1.9.4" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (LZ4_TGZ_NAME "lz4-1.9.4.tar.gz" CACHE STRING "Use LZ4 from compressed file" FORCE)
+set (LZ4_TGZ_ORIGPATH "https://github.com/lz4/lz4/releases/download/v1.10.0" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (LZ4_TGZ_NAME "lz4-1.10.0.tar.gz" CACHE STRING "Use LZ4 from compressed file" FORCE)
 
 set (LZ4_PACKAGE_NAME "lz4" CACHE STRING "Name of LZ4 package" FORCE)
 
@@ -145,7 +145,7 @@ set (ZFP_GIT_URL "https://github.com/LLNL/zfp.git" CACHE STRING "Use ZFP from  G
 set (ZFP_GIT_BRANCH "develop" CACHE STRING "" FORCE)
 
 set (ZFP_TGZ_ORIGPATH "https://github.com/LLNL/zfp/releases/download/1.0.0" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (ZFP_TGZ_NAME "zfp-1.0.0.tar.gz" CACHE STRING "Use ZFP from compressed file" FORCE)
+set (ZFP_TGZ_NAME "zfp-1.0.1.tar.gz" CACHE STRING "Use ZFP from compressed file" FORCE)
 
 set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)
 
@@ -154,7 +154,7 @@ set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)
 set (ZSTD_GIT_URL "https://github.com/facebook/zstd.git" CACHE STRING "Use ZSTD from  GitHub repository" FORCE)
 set (ZSTD_GIT_BRANCH "dev" CACHE STRING "" FORCE)
 
-set (ZSTD_TGZ_ORIGPATH "https://github.com/facebook/zstd/releases/download/v1.5.5" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (ZSTD_TGZ_NAME "zstd-1.5.5.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)
+set (ZSTD_TGZ_ORIGPATH "https://github.com/facebook/zstd/releases/download/v1.5.6" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (ZSTD_TGZ_NAME "zstd-1.5.6.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)
 
 set (ZSTD_PACKAGE_NAME "zstd" CACHE STRING "Name of ZSTD package" FORCE)

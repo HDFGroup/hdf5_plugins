@@ -338,7 +338,7 @@ macro (INSTALL_SUPPORT varname)
           FILES
               ${${PLUGIN_PACKAGE_NAME}_BINARY_DIR}/H5PL_Examples.cmake
               ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestScript.cmake
-              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFoptions.cmake
+              ${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/HDFPLoptions.cmake
           DESTINATION ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR}
           COMPONENT hdfdocuments
       )

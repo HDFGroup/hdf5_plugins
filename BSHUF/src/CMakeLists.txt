@@ -47,11 +47,22 @@ if (BUILD_BSHUF_LIBRARY_SOURCE)
 endif ()
 if (BUILD_BSHUF_LZ4_LIBRARY_SOURCE)
   set (H5BSHUF_SRCS ${H5BSHUF_SRCS}
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.c
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4.h
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4/lz4.c
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4/lz4.h
   )
   set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
-      ${H5BSHUF_SRC_SOURCE_DIR}/lib
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lz4
+  )
+endif ()
+if (BUILD_BSHUF_LZF_LIBRARY_SOURCE)
+  set (H5BSHUF_SRCS ${H5BSHUF_SRCS}
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lzf/lzf_c.c
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lzf/lzf_d.c
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lzf/lzf.h
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lzf/lzfP.h
+  )
+  set (H5BSHUF_INCLUDE_DIRS ${H5BSHUF_INCLUDE_DIRS}
+      ${H5BSHUF_SRC_SOURCE_DIR}/lib/lzf
   )
 endif ()
 

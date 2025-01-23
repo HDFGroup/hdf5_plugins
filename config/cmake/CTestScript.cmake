@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 ########################################################
 # For any comments please contact help@hdfgroup.org
 #
@@ -136,9 +136,9 @@ if (CMAKE_GENERATOR_ARCHITECTURE)
 else ()
   set (CTEST_CONFIGURE_ARCHITECTURE)
 endif()
-  set (CTEST_CONFIGURE_COMMAND
-      "${CTEST_CMAKE_COMMAND} -C \"${CTEST_SOURCE_DIRECTORY}/config/cmake/cacheinit.cmake\" -DCMAKE_BUILD_TYPE:STRING=${CTEST_CONFIGURATION_TYPE} ${BUILD_OPTIONS} \"-G${CTEST_CMAKE_GENERATOR}\" ${CTEST_CONFIGURE_ARCHITECTURE} ${CTEST_CONFIGURE_TOOLSET} \"${CTEST_SOURCE_DIRECTORY}\""
-  )
+set (CTEST_CONFIGURE_COMMAND
+    "${CTEST_CMAKE_COMMAND} -C \"${CTEST_SOURCE_DIRECTORY}/config/cmake/cacheinit.cmake\" -DCMAKE_BUILD_TYPE:STRING=${CTEST_CONFIGURATION_TYPE} ${BUILD_OPTIONS} \"-G${CTEST_CMAKE_GENERATOR}\" ${CTEST_CONFIGURE_ARCHITECTURE} ${CTEST_CONFIGURE_TOOLSET} \"${CTEST_SOURCE_DIRECTORY}\""
+)
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------

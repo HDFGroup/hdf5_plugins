@@ -269,7 +269,6 @@ jobs:
             set (GROUP "GHDaily")
             set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
-            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")
 
@@ -388,7 +387,6 @@ jobs:
             set (SITE_BUILDNAME_SUFFIX "${{ steps.set-file-base.outputs.FILE_BASE }}")
             set (MODEL "GHDaily")
             set (GROUP "GHDaily")
-            set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} --log-level=VERBOSE")
             set (ADD_BUILD_OPTIONS "-DUSE_SHARED_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON")
             set (ADD_BUILD_OPTIONS "${ADD_BUILD_OPTIONS} -DTGZPATH:PATH=${CTEST_SOURCE_DIRECTORY}/libs -DH5PL_ALLOW_EXTERNAL_SUPPORT:STRING=\"TGZ\"")

@@ -3,7 +3,7 @@
  *
  * This file is part of Bitshuffle
  * Author: Kiyoshi Masui <kiyo@physics.ubc.ca>
- * Website: http://www.github.com/kiyo-masui/bitshuffle
+ * Website: https://www.github.com/kiyo-masui/bitshuffle
  * Created: 2014
  *
  * See LICENSE file for details about copyright and rights to use.
@@ -38,7 +38,13 @@
 
 
 // Macros.
-#define CHECK_ERR_FREE(count, buf) if (count < 0) { free(buf); return count; }
+#define CHECK_ERR_FREE(count, buf) \
+        do {                       \
+            if ((count) < 0) {     \
+                free(buf);         \
+                return (count);    \
+            }                      \
+        } while (0)
 
 
 #ifdef __cplusplus
@@ -61,12 +67,12 @@ int64_t bshuf_untrans_bit_elem(const void* in, void* out, const size_t size,
 
 /* Function definition for worker functions that process a single block. */
 typedef int64_t (*bshufBlockFunDef)(ioc_chain* C_ptr,
-        const size_t size, const size_t elem_size);
+        const size_t size, const size_t elem_size, const int option);
 
 /* Wrap a function for processing a single block to process an entire buffer in
  * parallel. */
 int64_t bshuf_blocked_wrap_fun(bshufBlockFunDef fun, const void* in, void* out,
-        const size_t size, const size_t elem_size, size_t block_size);
+        const size_t size, const size_t elem_size, size_t block_size, const int option);
 
 #ifdef __cplusplus
 } // extern "C"

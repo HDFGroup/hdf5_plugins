@@ -17,12 +17,13 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
     FetchContent_Declare (ZSTD
         GIT_REPOSITORY ${ZSTD_URL}
         GIT_TAG ${ZSTD_BRANCH}
-        SOURCE_SUBDIR this-directory-does-not-exist
+        SOURCE_SUBDIR build/cmake
+        #SOURCE_SUBDIR this-directory-does-not-exist
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy
             ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt
             <SOURCE_DIR>/build/cmake/CMakeLists.txt
-            ${H5ZSTD_SOURCE_DIR}/config/lib${CMAKE_COMMAND} -E copy
-            CMakeLists.txt
+            && ${CMAKE_COMMAND} -E copy
+            ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt
             <SOURCE_DIR>/build/cmake/lib/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")

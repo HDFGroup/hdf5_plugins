@@ -118,10 +118,10 @@ endif()
 #
 ###############################################################################################################
 if(WIN32)
-  include(${CTEST_DASHBOARD_ROOT}\\HDFoptions.cmake)
+  include(${CTEST_DASHBOARD_ROOT}\\HDFPLoptions.cmake)
   include(${CTEST_DASHBOARD_ROOT}\\CTestScript.cmake)
 else()
-  include(${CTEST_DASHBOARD_ROOT}/HDFoptions.cmake)
+  include(${CTEST_DASHBOARD_ROOT}/HDFPLoptions.cmake)
   include(${CTEST_DASHBOARD_ROOT}/CTestScript.cmake)
 endif()
 ##############################################################################################################
