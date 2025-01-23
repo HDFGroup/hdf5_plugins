@@ -24,7 +24,7 @@ Obtaining HDF5 Filter source code
    2. Obtain HDF5 Filter source from Github
          development branch:  https://github.com/HDFGroup/hdf5_plugins
          last release:        https://github.com/HDFGroup/hdf5_plugins/releases/latest
-             hdf5_plugins-1.16."X".tar.gz or hdf5_plugins-1.16."X".zip
+             hdf5_plugins-2.0."X".tar.gz or hdf5_plugins-2.0."X".zip
 
       and put it in "myhdfstuff".
       Uncompress the file. There should be a hdf5_plugins-1."Y.X" folder.
@@ -58,7 +58,7 @@ CMake build script from https://github.com/HDFGroup/hdf5_plugins/blob/master/con
 
 Configuration files from https://github.com/HDFGroup/hdf5_plugins/blob/master/config/cmake:
     HDF5PLconfig.cmake
-    HDFoptions.cmake
+    HDFPLoptions.cmake
 
 External compression libraries are in the source libs folder.
 
@@ -75,7 +75,7 @@ To build HDF5 Filter libraries you will need to:
    3. Change to the source directory "hdf5_plugins-1.y.x".
       CTestScript.cmake file should not be modified.
 
-   4. Edit the platform configuration file, HDFoptions.cmake, if you want to change
+   4. Edit the platform configuration file, HDFPLoptions.cmake, if you want to change
       the default build environment. The file is a compilation of the most used
       options and by commenting/uncommenting lines the options can easily be changed.
 
@@ -306,7 +306,7 @@ IV. Further considerations
       See the CMake help for more information on using toolchain files.
 
       To use a toolchain file with the supplied cmake scripts, see the
-      HDFoptions.cmake file under the toolchain section.
+      HDFPLoptions.cmake file under the toolchain section.
 
 Notes: CMake and HDF5
 
@@ -783,15 +783,15 @@ For instance, to change the support files to use a local directory, edit CMakeUs
   "version": 6,
   "configurePresets": [
     {
-      "name": "my-HDF5116",
+      "name": "my-HDF5200",
       "hidden": true,
       "environment": {
-        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/1.16.0"
+        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"
       },
       "cacheVariables": {
-        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/1.16.0"},
-        "H5PL_VERS_MAJOR": {"type": "STRING", "value": "1"},
-        "H5PL_VERS_MINOR": {"type": "STRING", "value": "16"},
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"},
+        "H5PL_VERS_MAJOR": {"type": "STRING", "value": "2"},
+        "H5PL_VERS_MINOR": {"type": "STRING", "value": "0"},
         "H5PL_VERS_RELEASE": {"type": "STRING", "value": "0"},
         "H5PL_BUILD_TESTING": "ON",
         "H5PL_BUILD_EXAMPLES": "ON"
@@ -801,10 +801,10 @@ For instance, to change the support files to use a local directory, edit CMakeUs
       "name": "my-HDF5Dev",
       "hidden": true,
       "environment": {
-        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/1.17.0"
+        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"
       },
       "cacheVariables": {
-        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/1.17.0"},
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"},
         "H5PL_BUILD_TESTING": "ON",
         "H5PL_BUILD_EXAMPLES": "ON"
       }

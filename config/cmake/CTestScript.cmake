@@ -153,6 +153,8 @@ foreach (v
     CTEST_BINARY_DIRECTORY
     CTEST_CMAKE_GENERATOR
     CTEST_CONFIGURATION_TYPE
+    CTEST_GIT_COMMAND
+    CTEST_CHECKOUT_COMMAND
     CTEST_CONFIGURE_COMMAND
     CTEST_SCRIPT_DIRECTORY
     CTEST_USE_LAUNCHERS
@@ -170,11 +172,20 @@ if (NOT DEFINED MODEL)
   set (MODEL "Experimental")
 endif ()
 
+set (ENV{CI_SITE_NAME} ${CTEST_SITE})
+set (ENV{CI_BUILD_NAME} ${CTEST_BUILD_NAME})
+set (ENV{CI_MODEL} ${MODEL})
+
 #-----------------------------------------------------------------------------
   ## NORMAL process
+  ## -- LOCAL_UPDATE updates the source folder from svn
   ## -- LOCAL_SUBMIT reports to CDash server
+  ## -- LOCAL_SKIP_TEST skips the test process (only builds)
   ## --------------------------
   ctest_start (${MODEL} GROUP ${MODEL})
+  if (LOCAL_UPDATE)
+    ctest_update (SOURCE "${CTEST_SOURCE_DIRECTORY}")
+  endif ()
   configure_file (${CTEST_SOURCE_DIRECTORY}/config/cmake/CTestCustom.cmake ${CTEST_BINARY_DIRECTORY}/CTestCustom.cmake)
   ctest_read_custom_files ("${CTEST_BINARY_DIRECTORY}")
   ctest_configure (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
@@ -193,12 +204,14 @@ endif ()
     file (APPEND ${CTEST_SCRIPT_DIRECTORY}/FailedCTest.txt "Failed ${errval} Build: ${res}\n")
   endif ()
 
-  ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" APPEND ${ctest_test_args} RETURN_VALUE res)
-  if (LOCAL_SUBMIT)
-    ctest_submit (PARTS Test)
-  endif ()
-  if (${res} LESS 0 OR ${res} GREATER 0)
-    file (APPEND ${CTEST_SCRIPT_DIRECTORY}/FailedCTest.txt "Failed Tests: ${res}\n")
+  if (NOT LOCAL_SKIP_TEST)
+    ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" APPEND ${ctest_test_args} RETURN_VALUE res)
+    if (LOCAL_SUBMIT)
+      ctest_submit (PARTS Test)
+    endif ()
+    if (${res} LESS 0 OR ${res} GREATER 0)
+      file (APPEND ${CTEST_SCRIPT_DIRECTORY}/FailedCTest.txt "Failed Tests: ${res}\n")
+    endif ()
   endif ()
   if (LOCAL_SUBMIT)
     ctest_submit (PARTS Done)
