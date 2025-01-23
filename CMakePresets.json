@@ -11,7 +11,7 @@
       "cacheVariables": {
         "H5PL_VERS_MAJOR": {"type": "STRING", "value": "1"},
         "H5PL_VERS_MINOR": {"type": "STRING", "value": "14"},
-        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "5"},
+        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "6"},
         "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
         "H5PL_COMP_TGZPATH": {"type": "STRING", "value": "${sourceDir}/libs"},
         "H5PL_BUILD_TESTING": "ON",
