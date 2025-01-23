@@ -1,11 +1,11 @@
 name: hdf5 plugins daily build
 
-# Triggers the workflow on a pull request or on demand
+# Triggers the workflow on demand
 on:
   workflow_dispatch:
     inputs:
       use_ignore:
-        description: 'Ignore has changes check'
+        description: 'Ignore has_changes check'
         type: string
         required: false
         default: check
@@ -55,7 +55,7 @@ jobs:
     - name: Read inputs
       id: getinputs
       run: |
-        echo "INPUTS_IGNORE=${{ ((github.event.inputs.use_ignore == '' && github.event.inputs.use_ignore)  || 'ignore') }}" >> $GITHUB_OUTPUT
+        echo "INPUTS_IGNORE=${{ inputs.use_ignore }}" >> $GITHUB_OUTPUT
 
     - run: echo "use_ignore is ${{ steps.getinputs.outputs.INPUTS_IGNORE }}."
 
@@ -63,6 +63,7 @@ jobs:
     needs: [get-old-names]
     uses: ./.github/workflows/tarball.yml
     with:
+      use_ignore: ${{ needs.get-old-names.outputs.run-ignore }}
       use_tag: snapshot-1.14
       use_environ: snapshots
 
@@ -85,7 +86,7 @@ jobs:
         AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
         AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
         AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-release:
     needs: [get-old-names, call-workflow-tarball, call-workflow-ctest]
@@ -98,7 +99,7 @@ jobs:
       file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
       use_tag: snapshot-1.14
       use_environ: snapshots
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-remove:
     needs: [get-old-names, call-workflow-tarball, call-workflow-ctest, call-workflow-release]
@@ -109,5 +110,5 @@ jobs:
       file_base: ${{ needs.get-old-names.outputs.plugin-name }}
       use_tag: snapshot-1.14
       use_environ: snapshots
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-base-names.outputs.run-ignore == 'ignore')) }}
+    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) && (needs.get-old-names.outputs.hdf5-name != needs.call-workflow-tarball.outputs.file_base) }}
 

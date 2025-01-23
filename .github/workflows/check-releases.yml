@@ -1,0 +1,178 @@
+name: hdf5 plugins check compression releases
+
+# Triggers the workflow on a call from another workflow
+on:
+  workflow_call:
+
+jobs:
+  check-compression-releases:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get bitshuffle release version
+      id: get-bitshuffle-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'kiyo-masui/bitshuffle'
+        latest: true
+
+    - name: Report bitshuffle release version
+      run: |
+        echo "BSHUF=${{ steps.get-bitshuffle-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get blosc release version
+      id: get-blosc-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'Blosc/c-blosc'
+        latest: true
+
+    - name: Report blosc release version
+      run: |
+        echo "BLOSC=${{ steps.get-blosc-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get blosc2 release version
+      id: get-blosc2-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'Blosc/c-blosc2'
+        latest: true
+
+    - name: Report blosc2 release version
+      run: |
+        echo "BLOSC2=${{ steps.get-blosc2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+#    - name: Get bzip2 release version
+#      id: get-bzip2-release
+#      uses: cardinalby/git-get-release-action@v1
+#      env:
+#        GITHUB_TOKEN: ${{ github.token }}
+#      with:
+#        repo: 'libarchive/bzip2'
+#        latest: true
+#
+#    - name: Report bzip2 release version
+#      run: |
+#        echo "BZIP2=bzip2: ${{ steps.get-bzip2-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get fpzip release version
+      id: get-fpzip-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'LLNL/fpzip'
+        latest: true
+
+    - name: Report fpzip release version
+      run: |
+        echo "FPZIP=${{ steps.get-fpzip-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get libjpeg release version
+      id: get-libjpeg-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'libjpeg-turbo/libjpeg-turbo'
+        latest: true
+
+    - name: Report libjpeg release version
+      run: |
+        echo "JPEG=${{ steps.get-libjpeg-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get lz4 release version
+      id: get-lz4-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'lz4/lz4'
+        latest: true
+
+    - name: Report lz4 release version
+      run: |
+        echo "LZ4=${{ steps.get-lz4-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zfp release version
+      id: get-zfp-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'LLNL/zfp'
+        latest: true
+
+    - name: Report zfp release version
+      run: |
+        echo "ZFP=${{ steps.get-zfp-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zstd release version
+      id: get-zstd-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'facebook/zstd'
+        latest: true
+
+    - name: Report zstd release version
+      run: |
+        echo "ZSTD=${{ steps.get-zstd-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zlib release version
+      id: get-zlib-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'madler/zlib'
+        latest: true
+
+    - name: Report zlib release version
+      run: |
+        echo "ZLIB=${{ steps.get-zlib-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: Get zlib-ng release version
+      id: get-zlib-ng-release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        repo: 'zlib-ng/zlib-ng'
+        latest: true
+
+    - name: Report zlib-ng release version
+      run: |
+        echo "ZLIBNG=${{ steps.get-zlib-ng-release.outputs.tag_name }}" >> $GITHUB_OUTPUT
+
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "versions-file.json"
+        json: '{"bitshuffle":"${{ steps.get-bitshuffle-release.outputs.tag_name }}"",
+                "blosc":"${{ steps.get-blosc-release.outputs.tag_name }}"
+                "blosc2":"${{ steps.get-blosc2-release.outputs.tag_name }}"
+                "fpzip":"${{ steps.get-fpzip-release.outputs.tag_name }}"
+                "libjpeg":"${{ steps.get-libjpeg-release.outputs.tag_name }}"
+                "lz4":"${{ steps.get-lz4-release.outputs.tag_name }}"
+                "zfp":"${{ steps.get-zfp-release.outputs.tag_name }}"
+                "zstd":"${{ steps.get-zstd-release.outputs.tag_name }}"
+                "zlib":"${{ steps.get-zlib-release.outputs.tag_name }}"
+                "zlib-ng":"${{ steps.get-zlib-ng-release.outputs.tag_name }}"
+               }'
+
+               # Save json report
+    - name: Save json report
+      uses: actions/upload-artifact@v4
+      with:
+        name: compression-versions
+        path: versions-file.json
+        if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
+
