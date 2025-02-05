@@ -45,5 +45,5 @@ jobs:
 
         - name: Sync release to S3 bucket
           run: |
-                aws s3 sync ./PLUGINS s3://${{ secrets.AWS_S3_BUCKET }}/${{ vars.TARGET_PATH }}/${{ inputs.target_dir }}/downloads --delete
+                aws s3 sync ./PLUGINS s3://${{ secrets.AWS_S3_BUCKET }}/${{ vars.TARGET_PATH }}/${{ inputs.target_dir }}/downloads/plugins --delete
 
