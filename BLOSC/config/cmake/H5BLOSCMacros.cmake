@@ -67,7 +67,7 @@ macro (EXTERNAL_BLOSC_ZLIB_LIBRARY compress_type)
         GIT_REPOSITORY ${BLOSC_ZLIB_URL}
         GIT_TAG ${BLOSC_ZLIB_BRANCH}
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-            ${H5BLOSC_SOURCE_DIR}/config/zlib-CMakeLists.txt
+            ${H5BLOSC_SOURCE_DIR}/config/zlibdev-CMakeLists.txt
             <SOURCE_DIR>/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
