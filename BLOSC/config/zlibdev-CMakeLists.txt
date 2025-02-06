@@ -43,13 +43,13 @@ set(CPACK_INCLUDED FALSE)
 
 if(NOT ZLIB_CONF_WRITTEN)
     set(Z_PREFIX ${ZLIB_PREFIX})
-    set(CONF_OUT_FILE ${zlib_BINARY_DIR}/zconf.h.cmakein)
-    file(READ ${zlib_SOURCE_DIR}/zconf.h.in ZCONF_CONTENT LIMIT 245)
+    set(CONF_OUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/zconf.h.cmakein)
+    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.in ZCONF_CONTENT LIMIT 245)
     file(WRITE ${CONF_OUT_FILE} ${ZCONF_CONTENT})
     file(APPEND ${CONF_OUT_FILE} "#cmakedefine Z_PREFIX 1\n")
     file(APPEND ${CONF_OUT_FILE} "#cmakedefine HAVE_STDARG_H 1\n")
     file(APPEND ${CONF_OUT_FILE} "#cmakedefine HAVE_UNISTD_H 1\n")
-    file(READ ${zlib_SOURCE_DIR}/zconf.h.in ZCONF_CONTENT OFFSET 244)
+    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.in ZCONF_CONTENT OFFSET 244)
     set(FIRST_ITEM TRUE)
 
     foreach(item IN LISTS ZCONF_CONTENT)
@@ -108,16 +108,16 @@ check_c_source_compiles(
     HAVE___ATTR__VIS_HIDDEN)
 
 unset(CMAKE_COMPILE_FLAGS)
-set(ZLIB_PC ${zlib_BINARY_DIR}/zlib.pc)
-configure_file(${zlib_SOURCE_DIR}/zlib.pc.cmakein ${ZLIB_PC} @ONLY)
-configure_file(${zlib_BINARY_DIR}/zconf.h.cmakein ${zlib_BINARY_DIR}/zconf.h)
-include_directories(${zlib_BINARY_DIR} ${zlib_SOURCE_DIR})
+set(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/zlib.pc)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein ${ZLIB_PC} @ONLY)
+configure_file(${CMAKE_CURRENT_BINARY_DIR}/zconf.h.cmakein ${CMAKE_CURRENT_BINARY_DIR}/zconf.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # ============================================================================
 # zlib
 # ============================================================================
 
-set(ZLIB_PUBLIC_HDRS ${zlib_BINARY_DIR}/zconf.h zlib.h)
+set(ZLIB_PUBLIC_HDRS ${CMAKE_CURRENT_BINARY_DIR}/zconf.h zlib.h)
 
 set(ZLIB_PRIVATE_HDRS
     crc32.h
@@ -163,8 +163,8 @@ if(ZLIB_BUILD_STATIC)
     add_library(ZLIB::ZLIBSTATIC ALIAS zlibstat)
     target_include_directories(
         zlibstat
-        PUBLIC $<BUILD_INTERFACE:${zlib_BINARY_DIR}>
-               $<BUILD_INTERFACE:${zlib_SOURCE_DIR}>
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
     target_compile_definitions(
         zlibstat
