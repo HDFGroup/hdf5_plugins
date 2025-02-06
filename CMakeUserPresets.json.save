@@ -1,0 +1,190 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "my-HDF5200",
+      "hidden": true,
+      "environment": {
+        "HDF5_ROOT": "${sourceParentDir}/temp/HDF_Group/HDF5/2.0.0"
+      },
+      "cacheVariables": {
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/temp/HDF_Group/HDF5/2.0.0"},
+        "H5PL_VERS_MAJOR": {"type": "STRING", "value": "2"},
+        "H5PL_VERS_MINOR": {"type": "STRING", "value": "0"},
+        "H5PL_VERS_RELEASE": {"type": "STRING", "value": "0"},
+        "H5PL_BUILD_TESTING": "ON",
+        "H5PL_BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "my-HDF5Dev",
+      "hidden": true,
+      "environment": {
+        "HDF5_ROOT": "${sourceParentDir}/temp/HDF_Group/HDF5/2.0.0"
+      },
+      "cacheVariables": {
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/temp/HDF_Group/HDF5/2.0.0"},
+        "H5PL_BUILD_TESTING": "ON",
+        "H5PL_BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "my-base-tgz",
+      "hidden": true,
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "TGZ"},
+        "H5PL_TGZPATH": {"type": "STRING", "value": "${sourceParentDir}/temp"}
+      }
+    },
+    {
+      "name": "my-base-git",
+      "hidden": true,
+      "inherits": "ci-base",
+      "cacheVariables": {
+        "H5PL_ALLOW_EXTERNAL_SUPPORT": {"type": "STRING", "value": "GIT"}
+      }
+    },
+    {
+      "name": "my-StdShar",
+      "hidden": true,
+      "inherits": ["my-base-tgz", "ci-base-plugins"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "USE_SHARED_LIBS": "ON"
+      }
+    },
+    {
+      "name": "my-StdShar-git",
+      "hidden": true,
+      "inherits": ["my-base-git", "ci-base-plugins"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "USE_SHARED_LIBS": "ON"
+      }
+    },
+    {
+      "name": "my-StdShar-MSVC",
+      "description": "MSVC Standard Config for x64 (Release)",
+      "inherits": [
+        "ci-x64-Release-MSVC",
+        "my-StdShar",
+        "my-HDF5Dev"
+      ]
+    },
+    {
+      "name": "my-StdShar-Clang",
+      "description": "Clang Standard Config for x64 (Release)",
+      "inherits": [
+        "ci-x64-Release-Clang",
+        "my-StdShar",
+        "my-HDF5Dev"
+      ]
+    },
+    {
+      "name": "my-StdShar-GNUC",
+      "description": "GNUC Standard Config for x64 (Release)",
+      "inherits": [
+        "ci-x64-Release-GNUC",
+        "my-StdShar",
+        "my-HDF5Dev"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "my-StdShar-MSVC",
+      "description": "MSVC Standard Build for x64 (Release)",
+      "configurePreset": "my-StdShar-MSVC",
+      "inherits": [
+        "ci-x64-Release-MSVC"
+      ]
+    },
+    {
+      "name": "my-StdShar-Clang",
+      "description": "Clang Standard Build for x64 (Release)",
+      "configurePreset": "my-StdShar-Clang",
+      "inherits": [
+        "ci-x64-Release-Clang"
+      ]
+    },
+    {
+      "name": "my-StdShar-GNUC",
+      "description": "GNUC Standard Build for x64 (Release)",
+      "configurePreset": "my-StdShar-GNUC",
+      "verbose": true,
+      "inherits": [
+        "ci-x64-Release-GNUC"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "my-StdShar-MSVC",
+      "configurePreset": "my-StdShar-MSVC",
+      "inherits": [
+        "ci-x64-Release-MSVC"
+      ]
+    },
+    {
+      "name": "my-StdShar-Clang",
+      "configurePreset": "my-StdShar-Clang",
+      "inherits": [
+        "ci-x64-Release-Clang"
+      ]
+    },
+    {
+      "name": "my-StdShar-GNUC",
+      "configurePreset": "my-StdShar-GNUC",
+      "inherits": [
+        "ci-x64-Release-GNUC"
+      ]
+    }
+  ],
+  "packagePresets": [
+    {
+      "name": "my-StdShar-MSVC",
+      "configurePreset": "my-StdShar-MSVC",
+      "inherits": "ci-x64-Release-MSVC"
+    },
+    {
+      "name": "my-StdShar-Clang",
+      "configurePreset": "my-StdShar-Clang",
+      "inherits": "ci-x64-Release-Clang"
+    },
+    {
+      "name": "my-StdShar-GNUC",
+      "configurePreset": "my-StdShar-GNUC",
+      "inherits": "ci-x64-Release-GNUC"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "my-StdShar-MSVC",
+      "steps": [
+        {"type": "configure", "name": "my-StdShar-MSVC"},
+        {"type": "build", "name": "my-StdShar-MSVC"},
+        {"type": "test", "name": "my-StdShar-MSVC"},
+        {"type": "package", "name": "my-StdShar-MSVC"}
+      ]
+    },
+    {
+      "name": "my-StdShar-Clang",
+      "steps": [
+        {"type": "configure", "name": "my-StdShar-Clang"},
+        {"type": "build", "name": "my-StdShar-Clang"},
+        {"type": "test", "name": "my-StdShar-Clang"},
+        {"type": "package", "name": "my-StdShar-Clang"}
+      ]
+    },
+    {
+      "name": "my-StdShar-GNUC",
+      "steps": [
+        {"type": "configure", "name": "my-StdShar-GNUC"},
+        {"type": "build", "name": "my-StdShar-GNUC"},
+        {"type": "test", "name": "my-StdShar-GNUC"},
+        {"type": "package", "name": "my-StdShar-GNUC"}
+      ]
+    }
+  ]
+}
