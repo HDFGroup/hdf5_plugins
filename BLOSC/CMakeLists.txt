@@ -121,6 +121,7 @@ if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MAT
     set (BLOSC_ZLIB_USE_EXTERNAL 0)
     set (BLOSC_USE_EXTERNAL 0)
   endif ()
+  message (VERBOSE "BLOSC_URL: ${BLOSC_URL} BLOSC_ZLIB_URL: ${BLOSC_ZLIB_URL}")
 endif ()
 
 #-----------------------------------------------------------------------------
