@@ -41,7 +41,7 @@ include(GNUInstallDirs)
 
 set(CPACK_INCLUDED FALSE)
 
-if(NOT ZLIB_CONF_WRITTEN)
+#if(NOT ZLIB_CONF_WRITTEN)
     set(Z_PREFIX ${ZLIB_PREFIX})
     set(CONF_OUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/zconf.h.cmakein)
     file(READ ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.in ZCONF_CONTENT LIMIT 245)
@@ -66,7 +66,7 @@ if(NOT ZLIB_CONF_WRITTEN)
         TRUE
         CACHE BOOL "zconf.h.cmakein was created")
     mark_as_advanced(ZLIB_CONF_WRITTEN)
-endif(NOT ZLIB_CONF_WRITTEN)
+#endif(NOT ZLIB_CONF_WRITTEN)
 
 #
 # Check to see if we have large file support
