@@ -1,6 +1,6 @@
 # Registered Filter Plugins
 
-Please see HDF5 Filter Plugins, a convenience software that packages together many commonly used filters users have created and registered.
+Please see [HDF5 Filter Plugins](https://github.com/HDFGroup/hdf5_plugins), a convenience repository that packages together many commonly used filters users have created and registered.
 
 ## Information on Registered Filter Plugins
 
