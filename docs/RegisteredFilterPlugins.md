@@ -227,8 +227,7 @@ LZ4 Algorithm:   https://github.com/nexusformat/HDF5-External-Filter-Plugins/tre
 
 LZ4 Code:
 
-Although The HDF Group does not support the LZ4 software, it is included in The HDF Group SVN repository so that it can be tested regularly with HDF5. For convenience, users can obtain it from SVN with the following command:
-   svn checkout https://svn.hdfgroup.org/hdf5_plugins/trunk/LZ4 LZ4
+Although The HDF Group does not support the LZ4 software, it is included in the HDF5 plugins GitHub repository  so that it can be tested regularly with HDF5. For convenience, users can obtain it from https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4.
 
 #### Contact
 
