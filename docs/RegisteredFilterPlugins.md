@@ -89,7 +89,7 @@ Email: miller86 at llnl dot gov
 
 ### LZO <a name="lzo"></a>
 
-Filter ID: 305
+Filter ID: `305`
 
 #### Description
 LZO is a portable lossless data compression library written in ANSI C.
@@ -111,7 +111,7 @@ Email: faltet at pytables dot org
 
 ### BZIP2 <a name="bzip2"></a>
 
-Filter ID: 307
+Filter ID: `307`
 
 #### Description
 bzip2 is a freely available, patent-free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
@@ -128,7 +128,7 @@ Email: faltet at pytables dot org
 
 ### LZF <a name="lzf"></a>
 
-Filter ID: 32000
+Filter ID: `32000`
 
 #### Description
 The LZF filter is an alternative DEFLATE-style compressor for HDF5 datasets, using the free LZF library by Marc Alexander Lehmann. Its main benefit over the built-in HDF5 DEFLATE filter is speed; in memory-to-memory operation as part of the filter pipeline, it typically compresses 3x-5x faster than DEFLATE, and decompresses 2x faster, while maintaining 50% to 90% of the DEFLATE compression ratio.
@@ -156,7 +156,7 @@ Web: http://h5py.org
 
 ### Blosc <a name="blosc"></a>
 
-Filter ID: 32001
+Filter ID: `32001`
 
 #### Description
 Blosc is a high-performance compressor optimized for binary data. It has been designed to compress data very fast, at the expense of achieving lesser compression ratios than, say, zlib+shuffle. It is mainly meant to not introduce a significant delay when dealing with data stored in high-performance I/O systems (like large RAID cabinets or even the OS filesystem memory cache).
@@ -177,7 +177,7 @@ Email: faltet at pytables dot org
 
 ### MAFISC <a name="mafisc"></a>
 
-Filter ID: 32002
+Filter ID: `32002`
 
 #### Description
 This compressing filter exploits the multidimensionality and smoothness characterizing many scientific data sets. It adaptively applies some filters to preprocess the data and uses lzma as the actual compression step. It significantly outperforms pure lzma compression on most datasets.
@@ -197,7 +197,7 @@ Email: nathanael.huebbe at informatik dot uni-hamburg dot de
 
 ### Snappy <a name="snappy"></a>
 
-Filter ID: 32003
+Filter ID: `32003`
 
 #### Description
 Snappy-CUDA is a compression/decompression library that leverages GPU processing power to compress/decompress data. The Snappy compression algorithm does not aim for maximum compression or compatibility with any other compression library; instead, it aims for very high speeds and reasonable compression. For instance, compared to the fastest mode of zlib, the reference implementation of Snappy on the CPU is an order of magnitude faster for most inputs, but the resulting compressed files are anywhere from 20% to 100% bigger.
@@ -216,7 +216,7 @@ Email: lucasvr at gmail dot com
 
 ### LZ4 <a name="lz4"></a>
 
-Filter ID: 32004
+Filter ID: `32004`
 
 #### Description
 LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see HDF5_LZ4.pdf.
@@ -238,7 +238,7 @@ Email: michael dot rissi at dectris dot com
 
 ### APAX <a name="apax"></a>
 
-Filter ID: 32005
+Filter ID: `32005`
 
 It appears to be no longer available
 
@@ -246,7 +246,7 @@ It appears to be no longer available
 
 ### CBF <a name="cbf"></a>
 
-Filter ID: 32006
+Filter ID: `32006`
 
 #### Description
 All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset. License Information: GPL and LGPL.
@@ -260,7 +260,7 @@ Email: yayahjb at gmail dot com
 
 ### JPEG-XR <a name="jpeg-xr"></a>
 
-Filter ID: 32007
+Filter ID: `32007`
 
 #### Description
 Filter that allows HDF5 image datasets to be compressed or decompressed using the JPEG-XR compression method.
@@ -279,7 +279,7 @@ Email: marvin dot albert at gmail dot com
 
 ### Bitshuffle <a name="bitshuffle"></a>
 
-Filter ID: 32008
+Filter ID: `32008`
 
 #### Description
 This filter shuffles data at the bit level to improve compression. CHIME uses this filter for data acquisition.
@@ -298,7 +298,7 @@ Email: kiyo at physics dot ubc dot ca
 
 ### SPDP <a name="spdp"></a>
 
-Filter ID: 32009
+Filter ID: `32009`
 
 #### Description
 SPDP is a fast, lossless, unified compression/decompression algorithm designed for both 32-bit single-precision (float) and 64-bit double-precision (double) floating-point data. It also works on other data.
@@ -316,7 +316,7 @@ Email: burtscher at txstate dot edu
 
 ### LPC-Rice <a name="lpc-rice"></a>
 
-Filter ID: 32010
+Filter ID: `32010`
 
 #### Description
 LPC-Rice is a fast lossless compression codec that employs Linear Predictive Coding together with Rice coding. It supports multi-threading and SSE2 vector instructions, enabling it to exceed compression and decompression speeds of 1 GB/s.
@@ -337,7 +337,7 @@ Email: dswanepoel at gmail dot com
 
 ### CCSDS-123 <a name="ccsds-123"></a>
 
-Filter ID: 32011
+Filter ID: `32011`
 
 #### Description
 CCSDS-123 is a multi-threaded HDF5 compression filter using the ESA CCSDS-123 implementation.
@@ -358,7 +358,7 @@ Email: dswanepoel at gmail dot com
 
 ### JPEG-LS <a name="jpeg-ls"></a>
 
-Filter ID: 32012
+Filter ID: `32012`
 
 #### Description
 JPEG-LS is a multi-threaded HDF5 compression filter using the CharLS JPEG-LS implementation.
@@ -379,7 +379,7 @@ Email: dswanepoel at gmail dot com
 
 ### zfp <a name="zfp"></a>
 
-Filter ID: 32013
+Filter ID: `32013`
 
 #### Description
 zfp is a BSD licensed open source C++ library for compressed floating-point arrays that support very high throughput read and write random access. zfp was designed to achieve high compression ratios and, therefore, uses lossy but optionally error-bounded compression. Although bit-for-bit lossless compression is not always possible, zfp is usually accurate to within machine epsilon in near-lossless mode, and is often orders of magnitude more accurate and faster than other lossy compressors.
@@ -402,7 +402,7 @@ Email: pl at llnl dot gov
 
 ### fpzip <a name="fpzip"></a>
 
-Filter ID: 32014 (and 258)
+Filter ID: `32014` (and `258`)
 
 #### Description
 fpzip is a library for lossless or lossy compression of 2D or 3D floating-point scalar fields. Although written in C++, fpzip has a C interface. fpzip was developed by Peter Lindstrom at LLNL.
@@ -422,7 +422,7 @@ Email: pl at llnl dot gov
 
 ### Zstandard <a name="zstandard"></a>
 
-Filter ID: 32015
+Filter ID: `32015`
 
 #### Description
 Zstandard is a real-time compression algorithm that provides high compression ratios. It offers a very wide range of compression / speed trade-offs, while being backed by a very fast decoder. The Zstandard library is provided as open source software under a BSD license.
@@ -440,7 +440,7 @@ Email: paramon at acdlabs dot ru
 
 ### B³D <a name="b3d"></a>
 
-Filter ID: 32016
+Filter ID: `32016`
 
 #### Description
 B³D is a fast (~1 GB/s), GPU based image compression method, developed for light-microscopy applications. Alongside lossless compression, it offers a noise dependent lossy compression mode, where the loss can be tuned as a proportion of the inherent image noise (accounting for photon shot noise and camera read noise). It not only allows for fast compression during image, but can achieve compression ratios up 100.
@@ -453,7 +453,7 @@ http://www.biorxiv.org/content/early/2017/07/21/164624
 
 ### SZ <a name="sz"></a>
 
-Filter ID: 32017
+Filter ID: `32017`
 
 #### Description
 SZ is a fast and efficient error-bounded lossy compressor for floating-point data. It was developed for scientific applications producing large-scale HPC data sets. SZ supports C, Fortran, and Java and has been tested on Linux and Mac OS X.
@@ -476,7 +476,7 @@ Email: cappello at mcs dot anl dot gov
 
 ### FCIDECOMP <a name="fcidecomp"></a>
 
-Filter ID: 32018
+Filter ID: `32018`
 
 #### Description
 FCIDECOMP is a third-party compression filter used at EUMETSAT to compress netCDF-4 files. It is a codec implementing JPEG-LS using CharLS for satellite imagery.
@@ -496,7 +496,7 @@ Email: daniel dot lee at eumetsat dot int
 
 ### JPEG <a name="jpeg"></a>
 
-Filter ID: 32019
+Filter ID: `32019`
 
 #### Description
 This is a lossy compression filter. It provides a user-specified "quality factor" to control the trade-off of size versus accuracy.
@@ -535,7 +535,7 @@ Mark Rivers, University of Chicago (rivers at cars.uchicago.edu)
 
 ### VBZ <a name="vbz"></a>
 
-Filter ID: 32020
+Filter ID: `32020`
 
 #### Description
 Oxford Nanopore uses this filter specifically to compress raw DNA signal data (signed integer). To achieve this, it uses both:
@@ -552,7 +552,7 @@ George Pimm
 
 ### FAPEC <a name="fapec"></a>
 
-Filter ID:  32021
+Filter ID:  `32021`
 
 #### Description
 
@@ -580,7 +580,7 @@ fapec at dapcom dot es
 
 ### BitGroom <a name="bitgroom"></a>
 
-Filter ID:  32022
+Filter ID:  `32022`
 
 #### Description
 
@@ -600,7 +600,7 @@ Charlie Zender  (University of California, Irvine)
 
 ### Granular BitRound (GBR) <a name="gbr"></a>
 
-Filter ID:  32023
+Filter ID:  `32023`
 
 #### Description
 
@@ -620,11 +620,11 @@ Charlie Zender  (University of California, Irvine)
 
 ### SZ3 <a name="sz3"></a>
 
-Filter ID:  32024
+Filter ID:  `32024`
 
 #### Description
 
-SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with SZ2 (filter id: 32017), SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
+SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with SZ2 (filter id: `32017`), SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
 
 #### Information
 
@@ -644,7 +644,7 @@ Email: cappello at mcs dot anl dot gov
 
 ### Delta-Rice <a name="delta-rice"></a>
 
-Filter ID:  32025
+Filter ID:  `32025`
 
 #### Description
 
@@ -663,7 +663,7 @@ Email: david dot mathews dot 1994 at gmail dot com
 
 ### Blosc2 <a name="blosc2"></a>
 
-Filter ID: 32026
+Filter ID: `32026`
 
 #### Description
 
@@ -688,7 +688,7 @@ Email: faltet at gmail dot org (BDFL for the Blosc project)
 
 ### FLAC <a name="flac"></a>
 
-Filter ID: 32027
+Filter ID: `32027`
 
 #### Description
 
@@ -709,7 +709,7 @@ Email: lastephey at lbl dot gov
 
 ### SPERR <a name="h5z-sperr"></a>
 
-Filter ID: 32028
+Filter ID: `32028`
 
 #### Description
 
@@ -727,7 +727,7 @@ Email: shaomeng at ucar dot edu
 
 ### TERSE/PROLIX (TRPX) <a name="trpx"></a>
 
-Filter ID: 32029
+Filter ID: `32029`
 
 #### Description
 
@@ -748,7 +748,7 @@ Email: senik.matinyan at unibas dot ch
 
 ### FFMPEG <a name="ffmpeg"></a>
 
-Filter ID: 32030
+Filter ID: `32030`
 
 #### Description
 
