@@ -1,16 +1,16 @@
 # Registered Filter Plugins
 
-Please be sure to see HDF5 Filter Plugins, a convenience software that packages together many of the commonly used filters that users have created and registered.
+Please see HDF5 Filter Plugins, a convenience software that packages together many commonly used filters users have created and registered.
 
 ## Information on Registered Filter Plugins
 
 Members of the HDF5 user community can create and register Third-Party (compression or other) filters for use with HDF5.
 
-To register a filter please contact The HDF Helpdesk with the following information:
+To register a filter, please contact The HDF Helpdesk with the following information:
 
 * Contact information for the developer requesting a new identifier.
 * Short description of the new filter.
-* Links to any relevant information including licensing information.
+* Links to any relevant information, including licensing information.
 
 The current policy for filter identifier assignment is:
 
@@ -93,7 +93,7 @@ Filter ID: 305
 
 #### Description
 LZO is a portable lossless data compression library written in ANSI C.
-Reliable and thoroughly tested. High adoption - each second terrabytes of data are compressed by LZO. No bugs since the first release back in 1996.
+Reliable and thoroughly tested. High adoption - each second, terabytes of data are compressed by LZO. There have been no bugs since the first release back in 1996.
 Offers pretty fast compression and *extremely* fast decompression.
 Includes slower compression levels achieving a quite competitive compression ratio while still decompressing at this very high speed.
 Distributed under the terms of the GNU General Public License (GPL v2+). Commercial licenses are available on request.
@@ -114,7 +114,7 @@ Email: faltet at pytables dot org
 Filter ID: 307
 
 #### Description
-bzip2 is a freely available, patent free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
+bzip2 is a freely available, patent-free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
 
 #### Information
 http://www.bzip.org
@@ -159,9 +159,9 @@ Web: http://h5py.org
 Filter ID: 32001
 
 #### Description
-Blosc is a high performance compressor optimized for binary data. It has been designed to compress data very fast, at the expense of achieving lesser compression ratios than, say, zlib+shuffle. It is mainly meant to not introduce a significant delay when dealing with data that is stored in high-performance I/O systems (like large RAID cabinets, or even the OS filesystem memory cache).
+Blosc is a high-performance compressor optimized for binary data. It has been designed to compress data very fast, at the expense of achieving lesser compression ratios than, say, zlib+shuffle. It is mainly meant to not introduce a significant delay when dealing with data stored in high-performance I/O systems (like large RAID cabinets or even the OS filesystem memory cache).
 
-It uses advanced cache-efficient techniques to reduce activity on the memory bus as much as possible. It also leverages SIMD (SSE2) and multi-threading capabilities present in nowadays multi-core processors so as to accelerate the compression/decompression process to a maximum.
+It uses advanced cache-efficient techniques to reduce activity on the memory bus as much as possible. It also leverages SIMD (SSE2) and multi-threading capabilities present in modern multi-core processors to accelerate the compression/decompression process to a maximum.
 
 #### Information
 
@@ -182,7 +182,7 @@ Filter ID: 32002
 #### Description
 This compressing filter exploits the multidimensionality and smoothness characterizing many scientific data sets. It adaptively applies some filters to preprocess the data and uses lzma as the actual compression step. It significantly outperforms pure lzma compression on most datasets.
 
-The software is currently under a rather unrestrictive two clause BSD style license.
+The software is currently under a rather unrestrictive two-clause BSD-style license.
 
 #### Information
 
@@ -227,7 +227,7 @@ LZ4 Algorithm:   https://github.com/nexusformat/HDF5-External-Filter-Plugins/tre
 
 LZ4 Code:
 
-Although the LZ4 software is not supported by The HDF Group, it is included in The HDF Group SVN repository so that it can be tested regularly with HDF5. For convenience, users can obtain it from SVN with the following command:
+Although The HDF Group does not support the LZ4 software, it is included in The HDF Group SVN repository so that it can be tested regularly with HDF5. For convenience, users can obtain it from SVN with the following command:
    svn checkout https://svn.hdfgroup.org/hdf5_plugins/trunk/LZ4 LZ4
 
 #### Contact
@@ -241,7 +241,7 @@ Email: michael dot rissi at dectris dot com
 
 Filter ID: 32005
 
-Appears to be no longer available
+It appears to be no longer available
 
 ---
 
@@ -250,7 +250,7 @@ Appears to be no longer available
 Filter ID: 32006
 
 #### Description
-All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Vesrsion 2, Byte Offset and Nibble Offset. License Information: GPL and LGPL.
+All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset. License Information: GPL and LGPL.
 
 #### Contact
 
@@ -383,13 +383,13 @@ Email: dswanepoel at gmail dot com
 Filter ID: 32013
 
 #### Description
-zfp is a BSD licensed open source C++ library for compressed floating-point arrays that support very high throughput read and write random access. zfp was designed to achieve high compression ratios and therefore uses lossy but optionally error-bounded compression. Although bit-for-bit lossless compression is not always possible, zfp is usually accurate to within machine epsilon in near-lossless mode, and is often orders of magnitude more accurate and faster than other lossy compressors.
+zfp is a BSD licensed open source C++ library for compressed floating-point arrays that support very high throughput read and write random access. zfp was designed to achieve high compression ratios and, therefore, uses lossy but optionally error-bounded compression. Although bit-for-bit lossless compression is not always possible, zfp is usually accurate to within machine epsilon in near-lossless mode, and is often orders of magnitude more accurate and faster than other lossy compressors.
 
 #### Information
 
 https://github.com/LLNL/H5Z-ZFP
 
-For more information see: http://computing.llnl.gov/projects/floating-point-compression/
+For more information, see: http://computing.llnl.gov/projects/floating-point-compression/
 
 #### Contact
 
@@ -412,7 +412,7 @@ Filter identifier `258` appeared in the Silo headers, but may not have been used
 
 #### Information
 
-For more information see: http://computing.llnl.gov/projects/floating-point-compression/
+For more information, see: http://computing.llnl.gov/projects/floating-point-compression/
 
 #### Contact
 
@@ -426,7 +426,7 @@ Email: pl at llnl dot gov
 Filter ID: 32015
 
 #### Description
-Zstandard is a real-time compression algorithm, providing high compression ratios. It offers a very wide range of compression / speed trade-offs, while being backed by a very fast decoder. The Zstandard library is provided as open source software using a BSD license.
+Zstandard is a real-time compression algorithm that provides high compression ratios. It offers a very wide range of compression / speed trade-offs, while being backed by a very fast decoder. The Zstandard library is provided as open source software under a BSD license.
 
 #### Information
 
@@ -461,7 +461,7 @@ SZ is a fast and efficient error-bounded lossy compressor for floating-point dat
 
 #### Information
 
-For more information see: https://collab.cels.anl.gov/display/ESR/SZ
+For more information, see: https://collab.cels.anl.gov/display/ESR/SZ
 GitHub: https://github.com/disheng222/SZ
 License: https://www.mcs.anl.gov/~shdi/download/sz-download.html
 
@@ -480,7 +480,7 @@ Email: cappello at mcs dot anl dot gov
 Filter ID: 32018
 
 #### Description
-FCIDECOMP is a third-party compression filter used at EUMETSAT for the compression of netCDF-4 files. It is a codec implementing JPEG-LS using CharLS used for satellite imagery.
+FCIDECOMP is a third-party compression filter used at EUMETSAT to compress netCDF-4 files. It is a codec implementing JPEG-LS using CharLS for satellite imagery.
 
 #### Information
 
@@ -504,7 +504,7 @@ This is a lossy compression filter. It provides a user-specified "quality factor
 
 #### Information
 
-libjpeg: This library is available as a package for most Linux distributions, and source code is available from https://www.ijg.org/.
+libjpeg: This library is available as a package for most Linux distributions, and the source code is available from https://www.ijg.org/.
 
 Restrictions:
 
@@ -514,9 +514,9 @@ Arrays must be either:
  3-D RGB [3, NumColumns, NumRows]
 Chunking must be set to the size of one entire image so the filter is called once for each image. Using the JPEG filter in your application:
 
-HDF5 only supports compression for "chunked" datasets; this just means that you need to call H5Pset_chunk to specify a chunk size. The chunking must be set to the size of a single image for the JPEG filter to work properly.
+HDF5 only supports compression for "chunked" datasets; this means you need to call H5Pset_chunk to specify a chunk size. The chunking must be set to the size of a single image for the JPEG filter to work correctly.
 
-When calling H5Pset_filter for compression it must be called with cd_nelmts=4 and cd_values as follows:
+When calling H5Pset_filter for compression, it must be called with cd_nelmts=4 and cd_values as follows:
 
     cd_values[0] = quality factor (1-100)
 
@@ -530,7 +530,7 @@ Common h5repack parameter: UD=32019,0,4,q,c,r,t
 
 #### Contact
 
-Mark Rivers , University of Chicago (rivers at cars.uchicago.edu)
+Mark Rivers, University of Chicago (rivers at cars.uchicago.edu)
 
 ---
 
@@ -539,7 +539,7 @@ Mark Rivers , University of Chicago (rivers at cars.uchicago.edu)
 Filter ID: 32020
 
 #### Description
-This filter is used by Oxford Nanopore specifically to compress raw DNA signal data (signed integer). To achieve this it uses both:
+Oxford Nanopore uses this filter specifically to compress raw DNA signal data (signed integer). To achieve this, it uses both:
 
 streamvbyte (https://github.com/lemire/streamvbyte)
 
@@ -563,7 +563,7 @@ FAPEC has a large variety of pre-processing stages and options: images (greyscal
 
 Most stages support samples of 8 to 24 bits (big/little endian, signed/unsigned), and lossless/lossy options. It can be extended with new, tailored pre-processing stages. It includes encryption options (AES-256 based on OpenSSL, and our own XXTEA implementation).
 
-The FAPEC library and CLI runs on Linux, Windows and Mac. The HDF5 user must request and install the library separately, thus allowing to upgrade it without requiring changes in your HDF5 code.
+The FAPEC library and CLI run on Linux, Windows and Mac. The HDF5 user must request and install the library separately, allowing upgrades without requiring changes in HDF5 code.
 
 #### Information
 
@@ -605,7 +605,7 @@ Filter ID:  32023
 
 #### Description
 
-The GBG quantization algorithm is a significant improvement the BitGroom filter documented in:
+The GBG quantization algorithm is a significant improvement to the BitGroom filter documented in:
 
 Zender, C. S. (2016), Bit Grooming: Statistically accurate precision-preserving quantization with compression, evaluated in the netCDF Operators (NCO, v4.4.8+), Geosci. Model Dev., 9, 3199-3211, doi:10.5194/gmd-9-3199-2016.
 
@@ -625,7 +625,7 @@ Filter ID:  32024
 
 #### Description
 
-SZ3 is a modular error-bounded lossy compression framework for scientific datasets, which allows users to customize their own compression pipeline to adapt to diverse datasets and user-requirements. Compared with SZ2 (filter id: 32017), SZ3 has integrated a more effective prediction such that its compression qualities/ratios are much higher than that of SZ2 in most of cases.
+SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with SZ2 (filter id: 32017), SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
 
 #### Information
 
@@ -668,7 +668,7 @@ Filter ID: 32026
 
 #### Description
 
-Blosc is a high performance compressor optimized for binary data (i.e. floating point numbers, integers and booleans). It has been designed to transmit data to the processor cache faster than the traditional, non-compressed, direct memory fetch approach via a memcpy() OS call. Blosc main goal is not just to reduce the size of large datasets on-disk or in-memory, but also to accelerate memory-bound computations.
+Blosc is a high-performance compressor optimized for binary data (e.g., floating-point numbers, integers and booleans). It has been designed to transmit data to the processor cache faster than the traditional, non-compressed, direct memory fetch approach via a memcpy() OS call. Blosc's main goal is not just to reduce the size of large datasets on disk or in memory but also to accelerate memory-bound computations.
 
 C-Blosc2 is the new major version of C-Blosc, and tries hard to be backward compatible with both the C-Blosc1 API and its in-memory format.
 
