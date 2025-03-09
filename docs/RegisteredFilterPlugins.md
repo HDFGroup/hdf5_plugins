@@ -1,28 +1,29 @@
-# Registered Filter Plugins
+# Registered HDF5 Filter Plugins
 
-Please see [HDF5 Filter Plugins](https://github.com/HDFGroup/hdf5_plugins), a convenience repository that packages together many commonly used filters users have created and registered.
+This document holds the official information about registered HDF5 filter plugins. It is part of the [HDF5 Filter Plugins](https://github.com/HDFGroup/hdf5_plugins) repository which conveniently hosts the code, as well as build and packaging instructions for a selection of popular HDF5 filter plugins.
 
-## Information on Registered Filter Plugins
+Information about HDF5 filters and creating their plugins can be found in the HDF5 [documentation](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_p_l__u_g.html#sec_filter_plugins). How filters fit in the library data I/O operations is described in the [Data Pipeline](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_d__u_g.html#subsubsec_dataset_transfer_pipe) documentation.
 
-Members of the HDF5 user community can create and register Third-Party (compression or other) filters for use with HDF5.
+## How to Register HDF5 Filter Plugin
 
-To register a filter, please contact The HDF Helpdesk with the following information:
+Any member of the HDF5 user community can register a plugin for use by the HDF5 library for their or a third-party filter. To register a filter plugin, please contact The HDF [Helpdesk](mailto:help@hdfgroup.org) with as much of the following information as possible:
 
-* Contact information for the developer requesting a new identifier.
-* Short description of the new filter.
-* Links to any relevant information, including licensing information.
+* Maintainer's contact information. Minimum an email address, preferably additional information like personal website, GitHub or social network handles. More ways to contact the responsible maintainer is better.
+* Filter plugin's respository.
+* Description of the new plugin including the specifics of the filter parameters (`cd_nelmts` and `cd_values[]`) supported by the plugin.
+* Links to any relevant documentation, including the licensing information.
 
-The current policy for filter identifier assignment is:
+Upong receiving a request with the above information, HDF Group will register the new plugin by assigning it a filter plugin _identifier_. The current policy for assigning an identifier is explained below:
 
 | Filter Identifier Values | Description |
 |--------------------------|-------------|
-| `0-255`                  | These values are reserved for filters predefined and registered by the HDF5 library and of use to the general public. |
-| `256-511`                | Filter values in this range are intended for testing only and can be temporarily used by any organization. No attempts are made to resolve numbering conflicts, as all definitions are temporary. |
-| `512-32,767`             | Filter values within this range are designated for filters managed by The HDF Group, but they are nominally requested, developed, and supported by third parties. Please contact the [HDF5 development team](mailto:help@hdfgroup.org) to reserve a value or range of values for use by your filters. |
-| `32,768-65,535`          | Filter values in this range are designated for internal company use or application testing when assessing a feature. The HDF Group does not track or document the use of filters within this range. |
+| `0`–`255` | These values are reserved for plugins predefined and registered by the HDF5 library and of use to the general public. |
+| `256`–`511` | The values in this range are intended for testing only and can be temporarily used by any organization. No attempts are made to resolve numbering conflicts, as all definitions are temporary. |
+| `512`–`32,767` | The values within this range are managed by The HDF Group and intended for filter plugins nominally requested, developed, or maintained by third parties. |
+| `32,768`–`65,535` | The values in this range are designated for internal company use or application testing when assessing a feature. The HDF Group does not track or document the use of filter plugins within this range. |
 
 
-## List of Filters Registered with The HDF Group
+## List of Filter Plugins Registered with The HDF Group
 
 | Filter Identifier | Filter Name | Short Description|
 |--------|----------------|---------------------|
@@ -30,7 +31,7 @@ The current policy for filter identifier assignment is:
 |`258`     |<a href="#fpzip">fpzip</a> |Duplicate of 32014 (fpzip, below)|
 |`305`     |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
 |`307`     |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
-|`32000`   |<a href="#lzf">LZF</a> |LZF lossless compression used by H5Py project|
+|`32000`   |<a href="#lzf">LZF</a> |LZF lossless compression used by the h5py package|
 |`32001`   |<a href="#blosc">BLOSC</a>   |Blosc lossless compression used by PyTables|
 |`32002`   |<a href="#mafisc">MAFISC</a>  |Modified LZMA compression filter, MAFISC (Multidimensional Adaptive Filtering Improved Scientific data Compression)|
 |`32003`   |<a href="#snappy">Snappy</a>  |Snappy lossless compression|
@@ -63,9 +64,9 @@ The current policy for filter identifier assignment is:
 |`32030`   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 
 > [!NOTE]
-> Please contact the maintainer of a filter for help with the filter/compression support in HDF5.
+> Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
 
-## The Filters
+## Information about Registered Filter Plugins
 
 ### hzip <a name="hzip"></a>
 
@@ -92,12 +93,19 @@ Email: miller86 at llnl dot gov
 Filter ID: `305`
 
 #### Description
-LZO is a portable lossless data compression library written in ANSI C.
-Reliable and thoroughly tested. High adoption - each second, terabytes of data are compressed by LZO. There have been no bugs since the first release back in 1996.
-Offers pretty fast compression and *extremely* fast decompression.
-Includes slower compression levels achieving a quite competitive compression ratio while still decompressing at this very high speed.
-Distributed under the terms of the GNU General Public License (GPL v2+). Commercial licenses are available on request.
-Military-grade stability and robustness.
+LZO is a portable lossless data compression library written in ANSI C. Reliable and thoroughly tested. High adoption - each second, terabytes of data are compressed by LZO. There have been no bugs since the first release back in 1996. Offers pretty fast compression and *extremely* fast decompression. Includes slower compression levels achieving a quite competitive compression ratio while still decompressing at this very high speed. Distributed under the terms of the GNU General Public License (GPL v2+). Commercial licenses are available on request. Military-grade stability and robustness.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` can be `1`, `2`, or `3`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Complevel, currently no effect. |
+| `[1]` | Table `VERSION` attribute. |
+| `[2]` | A enum identifying one of: `Table`, `Array`, `EArray`, `VLArray`, `CArray`. |
+
+`h5repack` filter parameters for the `--filter` option: `<objects list>:UD=305,0,3,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>`.
 
 #### Information
 http://www.oberhumer.com/opensource/lzo/
@@ -115,6 +123,17 @@ Filter ID: `307`
 
 #### Description
 bzip2 is a freely available, patent-free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is 1 (`cd_nelmts = 1`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Compression block size in units of 100 kilobytes with range `1`-`9`. |
+
+`h5repack` filter parameters for the `--filter` option: `<objects list>:UD=307,0,1,<cd_values[0]>`.
+
 
 #### Information
 http://www.bzip.org
@@ -135,9 +154,19 @@ The LZF filter is an alternative DEFLATE-style compressor for HDF5 datasets, usi
 
 LZF can be used to compress any data type, and requires no compile-time or run-time configuration. HDF5 versions 1.6.5 through 1.8.3 are supported. The filter is written in C and can be included directly in C or C++ applications; it has no external dependencies. The license is 3-clause BSD (virtually unrestricted, including commercial applications).
 
-More information, downloads, and benchmarks, are available at the http://h5py.org/lzf/.
+Filter specific parameters:
 
-Additional Information:
+Number of `cd_values[]` parameters is 3 (`cd_nelmts = 3`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Plugin revision number, starting from 1. |
+| `[1]` | LZF compression filter version number. |
+| `[2]` | Pre-computed chunk size in bytes. |
+
+`h5repack` example for the `--filter` option: `<objects list>:32000,1,3,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>`.
+
+More information, downloads, and benchmarks, are available at the http://h5py.org/lzf/.
 
 The LZF filter was developed as part of the h5py project, which implements a general-purpose interface to HDF5 from Python.
 
@@ -163,6 +192,34 @@ Blosc is a high-performance compressor optimized for binary data. It has been de
 
 It uses advanced cache-efficient techniques to reduce activity on the memory bus as much as possible. It also leverages SIMD (SSE2) and multi-threading capabilities present in modern multi-core processors to accelerate the compression/decompression process to a maximum.
 
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to 7. First four parameters are reserved.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Plugin revision number. (reserved) |
+| `[1]` | LZF compression filter version number. (reserved) |
+| `[2]` | Datatype size. (reserved) |
+| `[3]` | Pre-computed chunk size in bytes. (reserved) |
+| `[4]` | `0` (no compression) through `9` (maximum compression). (optional) |
+| `[5]` | `0` (no shuffle), `1` (byte-wise shuffle), `2` (bit-wise shuffle). (optional) |
+| `[6]` | `0` (BLOSCLZ), `1` (LZ4), `2` (LZ4HC), `3` (SNAPPY), `4` (ZLIB), `5` (ZSTD). (optional) |
+
+`h5repack` example for the `--filter` option: `<objects list>:UD=32001,0,7,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>,<cd_values[3]>,[<cd_values[4]>,<cd_values[5]>,<cd_values[6]>,<cd_values[7]>]`.
+
+Common `h5repack` `--filter` parameters:
+
+|  Filter |  `--filter` option |
+|----|-----|
+| default | `<objects list>:UD=32001,0,0` |
+| BLOSCLZ | `<objects list>:UD=32001,0,7,0,0,0,0,5,1,0` |
+| LZ4 | `<objects list>:UD=32001,0,7,0,0,0,0,5,1,1` |
+| LZ4HC | `<objects list>:UD=32001,0,7,0,0,0,0,5,1,2` |
+| SNAPPY | `<objects list>:UD=32001,0,7,0,0,0,0,5,1,3` |
+| ZLIB |  `<objects list>:UD=32001,0,7,0,0,0,0,5,1,4` |
+| ZSTD | `<objects list>:UD=32001,0,7,0,0,0,0,5,1,5` |
+
 #### Information
 
 http://blosc.org/
@@ -183,6 +240,22 @@ Filter ID: `32002`
 This compressing filter exploits the multidimensionality and smoothness characterizing many scientific data sets. It adaptively applies some filters to preprocess the data and uses lzma as the actual compression step. It significantly outperforms pure lzma compression on most datasets.
 
 The software is currently under a rather unrestrictive two-clause BSD-style license.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is variable. The first is required and the rest must be in the specific order.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Version with value `0`. (required) |
+| `[1]` | `datasetId` (reserved) |
+| `[2]` | `dataTypeSize` in bytes. (reserved) |
+| `[3]` | `isFloat`: `1` if the datatype is a floating-point type. (reserved) |
+| `[4]` | Byte order. Values same as `H5T_order_t` [struct](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_tpublic_8h.html#a2a6a8eb856a0829fecaac60f803c9fd0). (reserved) |
+| `[5]` | Chunk rank (number of chunk's dimensions). (reserved) |
+| `[6]` and following | Chunk dimension sizes, as many as the chunk rank. (reserved) |
+
+`h5repack` example for the `--filter` option: `<objects list>:UD=32002,0,7,...`.
 
 #### Information
 
@@ -219,7 +292,18 @@ Email: lucasvr at gmail dot com
 Filter ID: `32004`
 
 #### Description
-LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see HDF5_LZ4.pdf.
+LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see [_HDF5_LZ4.pdf_](https://github.com/dectris/HDF5Plugin/blob/master/HDF5_LZ4.pdf).
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Block size in bytes smaller than 1.9 GB. Default is 1 GB. (optional) |
+
+`h5repack` example for the `--filter` option: `<objects list>:UD=32004,0,0`.
+
 
 #### Information
 
@@ -281,13 +365,13 @@ Email: marvin dot albert at gmail dot com
 
 Filter ID: `32008`
 
-#### Description
-This filter shuffles data at the bit level to improve compression. CHIME uses this filter for data acquisition.
+#### Description (**NEEDS UPDATE**)
+Bitshuffle is an algorithm that rearranges typed, binary data for improving compression, and is algorithmically similar to HDF5's Shuffle filter except it operates at the bit level instead of the byte level. This does not in itself compress the data, only rearranges it for more efficient compression. The actual compression is performed by one of the LZF, LZ4, or ZSTD libraries.
+
+Arranging a typed data array in to a matrix with the elements as the rows and the bits within the elements as the columns, Bitshuffle "transposes" the matrix, such that all the least-significant-bits are in a row, etc. This transpose is performed within blocks of data roughly 8 kB long to fit comfortably within CPU's L1 cache as well as be well matched window of the LZF compression library.
 
 #### Information
 
-bitshuffle
-CHIME
 
 #### Contact
 
@@ -384,6 +468,41 @@ Filter ID: `32013`
 #### Description
 zfp is a BSD licensed open source C++ library for compressed floating-point arrays that support very high throughput read and write random access. zfp was designed to achieve high compression ratios and, therefore, uses lossy but optionally error-bounded compression. Although bit-for-bit lossless compression is not always possible, zfp is usually accurate to within machine epsilon in near-lossless mode, and is often orders of magnitude more accurate and faster than other lossy compressors.
 
+This plugin supports all 4 modes of the ZFP compression library: rate, accuracy, precision and expert. It supports 1, 2 and 3 dimensional datasets of single and double precision integer and floating point data. It can be applied to HDF5 datasets of more than 3 dimensions as long as no more than 3 dimensions of the chunking are of size greater than 1.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is six  (`cd_nelmts = 6`). The filter will transform (modify) their values after execution. The first parameter determines the function of the other five.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Mode: `1` (rate), `2` (precision), `3` (accuracy), `4` (expert). |
+
+| `cd_values[]` | `cd_values[0] = 1` | `cd_values[0] = 2` | `cd_values[0] = 3` | `cd_values[0] = 4` |
+|---|---|---|---|---|
+| `[1]` | `0` | `0` | `0` | `0` |
+| `[2]` | `rateA` | `prec` | `accA` | `minbits` |
+| `[3]` | `rateB` | _unused_ | `accB` | `maxbits` |
+| `[4]` | `0` | `0` | `0` | `maxprec` |
+| `[5]` | `0` | `0` | `0` | `minexp` |
+
+When `cd_values[0] = 3`, expected floating-point accuracy parameter values:
+
+| Floating-point accuracy | `accA` | `accB` |
+|---|---|---|
+| 1       | 0 | 1072693248 |
+| 0.1     | 2576980378 |  1069128089 |
+| 0.01    | 1202590843 |  1065646817 |
+| 0.001   | 3539053052 |  1062232653 |
+| 0.0001  | 3944497965 |  1058682594 |
+| 1e-8    | 3794832442 |  1044740494 |
+| 1e-11   | 3782829205 |  1034288511 |
+
+`h5repack` examples for the `--filter` option:
+
+* Default: `<objects list>:UD=32013,1,0,032008,0,0`
+* Accuracy 0.001 mode: `<objects list>:UD=32013,0,6,3,0,3539053052,1062232653,0,0`
+
 #### Information
 
 https://github.com/LLNL/H5Z-ZFP
@@ -425,9 +544,26 @@ Email: pl at llnl dot gov
 Filter ID: `32015`
 
 #### Description
-Zstandard is a real-time compression algorithm that provides high compression ratios. It offers a very wide range of compression / speed trade-offs, while being backed by a very fast decoder. The Zstandard library is provided as open source software under a BSD license.
+Zstandard is a real-time compression algorithm that provides high compression
+ratios. It offers a very wide range of compression / speed trade-offs, while
+being backed by a very fast decoder.  The Zstandard library supports regular
+compression levels from 1 up to `ZSTD_maxCLevel()`, which is currently 22.
+Levels greater than 20 should be used with caution as they require more memory. The
+library also offers negative compression levels, which extend the range of speed
+vs. ratio preferences. The lower the level, the faster the speed at the cost of
+compression.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to one (`cd_nelmts = 0` or `1`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Optional compression level, default is `3`. |
 
 #### Information
+
+ The Zstandard library is provided as open source software under a BSD license: https://github.com/facebook/zstd.
 
 https://github.com/aparamon/HDF5Plugin-Zstandard
 
@@ -515,17 +651,18 @@ Chunking must be set to the size of one entire image so the filter is called onc
 
 HDF5 only supports compression for "chunked" datasets; this means you need to call H5Pset_chunk to specify a chunk size. The chunking must be set to the size of a single image for the JPEG filter to work correctly.
 
-When calling H5Pset_filter for compression, it must be called with cd_nelmts=4 and cd_values as follows:
+Filter specific parameters:
 
-    cd_values[0] = quality factor (1-100)
+Number of `cd_values[]` parameters is 4 (`cd_nelmts = 4`).
 
-    cd_values[1] = numColumns
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | quality factor (1-100) |
+| `[1]` | numColumns |
+| `[2]` | numRows |
+| `[3]` | `0` (Mono) or `1` (RGB) |
 
-    cd_values[2] = numRows
-
-    cd_values[3] = 0=Mono, 1=RGB
-
-Common h5repack parameter: UD=32019,0,4,q,c,r,t
+`h5repack` example for the `--filter` option: `<objects list>:UD=32019,0,4,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>,<cd_values[3]>`.
 
 #### Contact
 
