@@ -199,7 +199,7 @@ Number of `cd_values[]` parameters is up to 7. First four parameters are reserve
 | `cd_values[]` | Description |
 |---|---|
 | `[0]` | Plugin revision number. (reserved) |
-| `[1]` | LZF compression filter version number. (reserved) |
+| `[1]` | Blosc format version. (reserved) |
 | `[2]` | Datatype size. (reserved) |
 | `[3]` | Pre-computed chunk size in bytes. (reserved) |
 | `[4]` | `0` (no compression) through `9` (maximum compression). (optional) |
@@ -369,6 +369,21 @@ Filter ID: `32008`
 Bitshuffle is an algorithm that rearranges typed, binary data for improving compression, and is algorithmically similar to HDF5's Shuffle filter except it operates at the bit level instead of the byte level. This does not in itself compress the data, only rearranges it for more efficient compression. The actual compression is performed by one of the LZF, LZ4, or ZSTD libraries.
 
 Arranging a typed data array in to a matrix with the elements as the rows and the bits within the elements as the columns, Bitshuffle "transposes" the matrix, such that all the least-significant-bits are in a row, etc. This transpose is performed within blocks of data roughly 8 kB long to fit comfortably within CPU's L1 cache as well as be well matched window of the LZF compression library.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to 11 but first 3 are reserved (`cd_nelmts` values: `3`, `4`,...`10`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Bitshuffle major version (reserved) |
+| `[1]` | Bitshuffle minor version (reserved) |
+| `[2]` | Datatype size in bytes (reserved) |
+| `[3]` | Block size in dataset elements. It needs to be divisible by eight. If `0` the default is a value that fits in 8 KiB. |
+| `[4]` | `0` (no compression), `2` (`BSHUF_H5_COMPRESS_LZ4`), `3` (`BSHUF_H5_COMPRESS_ZSTD`) |
+| `[5]` | Compression level if `BSHUF_H5_COMPRESS_ZSTD`. See <a href="#zstandard">Zstandard</a>. |
+
+`h5repack` example for the `--filter` option: `<objects list>:UD=32025,0,2,<cd_values[0]>,<cd_values[1]>`.
 
 #### Information
 
@@ -785,7 +800,19 @@ Filter ID:  `32025`
 
 #### Description
 
-Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding.
+Lossless compression algorithm based on Delta encoding and Rice coding optimized for digitized analog signals as signed 16-bit integers. Any other precision data is cast to 16-bit.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` values: `0`, `1`, `2`, `3`). Default values are used when no parameters.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Tuning parameter. Default: `8`. |
+| `[1]` | Waveform length. Default: `-1`. |
+| `[2]` | Filter length. Default: `2`. This parameter determines the number of additional `cd_values[]` but they are not specified in the current plugin implementation. |
+
+`h5repack` example for the `--filter` option: `<objects list>:UD=32025,0,2,<cd_values[0]>,<cd_values[1]>`.
 
 #### Information
 
@@ -804,9 +831,25 @@ Filter ID: `32026`
 
 #### Description
 
-Blosc is a high-performance compressor optimized for binary data (e.g., floating-point numbers, integers and booleans). It has been designed to transmit data to the processor cache faster than the traditional, non-compressed, direct memory fetch approach via a memcpy() OS call. Blosc's main goal is not just to reduce the size of large datasets on disk or in memory but also to accelerate memory-bound computations.
+Blosc2 is a high-performance compressor optimized for binary data (e.g., floating-point numbers, integers and booleans). It has been designed to transmit data to the processor cache faster than the traditional, non-compressed, direct memory fetch approach via a memcpy() OS call. Blosc's main goal is not just to reduce the size of large datasets on disk or in memory but also to accelerate memory-bound computations.
 
 C-Blosc2 is the new major version of C-Blosc, and tries hard to be backward compatible with both the C-Blosc1 API and its in-memory format.
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to 7. First four parameters are reserved.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Plugin revision number. (reserved) |
+| `[1]` | Unused. (reserved) |
+| `[2]` | Datatype size in bytes. (reserved) |
+| `[3]` | Chunk size in bytes. (reserved) |
+| `[4]` | `0` (no compression) through `9` (maximum compression). (optional) |
+| `[5]` | `0` (no shuffle), `1` (byte-wise shuffle), `2` (bit-wise shuffle). (optional) |
+| `[6]` | `0` (BLOSCLZ, default), `1` (LZ4), `2` (LZ4HC), `4` (ZLIB), `5` (ZSTD). (optional) |
+| `[7]` | Chunk rank. (optional) |
+| `[8]` and beyond | If the chunk rank is specified, the rest of the `cd_values[]` are chunk dimensions. |
 
 #### Information
 
@@ -850,11 +893,22 @@ Filter ID: `32028`
 
 #### Description
 
-SPERR is a wavelet-based lossy compressor for floating-point scientific data; it achieves one of the best compression ratios given a user-prescribed error tolerance (i.e., maximum point-wise error). SPERR also supports two distinctive decoding modes, namely "flexible-rate decoding" and "multi-resolution decoding," that facilitate data analysis with various constraints. More details are available on SPERR Github repository: https://github.com/NCAR/SPERR.
+SPERR is a wavelet-based lossy compressor for 2D, 3D, and 4D floating-point scientific data. It achieves one of the best compression ratios given a user-prescribed error tolerance (i.e., maximum point-wise error). SPERR also supports two distinctive decoding modes, namely "flexible-rate decoding" and "multi-resolution decoding," that facilitate data analysis with various constraints. More details are available on SPERR Github repository: https://github.com/NCAR/SPERR.
 
 #### Information
 
 H5Z-SPERR is the HDF5 filter plugin for SPERR. It is also available on Github: https://github.com/NCAR/H5Z-SPERR
+
+Filter specific parameters:
+
+Number of `cd_values[]` parameters is up to 4 (`cd_nelmts <= 4`).
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Compression mode, quality. (mandatory) |
+| `[1]` | Missing value mode: `0` (no missing value), `1` (any `NAN` is a missing value), `2` (any value where `abs(value) >= 1e35` is a missing value), `3` (use a single 32-bit float as the missing value; **not implemented**), `4` (use a single 64-bit double as the missing value; **not implemented**). (optional) |
+| `[2]` | 32-bit float to use as missing value when `cd_values[1] = 3`. (optional) |
+| `[3]` | 64-bit float to use as missing value when `cd_values[1] = 4`.. (optional) |
 
 #### Contact
 Samuel Li
