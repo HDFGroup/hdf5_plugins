@@ -219,7 +219,7 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
     }
 #endif
 
-    // Compression in addition to bitshiffle.
+    // Compression in addition to bitshuffle.
     if (cd_nelmts > 4 && (cd_values[4] == BSHUF_H5_COMPRESS_LZ4 || cd_values[4] == BSHUF_H5_COMPRESS_ZSTD)) {
         if (flags & H5Z_FLAG_REVERSE) {
             // First eight bytes is the number of bytes in the output buffer,
@@ -332,4 +332,3 @@ size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
         return nbytes_out;
     }
 }
-
