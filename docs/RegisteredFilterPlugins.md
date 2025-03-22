@@ -292,7 +292,7 @@ Email: lucasvr at gmail dot com
 Filter ID: `32004`
 
 #### Description
-LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see [_HDF5_LZ4.pdf_](https://github.com/dectris/HDF5Plugin/blob/master/HDF5_LZ4.pdf).
+LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see [LZ4_HDF5_format.md](../LZ4/LZ4_HDF5_format.md).
 
 Filter specific parameters:
 
@@ -300,7 +300,7 @@ Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
 
 | `cd_values[]` | Description |
 |---|---|
-| `[0]` | Block size in bytes smaller than 1.9 GB. Default is 1 GB. (optional) |
+| `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GB. (optional) |
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32004,0,0`.
 
