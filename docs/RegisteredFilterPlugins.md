@@ -300,7 +300,8 @@ Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
 
 | `cd_values[]` | Description |
 |---|---|
-| `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GB. (optional) |
+| `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GiB (1,073,741,824 bytes). (optional) |
+
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32004,0,0`.
 
