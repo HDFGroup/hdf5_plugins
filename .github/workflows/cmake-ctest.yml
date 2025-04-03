@@ -439,7 +439,7 @@ jobs:
       - name: Install CMake
         uses: jwlawson/actions-setup-cmake@v2
         with:
-          version: '3.31.6'
+          cmake-version: '3.31.6'
 
       - name: Set file base name (MacOS_latest)
         id: set-file-base
