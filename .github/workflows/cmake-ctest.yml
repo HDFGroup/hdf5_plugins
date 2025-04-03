@@ -86,9 +86,9 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.13.0
 
       - name: Install CMake
-        uses: ssrobins/install-cmake@v1
+        uses: jwlawson/actions-setup-cmake@v2
         with:
-          version: 3.31.6
+          cmake-version: '3.31.6'
 
       - name: Set file base name (Windows)
         id: set-file-base
@@ -271,9 +271,9 @@ jobs:
           sudo apt-get install ninja-build
 
       - name: Install CMake
-        uses: ssrobins/install-cmake@v1
+        uses: jwlawson/actions-setup-cmake@v2
         with:
-          version: 3.31.6
+          cmake-version: '3.31.6'
 
       - name: Set file base name (Linux)
         id: set-file-base
