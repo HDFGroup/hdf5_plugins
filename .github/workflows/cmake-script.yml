@@ -39,6 +39,11 @@ jobs:
       - name: Enable Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@v1.13.0
 
+      - name: Install CMake
+        uses: ssrobins/install-cmake@v1
+        with:
+          version: 3.31.6
+
       - name: Set file base name (Windows)
         id: set-file-base
         run: |
@@ -179,6 +184,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install ninja-build graphviz curl
 
+      - name: Install CMake
+        uses: ssrobins/install-cmake@v1
+        with:
+          version: 3.31.6
+
       - name: Set file base name (Linux)
         id: set-file-base
         run: |
@@ -297,6 +307,11 @@ jobs:
     steps:
       - name: Install Dependencies (MacOS_latest)
         run: brew install ninja
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          version: '3.31.6'
 
       - name: Set file base name (MacOS_latest)
         id: set-file-base
@@ -425,6 +440,11 @@ jobs:
         with:
           compiler: intel
           version: '2024.1'
+
+      - name: Install CMake
+        uses: ssrobins/install-cmake@v1
+        with:
+          version: 3.31.6
 
       - name: Set file base name (Windows_intel)
         id: set-file-base
@@ -576,6 +596,11 @@ jobs:
         with:
           compiler: intel
           version: '2024.1'
+
+      - name: Install CMake
+        uses: ssrobins/install-cmake@v1
+        with:
+          version: 3.31.6
 
       - name: Set file base name (Linux_intel)
         id: set-file-base

@@ -92,10 +92,6 @@ else ()
 endif ()
 
 # BLOSC filter
-if (CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.0" AND H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
-  # Skip building blosc with tgz until next release 1.21.7
-  set (ENABLE_BLOSC OFF CACHE BOOL "" FORCE)
-else ()
 if (WIN32)
   if (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND MSVC_VERSION GREATER 1600)
     FILTER_OPTION (BLOSC)
@@ -112,7 +108,6 @@ elseif (APPLE)
   endif ()
 else ()
   FILTER_OPTION (BLOSC)
-endif ()
 endif ()
 
 # BLOSC2 filter
