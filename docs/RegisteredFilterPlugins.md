@@ -159,8 +159,8 @@ The LZF filter plugin was developed as part of the [h5py](http://h5py.org) proje
 
 ##### Contact
 
-Andrew Collette
-Web: http://h5py.org
+Andrew Collette<br/>
+http://h5py.org
 
 ---
 
