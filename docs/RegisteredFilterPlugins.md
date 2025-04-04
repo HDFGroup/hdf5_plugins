@@ -470,15 +470,16 @@ When `cd_values[0] = 3`, expected floating-point accuracy parameter values:
 * Accuracy 0.001 mode: `<objects list>:UD=32013,0,6,3,0,3539053052,1062232653,0,0`
 
  Repositories:
-    * Upstream: https://github.com/LLNL/H5Z-ZFP
-    * Latest release: https://github.com/HDFGroup/hdf5_plugins/tree/master/ZFP
+
+* Upstream: https://github.com/LLNL/H5Z-ZFP
+* Latest release: https://github.com/HDFGroup/hdf5_plugins/tree/master/ZFP
 
 ##### Contact
 
-Mark Miller
+Mark Miller<br/>
 Email: miller86 at llnl dot gov
 
-Peter Lindstrom
+Peter Lindstrom<br/>
 Email: pl at llnl dot gov
 
 ---
