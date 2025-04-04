@@ -79,7 +79,7 @@ See above.
 
 ##### Contact
 
-Mark Miller
+Mark Miller<br/>
 Email: miller86 at llnl dot gov
 
 ---
@@ -106,7 +106,7 @@ Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` can be `1`, `2`, or `
 Documentation: http://www.pytables.org.
 
 ##### Contact
-Francesc Alted
+Francesc Alted<br/>
 Email: faltet at pytables dot org
 
 ---
@@ -129,7 +129,7 @@ Number of `cd_values[]` parameters is 1 (`cd_nelmts = 1`).
 Documentation: http://www.pytables.org.
 
 ##### Contact
-Francesc Alted
+Francesc Alted<br/>
 Email: faltet at pytables dot org
 
 ---
@@ -169,7 +169,7 @@ Web: http://h5py.org
 #### Filter Description
 Blosc is a high-performance compressor optimized for binary data. It has been designed to compress data very fast, at the expense of achieving lesser compression ratios than, say, zlib+shuffle. It is mainly meant to not introduce a significant delay when dealing with data stored in high-performance I/O systems (like large RAID cabinets or even the OS filesystem memory cache). It uses advanced cache-efficient techniques to reduce activity on the memory bus as much as possible. It also leverages SIMD (SSE2) and multi-threading capabilities present in modern multicore processors to accelerate the compression/decompression process to a maximum.
 
-http://blosc.org/
+http://blosc.org/<br/>
 http://www.pytables.org
 
 #### Plugin ID `32001` Information
@@ -202,7 +202,7 @@ Common `h5repack` `--filter` parameters:
 
 ##### Contact
 
-Francesc Alted
+Francesc Alted<br/>
 Email: faltet at pytables dot org
 
 ---
@@ -232,7 +232,7 @@ Number of `cd_values[]` parameters is variable. The first is required and the re
 
 ##### Contact
 
-Nathanael Huebbe
+Nathanael Huebbe<br/>
 Email: nathanael.huebbe at informatik dot uni-hamburg dot de
 
 ---
@@ -250,7 +250,7 @@ https://github.com/lucasvr/snappy-cuda
 
 ##### Contact
 
-Lucas C. Villa Real
+Lucas C. Villa Real<br/>
 Email: lucasvr at gmail dot com
 
 ---
@@ -276,7 +276,7 @@ https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/src
 
 ##### Contact
 
-Michael Rissi (Dectris Ltd.)
+Michael Rissi (Dectris Ltd.)<br/>
 Email: michael dot rissi at dectris dot com
 
 ---
@@ -300,7 +300,7 @@ None.
 
 ##### Contact
 
-Herbert J. Bernstein
+Herbert J. Bernstein<br/>
 Email: yayahjb at gmail dot com
 
 ---
@@ -316,7 +316,7 @@ None.
 
 ##### Contact
 
-Marvin Albert
+Marvin Albert<br/>
 Email: marvin dot albert at gmail dot com
 
 ---
@@ -349,7 +349,7 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BSHUF/src
 
 ##### Contact
 
-Kiyoshi Masui
+Kiyoshi Masui<br/>
 Email: kiyo at physics dot ubc dot ca
 
 ---
@@ -367,7 +367,7 @@ See https://userweb.cs.txstate.edu/~burtscher/research/SPDP/H5Zspdp.c.
 
 ##### Contact
 
-Martin Burtscher
+Martin Burtscher<br/>
 Email: burtscher at txstate dot edu
 
 ---
@@ -383,10 +383,10 @@ https://sourceforge.net/projects/lpcrice/
 
 ##### Contact
 
-Frans van den Bergh
+Frans van den Bergh<br/>
 Email: fvdbergh at csir dot co dot za
 
-Derick Swanepoel
+Derick Swanepoel<br/>
 Email: dswanepoel at gmail dot com
 
 ---
@@ -402,10 +402,10 @@ https://sourceforge.net/projects/ccsds123-hdf-filter/
 
 ##### Contact
 
-Frans van den Bergh
+Frans van den Bergh<br/>
 Email: fvdbergh at csir dot co dot za
 
-Derick Swanepoel
+Derick Swanepoel<br/>
 Email: dswanepoel at gmail dot com
 
 ---
@@ -421,10 +421,10 @@ https://sourceforge.net/projects/jpegls-hdf-filter/
 
 ##### Contact
 
-Frans van den Bergh
+Frans van den Bergh<br/>
 Email: fvdbergh at csir dot co dot za
 
-Derick Swanepoel
+Derick Swanepoel<br/>
 Email: dswanepoel at gmail dot com
 
 ---
@@ -497,7 +497,7 @@ This plugin in the past used ID `258` and appeared in the Silo headers, but may 
 
 ##### Contact
 
-Peter Lindstrom
+Peter Lindstrom<br/>
 Email: pl at llnl dot gov
 
 ---
@@ -526,7 +526,7 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/ZSTD
 
 ##### Contact
 
-Mark Rivers
+Mark Rivers<br/>
 Email: rivers at cars dot uchicago dot edu
 
 ---
@@ -559,10 +559,10 @@ https://github.com/szcompressor/SZ/tree/master/hdf5-filter/H5Z-SZ
 
 ##### Contact
 
-Sheng Di
+Sheng Di<br/>
 Email: sdi1 at anl dot gov
 
-Franck Cappello
+Franck Cappello<br/>
 Email: cappello at mcs dot anl dot gov
 
 ---
@@ -579,7 +579,7 @@ ftp://ftp.eumetsat.int/pub/OPS/out/test-data/Test-data-for-External-Users/MTG_FC
 
 ##### Contact
 
-Dr. Daniel Lee
+Dr. Daniel Lee<br/>
 Email: daniel dot lee at eumetsat dot int
 
 ---
@@ -609,7 +609,7 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/JPEG.
 
 ##### Contact
 
-Mark Rivers
+Mark Rivers<br/>
 Email: rivers at cars dot uchicago dot edu
 
 ---
@@ -656,7 +656,7 @@ None.
 
 ##### Contact
 
-Jordi Portell i de Mora (DAPCOM Data Services S.L.)
+Jordi Portell i de Mora (DAPCOM Data Services S.L.)<br/>
 Email: fapec at dapcom dot es
 
 ---
@@ -711,10 +711,10 @@ License: https://github.com/szcompressor/SZ/blob/master/copyright-and-BSD-licens
 
 ##### Contact
 
-Sheng Di
+Sheng Di<br/>
 Email: sdi1 at anl dot gov
 
-Franck Cappello
+Franck Cappello<br/>
 Email: cappello at mcs dot anl dot gov
 
 ---
@@ -741,7 +741,7 @@ This filter is documented, implemented, and maintained at: https://gitlab.com/dg
 
 ##### Contact
 
-David Mathews
+David Mathews<br/>
 Email: david dot mathews dot 1994 at gmail dot com
 
 ---
@@ -754,8 +754,8 @@ Blosc2 is a high-performance compressor optimized for binary data (e.g., floatin
 
 C-Blosc2 is the new major version of C-Blosc, and tries hard to be backward compatible with both the C-Blosc1 API and its in-memory format.
 
-Blosc project: https://www.blosc.org
-C-Blosc2 docs: https://www.blosc.org/c-blosc2/c-blosc2.html
+Blosc project: https://www.blosc.org<br/>
+C-Blosc2 docs: https://www.blosc.org/c-blosc2/c-blosc2.html<br/>
 License: https://github.com/Blosc/c-blosc2/blob/main/LICENSE.txt
 
 #### Plugin ID `32026` Information
@@ -778,7 +778,7 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BLOSC2.
 
 ##### Contact
 
-Francesc Alted
+Francesc Alted<br/>
 Email: faltet at gmail dot org (BDFL for the Blosc project)
 
 ---
@@ -797,12 +797,12 @@ None.
 
 ##### Contact
 
-Laurie Stephey
+Laurie Stephey<br/>
 Email: lastephey at lbl dot gov
 
 ---
 
-### SPERR <a name="h5z-sperr"></a>
+### SPERR <a name="sperr"></a>
 
 #### Filter Description
 
@@ -822,7 +822,7 @@ Number of `cd_values[]` parameters is up to 4 (`cd_nelmts <= 4`).
 Repository : https://github.com/NCAR/H5Z-SPERR
 
 ##### Contact
-Samuel Li
+Samuel Li<br/>
 Email: shaomeng at ucar dot edu
 
 ---
@@ -842,10 +842,10 @@ GitHub repo of the algorithm: https://github.com/Senikm/trpx
 None.
 
 ##### Contact
-Jan Pieter Abrahams
+Jan Pieter Abrahams<br/>
 Email: jp.abrahams at unibas dot ch
 
-Senik Matinyan
+Senik Matinyan<br/>
 Email: senik.matinyan at unibas dot ch
 
 ---
