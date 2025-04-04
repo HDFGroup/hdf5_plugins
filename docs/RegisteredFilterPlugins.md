@@ -262,7 +262,7 @@ LZ4 is a very fast lossless compression algorithm, providing compression speed a
 
 Although The HDF Group does not support the LZ4 software, it is included in this repository so that it can be tested regularly. For convenience, users can obtain it from https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/src/lib.
 
-#### Filter ID `32004` Information
+#### Plugin ID `32004` Information
 
 Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
 
