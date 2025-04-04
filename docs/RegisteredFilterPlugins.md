@@ -701,7 +701,7 @@ Charlie Zender  (University of California, Irvine)
 
 #### Filter Description
 
-SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with <a name="sz">SZ2</a>, SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
+SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with <a href="#sz">SZ2</a>, SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
 
 #### Plugin ID `32024` Information
 
