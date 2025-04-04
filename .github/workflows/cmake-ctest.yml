@@ -85,6 +85,11 @@ jobs:
       - name: Enable Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@v1.13.0
 
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.31.6'
+
       - name: Set file base name (Windows)
         id: set-file-base
         run: |
@@ -265,6 +270,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install ninja-build
 
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.31.6'
+
       - name: Set file base name (Linux)
         id: set-file-base
         run: |
@@ -425,6 +435,11 @@ jobs:
             security -v import $CERTIFICATE_PATH -P $P12_PASSWORD -A -t cert -f pkcs12 -k $KEYCHAIN_FILE
             security -v set-key-partition-list -S apple-tool:,codesign:,apple: -k $KEYCHAIN_PASSWD $KEYCHAIN_FILE
         if: ${{ needs.check-secret.outputs.sign-state == 'exists' }}
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.31.6'
 
       - name: Set file base name (MacOS_latest)
         id: set-file-base
