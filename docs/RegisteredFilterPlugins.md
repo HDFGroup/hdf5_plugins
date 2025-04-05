@@ -6,29 +6,28 @@ Information about HDF5 filters and creating their plugins can be found in the HD
 
 ## How to Register HDF5 Filter Plugin
 
-Any member of the HDF5 user community can register a plugin for use by the HDF5 library for their or a third-party filter. To register a filter plugin, please contact The HDF [Helpdesk](mailto:help@hdfgroup.org) with as much of the following information as possible:
+Any member of the HDF5 community can register a plugin for their or a third-party filter. To register a filter plugin, please contact The HDF Group's [Helpdesk](mailto:help@hdfgroup.org) with as much of the following information as possible:
 
 * Maintainer's contact information. Minimum an email address, preferably additional information like personal website, GitHub or social network handles. More ways to contact the responsible maintainer is better.
 * Filter plugin's respository.
 * Description of the new plugin including the specifics of the filter parameters (`cd_nelmts` and `cd_values[]`) supported by the plugin.
 * Links to any relevant documentation, including the licensing information.
 
-Upong receiving a request with the above information, HDF Group will register the new plugin by assigning it a filter plugin _identifier_. The current policy for assigning an identifier is explained below:
+Upon receiving a request with the above information, HDF Group will register the new plugin by assigning it a filter plugin _identifier_. The current policy for assigning an identifier is explained below:
 
-| Filter Identifier Values | Description |
+| Plugin Identifier Values | Description |
 |--------------------------|-------------|
 | `0`–`255` | These values are reserved for plugins predefined and registered by the HDF5 library and of use to the general public. |
 | `256`–`511` | The values in this range are intended for testing only and can be temporarily used by any organization. No attempts are made to resolve numbering conflicts, as all definitions are temporary. |
 | `512`–`32,767` | The values within this range are managed by The HDF Group and intended for filter plugins nominally requested, developed, or maintained by third parties. |
 | `32,768`–`65,535` | The values in this range are designated for internal company use or application testing when assessing a feature. The HDF Group does not track or document the use of filter plugins within this range. |
 
-
 ## List of Filter Plugins Registered with The HDF Group
 
-| Filter Identifier | Filter Name | Short Description|
+| Plugin Identifier | For Filter | Short Description|
 |--------|----------------|---------------------|
 |`257`     |<a href="#hzip">hzip</a> |hzip compression used in Silo|
-|`258`     |<a href="#fpzip">fpzip</a> |Duplicate of 32014 (fpzip, below)|
+|`258`     |<a href="#fpzip">fpzip</a> |Duplicate of plugin `32014`|
 |`305`     |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
 |`307`     |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
 |`32000`   |<a href="#lzf">LZF</a> |LZF lossless compression used by the h5py package|
@@ -59,7 +58,7 @@ Upong receiving a request with the above information, HDF Group will register th
 |`32025`   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
 |`32026`   |<a href="#blosc2">BLOSC2</a>   |The recent new-generation version of the Blosc compression library|
 |`32027`   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
-|`32028`   |<a href="#h5z-sperr">H5Z-SPERR</a>    |H5Z-SPERR is the HDF5 filter for SPERR|
+|`32028`   |<a href="#sperr">SPERR</a>    |SPERR is a lossy scientific (floating-point) data compressor that produces one of the best rate-distortion curves|
 |`32029`   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
 |`32030`   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 
@@ -70,32 +69,29 @@ Upong receiving a request with the above information, HDF Group will register th
 
 ### hzip <a name="hzip"></a>
 
-Filter ID: `257`
+#### Filter Description
 
-#### Description
-hzip is a compression algorithm for lossless compression of structured and unstructured meshes composed of cells with hypercube topology.
+Hzip is a compression algorithm for lossless compression of structured and unstructured meshes composed of cells with hypercube topology. Hzip was written by Peter Lindstrom at LLNL, and is based on the algorithm described in the paper: Peter Lindstrom and Martin Isenburg, "Lossless Compression of Hexahedral Meshes," IEEE Data Compression Conference, March 2008, 192-201. https://doi.org/10.1109/DCC.2008.12. More information at https://computing.llnl.gov/projects/hzip.
 
-#### Information
-hzip was written by Peter Lindstrom at LLNL, and is based on the algorithm described in the paper:
+#### Plugin ID `257` Information
 
-Peter Lindstrom and Martin Isenburg, "Lossless Compression of Hexahedral Meshes," IEEE Data Compression Conference, March 2008, 192-201. https://doi.org/10.1109/DCC.2008.12
+See above.
 
-https://computing.llnl.gov/projects/hzip
+##### Contact
 
-#### Contact
-Mark Miller
+Mark Miller<br/>
 Email: miller86 at llnl dot gov
 
 ---
 
 ### LZO <a name="lzo"></a>
 
-Filter ID: `305`
-
-#### Description
+#### Filter Description
 LZO is a portable lossless data compression library written in ANSI C. Reliable and thoroughly tested. High adoption - each second, terabytes of data are compressed by LZO. There have been no bugs since the first release back in 1996. Offers pretty fast compression and *extremely* fast decompression. Includes slower compression levels achieving a quite competitive compression ratio while still decompressing at this very high speed. Distributed under the terms of the GNU General Public License (GPL v2+). Commercial licenses are available on request. Military-grade stability and robustness.
 
-Filter specific parameters:
+http://www.oberhumer.com/opensource/lzo/
+
+#### Plugin ID `305` Information
 
 Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` can be `1`, `2`, or `3`).
 
@@ -103,28 +99,24 @@ Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` can be `1`, `2`, or `
 |---|---|
 | `[0]` | Complevel, currently no effect. |
 | `[1]` | Table `VERSION` attribute. |
-| `[2]` | A enum identifying one of: `Table`, `Array`, `EArray`, `VLArray`, `CArray`. |
+| `[2]` | An enum identifying one of: `Table`, `Array`, `EArray`, `VLArray`, `CArray`. |
 
 `h5repack` filter parameters for the `--filter` option: `<objects list>:UD=305,0,3,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>`.
 
-#### Information
-http://www.oberhumer.com/opensource/lzo/
-http://www.pytables.org
+Documentation: http://www.pytables.org.
 
-#### Contact
-Francesc Alted
+##### Contact
+Francesc Alted<br/>
 Email: faltet at pytables dot org
 
 ---
 
 ### BZIP2 <a name="bzip2"></a>
 
-Filter ID: `307`
+#### Filter Description
+bzip2 is a freely available, patent-free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression. More information: http://www.bzip.org.
 
-#### Description
-bzip2 is a freely available, patent-free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
-
-Filter specific parameters:
+#### Plugin ID `307` Information
 
 Number of `cd_values[]` parameters is 1 (`cd_nelmts = 1`).
 
@@ -134,27 +126,24 @@ Number of `cd_values[]` parameters is 1 (`cd_nelmts = 1`).
 
 `h5repack` filter parameters for the `--filter` option: `<objects list>:UD=307,0,1,<cd_values[0]>`.
 
+Documentation: http://www.pytables.org.
 
-#### Information
-http://www.bzip.org
-http://www.pytables.org
-
-#### Contact
-Francesc Alted
+##### Contact
+Francesc Alted<br/>
 Email: faltet at pytables dot org
 
 ---
 
 ### LZF <a name="lzf"></a>
 
-Filter ID: `32000`
-
-#### Description
+#### Filter Description
 The LZF filter is an alternative DEFLATE-style compressor for HDF5 datasets, using the free LZF library by Marc Alexander Lehmann. Its main benefit over the built-in HDF5 DEFLATE filter is speed; in memory-to-memory operation as part of the filter pipeline, it typically compresses 3x-5x faster than DEFLATE, and decompresses 2x faster, while maintaining 50% to 90% of the DEFLATE compression ratio.
 
-LZF can be used to compress any data type, and requires no compile-time or run-time configuration. HDF5 versions 1.6.5 through 1.8.3 are supported. The filter is written in C and can be included directly in C or C++ applications; it has no external dependencies. The license is 3-clause BSD (virtually unrestricted, including commercial applications).
+LZF can be used to compress any data type, and requires no compile-time or run-time configuration. The filter is written in C and can be included directly in C or C++ applications; it has no external dependencies. The license is 3-clause BSD (virtually unrestricted, including commercial applications).
 
-Filter specific parameters:
+The LZF library homepage: http://home.schmorp.de/marc/liblzf.html
+
+#### Plugin ID `32000` Information
 
 Number of `cd_values[]` parameters is 3 (`cd_nelmts = 3`).
 
@@ -166,33 +155,24 @@ Number of `cd_values[]` parameters is 3 (`cd_nelmts = 3`).
 
 `h5repack` example for the `--filter` option: `<objects list>:32000,1,3,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>`.
 
-More information, downloads, and benchmarks, are available at the http://h5py.org/lzf/.
+The LZF filter plugin was developed as part of the [h5py](http://h5py.org) project, which implements a general-purpose interface to HDF5 from Python. More information, downloads, and benchmarks, are available at http://h5py.org/lzf/.
 
-The LZF filter was developed as part of the h5py project, which implements a general-purpose interface to HDF5 from Python.
+##### Contact
 
-#### Information
-
-The h5py homepage: http://h5py.org
-
-The LZF library homepage: http://home.schmorp.de/marc/liblzf.html
-
-#### Contact
-
-Andrew Collette
-Web: http://h5py.org
+Andrew Collette<br/>
+http://h5py.org
 
 ---
 
 ### Blosc <a name="blosc"></a>
 
-Filter ID: `32001`
+#### Filter Description
+Blosc is a high-performance compressor optimized for binary data. It has been designed to compress data very fast, at the expense of achieving lesser compression ratios than, say, zlib+shuffle. It is mainly meant to not introduce a significant delay when dealing with data stored in high-performance I/O systems (like large RAID cabinets or even the OS filesystem memory cache). It uses advanced cache-efficient techniques to reduce activity on the memory bus as much as possible. It also leverages SIMD (SSE2) and multi-threading capabilities present in modern multicore processors to accelerate the compression/decompression process to a maximum.
 
-#### Description
-Blosc is a high-performance compressor optimized for binary data. It has been designed to compress data very fast, at the expense of achieving lesser compression ratios than, say, zlib+shuffle. It is mainly meant to not introduce a significant delay when dealing with data stored in high-performance I/O systems (like large RAID cabinets or even the OS filesystem memory cache).
+http://blosc.org/<br/>
+http://www.pytables.org
 
-It uses advanced cache-efficient techniques to reduce activity on the memory bus as much as possible. It also leverages SIMD (SSE2) and multi-threading capabilities present in modern multi-core processors to accelerate the compression/decompression process to a maximum.
-
-Filter specific parameters:
+#### Plugin ID `32001` Information
 
 Number of `cd_values[]` parameters is up to 7. First four parameters are reserved.
 
@@ -220,28 +200,21 @@ Common `h5repack` `--filter` parameters:
 | ZLIB |  `<objects list>:UD=32001,0,7,0,0,0,0,5,1,4` |
 | ZSTD | `<objects list>:UD=32001,0,7,0,0,0,0,5,1,5` |
 
-#### Information
+##### Contact
 
-http://blosc.org/
-http://www.pytables.org
-
-#### Contact
-
-Francesc Alted
+Francesc Alted<br/>
 Email: faltet at pytables dot org
 
 ---
 
 ### MAFISC <a name="mafisc"></a>
 
-Filter ID: `32002`
-
-#### Description
+#### Filter Description
 This compressing filter exploits the multidimensionality and smoothness characterizing many scientific data sets. It adaptively applies some filters to preprocess the data and uses lzma as the actual compression step. It significantly outperforms pure lzma compression on most datasets.
 
-The software is currently under a rather unrestrictive two-clause BSD-style license.
+The software is currently under a rather unrestrictive two-clause BSD-style license: http://wr.informatik.uni-hamburg.de/research/projects/icomex/mafisc.
 
-Filter specific parameters:
+#### Plugin ID `32002` Information
 
 Number of `cd_values[]` parameters is variable. The first is required and the rest must be in the specific order.
 
@@ -257,44 +230,39 @@ Number of `cd_values[]` parameters is variable. The first is required and the re
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32002,0,7,...`.
 
-#### Information
+##### Contact
 
-http://wr.informatik.uni-hamburg.de/research/projects/icomex/mafisc
-
-#### Contact
-
-Nathanael Huebbe
+Nathanael Huebbe<br/>
 Email: nathanael.huebbe at informatik dot uni-hamburg dot de
 
 ---
 
 ### Snappy <a name="snappy"></a>
 
-Filter ID: `32003`
-
-#### Description
+#### Filter Description
 Snappy-CUDA is a compression/decompression library that leverages GPU processing power to compress/decompress data. The Snappy compression algorithm does not aim for maximum compression or compatibility with any other compression library; instead, it aims for very high speeds and reasonable compression. For instance, compared to the fastest mode of zlib, the reference implementation of Snappy on the CPU is an order of magnitude faster for most inputs, but the resulting compressed files are anywhere from 20% to 100% bigger.
 
-#### Information
-
-https://github.com/lucasvr/snappy-cuda
 https://github.com/google/snappy
 
-#### Contact
+#### Plugin ID `32003` Information
 
-Lucas C. Villa Real
+https://github.com/lucasvr/snappy-cuda
+
+##### Contact
+
+Lucas C. Villa Real<br/>
 Email: lucasvr at gmail dot com
 
 ---
 
 ### LZ4 <a name="lz4"></a>
 
-Filter ID: `32004`
-
-#### Description
+#### Filter Description
 LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see [LZ4_HDF5_format.md](https://github.com/HDFGroup/hdf5_plugins/blob/master/LZ4/LZ4_HDF5_format.md).
 
-Filter specific parameters:
+Although The HDF Group does not support the LZ4 software, it is included in this repository so that it can be tested regularly. For convenience, users can obtain it from https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/src/lib.
+
+#### Plugin ID `32004` Information
 
 Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
 
@@ -302,76 +270,67 @@ Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
 |---|---|
 | `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GiB (1,073,741,824 bytes). (optional) |
 
-
 `h5repack` example for the `--filter` option: `<objects list>:UD=32004,0,0`.
 
+https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/src
 
-#### Information
+##### Contact
 
-LZ4 Algorithm:   https://github.com/nexusformat/HDF5-External-Filter-Plugins/tree/master/LZ4
-
-LZ4 Code:
-
-Although The HDF Group does not support the LZ4 software, it is included in the HDF5 plugins GitHub repository  so that it can be tested regularly with HDF5. For convenience, users can obtain it from https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4.
-
-#### Contact
-
-Michael Rissi (Dectris Ltd.)
+Michael Rissi (Dectris Ltd.)<br/>
 Email: michael dot rissi at dectris dot com
 
 ---
 
 ### APAX <a name="apax"></a>
 
-Filter ID: `32005`
+#### Plugin ID `32005` Information
 
-It appears to be no longer available
+It appears to be no longer available.
 
 ---
 
 ### CBF <a name="cbf"></a>
 
-Filter ID: `32006`
-
-#### Description
+#### Filter Description
 All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset. License Information: GPL and LGPL.
 
-#### Contact
+#### Plugin ID `32006` Information
 
-Herbert J. Bernstein
+None.
+
+##### Contact
+
+Herbert J. Bernstein<br/>
 Email: yayahjb at gmail dot com
 
 ---
 
 ### JPEG-XR <a name="jpeg-xr"></a>
 
-Filter ID: `32007`
-
-#### Description
+#### Filter Description
 Filter that allows HDF5 image datasets to be compressed or decompressed using the JPEG-XR compression method.
 
-#### Information
+#### Plugin ID `32007` Information
 
-JPEG-XR Compression Method
-JPEG-XR Filter for HDF5
+None.
 
-#### Contact
+##### Contact
 
-Marvin Albert
+Marvin Albert<br/>
 Email: marvin dot albert at gmail dot com
 
 ---
 
 ### Bitshuffle <a name="bitshuffle"></a>
 
-Filter ID: `32008`
-
-#### Description
+#### Filter Description
 Bitshuffle is an algorithm that rearranges typed, binary data for improving compression, and is algorithmically similar to HDF5's Shuffle filter except it operates at the bit level instead of the byte level. This does not in itself compress the data, only rearranges it for more efficient compression. The actual compression is performed by one of the LZF, LZ4, or ZSTD libraries.
 
 Arranging a typed data array in to a matrix with the elements as the rows and the bits within the elements as the columns, Bitshuffle "transposes" the matrix, such that all the least-significant-bits are in a row, etc. This transpose is performed within blocks of data roughly 8 kB long to fit comfortably within CPU's L1 cache as well as be well matched window of the LZF compression library.
 
-Filter specific parameters:
+https://github.com/kiyo-masui/bitshuffle
+
+#### Plugin ID `32008` Information
 
 Number of `cd_values[]` parameters is up to 11 but first 3 are reserved (`cd_nelmts` values: `3`, `4`,...`10`).
 
@@ -386,107 +345,98 @@ Number of `cd_values[]` parameters is up to 11 but first 3 are reserved (`cd_nel
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32025,0,2,<cd_values[0]>,<cd_values[1]>`.
 
-#### Information
+Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BSHUF/src
 
+##### Contact
 
-#### Contact
-
-Kiyoshi Masui
+Kiyoshi Masui<br/>
 Email: kiyo at physics dot ubc dot ca
 
 ---
 
 ### SPDP <a name="spdp"></a>
 
-Filter ID: `32009`
-
-#### Description
+#### Filter Description
 SPDP is a fast, lossless, unified compression/decompression algorithm designed for both 32-bit single-precision (float) and 64-bit double-precision (double) floating-point data. It also works on other data.
 
-#### Information
+https://userweb.cs.txstate.edu/~burtscher/research/SPDPcompressor/
 
-http://cs.txstate.edu/~burtscher/research/SPDP/
+#### Plugin ID `32009` Information
 
-#### Contact
+See https://userweb.cs.txstate.edu/~burtscher/research/SPDP/H5Zspdp.c.
 
-Martin Burtscher
+##### Contact
+
+Martin Burtscher<br/>
 Email: burtscher at txstate dot edu
 
 ---
 
 ### LPC-Rice <a name="lpc-rice"></a>
 
-Filter ID: `32010`
-
-#### Description
+#### Filter Description
 LPC-Rice is a fast lossless compression codec that employs Linear Predictive Coding together with Rice coding. It supports multi-threading and SSE2 vector instructions, enabling it to exceed compression and decompression speeds of 1 GB/s.
 
-#### Information
+#### Plugin ID `32010` Information
 
 https://sourceforge.net/projects/lpcrice/
 
-#### Contact
+##### Contact
 
-Frans van den Bergh
+Frans van den Bergh<br/>
 Email: fvdbergh at csir dot co dot za
 
-Derick Swanepoel
+Derick Swanepoel<br/>
 Email: dswanepoel at gmail dot com
 
 ---
 
 ### CCSDS-123 <a name="ccsds-123"></a>
 
-Filter ID: `32011`
-
-#### Description
+#### Filter Description
 CCSDS-123 is a multi-threaded HDF5 compression filter using the ESA CCSDS-123 implementation.
 
-#### Information
+#### Plugin ID `32011` Information
 
 https://sourceforge.net/projects/ccsds123-hdf-filter/
 
-#### Contact
+##### Contact
 
-Frans van den Bergh
+Frans van den Bergh<br/>
 Email: fvdbergh at csir dot co dot za
 
-Derick Swanepoel
+Derick Swanepoel<br/>
 Email: dswanepoel at gmail dot com
 
 ---
 
 ### JPEG-LS <a name="jpeg-ls"></a>
 
-Filter ID: `32012`
-
-#### Description
+#### Filter Description
 JPEG-LS is a multi-threaded HDF5 compression filter using the CharLS JPEG-LS implementation.
 
-#### Information
+#### Plugin ID `32012` Information
 
 https://sourceforge.net/projects/jpegls-hdf-filter/
 
-#### Contact
+##### Contact
 
-Frans van den Bergh
+Frans van den Bergh<br/>
 Email: fvdbergh at csir dot co dot za
 
-Derick Swanepoel
+Derick Swanepoel<br/>
 Email: dswanepoel at gmail dot com
 
 ---
 
 ### zfp <a name="zfp"></a>
 
-Filter ID: `32013`
-
-#### Description
+#### Filter Description
 zfp is a BSD licensed open source C++ library for compressed floating-point arrays that support very high throughput read and write random access. zfp was designed to achieve high compression ratios and, therefore, uses lossy but optionally error-bounded compression. Although bit-for-bit lossless compression is not always possible, zfp is usually accurate to within machine epsilon in near-lossless mode, and is often orders of magnitude more accurate and faster than other lossy compressors.
 
-This plugin supports all 4 modes of the ZFP compression library: rate, accuracy, precision and expert. It supports 1, 2 and 3 dimensional datasets of single and double precision integer and floating point data. It can be applied to HDF5 datasets of more than 3 dimensions as long as no more than 3 dimensions of the chunking are of size greater than 1.
+This plugin supports all 4 modes of the ZFP compression library: rate, accuracy, precision and expert. It supports 1, 2 and 3 dimensional datasets of single and double precision integer and floating point data. It can be applied to HDF5 datasets of more than 3 dimensions as long as no more than 3 dimensions of the chunking are of size greater than 1. For more information see: http://computing.llnl.gov/projects/floating-point-compression/.
 
-Filter specific parameters:
+#### Plugin ID `32013` Information
 
 Number of `cd_values[]` parameters is six  (`cd_nelmts = 6`). The filter will transform (modify) their values after execution. The first parameter determines the function of the other five.
 
@@ -519,47 +469,42 @@ When `cd_values[0] = 3`, expected floating-point accuracy parameter values:
 * Default: `<objects list>:UD=32013,1,0,032008,0,0`
 * Accuracy 0.001 mode: `<objects list>:UD=32013,0,6,3,0,3539053052,1062232653,0,0`
 
-#### Information
+ Repositories:
 
-https://github.com/LLNL/H5Z-ZFP
+* Upstream: https://github.com/LLNL/H5Z-ZFP
+* Latest release: https://github.com/HDFGroup/hdf5_plugins/tree/master/ZFP
 
-For more information, see: http://computing.llnl.gov/projects/floating-point-compression/
+##### Contact
 
-#### Contact
-
-Mark Miller
+Mark Miller<br/>
 Email: miller86 at llnl dot gov
 
-Peter Lindstrom
+Peter Lindstrom<br/>
 Email: pl at llnl dot gov
 
 ---
 
 ### fpzip <a name="fpzip"></a>
 
-Filter ID: `32014` (and `258`)
-
-#### Description
+#### Filter Description
 fpzip is a library for lossless or lossy compression of 2D or 3D floating-point scalar fields. Although written in C++, fpzip has a C interface. fpzip was developed by Peter Lindstrom at LLNL.
 
-Filter identifier `258` appeared in the Silo headers, but may not have been used in actual HDF5 files.
+http://computing.llnl.gov/projects/floating-point-compression/
 
-#### Information
+#### Plugin ID `32014` Information
 
-For more information, see: http://computing.llnl.gov/projects/floating-point-compression/
+This plugin in the past used ID `258` and appeared in the Silo headers, but may not have been used in actual HDF5 files.
 
-#### Contact
+##### Contact
 
-Peter Lindstrom
+Peter Lindstrom<br/>
 Email: pl at llnl dot gov
 
 ---
 
 ### Zstandard <a name="zstandard"></a>
 
-Filter ID: `32015`
-
-#### Description
+#### Filter Description
 Zstandard is a real-time compression algorithm that provides high compression
 ratios. It offers a very wide range of compression / speed trade-offs, while
 being backed by a very fast decoder.  The Zstandard library supports regular
@@ -567,9 +512,9 @@ compression levels from 1 up to `ZSTD_maxCLevel()`, which is currently 22.
 Levels greater than 20 should be used with caution as they require more memory. The
 library also offers negative compression levels, which extend the range of speed
 vs. ratio preferences. The lower the level, the faster the speed at the cost of
-compression.
+compression. The Zstandard library is provided as open source software under a BSD license: https://github.com/facebook/zstd.
 
-Filter specific parameters:
+#### Plugin ID `32015` Information
 
 Number of `cd_values[]` parameters is up to one (`cd_nelmts = 0` or `1`).
 
@@ -577,27 +522,21 @@ Number of `cd_values[]` parameters is up to one (`cd_nelmts = 0` or `1`).
 |---|---|
 | `[0]` | Optional compression level, default is `3`. |
 
-#### Information
+Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/ZSTD
 
- The Zstandard library is provided as open source software under a BSD license: https://github.com/facebook/zstd.
+##### Contact
 
-https://github.com/aparamon/HDF5Plugin-Zstandard
-
-#### Contact
-
-Andrey Paramonov
-Email: paramon at acdlabs dot ru
+Mark Rivers<br/>
+Email: rivers at cars dot uchicago dot edu
 
 ---
 
 ### B³D <a name="b3d"></a>
 
-Filter ID: `32016`
-
-#### Description
+#### Filter Description
 B³D is a fast (~1 GB/s), GPU based image compression method, developed for light-microscopy applications. Alongside lossless compression, it offers a noise dependent lossy compression mode, where the loss can be tuned as a proportion of the inherent image noise (accounting for photon shot noise and camera read noise). It not only allows for fast compression during image, but can achieve compression ratios up 100.
 
-#### Information
+#### Plugin ID `32016` Information
 
 http://www.biorxiv.org/content/early/2017/07/21/164624
 
@@ -605,69 +544,55 @@ http://www.biorxiv.org/content/early/2017/07/21/164624
 
 ### SZ <a name="sz"></a>
 
-Filter ID: `32017`
+Filter ID:
 
-#### Description
+#### Filter Description
 SZ is a fast and efficient error-bounded lossy compressor for floating-point data. It was developed for scientific applications producing large-scale HPC data sets. SZ supports C, Fortran, and Java and has been tested on Linux and Mac OS X.
-
-#### Information
 
 For more information, see: https://collab.cels.anl.gov/display/ESR/SZ
 GitHub: https://github.com/disheng222/SZ
 License: https://www.mcs.anl.gov/~shdi/download/sz-download.html
 
-#### Contact
+#### Plugin ID `32017` Information
 
-Sheng Di
+https://github.com/szcompressor/SZ/tree/master/hdf5-filter/H5Z-SZ
+
+##### Contact
+
+Sheng Di<br/>
 Email: sdi1 at anl dot gov
 
-Franck Cappello
+Franck Cappello<br/>
 Email: cappello at mcs dot anl dot gov
 
 ---
 
 ### FCIDECOMP <a name="fcidecomp"></a>
 
-Filter ID: `32018`
-
-#### Description
+#### Filter Description
 FCIDECOMP is a third-party compression filter used at EUMETSAT to compress netCDF-4 files. It is a codec implementing JPEG-LS using CharLS for satellite imagery.
 
-#### Information
+#### Plugin ID `32018` Information
 
 All software and documentation can be found at this link:
-
 ftp://ftp.eumetsat.int/pub/OPS/out/test-data/Test-data-for-External-Users/MTG_FCI_L1c_Compressed-Datasets_and_Decompression-Plugin_April2017/Decompression_Plugin/
 
-#### Contact
+##### Contact
 
-Dr. Daniel Lee
+Dr. Daniel Lee<br/>
 Email: daniel dot lee at eumetsat dot int
 
 ---
 
 ### JPEG <a name="jpeg"></a>
 
-Filter ID: `32019`
+#### Filter Description
+This is a lossy compression filter. It provides a user-specified "quality factor" to control the trade-off of size versus accuracy. Libjpeg library is available as a package for most Linux distributions, and the source code is available from https://www.ijg.org/.
 
-#### Description
-This is a lossy compression filter. It provides a user-specified "quality factor" to control the trade-off of size versus accuracy.
+#### Plugin ID `32019` Information
 
-#### Information
-
-libjpeg: This library is available as a package for most Linux distributions, and the source code is available from https://www.ijg.org/.
-
-Restrictions:
-
-Only 8-bit unsigned data arrays are supported.
-Arrays must be either:
- 2-D monochromatic [NumColumns, NumRows]
- 3-D RGB [3, NumColumns, NumRows]
-Chunking must be set to the size of one entire image so the filter is called once for each image. Using the JPEG filter in your application:
-
-HDF5 only supports compression for "chunked" datasets; this means you need to call H5Pset_chunk to specify a chunk size. The chunking must be set to the size of a single image for the JPEG filter to work correctly.
-
-Filter specific parameters:
+Only 8-bit unsigned data arrays are supported. Arrays must be either: 2D monochromatic [NumColumns, NumRows] or  3D RGB [3, NumColumns, NumRows].
+Chunking must be set to the size of one entire image so the filter is called once for each image.
 
 Number of `cd_values[]` parameters is 4 (`cd_nelmts = 4`).
 
@@ -680,24 +605,29 @@ Number of `cd_values[]` parameters is 4 (`cd_nelmts = 4`).
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32019,0,4,<cd_values[0]>,<cd_values[1]>,<cd_values[2]>,<cd_values[3]>`.
 
-#### Contact
+Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/JPEG.
 
-Mark Rivers, University of Chicago (rivers at cars.uchicago.edu)
+##### Contact
+
+Mark Rivers<br/>
+Email: rivers at cars dot uchicago dot edu
 
 ---
 
 ### VBZ <a name="vbz"></a>
 
-Filter ID: `32020`
-
-#### Description
+#### Filter Description
 Oxford Nanopore uses this filter specifically to compress raw DNA signal data (signed integer). To achieve this, it uses both:
 
 streamvbyte (https://github.com/lemire/streamvbyte)
 
 zstd  (https://github.com/facebook/zstd)
 
-#### Contact
+#### Plugin ID `32020` Information
+
+https://github.com/nanoporetech/vbz_compression/tree/master/vbz_plugin
+
+##### Contact
 
 George Pimm
 
@@ -705,9 +635,7 @@ George Pimm
 
 ### FAPEC <a name="fapec"></a>
 
-Filter ID:  `32021`
-
-#### Description
+#### Filter Description
 
 FAPEC is a versatile and efficient data compressor, initially designed for satellite payloads but later extended for ground applications. It relies on an outlier-resilient entropy coding core with similar ratios and speeds than CCSDS 121.0 (adaptive Rice).
 
@@ -717,35 +645,35 @@ Most stages support samples of 8 to 24 bits (big/little endian, signed/unsigned)
 
 The FAPEC library and CLI run on Linux, Windows and Mac. The HDF5 user must request and install the library separately, allowing upgrades without requiring changes in HDF5 code.
 
-#### Information
 
 https://www.dapcom.es/fapec/
 https://www.dapcom.es/get-fapec/
 https://www.dapcom.es/resources/FAPEC_EndUserLicenseAgreement.pdf
 
-#### Contact
+#### Plugin ID `32021` Information
 
-Jordi Portell i de Mora (DAPCOM Data Services S.L.)
+None.
 
-fapec at dapcom dot es
+##### Contact
+
+Jordi Portell i de Mora (DAPCOM Data Services S.L.)<br/>
+Email: fapec at dapcom dot es
 
 ---
 
 ### BitGroom <a name="bitgroom"></a>
 
-Filter ID:  `32022`
-
-#### Description
+#### Filter Description
 
 The BitGroom quantization algorithm is documented in:
 
 Zender, C. S. (2016), Bit Grooming: Statistically accurate precision-preserving quantization with compression, evaluated in the netCDF Operators (NCO, v4.4.8+), Geosci. Model Dev., 9, 3199-3211, doi:10.5194/gmd-9-3199-2016.
 
-#### Information
+#### Plugin ID `32022` Information
 
 The filter is documented and maintained in the Community Codec Repository (https://github.com/ccr/ccr).
 
-#### Contact
+##### Contact
 
 Charlie Zender  (University of California, Irvine)
 
@@ -753,19 +681,17 @@ Charlie Zender  (University of California, Irvine)
 
 ### Granular BitRound (GBR) <a name="gbr"></a>
 
-Filter ID:  `32023`
-
-#### Description
+#### Filter Description
 
 The GBG quantization algorithm is a significant improvement to the BitGroom filter documented in:
 
 Zender, C. S. (2016), Bit Grooming: Statistically accurate precision-preserving quantization with compression, evaluated in the netCDF Operators (NCO, v4.4.8+), Geosci. Model Dev., 9, 3199-3211, doi:10.5194/gmd-9-3199-2016.
 
-#### Information
+#### Plugin ID `32023` Information
 
 This filter is documented, implemented, and maintained in the Community Codec Repository (https://github.com/ccr/ccr).
 
-#### Contact
+##### Contact
 
 Charlie Zender  (University of California, Irvine)
 
@@ -773,37 +699,33 @@ Charlie Zender  (University of California, Irvine)
 
 ### SZ3 <a name="sz3"></a>
 
-Filter ID:  `32024`
+#### Filter Description
 
-#### Description
+SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with <a href="#sz">SZ2</a>, SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
 
-SZ3 is a modular error-bounded lossy compression framework for scientific datasets. It allows users to customize their own compression pipeline to adapt to diverse datasets and user requirements. Compared with SZ2 (filter id: `32017`), SZ3 has integrated a more effective prediction, such that its compression qualities/ratios are much higher than those of SZ2 in most cases.
+#### Plugin ID `32024` Information
 
-#### Information
-
-This filter is documented, implemented, and maintained at: https://github.com/szcompressor/SZ3.
+This filter is documented, implemented, and maintained at: https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3.
 
 License: https://github.com/szcompressor/SZ/blob/master/copyright-and-BSD-license.txt
 
-#### Contact
+##### Contact
 
-Sheng Di
+Sheng Di<br/>
 Email: sdi1 at anl dot gov
 
-Franck Cappello
+Franck Cappello<br/>
 Email: cappello at mcs dot anl dot gov
 
 ---
 
 ### Delta-Rice <a name="delta-rice"></a>
 
-Filter ID:  `32025`
-
-#### Description
+#### Filter Description
 
 Lossless compression algorithm based on Delta encoding and Rice coding optimized for digitized analog signals as signed 16-bit integers. Any other precision data is cast to 16-bit.
 
-Filter specific parameters:
+#### Plugin ID `32025` Information
 
 Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` values: `0`, `1`, `2`, `3`). Default values are used when no parameters.
 
@@ -815,28 +737,28 @@ Number of `cd_values[]` parameters is up to 3 (`cd_nelmts` values: `0`, `1`, `2`
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32025,0,2,<cd_values[0]>,<cd_values[1]>`.
 
-#### Information
-
 This filter is documented, implemented, and maintained at: https://gitlab.com/dgma224/deltarice.
 
-#### Contact
+##### Contact
 
-David Mathews
+David Mathews<br/>
 Email: david dot mathews dot 1994 at gmail dot com
 
 ---
 
 ### Blosc2 <a name="blosc2"></a>
 
-Filter ID: `32026`
-
-#### Description
+#### Filter Description
 
 Blosc2 is a high-performance compressor optimized for binary data (e.g., floating-point numbers, integers and booleans). It has been designed to transmit data to the processor cache faster than the traditional, non-compressed, direct memory fetch approach via a memcpy() OS call. Blosc's main goal is not just to reduce the size of large datasets on disk or in memory but also to accelerate memory-bound computations.
 
 C-Blosc2 is the new major version of C-Blosc, and tries hard to be backward compatible with both the C-Blosc1 API and its in-memory format.
 
-Filter specific parameters:
+Blosc project: https://www.blosc.org<br/>
+C-Blosc2 docs: https://www.blosc.org/c-blosc2/c-blosc2.html<br/>
+License: https://github.com/Blosc/c-blosc2/blob/main/LICENSE.txt
+
+#### Plugin ID `32026` Information
 
 Number of `cd_values[]` parameters is up to 7. First four parameters are reserved.
 
@@ -852,17 +774,11 @@ Number of `cd_values[]` parameters is up to 7. First four parameters are reserve
 | `[7]` | Chunk rank. (optional) |
 | `[8]` and beyond | If the chunk rank is specified, the rest of the `cd_values[]` are chunk dimensions. |
 
-#### Information
+Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BLOSC2.
 
-Blosc project: https://www.blosc.org
+##### Contact
 
-C-Blosc2 docs: https://www.blosc.org/c-blosc2/c-blosc2.html
-
-License: https://github.com/Blosc/c-blosc2/blob/main/LICENSE.txt
-
-#### Contact
-
-Francesc Alted
+Francesc Alted<br/>
 Email: faltet at gmail dot org (BDFL for the Blosc project)
 
 ---
@@ -871,36 +787,28 @@ Email: faltet at gmail dot org (BDFL for the Blosc project)
 
 Filter ID: `32027`
 
-#### Description
+#### Filter Description
 
-FLAC is an audio compression filter in HDF5. (Our ultimate goal is to use it via h5py in the hdf5plugin library: https://github.com/silx-kit/hdf5plugin).
+FLAC is an audio compression filter in HDF5. (Our ultimate goal is to use it via h5py in the hdf5plugin library: https://github.com/silx-kit/hdf5plugin). The FLAC filter is open source: https://github.com/xiph/flac and libFLAC has BSD-like license: https://github.com/xiph/flac/blob/master/CONTRIBUTING.md.
 
-#### Information
+#### Plugin ID `32027` Information
 
-The FLAC filter is open source: https://github.com/xiph/flac
+None.
 
-libFLAC has BSD-like license: https://github.com/xiph/flac/blob/master/CONTRIBUTING.md
+##### Contact
 
-#### Contact
-
-Laurie Stephey
+Laurie Stephey<br/>
 Email: lastephey at lbl dot gov
 
 ---
 
-### SPERR <a name="h5z-sperr"></a>
+### SPERR <a name="sperr"></a>
 
-Filter ID: `32028`
-
-#### Description
+#### Filter Description
 
 SPERR is a wavelet-based lossy compressor for 2D, 3D, and 4D floating-point scientific data. It achieves one of the best compression ratios given a user-prescribed error tolerance (i.e., maximum point-wise error). SPERR also supports two distinctive decoding modes, namely "flexible-rate decoding" and "multi-resolution decoding," that facilitate data analysis with various constraints. More details are available on SPERR Github repository: https://github.com/NCAR/SPERR.
 
-#### Information
-
-H5Z-SPERR is the HDF5 filter plugin for SPERR. It is also available on Github: https://github.com/NCAR/H5Z-SPERR
-
-Filter specific parameters:
+#### Plugin ID `32028` Information
 
 Number of `cd_values[]` parameters is up to 4 (`cd_nelmts <= 4`).
 
@@ -911,46 +819,48 @@ Number of `cd_values[]` parameters is up to 4 (`cd_nelmts <= 4`).
 | `[2]` | 32-bit float to use as missing value when `cd_values[1] = 3`. (optional) |
 | `[3]` | 64-bit float to use as missing value when `cd_values[1] = 4`.. (optional) |
 
-#### Contact
-Samuel Li
+Repository : https://github.com/NCAR/H5Z-SPERR
+
+##### Contact
+Samuel Li<br/>
 Email: shaomeng at ucar dot edu
 
 ---
 
 ### TERSE/PROLIX (TRPX) <a name="trpx"></a>
 
-Filter ID: `32029`
+Filter ID:
 
-#### Description
+#### Filter Description
 
 A new compression algorithm (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10626653/), which is specifically tailored for the lossless and fast compression of the diffraction data.
 
-#### Information
-
 GitHub repo of the algorithm: https://github.com/Senikm/trpx
 
-#### Contact
-Jan Pieter Abrahams
+#### Plugin ID `32029` Information
+
+None.
+
+##### Contact
+Jan Pieter Abrahams<br/>
 Email: jp.abrahams at unibas dot ch
 
-Senik Matinyan
+Senik Matinyan<br/>
 Email: senik.matinyan at unibas dot ch
 
 ---
 
 ### FFMPEG <a name="ffmpeg"></a>
 
-Filter ID: `32030`
-
-#### Description
+#### Filter Description
 
 A lossy compression filter based on ffmpeg video library.
 
-#### Information
+#### Plugin ID `32030` Information
 
 https://github.com/Cai-Lab-at-University-of-Michigan/ffmpeg_HDF5_filter
 
 License: Under MIT License
 
-#### Contact
+##### Contact
 Cai Lab at University of Michigan: https://www.cai-lab.org
