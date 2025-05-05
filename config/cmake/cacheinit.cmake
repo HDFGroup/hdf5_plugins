@@ -40,6 +40,11 @@ set (H5PL_TGZ_NAME "hdf5_plugins-master.tar.gz" CACHE STRING "Use plugins from c
 set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
 set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
+############################# bitgroom ################################################
+set (BITGROOM_TGZ_NAME "bitgroom-1.0.tar.gz" CACHE STRING "Use BITGROOM from compressed file" FORCE)
+
+set (BITGROOM_PACKAGE_NAME "bitgroom" CACHE STRING "Name of BITGROOM package" FORCE)
+
 ############################# bitshuffle ################################################
 
 set (BUILD_BSHUF_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the BSHUF plugin" FORCE)

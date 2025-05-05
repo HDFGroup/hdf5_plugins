@@ -27,6 +27,8 @@
         "PL_PACKAGE_NAME": "pl",
         "HDF5_NAMESPACE": {"type": "STRING", "value": "hdf5::"},
         "HDF5_PACKAGE_NAME": {"type": "STRING", "value": "hdf5"},
+        "BITGROOM_TGZ_NAME": {"type": "STRING", "value": "bitgroom-1.0.tar.gz"},
+        "BITGROOM_PACKAGE_NAME": {"type": "STRING", "value": "bitgroom"},
         "BUILD_BSHUF_LZ4_LIBRARY_SOURCE": "ON",
         "BSHUF_TGZ_NAME": {"type": "STRING", "value": "bitshuffle-0.5.2.tar.gz"},
         "BSHUF_PACKAGE_NAME": {"type": "STRING", "value": "bshuf"},

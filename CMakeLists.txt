@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18)
 project (H5PL C)
 
 if (POLICY CMP0074)
@@ -83,6 +83,9 @@ message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
 include (ExternalProject)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
+
+# Bitgroom filter
+FILTER_OPTION (BITGROOM)
 
 # Bitshuffle filter
 if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")

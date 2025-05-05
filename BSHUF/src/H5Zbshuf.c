@@ -79,8 +79,7 @@
 #define BSHUF_H5_COMPRESS_LZ4 2
 #define BSHUF_H5_COMPRESS_ZSTD 3
 
-/* Filter ID registered with the HDF Group */
-#define BSHUF_H5FILTER 32008
+#define BSHUF_H5FILTER 32008 /**< Filter ID registered with the HDF Group */
 
 #define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
 
@@ -95,19 +94,23 @@ static size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
         size_t *buf_size, void **buf);
 herr_t H5Z_bshuf_set_local(hid_t dcpl, hid_t type, hid_t space);
 
+/**
+ * The filter table maps filter identification numbers to structs that
+ * contain a pointers to the bitshuffle filter function.
+ */
 const H5Z_class2_t H5Z_BSHUF[1] = {{
-    H5Z_CLASS_T_VERS,                   /* H5Z_class_t version          */
-    (H5Z_filter_t)(BSHUF_H5FILTER),     /* Filter id number             */
+    H5Z_CLASS_T_VERS,                   /**< H5Z_class_t version          */
+    (H5Z_filter_t)(BSHUF_H5FILTER),     /**< Filter id number             */
 #ifdef FILTER_DECODE_ONLY
-    0,                                  /* encoder_present flag (false is not available) */
+    0,                                  /**< encoder_present flag (false is not available) */
 #else
-    1,                                  /* encoder_present flag (set to true) */
+    1,                                  /**< encoder_present flag (set to true) */
 #endif
-    1,                                  /* decoder_present flag         */
-    "bitshuffle; see https://github.com/kiyo-masui/bitshuffle",    /* Filter name for debugging    */
-    NULL,                               /* The "can apply" callback     */
-    (H5Z_set_local_func_t)(H5Z_bshuf_set_local),     /* The "set local" callback     */
-    (H5Z_func_t)(H5Z_bshuf_filter)      /* The actual filter function   */
+    1,                                  /**< decoder_present flag         */
+    "bitshuffle; see https://github.com/kiyo-masui/bitshuffle",    /**< Filter name for debugging    */
+    NULL,                               /**< The "can apply" callback     */
+    (H5Z_set_local_func_t)(H5Z_bshuf_set_local),     /**< The "set local" callback     */
+    (H5Z_func_t)(H5Z_bshuf_filter)      /**< The actual filter function   */
 }};
 
 
@@ -115,6 +118,17 @@ H5PL_type_t H5PLget_plugin_type(void) {return H5PL_TYPE_FILTER;}
 const void* H5PLget_plugin_info(void) {return H5Z_BSHUF;}
 
 // Only called on compresion, not on reverse.
+/**
+ * \brief Callback to determine and set per-variable filter parameters.
+ *  Only called on compresion, not on reverse.
+ *
+ * \param[in] dcpl Dataset creation property list ID
+ * \param[in] type Dataset type ID
+ * \param[in] space Dataset space ID
+ * \return herr_t
+ *
+ * \details H5Z_bshuf_set_local() Callback to determine and set per-variable filter parameters
+ */
 herr_t H5Z_bshuf_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     herr_t r;
@@ -183,7 +197,20 @@ herr_t H5Z_bshuf_set_local(hid_t dcpl, hid_t type, hid_t space) {
     return 1;
 }
 
-/* The filter function */
+/**
+ * \brief HDF5 BitShuffle Filter
+ *
+ * \param[in] flags Bitfield that encodes filter direction
+ * \param[in] cd_nelmts Number of elements in filter parameter (cd_values[]) array
+ * \param[in] cd_values[] Filter parameters
+ * \param[in] nbytes Number of bytes in input buffer (before forward/reverse filter)
+ * \param[out] buf_size Number of bytes in output buffer (after forward/reverse filter)
+ * \param[in.out] buf Values to quantize
+ *
+ * \return size_t
+ *
+ * \details H5Z_bshuf_filter() HDF5 BitShuffle Filter
+ */
 size_t H5Z_bshuf_filter(unsigned int flags, size_t cd_nelmts,
            const unsigned int cd_values[], size_t nbytes,
            size_t *buf_size, void **buf) {

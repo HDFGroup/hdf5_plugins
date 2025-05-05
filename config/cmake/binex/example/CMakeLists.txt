@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (HDF5PL_EX)
 
 set (dyn_examples)
@@ -18,6 +18,9 @@ if (BLOSC_AVAILABLE)
 endif ()
 if (BLOSC2_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_blosc2)
+endif ()
+if (BITGROOM_AVAILABLE)
+  set (dyn_examples ${dyn_examples} h5ex_d_bitgroom)
 endif ()
 if (BSHUF_AVAILABLE)
   set (dyn_examples ${dyn_examples} h5ex_d_bshuf)

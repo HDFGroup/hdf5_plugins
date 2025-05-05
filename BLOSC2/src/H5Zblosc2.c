@@ -50,18 +50,18 @@
 #include "b2nd.h"
 
 /* Version numbers */
-#define BLOSC2_PLUGIN_VERSION_MAJOR    1    /* for major interface/format changes  */
-#define BLOSC2_PLUGIN_VERSION_MINOR    0   /* for minor interface/format changes  */
-#define BLOSC2_PLUGIN_VERSION_RELEASE  0    /* for tweaks, bug-fixes, or development */
+#define BLOSC2_PLUGIN_VERSION_MAJOR    1    /**< for major interface/format changes  */
+#define BLOSC2_PLUGIN_VERSION_MINOR    0   /**< for minor interface/format changes  */
+#define BLOSC2_PLUGIN_VERSION_RELEASE  0    /**< for tweaks, bug-fixes, or development */
 
-#define BLOSC2_PLUGIN_VERSION_STRING   "1.0.0-dev"  /* string version.  Sync with above! */
+#define BLOSC2_PLUGIN_VERSION_STRING   "1.0.0-dev"  /**< string version.  Sync with above! */
 #define BLOSC2_PLUGIN_VERSION_DATE     "2024-05-03 #$"    /* date version */
 
 /* Filter revision number, starting at 1 */
 #define FILTER_BLOSC2_VERSION 1
 
-/* Filter ID registered with the HDF Group */
-#define FILTER_BLOSC2 32026
+#define FILTER_BLOSC2 32026 /**< Filter ID registered with the HDF Group */
+
 
 /* An opaque NumPy data type format for B2ND that respects the type size.
  * The actual type is irrelevant since HDF5 already stores it. */
@@ -116,19 +116,23 @@ static size_t blosc2_filter_function(unsigned int flags, size_t cd_nelmts,
                     size_t *buf_size, void **buf);
 herr_t blosc2_set_local(hid_t dcpl, hid_t type, hid_t space);
 
+/**
+ * The filter table maps filter identification numbers to structs that
+ * contain a pointers to the blosc filter function.
+ */
 const H5Z_class2_t blosc2_H5Filter[1] = {{
-    H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
-    (H5Z_filter_t)(FILTER_BLOSC2),         /* Filter id number */
+    H5Z_CLASS_T_VERS,       /**<  H5Z_class_t version */
+    (H5Z_filter_t)(FILTER_BLOSC2),         /**<  Filter id number */
 #ifdef FILTER_DECODE_ONLY
-    0,                   /* encoder_present flag (false is not available) */
+    0,                   /**<  encoder_present flag (false is not available) */
 #else
-    1,                   /* encoder_present flag (set to true) */
+    1,                   /**<  encoder_present flag (set to true) */
 #endif
-    1,                   /* decoder_present flag (set to true) */
+    1,                   /**<  decoder_present flag (set to true) */
     "HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md", /* Filter name for debugging */
-    NULL,                           /* The "can apply" callback */
-    (H5Z_set_local_func_t)(blosc2_set_local), /* The "set local" callback */
-    (H5Z_func_t)(blosc2_filter_function),    /* The actual filter function */
+    NULL,                           /**<  The "can apply" callback */
+    (H5Z_set_local_func_t)(blosc2_set_local), /**<  The "set local" callback */
+    (H5Z_func_t)(blosc2_filter_function),    /**<  The actual filter function */
 }};
 
 
@@ -136,16 +140,26 @@ H5PL_type_t H5PLget_plugin_type(void) { return H5PL_TYPE_FILTER; }
 const void* H5PLget_plugin_info(void) { return blosc2_H5Filter; }
 
 
-/*  Filter setup.  Records the following inside the DCPL:
-
-    1. Set slot 0 to the filter revision.
-
-    2. Compute the type size in bytes and store it in slot 2.
-
-    3. Compute the chunk size in bytes and store it in slot 3.
-
-    4. If 1 < rank <= BLOSC2_MAX_DIM, store it in slot 7, and chunk dimensions in the following slots.
-*/
+/**
+ * \brief Callback to determine and set per-variable filter parameters
+ *
+ * \param[in] dcpl Dataset creation property list ID
+ * \param[in] type Dataset type ID
+ * \param[in] space Dataset space ID
+ * \return herr_t
+ *
+ * \details blosc_set_local() Callback to determine and set per-variable filter parameters
+ *
+ *  Filter setup.  Records the following inside the DCPL:
+ *
+ *    1. Set slot 0 to the filter revision.
+ *
+ *    2. Compute the type size in bytes and store it in slot 2.
+ *
+ *    3. Compute the chunk size in bytes and store it in slot 3.
+ *
+ *    4. If 1 < rank <= BLOSC2_MAX_DIM, store it in slot 7, and chunk dimensions in the following slots.
+ */
 herr_t blosc2_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     int ndim;
@@ -331,7 +345,20 @@ int32_t compute_b2nd_block_shape(size_t block_size,
     return nitems_new * type_size;
 }
 
-/* The filter function */
+/**
+ * \brief HDF5 Blosc2 Filter
+ *
+ * \param[in] flags Bitfield that encodes filter direction
+ * \param[in] cd_nelmts Number of elements in filter parameter (cd_values[]) array
+ * \param[in] cd_values[] Filter parameters
+ * \param[in] nbytes Number of bytes in input buffer (before forward/reverse filter)
+ * \param[out] buf_size Number of bytes in output buffer (after forward/reverse filter)
+ * \param[in.out] buf Values to quantize
+ *
+ * \return size_t
+ *
+ * \details blosc2_filter() HDF5 Blosc2 Filter
+ */
 size_t blosc2_filter_function(unsigned int flags, size_t cd_nelmts,
                               const unsigned int cd_values[], size_t nbytes,
                               size_t *buf_size, void **buf) {
@@ -639,5 +666,4 @@ size_t blosc2_filter_function(unsigned int flags, size_t cd_nelmts,
     blosc2_destroy();
 
     return 0;
-
 } /* End filter function */

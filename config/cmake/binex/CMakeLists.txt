@@ -9,7 +9,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 #
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.18)
 project (H5PLExamples C)
 
 #-----------------------------------------------------------------------------
@@ -42,6 +42,9 @@ endif ()
 #-----------------------------------------------------------------------------
 # Build examples
 #-----------------------------------------------------------------------------
+# Bitgroom filter
+set (BITGROOM_AVAILABLE 1)
+
 # Bitshuffle filter
 set (BSHUF_AVAILABLE 0)
 if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")

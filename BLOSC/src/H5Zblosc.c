@@ -47,19 +47,19 @@
 #include "blosc.h"
 
 /* Version numbers */
-#define BLOSC_PLUGIN_VERSION_MAJOR    1    /* for major interface/format changes  */
-#define BLOSC_PLUGIN_VERSION_MINOR    0   /* for minor interface/format changes  */
-#define BLOSC_PLUGIN_VERSION_RELEASE  0    /* for tweaks, bug-fixes, or development */
+#define BLOSC_PLUGIN_VERSION_MAJOR    1    /**< for major interface/format changes  */
+#define BLOSC_PLUGIN_VERSION_MINOR    0   /**< for minor interface/format changes  */
+#define BLOSC_PLUGIN_VERSION_RELEASE  0    /**< for tweaks, bug-fixes, or development */
 
-#define BLOSC_PLUGIN_VERSION_STRING   "1.0.0-dev"  /* string version.  Sync with above! */
-#define BLOSC_PLUGIN_VERSION_DATE     "2016-09-03 #$"    /* date version */
+#define BLOSC_PLUGIN_VERSION_STRING   "1.0.0-dev"  /**< string version.  Sync with above! */
+#define BLOSC_PLUGIN_VERSION_DATE     "2016-09-03 #$"    /**< date version */
 
 /* Filter revision number, starting at 1 */
 /* #define FILTER_BLOSC_VERSION 1 */
-#define FILTER_BLOSC_VERSION 2  /* multiple compressors since Blosc 1.3 */
+#define FILTER_BLOSC_VERSION 2  /**< multiple compressors since Blosc 1.3 */
 
-/* Filter ID registered with the HDF Group */
-#define FILTER_BLOSC 32001
+#define FILTER_BLOSC 32001 /**< Filter ID registered with the HDF Group */
+
 
 #if 0
 #if defined(__GNUC__)
@@ -80,19 +80,23 @@ static size_t blosc_filter(unsigned int flags, size_t cd_nelmts,
                     size_t *buf_size, void **buf);
 herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space);
 
+/**
+ * The filter table maps filter identification numbers to structs that
+ * contain a pointers to the blosc filter function.
+ */
 const H5Z_class2_t blosc_H5Filter[1] = {{
-    H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
-    (H5Z_filter_t)(FILTER_BLOSC),         /* Filter id number */
+    H5Z_CLASS_T_VERS,       /**< H5Z_class_t version */
+    (H5Z_filter_t)(FILTER_BLOSC),   /**< Filter id number */
 #ifdef FILTER_DECODE_ONLY
-    0,                   /* encoder_present flag (false is not available) */
+    0,                   /**< encoder_present flag (false is not available) */
 #else
-    1,                   /* encoder_present flag (set to true) */
+    1,                   /**< encoder_present flag (set to true) */
 #endif
-    1,                   /* decoder_present flag (set to true) */
-    "HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md", /* Filter name for debugging */
-    NULL,                           /* The "can apply" callback */
-    (H5Z_set_local_func_t)(blosc_set_local), /* The "set local" callback */
-    (H5Z_func_t)(blosc_filter),    /* The actual filter function */
+    1,                   /**< decoder_present flag (set to true) */
+    "HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md", /**< Filter name for debugging */
+    NULL,                           /**< The "can apply" callback */
+    (H5Z_set_local_func_t)(blosc_set_local), /**< The "set local" callback */
+    (H5Z_func_t)(blosc_filter),    /**< The actual filter function */
 }};
 
 
@@ -100,15 +104,25 @@ H5PL_type_t H5PLget_plugin_type(void) { return H5PL_TYPE_FILTER; }
 const void* H5PLget_plugin_info(void) { return blosc_H5Filter; }
 
 
-/*  Filter setup.  Records the following inside the DCPL:
-
-    1. If version information is not present, set slots 0 and 1 to the filter
-       revision and Blosc version, respectively.
-
-    2. Compute the type size in bytes and store it in slot 2.
-
-    3. Compute the chunk size in bytes and store it in slot 3.
-*/
+/**
+ * \brief Callback to determine and set per-variable filter parameters
+ *
+ * \param[in] dcpl Dataset creation property list ID
+ * \param[in] type Dataset type ID
+ * \param[in] space Dataset space ID
+ * \return herr_t
+ *
+ * \details blosc_set_local() Callback to determine and set per-variable filter parameters
+ *
+ *  Filter setup.  Records the following inside the DCPL:
+ *
+ *    1. If version information is not present, set slots 0 and 1 to the filter
+ *       revision and Blosc version, respectively.
+ *
+ *    2. Compute the type size in bytes and store it in slot 2.
+ *
+ *    3. Compute the chunk size in bytes and store it in slot 3.
+ */
 herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
 
     int ndims;
@@ -190,7 +204,20 @@ herr_t blosc_set_local(hid_t dcpl, hid_t type, hid_t space) {
     return 1;
 }
 
-/* The filter function */
+/**
+ * \brief HDF5 Blosc Filter
+ *
+ * \param[in] flags Bitfield that encodes filter direction
+ * \param[in] cd_nelmts Number of elements in filter parameter (cd_values[]) array
+ * \param[in] cd_values[] Filter parameters
+ * \param[in] nbytes Number of bytes in input buffer (before forward/reverse filter)
+ * \param[out] buf_size Number of bytes in output buffer (after forward/reverse filter)
+ * \param[in.out] buf Values to quantize
+ *
+ * \return size_t
+ *
+ * \details blosc_filter() HDF5 Blosc Filter
+ */
 size_t blosc_filter(unsigned int flags, size_t cd_nelmts,
                     const unsigned int cd_values[], size_t nbytes,
                     size_t *buf_size, void **buf) {

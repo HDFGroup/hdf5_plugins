@@ -18,4 +18,4 @@ LZ4 = LZ4
 endif
 
 # Build the desired subdirectories.
-SUBDIRS = libs $(BZIP2) $(LZ4) JPEG #BSHUF # BLOSC BLOSC2 JPEG LZF
+SUBDIRS = libs $(BZIP2) $(LZ4) JPEG #BITGROOM #BSHUF # BLOSC BLOSC2 JPEG LZF
