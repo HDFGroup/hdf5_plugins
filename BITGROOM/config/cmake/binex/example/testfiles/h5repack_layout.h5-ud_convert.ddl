@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
@@ -54,7 +54,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
@@ -76,7 +76,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
@@ -98,7 +98,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
@@ -120,7 +120,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
@@ -142,7 +142,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32008
-            COMMENT bitgroom; see https://github.com/kiyo-masui/bitgroom
+            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
             PARAMS { 0 4 4 0 0 0 }
          }
       }
