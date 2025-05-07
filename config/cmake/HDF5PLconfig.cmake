@@ -28,10 +28,6 @@ cmake_minimum_required (VERSION 3.18)
 #            VS202264  * Visual Studio 17 2022
 #            VS2019    * Visual Studio 16 2019
 #            VS201964  * Visual Studio 16 2019
-#            VS2017    * Visual Studio 15 2017
-#            VS201764  * Visual Studio 15 2017 Win64
-#            VS2015    * Visual Studio 14 2015
-#            VS201564  * Visual Studio 14 2015 Win64
 #
 #     INSTALLDIR  -  root folder where hdf5 is installed
 #     CTEST_CONFIGURATION_TYPE  - Release, Debug, etc
