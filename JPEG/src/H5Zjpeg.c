@@ -33,24 +33,28 @@ static htri_t H5Z_jpeg_can_apply(hid_t dcpl_id, hid_t type_id, hid_t space_id);
 
 #define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
 
+/**
+ * The filter table maps filter identification numbers to structs that
+ * contain a pointers to the jpeg filter function.
+ */
 const H5Z_class2_t H5Z_JPEG[1] = {{
-    H5Z_CLASS_T_VERS,                 /* H5Z_class_t version */
-    (H5Z_filter_t)H5Z_FILTER_JPEG,    /* Filter id number             */
+    H5Z_CLASS_T_VERS,                 /**< H5Z_class_t version */
+    (H5Z_filter_t)H5Z_FILTER_JPEG,    /**< Filter id number    */
 #ifdef FILTER_DECODE_ONLY
-    0,                                /* encoder_present flag (false is not available) */
+    0,                                /**< encoder_present flag (false is not available) */
 #else
-    1,                                /* encoder_present flag (set to true) */
+    1,                                /**< encoder_present flag (set to true) */
 #endif
-    1,                                /* decoder_present flag (set to true) */
+    1,                                /**< decoder_present flag (set to true) */
     "HDF5 jpeg filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
-                                      /* Filter name for debugging    */
+                                      /**< Filter name for debugging    */
 #if 0
-    (H5Z_can_apply_func_t)(H5Z_jpeg_can_apply),      /* The "can apply" callback     */
+    (H5Z_can_apply_func_t)(H5Z_jpeg_can_apply),      /**< The "can apply" callback     */
 #else
-    NULL,                       /* The "can apply" callback     */
+    NULL,                       /**< The "can apply" callback     */
 #endif
-    NULL,                             /* The "set local" callback     */
-    (H5Z_func_t)H5Z_filter_jpeg,      /* The actual filter function   */
+    NULL,                             /**< The "set local" callback     */
+    (H5Z_func_t)H5Z_filter_jpeg,      /**< The actual filter function   */
 }};
 
 H5PL_type_t   H5PLget_plugin_type(void) {return H5PL_TYPE_FILTER;}
@@ -104,6 +108,20 @@ my_error_exit (j_common_ptr cinfo)
   longjmp(myerr->setjmp_buffer, 1);
 }
 
+/**
+ * \brief HDF5 JPEG Filter
+ *
+ * \param[in] flags Bitfield that encodes filter direction
+ * \param[in] cd_nelmts Number of elements in filter parameter (cd_values[]) array
+ * \param[in] cd_values[] Filter parameters
+ * \param[in] nbytes Number of bytes in input buffer (before forward/reverse filter)
+ * \param[out] buf_size Number of bytes in output buffer (after forward/reverse filter)
+ * \param[in.out] buf Values to quantize
+ *
+ * \return size_t
+ *
+ * \details H5Z_filter_jpeg() HDF5 JPEG Filter
+ */
 static size_t H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts,
                      const unsigned int cd_values[], size_t nbytes,
                      size_t *buf_size, void **buf)
@@ -338,6 +356,16 @@ failed:
     return 0;
 }
 
+/**
+ * \brief Callback to determine if current variable meets filter criteria
+ *
+ * \param[in] dcpl Dataset creation property list ID
+ * \param[in] type Dataset type ID
+ * \param[in] space Dataset space ID
+ * \return htri_t
+ *
+ * \details H5Z_jpeg_can_apply() Callback to determine if current variable meets filter criteria
+ */
 static htri_t
 H5Z_jpeg_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
 {
