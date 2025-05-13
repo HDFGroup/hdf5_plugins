@@ -28,7 +28,7 @@ I. Preconditions
 
    1. We suggest you obtain the latest CMake for windows from the Kitware
       web site. The HDF5PL z.y.x product requires a minimum CMake version
-      of 3.12. If you are using VS2019, the minimum version is 3.15. If you are
+      of 3.18. If you are
       using VS2022, the minimum version is 3.21.
 
    2. You have installed the HDF5 library built with CMake, by executing
@@ -103,9 +103,12 @@ These steps are described in more detail below.
             * MinGW Makefiles
             * NMake Makefiles
             * Unix Makefiles
+            * Visual Studio 14 2015
+            * Visual Studio 14 2015 Win64
+            * Visual Studio 15 2017
+            * Visual Studio 15 2017 Win64
             * Visual Studio 16 2019
-            * Visual Studio 17 2022
-            * ... in addition VS2019/2022 will need to set the "-A" option,
+            * ... in addition VS2019 will need to set the "-A" option,
             * ... [Win32, x64, ARM, ARM64]
 
         <options> is:
@@ -115,7 +118,7 @@ These steps are described in more detail below.
 
       2.1  Visual CMake users, click the Configure button. If this is the first time you are
            running cmake-gui in this directory, you will be prompted for the
-           generator you wish to use (for example on Windows, Visual Studio 17 2022).
+           generator you wish to use (for example on Windows, Visual Studio 14 2015 Win64).
            CMake will read in the CMakeLists.txt files from the source directory and
            display options for the HDFPL project. After the first configure you
            can adjust the cache settings and/or specify locations of other programs.
@@ -133,7 +136,7 @@ These steps are described in more detail below.
 
       2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
-           cmake -G "Visual Studio 17 2022" -DH5PL_BUILD_TESTING:BOOL=ON ..
+           cmake -G "Visual Studio 14 2015 Win64" -DH5PL_BUILD_TESTING:BOOL=ON ..
 
    3. Build HDF5 Plugin examples
 

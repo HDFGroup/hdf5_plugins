@@ -1,0 +1,70 @@
+#
+# Copyright by The HDF Group.
+# All rights reserved.
+#
+# This file is part of HDF5.  The full HDF5 copyright notice, including
+# terms governing use, modification, and redistribution, is contained in
+# the COPYING file, which can be found at the root of the source code
+# distribution tree, or in https://www.hdfgroup.org/licenses.
+# If you do not have access to either file, you may request a copy from
+# help@hdfgroup.org.
+#
+#-----------------------------------------------------------------------------
+# h5granularbr Config file for compiling against h5granularbr install directory
+#-----------------------------------------------------------------------------
+@PACKAGE_INIT@
+
+string(TOUPPER @H5BITROUND_PACKAGE@ H5BITROUND_PACKAGE_NAME)
+
+set (${H5BITROUND_PACKAGE_NAME}_VALID_COMPONENTS static shared)
+
+#-----------------------------------------------------------------------------
+# User Options
+#-----------------------------------------------------------------------------
+set (${H5BITROUND_PACKAGE_NAME}_BUILD_SHARED_LIBS    @BUILD_SHARED_LIBS@)
+set (${H5BITROUND_PACKAGE_NAME}_EXPORT_LIBRARIES     @H5BITROUND_LIBRARIES_TO_EXPORT@)
+
+#-----------------------------------------------------------------------------
+# Directories
+#-----------------------------------------------------------------------------
+set (${H5BITROUND_PACKAGE_NAME}_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+set (${H5BITROUND_PACKAGE_NAME}_SHARE_DIR "@PACKAGE_SHARE_INSTALL_DIR@")
+set_and_check (${H5BITROUND_PACKAGE_NAME}_BUILD_DIR "@PACKAGE_CURRENT_BUILD_DIR@")
+
+#-----------------------------------------------------------------------------
+# Version Strings
+#-----------------------------------------------------------------------------
+set (${H5BITROUND_PACKAGE_NAME}_VERSION_STRING @H5BITROUND_VERSION_STRING@)
+set (${H5BITROUND_PACKAGE_NAME}_VERSION_MAJOR  @H5BITROUND_VERSION_MAJOR@)
+set (${H5BITROUND_PACKAGE_NAME}_VERSION_MINOR  @H5BITROUND_VERSION_MINOR@)
+
+#-----------------------------------------------------------------------------
+# Don't include targets if this file is being picked up by another
+# project which has already built h5granularbr as a subproject
+#-----------------------------------------------------------------------------
+if (NOT TARGET "@H5BITROUND_PACKAGE@")
+  include (@PACKAGE_SHARE_INSTALL_DIR@/@H5BITROUND_PACKAGE@@H5BITROUND_PACKAGE_EXT@-targets.cmake)
+  set (H5BITROUND_LIBRARIES "@H5BITROUND_LIBRARIES_TO_EXPORT@")
+endif ()
+
+# Handle default component(static) :
+if (NOT ${H5BITROUND_PACKAGE_NAME}_FIND_COMPONENTS)
+    set (${H5BITROUND_PACKAGE_NAME}_FIND_COMPONENTS static)
+    set (${H5BITROUND_PACKAGE_NAME}_FIND_REQUIRED_static true)
+endif ()
+
+# Handle requested components:
+list (REMOVE_DUPLICATES ${H5BITROUND_PACKAGE_NAME}_FIND_COMPONENTS)
+foreach (comp IN LISTS ${H5BITROUND_PACKAGE_NAME}_FIND_COMPONENTS)
+    list (FIND ${H5BITROUND_PACKAGE_NAME}_EXPORT_LIBRARIES "@H5BITROUND_LIB_CORENAME@-${comp}" HAVE_COMP)
+    if (${HAVE_COMP} LESS 0)
+      set (${H5BITROUND_PACKAGE_NAME}_${comp}_FOUND 0)
+    else ()
+      set (${H5BITROUND_PACKAGE_NAME}_${comp}_FOUND 1)
+      string(TOUPPER ${H5BITROUND_PACKAGE_NAME}_${comp}_LIBRARY COMP_LIBRARY)
+      set (${COMP_LIBRARY} ${${COMP_LIBRARY}} @H5BITROUND_LIB_CORENAME@-${comp})
+    endif ()
+endforeach ()
+
+check_required_components (${H5BITROUND_PACKAGE_NAME})
