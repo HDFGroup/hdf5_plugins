@@ -24,6 +24,9 @@
 /* Define to 1 if you have the `bitgroom' library (-lbitgroom). */
 #cmakedefine HAVE_LIBBITGROOM @HAVE_LIBBITGROOM@
 
+/* Define to 1 if you have the <math.h> header file. */
+#cmakedefine HAVE_MATH_H @HAVE_MATH_H@
+
 /* Define to 1 if you have the <memory.h> header file. */
 #cmakedefine HAVE_MEMORY_H @HAVE_MEMORY_H@
 

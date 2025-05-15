@@ -39,7 +39,7 @@ I. Preconditions
 
    1. We suggest you obtain the latest CMake for windows from the Kitware
       web site. The HDF5PL z.y.x product requires a minimum CMake version
-      of 3.12. If you are using VS2019, the minimum version is 3.15. If you are
+      of 3.18. If you are
       using VS2022, the minimum version is 3.21.
 
    2. You have installed the HDF5 library built with CMake, by executing
