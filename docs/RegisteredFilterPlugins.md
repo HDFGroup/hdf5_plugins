@@ -661,7 +661,7 @@ Email: fapec at dapcom dot es
 
 ---
 
-### BitGroom <a name="bitround"></a>
+### BitGroom <a name="bitgroom"></a>
 
 #### Filter Description
 
