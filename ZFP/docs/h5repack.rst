@@ -32,4 +32,4 @@ properties as it ordinarily would using the H5Z-ZFP_ filter. In the call to ``H5
 the caller indicates to the HDF5 library not to invoke the filter via the ``filters`` mask
 argument.
 
-.. _direct: https://portal.hdfgroup.org/display/HDF5/H5D_WRITE_CHUNK
+.. _direct: https://support.hdfgroup.org/documentation/hdf5/latest/group___h5_d.html#ga416ccd200929b11386a10e9024977109
