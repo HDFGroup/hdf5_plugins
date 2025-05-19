@@ -113,7 +113,9 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5LZF_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      set_tests_properties (H5DUMP-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS ${testname})
       set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
@@ -170,7 +172,9 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5LZF_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5LZF_UD-h5dump-${testname} PROPERTIES DEPENDS H5LZF_UD-${testname})
+      set_tests_properties (H5LZF_UD-h5dump-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS H5LZF_UD-${testname})
       set (last_test "H5LZF_UD-h5dump-${testname}")
     endif ()
   endmacro ()

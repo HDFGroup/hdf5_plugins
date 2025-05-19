@@ -113,7 +113,9 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BITGROOM_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      set_tests_properties (H5DUMP-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS ${testname})
       set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
@@ -170,7 +172,9 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BITGROOM_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BITGROOM_UD-h5dump-${testname} PROPERTIES DEPENDS H5BITGROOM_UD-${testname})
+      set_tests_properties (H5BITGROOM_UD-h5dump-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS H5BITGROOM_UD-${testname})
       set (last_test "H5BITGROOM_UD-h5dump-${testname}")
     endif ()
   endmacro ()
@@ -197,7 +201,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5BITGROOM_ENCODER)
     #UD BITGROOM
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32008,1,3,0,0,0 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32022,1,5,3,4,0,0,0 -l CHUNK=4x8)
   endif ()
 
 endif ()
