@@ -55,18 +55,22 @@ ENVCMD="env HDF5_PLUGIN_PATH=$LD_LIBRARY_PATH/plugin"
 TESTDIR=$builddir
 
 
+$H5CC -shlib $srcdir/h5ex_d_bitgroom.c -o h5ex_d_bitgroom
+$H5CC -shlib $srcdir/h5ex_d_granularbr.c -o h5ex_d_granularbr
 $H5CC -shlib $srcdir/h5ex_d_blosc.c -o h5ex_d_blosc
 $H5CC -shlib $srcdir/h5ex_d_bshuf.c -o h5ex_d_bshuf
 $H5CC -shlib $srcdir/h5ex_d_bzip2.c -o h5ex_d_bzip2
 $H5CC -shlib $srcdir/h5ex_d_lz4.c -o h5ex_d_lz4
 $H5CC -shlib $srcdir/h5ex_d_lzf.c -o h5ex_d_lzf
-$H5CC -shlib $srcdir/h5ex_d_mafisc.c -o h5ex_d_mafisc
 $H5CC -shlib $srcdir/h5ex_d_zfp.c -o h5ex_d_zfp
-
 
 SRC_TESTFILES="$srcdir/testfiles"
 LIST_TEST_FILES="
 $SRC_TESTFILES/h5repack_layout.h5
+$SRC_TESTFILES/h5ex_d_bitgroom.ddl
+$SRC_TESTFILES/h5ex_d_bitgroom.tst
+$SRC_TESTFILES/h5ex_d_granularbr.ddl
+$SRC_TESTFILES/h5ex_d_granularbr.tst
 $SRC_TESTFILES/h5ex_d_blosc.ddl
 $SRC_TESTFILES/h5ex_d_blosc.tst
 $SRC_TESTFILES/h5ex_d_bshuf.ddl
@@ -89,7 +93,6 @@ $SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
 $SRC_TESTFILES/ud_bz2_convert.h5repack_layout.h5.tst
 $SRC_TESTFILES/ud_blosc_convert.h5repack_layout.h5.tst
 $SRC_TESTFILES/ud_lz4_convert.h5repack_layout.h5.tst
-$SRC_TESTFILES/ud_mafisc_convert.h5repack_layout.h5.tst
 "
 
 #
@@ -391,6 +394,12 @@ echo $ENVCMD
 
 COPY_TESTFILES_TO_TESTDIR
 
+EXETEST h5ex_d_bitgroom h5ex_d_bitgroom.tst
+DUMPTEST h5ex_d_bitgroom.ddl h5ex_d_bitgroom.h5
+
+EXETEST h5ex_d_granularbr h5ex_d_granularbr.tst
+DUMPTEST h5ex_d_granularbr.ddl h5ex_d_granularbr.h5
+
 EXETEST h5ex_d_blosc h5ex_d_blosc.tst
 DUMPTEST h5ex_d_blosc.ddl h5ex_d_blosc.h5
 
@@ -405,9 +414,6 @@ DUMPTEST h5ex_d_lz4.ddl h5ex_d_lz4.h5
 
 EXETEST h5ex_d_lzf h5ex_d_lzf.tst
 DUMPTEST h5ex_d_lzf.ddl h5ex_d_lzf.h5
-
-EXETEST h5ex_d_mafisc h5ex_d_mafisc.tst
-DUMPTEST1 h5ex_d_mafisc.ddl h5ex_d_mafisc.h5
 
 EXETEST h5ex_d_zfp h5ex_d_zfp.tst
 DUMPTEST h5ex_d_zfp.ddl h5ex_d_zfp.h5
