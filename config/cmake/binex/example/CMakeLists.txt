@@ -181,7 +181,9 @@ if (H5PL_BUILD_TESTING)
           )
         endif ()
       endif ()
-      set_tests_properties (H5DUMP-${testname} PROPERTIES DEPENDS ${testname})
+      set_tests_properties (H5DUMP-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS ${testname})
       set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
@@ -264,7 +266,9 @@ if (H5PL_BUILD_TESTING)
         )
       endif ()
       if (NOT "${last_test}" STREQUAL "")
-        set_tests_properties (H5PL_UD-h5dump-${testname} PROPERTIES DEPENDS H5PL_UD-${deptest})
+        set_tests_properties (H5PL_UD-h5dump-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS H5PL_UD-${deptest})
       endif ()
       set (last_test "H5PL_UD-h5dump-${testname}")
     endif ()
