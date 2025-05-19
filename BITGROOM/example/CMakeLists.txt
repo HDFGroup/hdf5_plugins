@@ -197,7 +197,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5BITGROOM_ENCODER)
     #UD BITGROOM
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32008,1,3,0,0,0 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32022,1,5,3,4,0,0,0 -l CHUNK=4x8)
   endif ()
 
 endif ()
