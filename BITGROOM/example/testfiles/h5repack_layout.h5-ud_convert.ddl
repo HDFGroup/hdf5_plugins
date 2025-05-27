@@ -9,9 +9,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
@@ -31,9 +30,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
@@ -53,9 +51,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
@@ -75,9 +72,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
@@ -97,9 +93,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
@@ -119,9 +114,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
@@ -141,9 +135,8 @@ GROUP "/" {
       }
       FILTERS {
          USER_DEFINED_FILTER {
-            FILTER_ID 32008
-            COMMENT bitshuffle; see https://github.com/kiyo-masui/bitshuffle
-            PARAMS { 0 4 4 0 0 0 }
+            FILTER_ID 32022
+            PARAMS { 3 4 0 0 0 }
          }
       }
       FILLVALUE {
