@@ -173,8 +173,8 @@ main (void)
         ...
         cd_values[6+rank-1] = Size of last dimension; */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
-    printf ("Filter info is available from the dataset creation property \n ");
-    printf ("  Filter identifier is ");
+    printf ("Filter info is available from the dataset creation property\n");
+    printf ("   Filter identifier is ");
     switch (filter_id) {
         case H5Z_FILTER_MAFISC:
             printf ("%d\n", filter_id);
