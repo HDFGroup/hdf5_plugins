@@ -172,8 +172,8 @@ main (void)
      * Retrieve and print the filter id, compression level and filter's name for zstd.
      */
     filter_id = H5Pget_filter2 (dcpl_id, (unsigned) 0, &flags, &nelmts, values_out, sizeof(filter_name), filter_name, NULL);
-    fprintf (stdout, "Filter info is available from the dataset creation property \n ");
-    fprintf (stdout, "  Filter identifier is ");
+    fprintf (stdout, "Filter info is available from the dataset creation property\n");
+    fprintf (stdout, "   Filter identifier is ");
     switch (filter_id) {
         case H5Z_FILTER_ZSTD:
             fprintf (stdout, "%d\n", filter_id);
