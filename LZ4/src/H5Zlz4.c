@@ -142,14 +142,10 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
             }
             else /* do the decompression */
             {
-#if LZ4_VERSION_NUMBER > 10900
-                int compressedBytes = LZ4_decompress_safe(rpos, roBuf, blockSize, origSize);
-#else
-#if LZ4_VERSION_NUMBER > 10800
+#if LZ4_VERSION_NUMBER > 10300
                 int compressedBytes = LZ4_decompress_fast(rpos, roBuf, blockSize);
 #else
                 int compressedBytes = LZ4_uncompress(rpos, roBuf, blockSize);
-#endif
 #endif
                 if(compressedBytes != compressedBlockSize)
                 {
