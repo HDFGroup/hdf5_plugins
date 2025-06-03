@@ -146,7 +146,7 @@ if (H5PL_BUILD_TESTING)
           NAME H5BITGROOM_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${H5PL_HDF5_REPACK_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
+              -D "TEST_ARGS:STRING=${ARGN};${resultfile};out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
@@ -157,7 +157,9 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BITGROOM_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BITGROOM_UD-${testname} PROPERTIES DEPENDS H5BITGROOM_UD-${testname}-clearall-objects)
+      set_tests_properties (H5BITGROOM_UD-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS H5BITGROOM_UD-${testname}-clearall-objects)
       add_test (
           NAME H5BITGROOM_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
