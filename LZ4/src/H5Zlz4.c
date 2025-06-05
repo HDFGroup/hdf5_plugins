@@ -143,19 +143,24 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
             else /* do the decompression */
             {
 #if LZ4_VERSION_NUMBER > 10900
-                int compressedBytes = LZ4_decompress_safe(rpos, roBuf, blockSize, origSize);
+                int compressedBytes = LZ4_decompress_safe(rpos, roBuf, compressedBlockSize, blockSize);
+                if(compressedBytes != blockSize)
+                {
+                    printf("decompressed size not the same: %d, != %d\n", compressedBytes, blockSize);
+                    goto error;
+                }
 #else
 #if LZ4_VERSION_NUMBER > 10800
                 int compressedBytes = LZ4_decompress_fast(rpos, roBuf, blockSize);
 #else
                 int compressedBytes = LZ4_uncompress(rpos, roBuf, blockSize);
 #endif
-#endif
                 if(compressedBytes != compressedBlockSize)
                 {
                     printf("decompressed size not the same: %d, != %d\n", compressedBytes, compressedBlockSize);
                     goto error;
                 }
+#endif
             }
 
             rpos += compressedBlockSize;   /* advance the read pointer to the next block */
