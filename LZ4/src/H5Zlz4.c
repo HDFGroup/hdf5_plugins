@@ -142,25 +142,12 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
             }
             else /* do the decompression */
             {
-#if LZ4_VERSION_NUMBER > 10900
                 int compressedBytes = LZ4_decompress_safe(rpos, roBuf, compressedBlockSize, blockSize);
                 if(compressedBytes != blockSize)
                 {
                     printf("decompressed size not the same: %d, != %d\n", compressedBytes, blockSize);
                     goto error;
                 }
-#else
-#if LZ4_VERSION_NUMBER > 10800
-                int compressedBytes = LZ4_decompress_fast(rpos, roBuf, blockSize);
-#else
-                int compressedBytes = LZ4_uncompress(rpos, roBuf, blockSize);
-#endif
-                if(compressedBytes != compressedBlockSize)
-                {
-                    printf("decompressed size not the same: %d, != %d\n", compressedBytes, compressedBlockSize);
-                    goto error;
-                }
-#endif
             }
 
             rpos += compressedBlockSize;   /* advance the read pointer to the next block */
@@ -229,11 +216,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts,
             if(nbytes - origWritten < blockSize) /* the last block may be < blockSize */
                 blockSize = nbytes - origWritten;
 
-#if LZ4_VERSION_NUMBER > 10300
             compBlockSize = LZ4_compress_default(rpos, roBuf+4,blockSize,LZ4_compressBound(blockSize)); /// reserve space for compBlockSize
-#else
-            compBlockSize = LZ4_compress(rpos, roBuf+4, blockSize); /// reserve space for compBlockSize
-#endif
             if(!compBlockSize)
                 goto error;
             if(compBlockSize >= blockSize) /* compression did not save any space, do a memcpy instead */
