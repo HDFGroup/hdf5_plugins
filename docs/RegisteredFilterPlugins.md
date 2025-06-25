@@ -258,9 +258,9 @@ Email: lucasvr at gmail dot com
 ### LZ4 <a name="lz4"></a>
 
 #### Filter Description
-LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems. For a format description of the LZ4 compression filter in HDF5, see [LZ4_HDF5_format.md](https://github.com/HDFGroup/hdf5_plugins/blob/master/LZ4/LZ4_HDF5_format.md).
+LZ4 is a very fast lossless compression algorithm, providing compression speed at 300 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speeds up and beyond 1GB/s per core, typically reaching RAM speed limits on multi-core systems.
 
-Although The HDF Group does not support the LZ4 software, it is included in this repository so that it can be tested regularly. For convenience, users can obtain it from https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/src/lib.
+The filter's source code is available from https://github.com/lz4/lz4.
 
 #### Plugin ID `32004` Information
 
@@ -269,6 +269,8 @@ Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
 | `cd_values[]` | Description |
 |---|---|
 | `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GiB (1,073,741,824 bytes). (optional) |
+
+ The description of the chunk binary format produced by this plugin is at [LZ4_HDF5_format.md](https://github.com/HDFGroup/hdf5_plugins/blob/master/LZ4/LZ4_HDF5_format.md).
 
 `h5repack` example for the `--filter` option: `<objects list>:UD=32004,0,0`.
 
