@@ -11,6 +11,7 @@
 #
 # grepTest.cmake executes a command and captures the output in a file. File is then compared
 # against a reference file. Exit status of command can also be compared.
+cmake_policy(SET CMP0007 NEW)
 
 # arguments checking
 if (NOT TEST_PROGRAM)
@@ -42,9 +43,12 @@ message (STATUS "COMMAND: ${TEST_EMULATOR} ${TEST_PROGRAM} ${TEST_ARGS}")
 if (TEST_LIBRARY_DIRECTORY)
   if (WIN32)
     set (ENV{PATH} "$ENV{PATH};${TEST_LIBRARY_DIRECTORY}")
+  elseif (APPLE)
+    set (ENV{DYLD_LIBRARY_PATH} "$ENV{DYLD_LIBRARY_PATH}:${TEST_LIBRARY_DIRECTORY}")
   else ()
     set (ENV{LD_LIBRARY_PATH} "$ENV{LD_LIBRARY_PATH}:${TEST_LIBRARY_DIRECTORY}")
   endif ()
+  set (ENV{HDF5_PLUGIN_PATH} "$ENV{HDF5_PLUGIN_PATH};${TEST_LIBRARY_DIRECTORY}/plugins")
 endif ()
 
 if (TEST_ENV_VAR)
@@ -71,8 +75,8 @@ message (STATUS "COMMAND Error: ${TEST_ERROR}")
 
 # remove special output
 file (READ ${TEST_FOLDER}/${TEST_OUTPUT} TEST_STREAM)
-string (FIND TEST_STREAM "_pmi_alps" "${TEST_FIND_RESULT}")
-if (TEST_FIND_RESULT GREATER 0)
+string (FIND TEST_STREAM "_pmi_alps" TEST_FIND_RESULT)
+if (TEST_FIND_RESULT GREATER -1)
   string (REGEX REPLACE "^.*_pmi_alps[^\n]+\n" "" TEST_STREAM "${TEST_STREAM}")
   file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT} ${TEST_STREAM})
 endif ()
