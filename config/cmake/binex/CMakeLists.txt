@@ -88,14 +88,6 @@ set (MAFISC_AVAILABLE 0)
 #  set (MAFISC_AVAILABLE 1)
 #endif ()
 
-# SZ filter
-set (SZ_AVAILABLE 0)
-if (WIN32 AND MSVC_VERSION GREATER 1900)
-  set (SZ_AVAILABLE 1)
-elseif (NOT WIN32)
-  set (SZ_AVAILABLE 1)
-endif ()
-
 # ZFP filter
 set (ZFP_AVAILABLE 1)
 
