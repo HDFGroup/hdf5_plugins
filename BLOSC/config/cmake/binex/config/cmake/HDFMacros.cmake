@@ -178,8 +178,8 @@ macro (HDF_SET_BASE_OPTIONS libtarget libname libtype)
     endif ()
   endif ()
 
-  option (HDF5_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
-  if (HDF5_MSVC_NAMING_CONVENTION AND MINGW AND ${libtype} MATCHES "SHARED")
+  option (HDF_MSVC_NAMING_CONVENTION "Use MSVC Naming conventions for Shared Libraries" OFF)
+  if (HDF_MSVC_NAMING_CONVENTION AND MINGW AND ${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget} PROPERTIES
         IMPORT_SUFFIX ".lib"
         IMPORT_PREFIX ""

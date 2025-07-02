@@ -277,7 +277,7 @@ IV. Further considerations
       on the command line are those options that are different. Example using HDF
       default cache file:
            cmake -C ../config/cmake/cacheinit.cmake -G "Visual Studio 16 2019" \
-               -DHDF5_MSVC_NAMING_CONVENTION:BOOL=OFF \
+               -DHDF_MSVC_NAMING_CONVENTION:BOOL=OFF \
                -DCMAKE_BUILD_TYPE:STRING=Release ..
 
    7. CMake uses a toolchain of utilities to compile, link libraries and
@@ -530,7 +530,7 @@ These five steps are described in detail below.
       2.2  Preferred command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
                cmake -C ../config/cmake/cacheinit.cmake -G "Visual Studio 16 2019" "-Ax64" \
-               -DHDF5_MSVC_NAMING_CONVENTION:BOOL=OFF \
+               -DHDF_MSVC_NAMING_CONVENTION:BOOL=OFF \
                -DCMAKE_BUILD_TYPE:STRING=Release ..
 
       2.3  On Windows, if you are using a Visual Studio Express version you must
@@ -658,7 +658,7 @@ HDF_ENABLE_LARGE_FILE          "Enable support for large (64-bit) files on Linux
 HDF_NO_PACKAGES                "Do not include CPack Packaging"                               OFF
 HDF_PACK_EXAMPLES              "Package the HDF5 Library Examples Compressed File"            OFF
 HDFPL_USE_FOLDERS              "Enable folder grouping of projects in IDEs."                  ON
-HDF5_MSVC_NAMING_CONVENTION    "Use MSVC Naming conventions for Shared Libraries"             OFF
+HDF_MSVC_NAMING_CONVENTION     "Use MSVC Naming conventions for Shared Libraries"             OFF
 
 if (APPLE)
     <filter>_BUILD_WITH_INSTALL_NAME "Build with library install_name set to the installation path" OFF
@@ -837,7 +837,6 @@ For instance, to change the support files to use a local directory, edit CMakeUs
       "description": "GNUC Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-GNUC",
-        "ci-CPP",
         "ci-Fortran",
         "ci-Java",
         "my-StdShar",
