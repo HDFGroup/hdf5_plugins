@@ -192,33 +192,32 @@ jobs:
 
   test_binary_mac_latest:
   # MacOS w/ Clang + CMake
-  #
     name: "MacOS Clang Binary Test"
     runs-on: macos-latest
     steps:
       - name: Install Dependencies (MacOS_latest)
         run: brew install ninja
 
-    - name: Install CMake
-      uses: jwlawson/actions-setup-cmake@v2
-      with:
-        cmake-version: '3.31.6'
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.31.6'
 
-    - name: Get hdf5 snapshot
-      if: ${{ (inputs.use_environ == 'snapshots') }}
-      uses: dsaltares/fetch-gh-release-asset@master
-      with:
-        repo: 'HDFGroup/hdf5'
-        version: 'tags/snapshot'
-        file: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+      - name: Get hdf5 snapshot
+        if: ${{ (inputs.use_environ == 'snapshots') }}
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'HDFGroup/hdf5'
+          version: 'tags/snapshot'
+          file: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
 
-    - name: Get hdf5 release
-      if: ${{ (inputs.use_environ == 'release') }}
-      uses: dsaltares/fetch-gh-release-asset@master
-      with:
-        repo: 'HDFGroup/hdf5'
-        version: 'tags/${{ inputs.use_hdf }}'
-        file: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+      - name: Get hdf5 release
+        if: ${{ (inputs.use_environ == 'release') }}
+        uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'HDFGroup/hdf5'
+          version: 'tags/${{ inputs.use_hdf }}'
+          file: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
 
       - name: Get published binary (MacOS_latest)
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
