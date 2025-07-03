@@ -63,7 +63,7 @@ jobs:
 
   call-release-bintest:
     name: "CMake Test Release Binaries"
-    needs: [log-the-inputs, call-workflow-ctest]
+    needs: [log-the-inputs, call-workflow-tarball, call-workflow-ctest]
     uses: ./.github/workflows/cmake-bintest.yml
     with:
       preset_name: ci-StdShar
