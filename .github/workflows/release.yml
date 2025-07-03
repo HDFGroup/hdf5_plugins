@@ -61,6 +61,15 @@ jobs:
         AZURE_CODE_SIGNING_NAME: ${{ secrets.AZURE_CODE_SIGNING_NAME }}
         AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
 
+  call-release-bintest:
+    name: "CMake Test Release Binaries"
+    needs: call-release-cmake
+    uses: ./.github/workflows/cmake-bintest.yml
+    with:
+      preset_name: ci-StdShar
+      use_hdf: ${{ needs.log-the-inputs.outputs.hdf_tag }}
+      use_environ: release
+
   call-workflow-release:
     needs: [log-the-inputs, call-workflow-tarball, call-workflow-ctest]
     permissions:

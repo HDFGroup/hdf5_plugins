@@ -178,7 +178,12 @@
       "configurePreset": "ci-StdShar-MSVC",
       "inherits": [
         "ci-x64-Release-MSVC"
-      ]
+      ],
+      "filter": {
+        "exclude": {
+          "name": "H5DUMP-h5ex_d_granularbr"
+        }
+      }
     },
     {
       "name": "ci-StdShar-Clang",
@@ -212,6 +217,23 @@
       "inherits": [
         "ci-x64-Release-GNUC"
       ]
+    },
+    {
+      "name": "ci-StdShar-win-Intel",
+      "configurePreset": "ci-StdShar-Intel",
+      "inherits": [
+        "ci-x64-Release-Intel"
+      ],
+      "filter": {
+        "exclude": {
+          "name": "H5DUMP-h5ex_d_granularbr"
+        }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     },
     {
       "name": "ci-StdShar-Intel",
@@ -305,6 +327,15 @@
         {"type": "configure", "name": "ci-StdShar-Intel"},
         {"type": "build", "name": "ci-StdShar-Intel"},
         {"type": "test", "name": "ci-StdShar-Intel"},
+        {"type": "package", "name": "ci-StdShar-Intel"}
+      ]
+    },
+    {
+      "name": "ci-StdShar-win-Intel",
+      "steps": [
+        {"type": "configure", "name": "ci-StdShar-Intel"},
+        {"type": "build", "name": "ci-StdShar-Intel"},
+        {"type": "test", "name": "ci-StdShar-win-Intel"},
         {"type": "package", "name": "ci-StdShar-Intel"}
       ]
     }
