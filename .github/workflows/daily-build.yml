@@ -104,6 +104,7 @@ jobs:
     with:
       preset_name: ci-StdShar
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_environ: snapshots
 
   call-workflow-release:
