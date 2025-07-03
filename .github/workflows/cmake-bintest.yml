@@ -77,6 +77,11 @@ jobs:
       - name: Uncompress plugins gh binary (Win)
         run: 7z x ${{ github.workspace }}/hdf5/${{ inputs.file_base }}-win-vs2022_cl.zip
 
+      - name: List files for the space (Win)
+        run: |
+              ls -l ${{ github.workspace }}
+              ls -l ${{ github.workspace }}/hdf5
+
       - name: Uncompress plugins binary (Win)
         working-directory: ${{ github.workspace }}/hdf5
         run: 7z x h5pl-*-win64.zip
@@ -176,7 +181,12 @@ jobs:
               path: ${{ github.workspace }}
 
       - name: Uncompress plugins gh binary (Linux)
-        run: tar -zxvf ${{ github.workspace }}/hdf5/${{ inputs.file_base }}-ubuntu-2404_gcc.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.file_base }}-ubuntu-2404_gcc.tar.gz
+
+      - name: List files for the space (Linux)
+        run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/hdf5
 
       - name: Uncompress plugins binary (Linux)
         run:  |
@@ -256,10 +266,15 @@ jobs:
       - name: Uncompress gh binary (MacOS_latest)
         run: tar -zxvf ${{ github.workspace }}/hdf5/${{ inputs.file_base }}-macos14_clang*.tar.gz
 
+      - name: List files for the space (MacOS_latest)
+        run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/hdf5
+
       - name: Uncompress plugins binary (MacOS_latest)
         run:  |
           cd "${{ github.workspace }}"
-          tar -zxvf ${{ github.workspace }}/hdf5/h5pl-*-Darwin.tar.gz --strip-components 1
+          tar -zxvf ${{ github.workspace }}/h5pl-*-Darwin.tar.gz --strip-components 1
 
       - name: set hdf5lib name
         id: set-hdf5lib-name
