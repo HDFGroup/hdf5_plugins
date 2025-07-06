@@ -81,9 +81,10 @@ jobs:
         run: |
               ls -l ${{ github.workspace }}
               ls -l ${{ github.workspace }}/hdf5
+              ls -l ${{ github.workspace }}/hdf5_plugins
 
       - name: Uncompress plugins binary (Win)
-        working-directory: ${{ github.workspace }}/hdf5/hdf5_plugins
+        working-directory: ${{ github.workspace }}/hdf5_plugins
         run: 7z x h5pl-*-win64.zip
         shell: bash
 
@@ -187,11 +188,12 @@ jobs:
         run: |
           ls ${{ github.workspace }}
           ls ${{ github.workspace }}/hdf5
+          ls ${{ github.workspace }}/hdf5_plugins
 
       - name: Uncompress plugins binary (Linux)
         run:  |
-            cd "${{ github.workspace }}/hdf5/hdf5_plugins"
-            tar -zxvf ${{ github.workspace }}/hdf5/h5pl-*-Linux.tar.gz --strip-components 1
+            cd "${{ github.workspace }}/hdf5_plugins"
+            tar -zxvf ${{ github.workspace }}/hdf5_plugins/h5pl-*-Linux.tar.gz --strip-components 1
 
       - name: set hdf5lib name
         id: set-hdf5lib-name
@@ -264,16 +266,17 @@ jobs:
           path: ${{ github.workspace }}
 
       - name: Uncompress gh binary (MacOS_latest)
-        run: tar -zxvf ${{ github.workspace }}/hdf5/${{ inputs.file_base }}-macos14_clang*.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.file_base }}-macos14_clang.tar.gz
 
       - name: List files for the space (MacOS_latest)
         run: |
           ls ${{ github.workspace }}
           ls ${{ github.workspace }}/hdf5
+          ls ${{ github.workspace }}hdf5_plugins
 
       - name: Uncompress plugins binary (MacOS_latest)
         run:  |
-          cd "${{ github.workspace }}/hdf5/hdf5_plugins"
+          cd "${{ github.workspace }}/hdf5_plugins"
           tar -zxvf ${{ github.workspace }}/h5pl-*-Darwin.tar.gz --strip-components 1
 
       - name: set hdf5lib name
