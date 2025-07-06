@@ -83,7 +83,7 @@ jobs:
               ls -l ${{ github.workspace }}/hdf5
 
       - name: Uncompress plugins binary (Win)
-        working-directory: ${{ github.workspace }}/hdf5
+        working-directory: ${{ github.workspace }}/hdf5/hdf5_plugins
         run: 7z x h5pl-*-win64.zip
         shell: bash
 
@@ -190,7 +190,7 @@ jobs:
 
       - name: Uncompress plugins binary (Linux)
         run:  |
-            cd "${{ github.workspace }}/hdf5"
+            cd "${{ github.workspace }}/hdf5/hdf5_plugins"
             tar -zxvf ${{ github.workspace }}/hdf5/h5pl-*-Linux.tar.gz --strip-components 1
 
       - name: set hdf5lib name
@@ -273,7 +273,7 @@ jobs:
 
       - name: Uncompress plugins binary (MacOS_latest)
         run:  |
-          cd "${{ github.workspace }}"
+          cd "${{ github.workspace }}/hdf5/hdf5_plugins"
           tar -zxvf ${{ github.workspace }}/h5pl-*-Darwin.tar.gz --strip-components 1
 
       - name: set hdf5lib name
