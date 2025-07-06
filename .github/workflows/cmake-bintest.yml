@@ -122,7 +122,7 @@ jobs:
       - name: List files for the space (Windows)
         run: |
               Get-ChildItem -Path ${{ github.workspace }}
-              Get-ChildItem -Path ${{ runner.workspace }}
+              Get-ChildItem -Path ${{ github.workspace }}/HDF_Group/HDF5/2.0.0
         shell: pwsh
 
       - name: Run ctest (Windows)
@@ -205,7 +205,7 @@ jobs:
 
       - name: List files for the binaries (Linux)
         run: |
-            ls -l ${{ github.workspace }}/HDF_Group/HDF5
+            ls -l ${{ github.workspace }}/HDF_Group/HDF5/2.0.0
 
       - name: List files for the space (Linux)
         run: |
@@ -272,7 +272,7 @@ jobs:
         run: |
           ls ${{ github.workspace }}
           ls ${{ github.workspace }}/hdf5
-          ls ${{ github.workspace }}hdf5_plugins
+          ls ${{ github.workspace }}/hdf5_plugins
 
       - name: Uncompress plugins binary (MacOS_latest)
         run:  |
@@ -289,7 +289,7 @@ jobs:
 
       - name: List files for the binaries (MacOS_latest)
         run: |
-          ls -l ${{ github.workspace }}/HDF_Group/HDF5
+          ls -l ${{ github.workspace }}/HDF_Group/HDF5/2.0.0
 
       - name: List files for the space (MacOS_latest)
         run: |
