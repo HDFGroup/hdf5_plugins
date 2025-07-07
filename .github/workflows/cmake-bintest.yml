@@ -110,7 +110,7 @@ jobs:
         run: |
           HDF5DIR="${{ github.workspace }}/HDF_Group/HDF5"
           echo "HDF5_ROOT=$HDF5DIR" >> $GITHUB_OUTPUT
-          echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
+          echo "HDF5_PLUGIN_PATH=$HDF5DIR/lib/plugin" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: List files for the binaries (Win)
@@ -121,7 +121,7 @@ jobs:
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
           HDF5_PLUGIN_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_PLUGIN_PATH }}
-          PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/bin;$PATH
+          PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/bin;%PATH%
         run: |
           cd "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/HDFPLExamples"
           cmake --workflow --preset=${{ inputs.preset_name }}-MSVC --fresh
@@ -214,7 +214,7 @@ jobs:
         run: |
           HDF5DIR=${{ github.workspace }}/HDF_Group/HDF5/
           echo "HDF5_ROOT=$HDF5DIR" >> $GITHUB_OUTPUT
-          echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
+          echo "HDF5_PLUGIN_PATH=$HDF5DIR/lib/plugin" >> $GITHUB_OUTPUT
 
       - name: List files for the space (Linux)
         run: |
@@ -311,7 +311,7 @@ jobs:
         run: |
           HDF5DIR=${{ github.workspace }}/HDF_Group/HDF5/
           echo "HDF5_ROOT=$HDF5DIR" >> $GITHUB_OUTPUT
-          echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
+          echo "HDF5_PLUGIN_PATH=$HDF5DIR/lib/plugin" >> $GITHUB_OUTPUT
 
       - name: List files for the space (MacOS_latest)
         run: |
