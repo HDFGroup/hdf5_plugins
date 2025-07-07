@@ -97,8 +97,8 @@ jobs:
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           New-Item -Path "${{ github.workspace }}/HDF_Group/HDF5" -ItemType Directory
-          Copy-Item -Path "${{ github.workspace }}/hdf5/HDF*/*" -Destination "${{ github.workspace }}/HDF_Group/HDF5" -Recurse
-          Copy-Item -Path "${{ github.workspace }}/hdf5_plugins/h5pl*/*" -Destination "${{ github.workspace }}/HDF_Group/HDF5" -Recurse
+          Copy-Item -Path "${{ github.workspace }}/hdf5/HDF*/*" -Destination "${{ github.workspace }}/HDF_Group/HDF5" -Recurse -Force
+          Copy-Item -Path "${{ github.workspace }}/hdf5_plugins/h5pl*/*" -Destination "${{ github.workspace }}/HDF_Group/HDF5" -Recurse -Force
         shell: pwsh
 
       - name: List files for the space (Win)
@@ -199,8 +199,8 @@ jobs:
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r "${{ github.workspace }}/hdf5/HDF*/*" "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r "${{ github.workspace }}/hdf5_plugins/h5pl*/*" "${{ github.workspace }}/HDF_Group/HDF5"
+          cp -r ${{ github.workspace }}/hdf5/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/h5pl*/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (Linux)
         run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
@@ -293,8 +293,8 @@ jobs:
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r "${{ github.workspace }}/hdf5/HDF*/*" "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r "${{ github.workspace }}/hdf5_plugins/h5pl*/*" "${{ github.workspace }}/HDF_Group/HDF5"
+          cp -r ${{ github.workspace }}/hdf5/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/h5pl*/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (MacOS_latest)
         run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
