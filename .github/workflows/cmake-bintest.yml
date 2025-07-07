@@ -198,7 +198,7 @@ jobs:
       - name: create hdf5 location (Linux)
         working-directory: ${{ github.workspace }}/hdf5
         run: |
-          mkdir "${{ github.workspace }}/HDF_Group/HDF5"
+          mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
           cp -r "${{ github.workspace }}/hdf5/HDF*/*" "${{ github.workspace }}/HDF_Group/HDF5"
           cp -r "${{ github.workspace }}/hdf5_plugins/h5pl*/*" "${{ github.workspace }}/HDF_Group/HDF5"
 
@@ -287,12 +287,12 @@ jobs:
       - name: Uncompress plugins binary (MacOS_latest)
         run:  |
           cd "${{ github.workspace }}/hdf5_plugins"
-          tar -zxvf ${{ github.workspace }}/h5pl-*-Darwin.tar.gz --strip-components 1
+          tar -zxvf ${{ github.workspace }}/hdf5_plugins/h5pl-*-Darwin.tar.gz --strip-components 1
 
       - name: create hdf5 location (MacOS_latest)
         working-directory: ${{ github.workspace }}/hdf5
         run: |
-          mkdir "${{ github.workspace }}/HDF_Group/HDF5"
+          mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
           cp -r "${{ github.workspace }}/hdf5/HDF*/*" "${{ github.workspace }}/HDF_Group/HDF5"
           cp -r "${{ github.workspace }}/hdf5_plugins/h5pl*/*" "${{ github.workspace }}/HDF_Group/HDF5"
 
