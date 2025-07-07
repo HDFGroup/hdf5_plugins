@@ -117,11 +117,14 @@ jobs:
         run: |
             ls -l ${{ github.workspace }}/HDF_Group/HDF5
 
+      - name: Set Path
+        run: |
+            echo "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/bin" >> $GITHUB_PATH
+
       - name: Run ctest (Windows)
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
           HDF5_PLUGIN_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_PLUGIN_PATH }}
-          PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/bin;%PATH%
         run: |
           cd "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/HDFPLExamples"
           cmake --workflow --preset=${{ inputs.preset_name }}-MSVC --fresh
