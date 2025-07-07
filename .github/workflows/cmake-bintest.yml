@@ -187,9 +187,9 @@ jobs:
 
       - name: List files for the space (Linux)
         run: |
-          ls ${{ github.workspace }}
-          ls ${{ github.workspace }}/hdf5
-          ls ${{ github.workspace }}/hdf5_plugins
+          ls -l ${{ github.workspace }}
+          ls -l ${{ github.workspace }}/hdf5
+          ls -l ${{ github.workspace }}/hdf5_plugins
 
       - name: Uncompress plugins binary (Linux)
         run:  |
@@ -198,17 +198,17 @@ jobs:
 
       - name: List files for the space (Linux)
         run: |
-          ls ${{ github.workspace }}
-          ls ${{ github.workspace }}/hdf5
+          ls -l ${{ github.workspace }}
+          ls -l ${{ github.workspace }}/hdf5
           ls -l ${{ github.workspace }}/hdf5_plugins
-          ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
+          ls -l ${{ github.workspace }}/hdf5_plugins/HDF_Group
 
       - name: create hdf5 location (Linux)
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
           cp -r ${{ github.workspace }}/hdf5/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
-          cp -r ${{ github.workspace }}/hdf5_plugins/h5pl*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (Linux)
         run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
@@ -228,7 +228,7 @@ jobs:
       - name: List files for the space (Linux)
         run: |
               ls -l ${{ github.workspace }}
-              ls ${{ runner.workspace }}
+              ls -l ${{ runner.workspace }}
 
       - name: Run ctest (Linux)
         env:
@@ -288,9 +288,9 @@ jobs:
 
       - name: List files for the space (MacOS_latest)
         run: |
-          ls ${{ github.workspace }}
-          ls ${{ github.workspace }}/hdf5
-          ls ${{ github.workspace }}/hdf5_plugins
+          ls -l ${{ github.workspace }}
+          ls -l ${{ github.workspace }}/hdf5
+          ls -l ${{ github.workspace }}/hdf5_plugins
 
       - name: Uncompress plugins binary (MacOS_latest)
         run:  |
@@ -299,17 +299,17 @@ jobs:
 
       - name: List files for the space (MacOS_latest)
         run: |
-          ls ${{ github.workspace }}
-          ls ${{ github.workspace }}/hdf5
+          ls -l ${{ github.workspace }}
+          ls -l ${{ github.workspace }}/hdf5
           ls -l ${{ github.workspace }}/hdf5_plugins
-          ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
+          ls -l ${{ github.workspace }}/hdf5_plugins/HDF_Group
 
       - name: create hdf5 location (MacOS_latest)
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
           cp -r ${{ github.workspace }}/hdf5/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
-          cp -r ${{ github.workspace }}/hdf5_plugins/h5pl*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (MacOS_latest)
         run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
@@ -328,8 +328,8 @@ jobs:
 
       - name: List files for the space (MacOS_latest)
         run: |
-          ls ${{ github.workspace }}
-          ls ${{ runner.workspace }}
+          ls -l ${{ github.workspace }}
+          ls -l ${{ runner.workspace }}
 
       - name: Run ctest (MacOS_latest)
         id: run-ctest
