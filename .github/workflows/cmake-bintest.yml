@@ -210,8 +210,8 @@ jobs:
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r ${{ github.workspace }}/hdf5/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
-          cp -r ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5/HDF_Group/HDF5/*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5/*/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (Linux)
         run: |
@@ -308,8 +308,8 @@ jobs:
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r ${{ github.workspace }}/hdf5/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
-          cp -r ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5/HDF_Group/HDF5/*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5/*/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (MacOS_latest)
         run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
