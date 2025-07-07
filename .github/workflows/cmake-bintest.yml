@@ -221,14 +221,10 @@ jobs:
           echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
           echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
 
-      - name: List files for the binaries (Linux)
-        run: |
-            ls -l ${{ github.workspace }}/HDF_Group/HDF5/2.0.0
-
       - name: List files for the space (Linux)
         run: |
               ls -l ${{ github.workspace }}
-              ls -l ${{ runner.workspace }}
+              ls -l ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
 
       - name: Run ctest (Linux)
         env:
@@ -322,14 +318,10 @@ jobs:
           echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
           echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
 
-      - name: List files for the binaries (MacOS_latest)
-        run: |
-          ls -l ${{ github.workspace }}/HDF_Group/HDF5/2.0.0
-
       - name: List files for the space (MacOS_latest)
         run: |
           ls -l ${{ github.workspace }}
-          ls -l ${{ runner.workspace }}
+          ls -l ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
 
       - name: Run ctest (MacOS_latest)
         id: run-ctest
