@@ -200,18 +200,22 @@ jobs:
         run: |
           ls -l ${{ github.workspace }}
           ls -l ${{ github.workspace }}/hdf5
+          ls -l ${{ github.workspace }}/hdf5/HDF_Group
+          ls -l ${{ github.workspace }}/hdf5/HDF_Group/HDF5
           ls -l ${{ github.workspace }}/hdf5_plugins
           ls -l ${{ github.workspace }}/hdf5_plugins/HDF_Group
+          ls -l ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5
 
       - name: create hdf5 location (Linux)
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r ${{ github.workspace }}/hdf5/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
-          cp -r ${{ github.workspace }}/hdf5_plugins/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (Linux)
-        run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
+        run: |
+              ls -l ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: set hdf5lib name
         id: set-hdf5lib-name
@@ -304,8 +308,8 @@ jobs:
         working-directory: ${{ github.workspace }}/hdf5
         run: |
           mkdir -p "${{ github.workspace }}/HDF_Group/HDF5"
-          cp -r ${{ github.workspace }}/hdf5/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
-          cp -r ${{ github.workspace }}/hdf5_plugins/HDF*/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
+          cp -r ${{ github.workspace }}/hdf5_plugins/HDF_Group/HDF5/* ${{ github.workspace }}/HDF_Group/HDF5
 
       - name: List files for the space (MacOS_latest)
         run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
