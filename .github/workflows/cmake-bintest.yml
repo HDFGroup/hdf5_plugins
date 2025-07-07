@@ -92,6 +92,7 @@ jobs:
         run: |
               ls -l ${{ github.workspace }}
               ls -l ${{ github.workspace }}/hdf5
+              ls -l ${{ github.workspace }}/hdf5_plugins
 
       - name: create hdf5 location (Win)
         working-directory: ${{ github.workspace }}/hdf5
@@ -195,6 +196,11 @@ jobs:
             cd "${{ github.workspace }}/hdf5_plugins"
             tar -zxvf ${{ github.workspace }}/hdf5_plugins/h5pl-*-Linux.tar.gz --strip-components 1
 
+      - name: List files for the space (Linux)
+        run:
+          ls -l ${{ github.workspace }}/hdf5_plugins
+          ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
+
       - name: create hdf5 location (Linux)
         working-directory: ${{ github.workspace }}/hdf5
         run: |
@@ -288,6 +294,11 @@ jobs:
         run:  |
           cd "${{ github.workspace }}/hdf5_plugins"
           tar -zxvf ${{ github.workspace }}/hdf5_plugins/h5pl-*-Darwin.tar.gz --strip-components 1
+
+      - name: List files for the space (MacOS_latest)
+        run:
+          ls -l ${{ github.workspace }}/hdf5_plugins
+          ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
 
       - name: create hdf5 location (MacOS_latest)
         working-directory: ${{ github.workspace }}/hdf5
