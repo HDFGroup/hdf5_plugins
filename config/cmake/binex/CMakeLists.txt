@@ -45,53 +45,88 @@ endif ()
 # Bitgroom filter
 set (BITGROOM_AVAILABLE 1)
 
+# Bitround filter
+set (BITROUND_AVAILABLE 1)
+
 # Bitshuffle filter
-set (BSHUF_AVAILABLE 0)
-if (NOT CMAKE_C_COMPILER_ID STREQUAL "Intel")
-  set (BSHUF_AVAILABLE 1)
-endif ()
+set (BSHUF_AVAILABLE 1)
 
 # BLOSC filter
-if (WIN32 AND MSVC_VERSION GREATER 1600)
-  set (BLOSC_AVAILABLE 1)
-elseif (NOT WIN32)
+if (WIN32)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND MSVC_VERSION GREATER 1600)
+    set (BLOSC_AVAILABLE 1)
+  endif ()
+elseif (APPLE)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
+    set (BLOSC_AVAILABLE 1)
+  elseif (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
+    set (BLOSC_AVAILABLE 1)
+  endif ()
+else ()
   set (BLOSC_AVAILABLE 1)
 endif ()
 
 # BLOSC2 filter
-if (WIN32 AND MSVC_VERSION GREATER 1600)
-  set (BLOSC2_AVAILABLE 1)
-elseif (NOT WIN32)
+if (WIN32)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
+    if (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND MSVC_VERSION GREATER 1600)
+      set (BLOSC2_AVAILABLE 1)
+    endif ()
+  endif ()
+elseif (APPLE)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel" AND NOT CMAKE_C_COMPILER_ID MATCHES "Apple[Cc]lang")
+    set (BLOSC2_AVAILABLE 1)
+  endif ()
+else ()
   set (BLOSC2_AVAILABLE 1)
 endif ()
 
 # BZIP2 filter
-set (BZIP2_AVAILABLE 1)
-
-# FPZIP filter
-#set (FPZIP_AVAILABLE 1)
+if (NOT MINGW)
+  set (BZIP2_AVAILABLE 1)
+endif ()
 
 # JPEG filter
-set (JPEG_AVAILABLE 1)
+if (NOT WIN32)
+  set (JPEG_AVAILABLE 1)
+endif ()
 
 # LZ4 filter
-set (LZ4_AVAILABLE 1)
+if (NOT MINGW)
+  if (WIN32)
+    if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
+      if (MSVC_VERSION GREATER_EQUAL 1930 AND NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
+        set (LZ4_AVAILABLE 1)
+      endif ()
+    endif ()
+  else ()
+    set (LZ4_AVAILABLE 1)
+  endif ()
+endif ()
 
 # LZF filter
-set (LZF_AVAILABLE 1)
-
-set (MAFISC_AVAILABLE 0)
-#if (WIN32 AND MSVC_VERSION GREATER 1600)
-#  # MAFISC filter
-#  set (MAFISC_AVAILABLE 1)
-#elseif (NOT WIN32)
-#  set (MAFISC_AVAILABLE 1)
-#endif ()
+if (NOT MINGW AND NOT H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
+  set (LZF_AVAILABLE 1)
+endif ()
 
 # ZFP filter
-set (ZFP_AVAILABLE 1)
+if (WIN32)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
+    set (ZFP_AVAILABLE 1)
+  endif ()
+else ()
+  set (ZFP_AVAILABLE 1)
+endif ()
 
 # ZSTD filter
-set (ZSTD_AVAILABLE 1)
+if (WIN32)
+  set (ZSTD_AVAILABLE 1)
+elseif (APPLE)
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
+    set (ZSTD_AVAILABLE 1)
+  endif ()
+else ()
+  set (ZSTD_AVAILABLE 1)
+endif ()
 
 add_subdirectory (example)
