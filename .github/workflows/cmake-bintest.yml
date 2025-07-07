@@ -109,7 +109,7 @@ jobs:
         id: set-hdf5lib-name
         run: |
           HDF5DIR="${{ github.workspace }}/HDF_Group/HDF5"
-          echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
+          echo "HDF5_ROOT=$HDF5DIR" >> $GITHUB_OUTPUT
           echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
         shell: bash
 
@@ -117,19 +117,11 @@ jobs:
         run: |
             ls -l ${{ github.workspace }}/HDF_Group/HDF5
 
-      - name: using powershell
-        shell: pwsh
-        run: Get-Location
-
-      - name: List files for the space (Windows)
-        run: |
-              Get-ChildItem -Path ${{ github.workspace }}
-        shell: pwsh
-
       - name: Run ctest (Windows)
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
           HDF5_PLUGIN_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_PLUGIN_PATH }}
+          PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/bin;$PATH
         run: |
           cd "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/HDFPLExamples"
           cmake --workflow --preset=${{ inputs.preset_name }}-MSVC --fresh
@@ -221,8 +213,7 @@ jobs:
         id: set-hdf5lib-name
         run: |
           HDF5DIR=${{ github.workspace }}/HDF_Group/HDF5/
-          FILE_NAME_HDF5=$(ls ${{ github.workspace }}/HDF_Group/HDF5)
-          echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
+          echo "HDF5_ROOT=$HDF5DIR" >> $GITHUB_OUTPUT
           echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
 
       - name: List files for the space (Linux)
@@ -234,6 +225,7 @@ jobs:
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
           HDF5_PLUGIN_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_PLUGIN_PATH }}
+          LD_LIBRARY_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/lib;$LD_LIBRARY_PATH
         run: |
           cd "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/share/HDFPLExamples"
           cmake --workflow --preset=${{ inputs.preset_name }}-GNUC --fresh
@@ -318,8 +310,7 @@ jobs:
         id: set-hdf5lib-name
         run: |
           HDF5DIR=${{ github.workspace }}/HDF_Group/HDF5/
-          FILE_NAME_HDF5=$(ls ${{ github.workspace }}/HDF_Group/HDF5)
-          echo "HDF5_ROOT=$HDF5DIR$FILE_NAME_HDF5" >> $GITHUB_OUTPUT
+          echo "HDF5_ROOT=$HDF5DIR" >> $GITHUB_OUTPUT
           echo "HDF5_PLUGIN_PATH=$HDF5_ROOT/lib/plugin" >> $GITHUB_OUTPUT
 
       - name: List files for the space (MacOS_latest)
@@ -332,6 +323,7 @@ jobs:
         env:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
           HDF5_PLUGIN_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_PLUGIN_PATH }}
+          DYLD_LIBRARY_PATH: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/lib;$DYLD_LIBRARY_PATH
         run: |
           cd "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/share/HDFPLExamples"
           cmake --workflow --preset=ci-StdShar-macos-Clang --fresh
