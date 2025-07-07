@@ -198,6 +198,8 @@ jobs:
 
       - name: List files for the space (Linux)
         run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/hdf5
           ls -l ${{ github.workspace }}/hdf5_plugins
           ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
 
@@ -297,6 +299,8 @@ jobs:
 
       - name: List files for the space (MacOS_latest)
         run: |
+          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/hdf5
           ls -l ${{ github.workspace }}/hdf5_plugins
           ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
 
