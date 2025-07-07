@@ -197,7 +197,7 @@ jobs:
             tar -zxvf ${{ github.workspace }}/hdf5_plugins/h5pl-*-Linux.tar.gz --strip-components 1
 
       - name: List files for the space (Linux)
-        run:
+        run: |
           ls -l ${{ github.workspace }}/hdf5_plugins
           ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
 
@@ -296,7 +296,7 @@ jobs:
           tar -zxvf ${{ github.workspace }}/hdf5_plugins/h5pl-*-Darwin.tar.gz --strip-components 1
 
       - name: List files for the space (MacOS_latest)
-        run:
+        run: |
           ls -l ${{ github.workspace }}/hdf5_plugins
           ls -l ${{ github.workspace }}/hdf5_plugins/h5pl*
 
