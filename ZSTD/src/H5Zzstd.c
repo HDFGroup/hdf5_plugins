@@ -72,14 +72,21 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts,
         /* We're compressing */
         /*
          * cd_values[0] = aggression
+         *
+         * As of Zstandard v1.5.7
+         * ZSTD_minCLevel() == -1<<17 == -131072
+         * ZSTD_maxCLevel() == 22
+         *
+         * Negative compression levels are faster at the cost of compression
+         * aggression >= 20 require more memory
          */
         int aggression;
         if (cd_nelmts > 0)
             aggression = (int)cd_values[0];
         else
             aggression = ZSTD_CLEVEL_DEFAULT;
-        if (aggression < 1 /*ZSTD_minCLevel()*/)
-            aggression = 1 /*ZSTD_minCLevel()*/;
+        if (aggression < ZSTD_minCLevel())
+            aggression = ZSTD_minCLevel();
         else if (aggression > ZSTD_maxCLevel())
             aggression = ZSTD_maxCLevel();
 
