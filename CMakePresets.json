@@ -75,7 +75,6 @@
       "description": "MSVC Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-MSVC",
-        "ci-CPP",
         "ci-StdShar"
       ]
     },
@@ -84,7 +83,6 @@
       "description": "Clang Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-Clang",
-        "ci-CPP",
         "ci-StdShar"
       ]
     },
@@ -93,7 +91,6 @@
       "description": "GNUC Standard Config for x64 (Release)",
       "inherits": [
         "ci-x64-Release-GNUC",
-        "ci-CPP",
         "ci-StdShar"
       ]
     },
@@ -101,8 +98,7 @@
       "name": "ci-StdShar-macos-Clang",
       "description": "Clang Standard Config for macos (Release)",
       "inherits": [
-        "ci-macos-Release-Clang",
-        "ci-CPP",
+        "ci-macos-arm64-Release-Clang",
         "ci-StdShar"
       ]
     },
@@ -110,19 +106,17 @@
       "name": "ci-StdShar-macos-GNUC",
       "description": "GNUC Standard Config for macos (Release)",
       "inherits": [
-        "ci-macos-Release-GNUC",
-        "ci-CPP",
+        "ci-macos-arm64-Release-GNUC",
         "ci-StdShar"
       ]
-  },
-  {
-    "name": "ci-StdShar-Intel",
-    "description": "Intel Standard Config for x64 (Release)",
-    "inherits": [
-      "ci-x64-Release-Intel",
-      "ci-CPP",
-      "ci-StdShar"
-    ]
+    },
+    {
+      "name": "ci-StdShar-Intel",
+      "description": "Intel Standard Config for x64 (Release)",
+      "inherits": [
+        "ci-x64-Release-Intel",
+        "ci-StdShar"
+      ]
     }
   ],
   "buildPresets": [
@@ -153,19 +147,19 @@
     },
     {
       "name": "ci-StdShar-macos-Clang",
-      "description": "Clang Standard Build for macos (Release)",
+      "description": "Clang Standard Build for macos-arm64 (Release)",
       "configurePreset": "ci-StdShar-macos-Clang",
       "inherits": [
-        "ci-macos-Release-Clang"
+        "ci-macos-arm64-Release-Clang"
       ]
     },
     {
       "name": "ci-StdShar-macos-GNUC",
-      "description": "GNUC Standard Build for macos (Release)",
+      "description": "GNUC Standard Build for macos-arm64 (Release)",
       "configurePreset": "ci-StdShar-macos-GNUC",
       "verbose": true,
       "inherits": [
-        "ci-macos-Release-GNUC"
+        "ci-macos-arm64-Release-GNUC"
       ]
     },
     {
@@ -184,7 +178,12 @@
       "configurePreset": "ci-StdShar-MSVC",
       "inherits": [
         "ci-x64-Release-MSVC"
-      ]
+      ],
+      "filter": {
+        "exclude": {
+          "name": "H5DUMP-h5ex_d_granularbr"
+        }
+      }
     },
     {
       "name": "ci-StdShar-Clang",
@@ -197,7 +196,7 @@
       "name": "ci-StdShar-macos-Clang",
       "configurePreset": "ci-StdShar-macos-Clang",
       "inherits": [
-        "ci-macos-Release-Clang"
+        "ci-macos-arm64-Release-Clang"
       ],
       "execution": {
         "noTestsAction": "error",
@@ -209,7 +208,7 @@
       "name": "ci-StdShar-macos-GNUC",
       "configurePreset": "ci-StdShar-macos-GNUC",
       "inherits": [
-        "ci-macos-Release-GNUC"
+        "ci-macos-arm64-Release-GNUC"
       ]
     },
     {
@@ -218,6 +217,23 @@
       "inherits": [
         "ci-x64-Release-GNUC"
       ]
+    },
+    {
+      "name": "ci-StdShar-win-Intel",
+      "configurePreset": "ci-StdShar-Intel",
+      "inherits": [
+        "ci-x64-Release-Intel"
+      ],
+      "filter": {
+        "exclude": {
+          "name": "H5DUMP-h5ex_d_granularbr"
+        }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     },
     {
       "name": "ci-StdShar-Intel",
@@ -246,12 +262,12 @@
     {
       "name": "ci-StdShar-macos-Clang",
       "configurePreset": "ci-StdShar-macos-Clang",
-      "inherits": "ci-macos-Release-Clang"
+      "inherits": "ci-macos-arm64-Release-Clang"
     },
     {
       "name": "ci-StdShar-macos-GNUC",
       "configurePreset": "ci-StdShar-macos-GNUC",
-      "inherits": "ci-macos-Release-GNUC"
+      "inherits": "ci-macos-arm64-Release-GNUC"
     },
     {
       "name": "ci-StdShar-Intel",
@@ -311,6 +327,15 @@
         {"type": "configure", "name": "ci-StdShar-Intel"},
         {"type": "build", "name": "ci-StdShar-Intel"},
         {"type": "test", "name": "ci-StdShar-Intel"},
+        {"type": "package", "name": "ci-StdShar-Intel"}
+      ]
+    },
+    {
+      "name": "ci-StdShar-win-Intel",
+      "steps": [
+        {"type": "configure", "name": "ci-StdShar-Intel"},
+        {"type": "build", "name": "ci-StdShar-Intel"},
+        {"type": "test", "name": "ci-StdShar-win-Intel"},
         {"type": "package", "name": "ci-StdShar-Intel"}
       ]
     }

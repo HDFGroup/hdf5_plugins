@@ -2,10 +2,10 @@
  * Copyright by The HDF Group.                                               *
  * All rights reserved.                                                      *
  *                                                                           *
- * This file is part of the HDF5 BLOSC filter plugin source.  The full       *
+ * This file is part of the HDF5 BLOSC2 filter plugin source.  The full       *
  * copyright notice, including terms governing use, modification, and        *
  * terms governing use, modification, and redistribution, is contained in    *
- * the file COPYING, which can be found at the root of the BLOSC source code *
+ * the file COPYING, which can be found at the root of the BLOSC2 source code *
  * distribution tree.  If you do not have access to this file, you may       *
  * request a copy from help@hdfgroup.org.                                    *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -45,11 +45,11 @@ main (void)
     char            filter_name[128];
     hsize_t         dims[2] = {DIM0, DIM1},
                     chunk[2] = {CHUNK0, CHUNK1};
-    size_t          nelmts = 7;                /* number of elements in cd_values */
+    size_t          nelmts = 10;                /* number of elements in cd_values */
     unsigned int    flags;
     unsigned        filter_config;
-    const unsigned int    cd_values[7] = {0, 0, 0, 0, 4, 1, 2};     /* blosc2 parameters */
-    unsigned int    values_out[7] = {99, 99, 99, 99, 99, 99, 99};
+    const unsigned int    cd_values[10] = {0, 0, 0, 0, 4, 1, 2, 2, 4, 8};     /* blosc2 parameters */
+    unsigned int    values_out[10] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
     int             wdata[DIM0][DIM1],          /* Write buffer */
                     rdata[DIM0][DIM1],          /* Read buffer */
                     max;
@@ -201,9 +201,9 @@ main (void)
     /*
      * Check that filter is registered with the library now.
      */
-    avail = H5Zfilter_avail(H5Z_FILTER_BLOSC);
+    avail = H5Zfilter_avail(H5Z_FILTER_BLOSC2);
     if (avail)
-        printf ("blosc filter is available now since H5Dread triggered loading of the filter.\n");
+        printf ("blosc2 filter is available now since H5Dread triggered loading of the filter.\n");
 
     ret_value = 0;
 

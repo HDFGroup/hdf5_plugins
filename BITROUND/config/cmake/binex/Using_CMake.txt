@@ -1,47 +1,55 @@
 ************************************************************************
-* Build and Install HDF5PL Examples with CMake                          *
+* Build and Test HDF5PL Examples with CMake                          *
 ************************************************************************
 
 Notes: This short instruction is written for users who want to quickly build
-       HDFPL Examples from the HDFPL source code package using the CMake tools.
+       HDFPL Examples using the HDFPL binary package using the CMake tools.
+       The following instructions will show the default usage and then present
+       common changes for non-default installations.
 
-       More information about using CMake can be found at the KitWare
+       More information about using CMake can be found at the Kitware
        site, www.cmake.org.
 
-       CMake uses the command line; however, the visual CMake tool is
-       available for the configuration step. The steps are similar for
-       all of the operating systems supported by CMake.
+                     Table of Contents
 
-       NOTES:
-         1. Using CMake for building the filters and using HDF5 is under
-            active development. We have attempted to provide error-free
-            files. The CMake specific files may change before the next release.
-
-         2. CMake for HDF5 and filter development should be usable on any system
-            where CMake is supported. Please send us any comments on how
-            CMake support can be improved on any system.
+Section I:    Preconditions
+Section II:   Building HDF5 Examples with CMake
+              1. Using presets
+              2. Using CTestScript.cmake
+              3. Using Command Line CMake
+Section III:  Defaults in the CMakePresets.json file
+Section IV:   Defaults in the HDF5PL_Examples_options.cmake file
 
 
 ========================================================================
 I. Preconditions
 ========================================================================
 
-   1. We suggest you obtain the latest CMake for windows from the Kitware
-      web site. The HDF5PL z.y.x product requires a minimum CMake version
-      of 3.18. If you are using VS2019, the minimum version is 3.15. If you are
-      using VS2022, the minimum version is 3.21.
+   1. We suggest you obtain the latest CMake from the Kitware
+      web site. The HDF5PL product requires a minimum CMake version
+      of 3.18. If you are using VS2022, the minimum CMake version is 3.21.
+      CMakePresets.json, requires CMake 3.25 or higher.
 
    2. You have installed the HDF5 library built with CMake, by executing
       the HDF Install Utility (the *.msi file in the binary package for
-      Windows). You can obtain pre-built binaries from The HDF Group's website at
-      www.hdfgroup.org.
+      Windows or the *.sh on Linux). You can obtain pre-built binaries
+      from The HDF Group's website at www.hdfgroup.org.
 
-   3. Set the environment variable HDF5_ROOT to the installed location of
-      the config files for HDF5.
+   3. Set the HDF5_ROOT CMake variable, -DHDF5_ROOT=<install_path>
+      or environment variable, set(ENV{HDF5_ROOT} "<install_path>")
+      to the installed location of HDF5.
          On Windows:
             HDF5_ROOT=C:/Program Files/HDF_Group/HDF5/z.y.x/
          On unix:
             HDF5_ROOT=<install root folder>/HDF_Group/HDF5/z.y.x/
+
+      If you are using shared libraries, you may need to add to the path
+      environment variable. Set the path environment variable to the
+      installed location of the library files for HDF5.
+         On Windows (*.dll):
+            PATH=%PATH%;C:/Program Files/HDF_Group/HDF5/z.y.x/bin
+         On unix (*.so):
+            LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<install root folder>/HDF_Group/HDF5/z.y.x/lib
 
       (Note there are no quote characters used on Windows and all platforms
       use forward slashes)
@@ -53,89 +61,139 @@ I. Preconditions
          On unix:
             HDF5_PLUGIN_PATH=<install root folder>/HDF_Group/HDF5/z.y.x/lib/plugin
 
-   5. Set the runtime path to the installed location of the library (*.so on linux
-      and *.dll on Windows) files for HDF5.
-      On Windows:
-            PATH=%PATH%:C:/Program Files/HDF_Group/HDF5/z.y.x/bin:C:/Program Files/HDF_Group/HDF5/z.y.x/lib/plugin
-      On linux:
-            LD_LIBRARY_PATH=$LD_LIBRARY_PATH;<Installation>/HDF_Group/HDF5/z.y.x/lib;<Installation>/HDF_Group/HDF5/z.y.x/lib/plugin
-
-   6. Created separate source and build directories.
+   5. Use separate source and build directories.
       (CMake commands are executed in the build directory)
-
-
 
 ========================================================================
 II. Building HDF5 Plugin Examples with CMake
 ========================================================================
 
-Go through these steps to build HDF5 Plugin applications with CMake.
+  1. Using presets
+    Files in the HDF5 Plugins install/HDF5PLExamples directory:
+       CMakePresets.json
 
-   1. Run CMake
-   2. Configure the cache settings
-   3. Build HDF5 Plugin Examples
-   4. Test HDF5 Plugin Examples.
+    Default build process:
+         Create a directory to run the examples, i.e. \test_hdf5.
+         Copy the HDF5PLExamples folder to this directory.
+         Change into the HDF5PLExamples directory where CMakePresets.json exists.
 
-These steps are described in more detail below.
+         Other options can be changed by creating a
+              CMakeUsersPresets.json file. (Advanced usage)
 
+    Available configurations presets can be displayed by executing:
+        cmake -S <path-to-source> --list-presets
 
+    Using individual command presets (where <compiler-type> is  GNUC or MSVC or Clang):
+        cmake --preset ci-StdShar-<compiler-type>
+        cmake --build --preset ci-StdShar-<compiler-type>
+        ctest --preset ci-StdShar-<compiler-type>
+        cpack --preset ci-StdShar-<compiler-type>
 
-   1. Run CMake
+    Using the workflow preset to configure, build, and testthe standard configuration:
+        execute "cmake --workflow --preset ci-StdShar-<compiler-type> --fresh"
+              where <compiler-type> is  GNUC or MSVC or Clang
 
+  2. Using CTestScript.cmake
+    Files in the HDF5 install directory:
+       HDF5PLExamples folder
+       CTestScript.cmake
+       HDF5PL_Examples.cmake
+       HDF5PLoptions.cmake
+
+    Default build process:
+       Create a directory to run the examples, i.e. \test_hdf5.
+       Copy HDF5PLExamples folder to this directory.
+       Copy CTestScript.cmake to this directory.
+       Copy HDF5PL_Examples.cmake to this directory.
+       Copy HDF5PLoptions.cmake to this directory.
+       The default source folder is defined as "HDF5PLExamples". It can be changed
+           with the CTEST_SOURCE_NAME script option.
+       The default installation folder is defined for the platform.
+           It can be changed with the INSTALLDIR script option.
+           (Note: Windows has issues with spaces and paths -The path will need to
+            be set correctly.)
+       The default ctest configuration is defined as "Release". It can be changed
+           with the CTEST_CONFIGURATION_TYPE script option. Note that this must
+           be the same as the value used with the -C command line option.
+           On Windows, you can set the CTEST_VSVERS script option to either
+               64_VS2022 or 64_VS2019. Alternately, you can set the script
+               CTEST_CMAKE_GENERATOR option to "Visual Studio 16 2019" or "Visual Studio 17 2022",
+               and the CMAKE_GENERATOR_ARCHITECTURE script option to "x64".
+
+       The default build configuration is defined to build and use static libraries.
+
+       Shared libraries and other options can be changed by editing the
+           HDF5PLoptions.cmake file.
+
+       If the defaults are okay, execute from this directory:
+           ctest -S HDF5PL_Examples.cmake -C Release -VV -O test.log
+       If the defaults need change, execute from this directory:
+           ctest -S HDF5PL_Examples.cmake,CTEST_SOURCE_NAME=MyExamples,INSTALLDIR=MyLocation -C Release -VV -O test.log
+
+    When executed, the ctest script will save the results to the log file, test.log, as
+    indicated by the ctest command. If you wish to see more build and test information,
+    add "-VV" to the ctest command. The output should show;
+          100% tests passed, 0 tests failed out of 206.
+
+  3. Using Command Line CMake
+    A. Visual Configuration
       The visual CMake executable is named "cmake-gui.exe" on Windows and should be
       available in your Start menu. For Linux, UNIX, and Mac users the
-      executable is named "cmake-gui" and can be found where CMake was
-      installed.
+      executable is named "cmake-gui" or the ncurses-based "ccmake" and can be found
+      where CMake was installed.
 
       Specify the source and build directories. Make the build and source
       directories different. For example on Windows, if the source is at
-      c:\MyHDFstuff\hdf5pl, then use c:\MyHDFstuff\hdf5pl\build or
-      c:\MyHDFstuff\build\hdf5pl for the build directory.
+      C:\MyHDFstuff\hdf5pl, then use C:\MyHDFstuff\hdf5pl\build or
+      C:\MyHDFstuff\build\hdf5pl for the build directory.
 
-      PREFERRED:
-        Users can perform the configuration step without using the visual
-        cmake-gui program. The following is an example command line
-        configuration step executed within the build directory:
+      Click the Configure button. If this is the first time you are
+      running cmake-gui in this directory, you will be prompted for the
+      generator you wish to use (for example on Windows, Visual Studio 15).
+      CMake will read in the CMakeLists.txt files from the source directory and
+      display options for the HDF5PL Examples project. After the first configure you
+      can adjust the cache settings and/or specify locations of other programs.
+
+      Any conflicts or new values will be highlighted by the configure
+      process in red. Once you are happy with all the settings and there are no
+      more values in red, click the Generate button to produce the appropriate
+      build files.
+
+      On Windows, if you are using a Visual Studio generator, the solution and
+      project files will be created in the build folder.
+
+      On linux, if you are using the Unix Makefiles generator, the Makefiles will
+      be created in the build folder.
+
+    B. Alternative Command Line Configuration
+      Users can perform the configuration step without using the visual
+      cmake-gui program. The following is an example command line
+      configuration step executed within the build directory:
 
         cmake -G "<generator>"  [-D<options>]  <sourcepath>
 
         Where <generator> is
+            * MSYS Makefiles
             * MinGW Makefiles
             * NMake Makefiles
             * Unix Makefiles
+            * Visual Studio 15 2017
+            * Visual Studio 15 2017 Win64
             * Visual Studio 16 2019
+            * ... in addition VS2019 will need to set the "-A" option,
+            * ... [Win32, x64, ARM, ARM64]
             * Visual Studio 17 2022
-            * ... in addition VS2019/2022 will need to set the "-A" option,
+            * ... in addition VS2022 will need to set the "-A" option,
             * ... [Win32, x64, ARM, ARM64]
 
         <options> is:
             * H5PL_BUILD_TESTING:BOOL=ON
 
-   2. Configure the cache settings
-
-      2.1  Visual CMake users, click the Configure button. If this is the first time you are
-           running cmake-gui in this directory, you will be prompted for the
-           generator you wish to use (for example on Windows, Visual Studio 17 2022).
-           CMake will read in the CMakeLists.txt files from the source directory and
-           display options for the HDFPL project. After the first configure you
-           can adjust the cache settings and/or specify locations of other programs.
-
-           Any conflicts or new values will be highlighted by the configure
-           process in red. Once you are happy with all the settings and there are no
-           more values in red, click the Generate button to produce the appropriate
-           build files.
-
-           On Windows, if you are using a Visual Studio generator, the solution and
-           project files will be created in the build folder.
-
-           On linux, if you are using the Unix Makefiles generator, the Makefiles will
-           be created in the build folder.
-
-      2.2  Alternative command line example on Windows in c:\MyHDFstuff\hdf5pl\build directory:
+      Example command line on Windows in c:\MyHDFstuff\hdf5pl\build directory:
 
            cmake -G "Visual Studio 17 2022" -DH5PL_BUILD_TESTING:BOOL=ON ..
 
-   3. Build HDF5 Plugin examples
+    C. Build HDF5 Plugin examples
 
       On Windows, you can build HDF5 Plugin applications using either the Visual Studio Environment
       or the command line. The command line is normally used on linux, Unix, and Mac.
@@ -149,11 +207,11 @@ These steps are described in more detail below.
             recommend choosing either Debug or Release on Windows. If you are
             using the pre-built binaries from HDF, use Release.
 
-      3.1  If you wish to use the Visual Studio environment, open the solution
-           file in your build directory. Be sure to select either Debug or
-           Release and build the solution.
+      If you wish to use the Visual Studio environment, open the solution
+      file in your build directory. Be sure to select either Debug or
+      Release and build the solution.
 
-   4. Test HDF5 Plugin Examples.
+    D. Test HDF5 Plugin Examples.
 
       To test the build, navigate to your build directory and execute:
 
@@ -163,9 +221,10 @@ These steps are described in more detail below.
             recommend choosing either Debug or Release to match the build
             step on Windows.
 
-   5. The files that support building with CMake are all of the files in the
-      config/cmake folder, the CMakeLists.txt files in each source folder, and
-      CTestConfig.cmake. CTestConfig.cmake is specific to the internal testing
+  4. The files that support building with CMake are all of the files in the
+      config/cmake folder, the CMakeLists.txt files in each source folder.
+
+      CTestConfig.cmake is specific to the internal testing
       performed by The HDF Group. It should be altered for the user's
       installation and needs. The cacheinit.cmake file settings are used by
       The HDF Group for daily testing. It should be altered/ignored for the user's
@@ -173,5 +232,28 @@ These steps are described in more detail below.
 
 
 ========================================================================
-For further assistance, send email to help@hdfgroup.org
+III. Defaults in the CMakePresets.json file
 ========================================================================
+
+####  DEFAULT:
+####      "generator": "Ninja"
+####      "binaryDir": "${sourceParentDir}/build/${presetName}"
+####      "name": "ci-StdShar"
+####        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+####        "HDF5_NAMESPACE": {"type": "STRING", "value": "hdf5::"},
+####        "HDF5_PACKAGE_NAME": {"type": "STRING", "value": "hdf5"},
+####        "H5PL_BUILD_TESTING": "ON"
+
+
+========================================================================
+IV. Defaults in the HDF5_Examples_options.cmake file
+========================================================================
+
+####  DEFAULT:
+####         H5PL_BUILD_TESTING:BOOL=OFF
+
+
+************************************************************************
+
+Need further assistance, send email to help@hdfgroup.org
+

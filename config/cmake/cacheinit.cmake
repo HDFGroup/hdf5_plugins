@@ -22,8 +22,6 @@ set (H5PL_H5PL_BUILD_TESTING ON CACHE BOOL "Enable h5pl examples" FORCE)
 
 set (H5PL_BUILD_EXAMPLES ON CACHE BOOL "Build h5pl Examples" FORCE)
 
-set (HDF_ENABLE_PARALLEL OFF CACHE BOOL "Enable parallel build (requires MPI)" FORCE)
-
 set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)

@@ -97,6 +97,16 @@ jobs:
         AZURE_CERT_PROFILE_NAME: ${{ secrets.AZURE_CERT_PROFILE_NAME }}
     if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
+  call-release-bintest:
+    name: "CMake Test Release Binaries"
+    needs: [get-old-names, call-workflow-tarball, call-workflow-ctest]
+    uses: ./.github/workflows/cmake-bintest.yml
+    with:
+      preset_name: ci-StdShar
+      use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
+      file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      use_environ: snapshots
+
   call-workflow-release:
     needs: [get-old-names, call-workflow-tarball, call-workflow-ctest]
     permissions:

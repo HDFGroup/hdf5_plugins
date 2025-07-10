@@ -7,7 +7,7 @@
 # in the COPYING file in the root directory of this source tree).
 # ################################################################
 
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
 # As of 2018-12-26 ZSTD has been validated to build with cmake version 3.13.2 new policies.
 # Set and use the newest cmake policies that are validated to work

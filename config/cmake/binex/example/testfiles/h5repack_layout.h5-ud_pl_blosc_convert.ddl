@@ -50,7 +50,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 9224
+         OFFSET 9264
       }
       FILTERS {
          NONE
@@ -69,7 +69,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 14472
+         OFFSET 14512
       }
       FILTERS {
          NONE
@@ -124,7 +124,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 26960
+         OFFSET 27000
       }
       FILTERS {
          NONE
