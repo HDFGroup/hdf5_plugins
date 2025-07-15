@@ -10,7 +10,7 @@
 # help@hdfgroup.org.
 #
 cmake_minimum_required (VERSION 3.18)
-project (HDF5BITGROOM_EX)
+project (HDF5BITGROOM_EX C)
 
 set (dyn_examples
     h5ex_d_bitgroom

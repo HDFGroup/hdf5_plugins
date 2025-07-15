@@ -10,7 +10,7 @@
 # help@hdfgroup.org.
 #
 cmake_minimum_required (VERSION 3.18)
-project (HDF5BITROUND_EX)
+project (HDF5BITROUND_EX C)
 
 set (dyn_examples
     h5ex_d_granularbr
