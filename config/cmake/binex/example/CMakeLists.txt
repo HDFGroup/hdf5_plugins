@@ -10,7 +10,7 @@
 # help@hdfgroup.org.
 #
 cmake_minimum_required (VERSION 3.18)
-project (HDF5PL_EX)
+project (HDF5PL_EX C)
 
 set (dyn_examples)
 if (BLOSC_AVAILABLE)

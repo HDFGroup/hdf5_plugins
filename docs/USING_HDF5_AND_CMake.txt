@@ -200,7 +200,7 @@ source root. Include the following text in the file:
 
 ##########################################################
 cmake_minimum_required (VERSION 3.18)
-project (HDF5MyFilter C CXX)
+project (HDF5MyFilter C)
 
 set (LIB_TYPE SHARED) # Filters require SHARED
 string(TOLOWER ${LIB_TYPE} SEARCH_TYPE)

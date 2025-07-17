@@ -10,7 +10,7 @@
 # help@hdfgroup.org.
 #
 cmake_minimum_required (VERSION 3.18)
-project (HDF5BZ2_EX)
+project (HDF5BZ2_EX C)
 
 set (dyn_examples
     h5ex_d_bzip2
