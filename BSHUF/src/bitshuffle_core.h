@@ -26,24 +26,22 @@
  *      -1YYY : Error internal to compression routine with error code -YYY.
  */
 
-
 #ifndef BITSHUFFLE_CORE_H
 #define BITSHUFFLE_CORE_H
 
 // We assume GNU g++ defining `__cplusplus` has stdint.h
-#if (defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199900L) || defined(__cplusplus)
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199900L) || defined(__cplusplus)
 #include <stdint.h>
 #else
-  typedef unsigned char       uint8_t;
-  typedef unsigned short      uint16_t;
-  typedef unsigned int        uint32_t;
-  typedef   signed int        int32_t;
-  typedef unsigned long long  uint64_t;
-  typedef long long           int64_t;
+typedef unsigned char      uint8_t;
+typedef unsigned short     uint16_t;
+typedef unsigned int       uint32_t;
+typedef signed int         int32_t;
+typedef unsigned long long uint64_t;
+typedef long long          int64_t;
 #endif
 
 #include <stdlib.h>
-
 
 // These are usually set in the setup.py.
 #ifndef BSHUF_VERSION_MAJOR
@@ -67,7 +65,6 @@ extern "C" {
  */
 int bshuf_using_SSE2(void);
 
-
 /* ---- bshuf_using_NEON ----
  *
  * Whether routines where compiled with the NEON instruction set.
@@ -78,7 +75,6 @@ int bshuf_using_SSE2(void);
  *
  */
 int bshuf_using_NEON(void);
-
 
 /* ---- bshuf_using_AVX2 ----
  *
@@ -91,7 +87,6 @@ int bshuf_using_NEON(void);
  */
 int bshuf_using_AVX2(void);
 
-
 /* ---- bshuf_using_AVX512 ----
  *
  * Whether routines where compiled with the AVX512 instruction set.
@@ -102,7 +97,6 @@ int bshuf_using_AVX2(void);
  *
  */
 int bshuf_using_AVX512(void);
-
 
 /* ---- bshuf_default_block_size ----
  *
@@ -121,7 +115,6 @@ int bshuf_using_AVX512(void);
  *
  */
 size_t bshuf_default_block_size(const size_t elem_size);
-
 
 /* ---- bshuf_bitshuffle ----
  *
@@ -144,9 +137,8 @@ size_t bshuf_default_block_size(const size_t elem_size);
  *  number of bytes processed, negative error-code if failed.
  *
  */
-int64_t bshuf_bitshuffle(const void* in, void* out, const size_t size,
-        const size_t elem_size, size_t block_size);
-
+int64_t bshuf_bitshuffle(const void *in, void *out, const size_t size, const size_t elem_size,
+                         size_t block_size);
 
 /* ---- bshuf_bitunshuffle ----
  *
@@ -172,11 +164,11 @@ int64_t bshuf_bitshuffle(const void* in, void* out, const size_t size,
  *  number of bytes processed, negative error-code if failed.
  *
  */
-int64_t bshuf_bitunshuffle(const void* in, void* out, const size_t size,
-        const size_t elem_size, size_t block_size);
+int64_t bshuf_bitunshuffle(const void *in, void *out, const size_t size, const size_t elem_size,
+                           size_t block_size);
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif  // BITSHUFFLE_CORE_H
+#endif // BITSHUFFLE_CORE_H

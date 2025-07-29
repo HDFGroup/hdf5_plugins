@@ -44,40 +44,39 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 #include "lzf_config.h"
 #include <stdio.h>
 #ifdef HAVE_SYS_TYPES_H
-# include <sys/types.h>
+#include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
-# include <sys/stat.h>
+#include <sys/stat.h>
 #endif
 #ifdef STDC_HEADERS
-# include <stdlib.h>
-# include <stddef.h>
+#include <stdlib.h>
+#include <stddef.h>
 #else
-# ifdef HAVE_STDLIB_H
-#  include <stdlib.h>
-# endif
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #endif
 #ifdef HAVE_STRING_H
-# if !defined STDC_HEADERS && defined HAVE_MEMORY_H
-#  include <memory.h>
-# endif
-# include <string.h>
+#if !defined STDC_HEADERS && defined HAVE_MEMORY_H
+#include <memory.h>
+#endif
+#include <string.h>
 #endif
 #ifdef HAVE_STRINGS_H
-# include <strings.h>
+#include <strings.h>
 #endif
 #ifdef HAVE_INTTYPES_H
-# include <inttypes.h>
+#include <inttypes.h>
 #endif
 #ifdef HAVE_STDINT_H
-# include <stdint.h>
+#include <stdint.h>
 #endif
 #ifdef HAVE_UNISTD_H
-# include <unistd.h>
+#include <unistd.h>
 #endif
 #include <errno.h>
 
@@ -88,7 +87,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * LZF compression is an external filter registered by PyTables developers
  * with The HDF Group
- * See https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md for more information.
+ * See https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md for more
+ * information.
  */
 
 /* Filter revision number, starting at 1 */
@@ -99,42 +99,53 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if 0
 #if defined(__GNUC__)
-#define PUSH_ERR(func, minor, str, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, ##__VA_ARGS__)
+#define PUSH_ERR(func, minor, str, ...)                                                                      \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, ##__VA_ARGS__)
 #elif defined(_MSC_VER)
-#define PUSH_ERR(func, minor, str, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, __VA_ARGS__)
+#define PUSH_ERR(func, minor, str, ...)                                                                      \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, __VA_ARGS__)
 #else
 /* This version is portable but it's better to use compiler-supported
    approaches for handling the trailing comma issue when possible. */
-#define PUSH_ERR(func, minor, ...) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
-#endif    /* defined(__GNUC__) */
+#define PUSH_ERR(func, minor, ...)                                                                           \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
+#endif /* defined(__GNUC__) */
 #else
-#define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
+#define PUSH_ERR(func, minor, str)                                                                           \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
 #endif
 
-static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts,
-                    const unsigned int cd_values[], size_t nbytes,
-                    size_t *buf_size, void **buf);
-herr_t H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space);
+static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[],
+                             size_t nbytes, size_t *buf_size, void **buf);
+herr_t        H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space);
 
 const H5Z_class2_t H5Z_LZF[1] = {{
-        H5Z_CLASS_T_VERS,       /* H5Z_class_t version */
-        (H5Z_filter_t)(H5Z_FILTER_LZF),         /* Filter id number             */
+    H5Z_CLASS_T_VERS,               /* H5Z_class_t version */
+    (H5Z_filter_t)(H5Z_FILTER_LZF), /* Filter id number             */
 #ifdef FILTER_DECODE_ONLY
-    0,                   /* encoder_present flag (false is not available) */
+    0, /* encoder_present flag (false is not available) */
 #else
-    1,                   /* encoder_present flag (set to true) */
+    1, /* encoder_present flag (set to true) */
 #endif
-        1,              /* decoder_present flag (set to true) */
-        "HDF5 lzf filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
-        /* Filter name for debugging    */
-        NULL,                       /* The "can apply" callback     */
-        (H5Z_set_local_func_t)(H5Z_lzf_set_local), /* The "set local" callback */
-        (H5Z_func_t)(H5Z_lzf_filter),         /* The actual filter function   */
+    1, /* decoder_present flag (set to true) */
+    "HDF5 lzf filter; see "
+    "https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
+    /* Filter name for debugging    */
+    NULL,                                      /* The "can apply" callback     */
+    (H5Z_set_local_func_t)(H5Z_lzf_set_local), /* The "set local" callback */
+    (H5Z_func_t)(H5Z_lzf_filter),              /* The actual filter function   */
 }};
 
-H5PL_type_t H5PLget_plugin_type(void) { return H5PL_TYPE_FILTER; }
-const void* H5PLget_plugin_info(void) { return H5Z_LZF; }
-
+H5PL_type_t
+H5PLget_plugin_type(void)
+{
+    return H5PL_TYPE_FILTER;
+}
+const void *
+H5PLget_plugin_info(void)
+{
+    return H5Z_LZF;
+}
 
 /*  Filter setup.  Records the following inside the DCPL:
 
@@ -143,49 +154,57 @@ const void* H5PLget_plugin_info(void) { return H5Z_LZF; }
 
     2. Compute the chunk size in bytes and store it in slot 2.
 */
-herr_t H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space) {
+herr_t
+H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space)
+{
 
-    int ndims;
-    int i;
+    int    ndims;
+    int    i;
     herr_t r;
 
     unsigned int bufsize;
-    hsize_t chunkdims[32];
+    hsize_t      chunkdims[32];
     unsigned int flags;
-    size_t nelements = 8;
-    unsigned int values[] = {0,0,0,0,0,0,0,0};
+    size_t       nelements = 8;
+    unsigned int values[]  = {0, 0, 0, 0, 0, 0, 0, 0};
 #ifdef H5PY_LZF_DEBUG
     fprintf(stderr, "LZF: lzf_set_local start\n");
 #endif
 
     r = H5Pget_filter_by_id2(dcpl, H5Z_FILTER_LZF, &flags, &nelements, values, 0, NULL, NULL);
-    if (r < 0) return -1;
+    if (r < 0)
+        return -1;
 #ifdef H5PY_LZF_DEBUG
     fprintf(stderr, "LZF: H5Pget_filter_by_id\n");
 #endif
 
-    if (nelements < 3) nelements = 3;  /* First 3 slots reserved.  If any higher
-                                      slots are used, preserve the contents. */
+    if (nelements < 3)
+        nelements = 3; /* First 3 slots reserved.  If any higher
+                      slots are used, preserve the contents. */
 
     /* It seems the H5Z_FLAG_REVERSE flag doesn't work here, so we have to be
        careful not to clobber any existing version info */
-    if (values[0] == 0) values[0] = FILTER_LZF_VERSION;
-    if (values[1] == 0) values[1] = LZF_VERSION;
+    if (values[0] == 0)
+        values[0] = FILTER_LZF_VERSION;
+    if (values[1] == 0)
+        values[1] = LZF_VERSION;
 
     ndims = H5Pget_chunk(dcpl, 32, chunkdims);
-    if (ndims < 0) return -1;
+    if (ndims < 0)
+        return -1;
     if (ndims > 32) {
         PUSH_ERR("lzf_set_local", H5E_CALLBACK, "Chunk rank exceeds limit");
         return -1;
     }
 
     bufsize = H5Tget_size(type);
-    if (bufsize == 0) return -1;
+    if (bufsize == 0)
+        return -1;
 #ifdef H5PY_LZF_DEBUG
     fprintf(stderr, "LZF: H5Tget_size\n");
 #endif
 
-    for (i = 0;i < ndims;i++) {
+    for (i = 0; i < ndims; i++) {
         bufsize *= chunkdims[i];
     }
 
@@ -196,7 +215,8 @@ herr_t H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space) {
 #endif
 
     r = H5Pmodify_filter(dcpl, H5Z_FILTER_LZF, flags, nelements, values);
-    if (r < 0) return -1;
+    if (r < 0)
+        return -1;
 
 #ifdef H5PY_LZF_DEBUG
     fprintf(stderr, "LZF: lzf_set_local end\n");
@@ -205,18 +225,18 @@ herr_t H5Z_lzf_set_local(hid_t dcpl, hid_t type, hid_t space) {
 }
 
 /* The filter function */
-static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts,
-        const unsigned int cd_values[], size_t nbytes,
-        size_t *buf_size, void **buf)
+static size_t
+H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[], size_t nbytes,
+               size_t *buf_size, void **buf)
 {
 
-    void* outbuf = NULL;
+    void  *outbuf      = NULL;
     size_t outbuf_size = 0;
 
-    unsigned int status = 0;        /* Return code from lzf routines */
+    unsigned int status = 0; /* Return code from lzf routines */
 
     /* We're compressing */
-    if(!(flags & H5Z_FLAG_REVERSE)){
+    if (!(flags & H5Z_FLAG_REVERSE)) {
 
         /* Allocate an output buffer exactly as long as the input data; if
            the result is larger, we simply return 0.  The filter is flagged
@@ -243,11 +263,11 @@ static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts,
             goto failed;
         }
 
-    /* We're decompressing */
+        /* We're decompressing */
     }
     else {
         if ((cd_nelmts >= 3) && (cd_values[2] != 0)) {
-            outbuf_size = cd_values[2];   /* Precomputed buffer guess */
+            outbuf_size = cd_values[2]; /* Precomputed buffer guess */
         }
         else {
             outbuf_size = (*buf_size);
@@ -268,7 +288,7 @@ static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts,
 
         status = lzf_decompress(*buf, nbytes, outbuf, outbuf_size);
 
-        if (!status) {    /* compression failed */
+        if (!status) { /* compression failed */
 
             if (errno == E2BIG) {
                 outbuf_size += (*buf_size);
@@ -289,9 +309,9 @@ static size_t H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts,
 
     if (status != 0) {
         free(*buf);
-        *buf = outbuf;
+        *buf      = outbuf;
         *buf_size = outbuf_size;
-        return status;  /* Size of compressed/decompressed data */
+        return status; /* Size of compressed/decompressed data */
     }
 
 failed:
