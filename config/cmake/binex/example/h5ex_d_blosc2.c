@@ -94,9 +94,7 @@ main(void)
      * If it is registered, retrieve filter's configuration.
      */
     avail = H5Zfilter_avail(H5Z_FILTER_BLOSC2);
-    if (avail) {MacroBlockBegin: "^H5_BEFORE_USER_CB*|^H5E_PAUSE_ERRORS"
-MacroBlockEnd: "^H5_AFTER_USER_CB*|^H5E_RESUME_ERRORS"
-
+    if (avail) {
         status = H5Zget_filter_info(H5Z_FILTER_BLOSC2, &filter_config);
         if ((filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) &&
             (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED))
