@@ -219,7 +219,7 @@ H5Z_zfp_can_apply(hid_t dcpl_id, hid_t type_id, hid_t chunk_space_id)
     if (0 > (ndims = H5Sget_simple_extent_dims(chunk_space_id, dims, 0)))
         H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADTYPE, -1, "bad chunk data space");
 
-    /* confirm ZFP library can handle this data */
+        /* confirm ZFP library can handle this data */
 #if ZFP_VERSION_NO < 0x0510
     if (!(dclass == H5T_FLOAT))
         H5Z_ZFP_PUSH_AND_GOTO(H5E_PLINE, H5E_BADTYPE, 0, "requires datatype class of H5T_FLOAT");

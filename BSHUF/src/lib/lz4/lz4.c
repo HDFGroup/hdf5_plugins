@@ -1248,7 +1248,7 @@ LZ4_compress_generic_validated(LZ4_stream_t_internal *const cctx, const char *co
                 if (((tableType != byU16) || (LZ4_DISTANCE_MAX < LZ4_DISTANCE_ABSOLUTE_MAX)) &&
                     (matchIndex + LZ4_DISTANCE_MAX < current)) {
                     continue;
-                } /* too far */
+                }                                                   /* too far */
                 assert((current - matchIndex) <= LZ4_DISTANCE_MAX); /* match now expected within distance */
 
                 if (LZ4_read32(match) == LZ4_read32(ip)) {
@@ -2261,7 +2261,7 @@ LZ4_decompress_unsafe_generic(const BYTE *const istart, BYTE *const ostart, int 
                 return -1;
             }
         } /* match */
-    } /* main loop */
+    }     /* main loop */
     return (int)(ip - istart);
 }
 

@@ -26,7 +26,7 @@
     do {                                                                                                     \
         if ((count) < 0) {                                                                                   \
             free(buf);                                                                                       \
-            return (count) - 1000;                                                                           \
+            return (count)-1000;                                                                             \
         }                                                                                                    \
     } while (0)
 

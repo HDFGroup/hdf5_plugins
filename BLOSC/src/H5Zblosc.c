@@ -341,7 +341,7 @@ blosc_filter(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[
             PUSH_ERR("blosc_filter", H5E_CALLBACK, "Blosc decompression error");
             goto failed;
         } /* if !status */
-    } /* compressing vs decompressing */
+    }     /* compressing vs decompressing */
 
     if (status != 0) {
         free(*buf);

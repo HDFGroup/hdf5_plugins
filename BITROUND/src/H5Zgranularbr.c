@@ -601,8 +601,8 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
                     u64_ptr[idx] +=
                         msk_f64_u64_hshv; /* Add 1 to the MSB of LSBs, carry 1 to mantissa or even exponent */
                     u64_ptr[idx] &= msk_f64_u64_zro; /* Shave it */
-                } /* !mss_val_cmp_dbl */
-            } /* !idx */
+                }                                    /* !mss_val_cmp_dbl */
+            }                                        /* !idx */
             break;
         default:
             sprintf(errmsg, "%s reports datum size = %d B is invalid for %s filter\n", fnc_nm, type,

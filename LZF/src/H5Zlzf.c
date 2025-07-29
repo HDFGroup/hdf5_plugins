@@ -305,7 +305,7 @@ H5Z_lzf_filter(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
                 goto failed;
             }
         } /* if !status */
-    } /* compressing vs decompressing */
+    }     /* compressing vs decompressing */
 
     if (status != 0) {
         free(*buf);
