@@ -46,9 +46,9 @@ main(void)
     htri_t       avail;
     H5Z_filter_t filter_id = 0;
     char         filter_name[128];
-    hsize_t      dims[3] = {NUM_IMAGES, DIM0, DIM1};
+    hsize_t      dims[3]  = {NUM_IMAGES, DIM0, DIM1};
     hsize_t      chunk[3] = {CHUNK0, CHUNK1, CHUNK2};
-    size_t       nelmts = 4; /* number of elements in cd_values */
+    size_t       nelmts   = 4; /* number of elements in cd_values */
     unsigned int flags;
     unsigned     filter_config;
     size_t       data_size = DIM0 * DIM1 * NUM_IMAGES;
