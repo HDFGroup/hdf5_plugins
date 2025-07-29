@@ -46,7 +46,8 @@ main(void)
     htri_t       avail;
     H5Z_filter_t filter_id = 0;
     char         filter_name[128];
-    hsize_t      dims[3] = {NUM_IMAGES, DIM0, DIM1}, chunk[3] = {CHUNK0, CHUNK1, CHUNK2};
+    hsize_t      dims[3] = {NUM_IMAGES, DIM0, DIM1};
+    hsize_t      chunk[3] = {CHUNK0, CHUNK1, CHUNK2};
     size_t       nelmts = 4; /* number of elements in cd_values */
     unsigned int flags;
     unsigned     filter_config;
@@ -57,7 +58,7 @@ main(void)
     /* Number of columns */
     /* Number of rows */
     /* Color mode (0=Mono, 1=RGB) */
-    const unsigned int cd_values[4]  = {JPEG_QUALITY, DIM1, DIM0, 0}; /* jpeg default level is 2 */
+    const unsigned int cd_values[4]  = {JPEG_QUALITY, DIM0, DIM1, 0}; /* jpeg default level is 2 */
     unsigned int       values_out[4] = {99, 99, 99, 99};
     unsigned char     *wdata; /* Write buffer */
     unsigned char     *rdata; /* Read buffer */
