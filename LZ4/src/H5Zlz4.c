@@ -70,7 +70,7 @@ static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigne
 #define be32toht(x) ntohl(x)
 #define be64toht(x) ntohll(x)
 
-#define DEFAULT_BLOCK_SIZE 1 << 30; /* 1GiB. LZ4 needs blocks < 1.97GiB. */
+#define DEFAULT_BLOCK_SIZE 1 << 30 /* 1GiB. LZ4 needs blocks < 1.97GiB. */
 
 const H5Z_class2_t H5Z_LZ4[1] = {{
     H5Z_CLASS_T_VERS,             /* H5Z_class_t version */
