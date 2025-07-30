@@ -17,42 +17,51 @@
 
 #include "zstd.h"
 
-static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts,
-                     const unsigned int cd_values[], size_t nbytes,
-                     size_t *buf_size, void **buf);
+static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[],
+                              size_t nbytes, size_t *buf_size, void **buf);
 
 #define H5Z_FILTER_ZSTD 32015
 
-#define PUSH_ERR(func, minor, str) H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
+#define PUSH_ERR(func, minor, str)                                                                           \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
 
 const H5Z_class2_t H5Z_ZSTD[1] = {{
-    H5Z_CLASS_T_VERS,                 /* H5Z_class_t version */
-    (H5Z_filter_t)H5Z_FILTER_ZSTD,    /* Filter id number             */
+    H5Z_CLASS_T_VERS,              /* H5Z_class_t version */
+    (H5Z_filter_t)H5Z_FILTER_ZSTD, /* Filter id number             */
 #ifdef FILTER_DECODE_ONLY
-    0,                                /* encoder_present flag (false is not available) */
+    0, /* encoder_present flag (false is not available) */
 #else
-    1,                                /* encoder_present flag (set to true) */
+    1, /* encoder_present flag (set to true) */
 #endif
-    1,                                /* decoder_present flag (set to true) */
-    "HDF5 zstd filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
-                                      /* Filter name for debugging    */
-    NULL,                             /* The "can apply" callback     */
-    NULL,                             /* The "set local" callback     */
-    (H5Z_func_t)H5Z_filter_zstd,      /* The actual filter function   */
+    1, /* decoder_present flag (set to true) */
+    "HDF5 zstd filter; see "
+    "https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
+    /* Filter name for debugging    */
+    NULL,                        /* The "can apply" callback     */
+    NULL,                        /* The "set local" callback     */
+    (H5Z_func_t)H5Z_filter_zstd, /* The actual filter function   */
 }};
 
-H5PL_type_t H5PLget_plugin_type(void) {return H5PL_TYPE_FILTER;}
-const void *H5PLget_plugin_info(void) {return H5Z_ZSTD;}
+H5PL_type_t
+H5PLget_plugin_type(void)
+{
+    return H5PL_TYPE_FILTER;
+}
+const void *
+H5PLget_plugin_info(void)
+{
+    return H5Z_ZSTD;
+}
 
-static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts,
-                     const unsigned int cd_values[], size_t nbytes,
-                     size_t *buf_size, void **buf)
+static size_t
+H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[], size_t nbytes,
+                size_t *buf_size, void **buf)
 {
     size_t buf_size_out = 0;
-    size_t origSize = nbytes;     /* Number of bytes for output (compressed) buffer */
-    void *outbuf = NULL;
-    void *inbuf = NULL;    /* Pointer to input buffer */
-    inbuf = *buf;
+    size_t origSize     = nbytes; /* Number of bytes for output (compressed) buffer */
+    void  *outbuf       = NULL;
+    void  *inbuf        = NULL; /* Pointer to input buffer */
+    inbuf               = *buf;
 
     if (flags & H5Z_FLAG_REVERSE) {
         /* We're decompressing */
@@ -103,7 +112,7 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts,
         buf_size_out = compSize;
     }
     free(*buf);
-    *buf = outbuf;
+    *buf      = outbuf;
     *buf_size = buf_size_out;
     return buf_size_out;
 

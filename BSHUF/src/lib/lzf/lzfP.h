@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2000-2007 Marc Alexander Lehmann <schmorp@schmorp.de>
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modifica-
  * tion, are permitted provided that the following conditions are met:
- * 
+ *
  *   1.  Redistributions of source code must retain the above copyright notice,
  *       this list of conditions and the following disclaimer.
- * 
+ *
  *   2.  Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MER-
  * CHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
@@ -40,7 +40,7 @@
 #define STANDALONE 1 /* at the moment, this is ok. */
 
 #ifndef STANDALONE
-# include "lzf.h"
+#include "lzf.h"
 #endif
 
 /*
@@ -52,7 +52,7 @@
  * For best compression, use 15 or 16 (or more, up to 23).
  */
 #ifndef HLOG
-# define HLOG 17  /* Avoid pathological case at HLOG=16   A.C. 2/15/09 */
+#define HLOG 17 /* Avoid pathological case at HLOG=16   A.C. 2/15/09 */
 #endif
 
 /*
@@ -61,7 +61,7 @@
  * (very roughly) 15% faster. This is the preferred mode of operation.
  */
 #ifndef VERY_FAST
-# define VERY_FAST 1
+#define VERY_FAST 1
 #endif
 
 /*
@@ -72,14 +72,14 @@
  * possibly disable this for text data.
  */
 #ifndef ULTRA_FAST
-# define ULTRA_FAST 1
+#define ULTRA_FAST 1
 #endif
 
 /*
  * Unconditionally aligning does not cost very much, so do it if unsure
  */
 #ifndef STRICT_ALIGN
-# define STRICT_ALIGN !(defined(__i386) || defined (__amd64))
+#define STRICT_ALIGN !(defined(__i386) || defined(__amd64))
 #endif
 
 /*
@@ -88,7 +88,7 @@
  * deterministic/repeatable when the configuration otherwise is the same).
  */
 #ifndef INIT_HTAB
-# define INIT_HTAB 0
+#define INIT_HTAB 0
 #endif
 
 /* =======================================================================
@@ -103,7 +103,7 @@
  * the documentation in lzf.h.
  */
 #ifndef AVOID_ERRNO
-# define AVOID_ERRNO 0
+#define AVOID_ERRNO 0
 #endif
 
 /*
@@ -112,7 +112,7 @@
  * NOTE: this breaks the prototype in lzf.h.
  */
 #ifndef LZF_STATE_ARG
-# define LZF_STATE_ARG 0
+#define LZF_STATE_ARG 0
 #endif
 
 /*
@@ -125,7 +125,7 @@
  */
 
 #ifndef CHECK_INPUT
-# define CHECK_INPUT 1
+#define CHECK_INPUT 1
 #endif
 
 /*****************************************************************************/
@@ -137,30 +137,29 @@ typedef const u8 *LZF_STATE[1 << (HLOG)];
 
 #if !STRICT_ALIGN
 /* for unaligned accesses we need a 16 bit datatype. */
-# include <limits.h>
-# if USHRT_MAX == 65535
-    typedef unsigned short u16;
-# elif UINT_MAX == 65535
-    typedef unsigned int u16;
-# else
-#  undef STRICT_ALIGN
-#  define STRICT_ALIGN 1
-# endif
+#include <limits.h>
+#if USHRT_MAX == 65535
+typedef unsigned short u16;
+#elif UINT_MAX == 65535
+typedef unsigned int u16;
+#else
+#undef STRICT_ALIGN
+#define STRICT_ALIGN 1
+#endif
 #endif
 
 #if ULTRA_FAST
-# if defined(VERY_FAST)
-#  undef VERY_FAST
-# endif
+#if defined(VERY_FAST)
+#undef VERY_FAST
+#endif
 #endif
 
 #if INIT_HTAB
-# ifdef __cplusplus
-#  include <cstring>
-# else
-#  include <string.h>
-# endif
+#ifdef __cplusplus
+#include <cstring>
+#else
+#include <string.h>
+#endif
 #endif
 
 #endif
-
