@@ -23,12 +23,6 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (BITGROOM_GIT_URL "https://no_url/bitgroom.git" CACHE STRING "Use BITGROOM from repository" FORCE)
-set (BITGROOM_GIT_BRANCH "master" CACHE STRING "" FORCE)
-
-set (BITGROOM_TGZ_ORIGPATH "https://no_url" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BITGROOM_TGZ_NAME "bitgroom-1.0.tar.gz" CACHE STRING "Use BITGROOM from compressed file" FORCE)
-
 set (BITGROOM_PACKAGE_NAME "bitgroom" CACHE STRING "Name of BITGROOM package" FORCE)
 set (H5BITGROOM_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 

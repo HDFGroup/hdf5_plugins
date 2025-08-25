@@ -23,12 +23,6 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (BITROUND_GIT_URL "https://no_url/granularbr.git" CACHE STRING "Use BITROUND from repository" FORCE)
-set (BITROUND_GIT_BRANCH "master" CACHE STRING "" FORCE)
-
-set (BITROUND_TGZ_ORIGPATH "https://no_url" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BITROUND_TGZ_NAME "granularbr-1.0.tar.gz" CACHE STRING "Use BITROUND from compressed file" FORCE)
-
 set (BITROUND_PACKAGE_NAME "granularbr" CACHE STRING "Name of BITROUND package" FORCE)
 set (H5BITROUND_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
