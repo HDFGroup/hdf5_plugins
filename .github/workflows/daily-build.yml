@@ -71,6 +71,7 @@ jobs:
     needs: [get-old-names, call-workflow-tarball]
     uses: ./.github/workflows/cmake-script.yml
     with:
+      cmake_version: "latest"
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
       use_environ: snapshots
@@ -80,6 +81,7 @@ jobs:
     needs: [get-old-names, call-workflow-tarball]
     uses: ./.github/workflows/cmake-ctest.yml
     with:
+      cmake_version: 'latest'
       preset_name: ci-StdShar
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}

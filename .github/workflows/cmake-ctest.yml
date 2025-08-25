@@ -26,6 +26,10 @@ on:
         type: string
         required: true
         default: snapshots
+      cmake_version:
+        description: "3.18.0 or later, latest"
+        required: true
+        type: string
     secrets:
         APPLE_CERTS_BASE64:
             required: true
@@ -86,9 +90,16 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.13.0
 
       - name: Install CMake
-        uses: jwlawson/actions-setup-cmake@v2
+        uses: lukka/get-cmake@latest
         with:
-          cmake-version: '3.31.6'
+            cmakeVersion: ${{ inputs.cmake_version }}
+            ninjaVersion: latest
+
+      - name: Check CMake Version
+        shell: bash
+        run: |
+          which cmake
+          cmake --version
 
       - name: Set file base name (Windows)
         id: set-file-base
@@ -203,7 +214,7 @@ jobs:
         shell: bash
 
       - name: Sign files with Trusted Signing
-        uses: azure/trusted-signing-action@v0.5.1
+        uses: azure/trusted-signing-action@v0.5.9
         with:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -271,9 +282,16 @@ jobs:
           sudo apt-get install ninja-build
 
       - name: Install CMake
-        uses: jwlawson/actions-setup-cmake@v2
+        uses: lukka/get-cmake@latest
         with:
-          cmake-version: '3.31.6'
+            cmakeVersion: ${{ inputs.cmake_version }}
+            ninjaVersion: latest
+
+      - name: Check CMake Version
+        shell: bash
+        run: |
+          which cmake
+          cmake --version
 
       - name: Set file base name (Linux)
         id: set-file-base
@@ -414,6 +432,24 @@ jobs:
       - name: Install Dependencies (MacOS_latest)
         run: brew install ninja
 
+      - name: check clang version
+        shell: bash
+        run: |
+          which clang
+          clang -v
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+        with:
+            cmakeVersion: ${{ inputs.cmake_version }}
+            ninjaVersion: latest
+
+      - name: Check CMake Version
+        shell: bash
+        run: |
+          which cmake
+          cmake --version
+
       - name: Install the Apple certificate and provisioning profile
         shell: bash
         env:
@@ -435,11 +471,6 @@ jobs:
             security -v import $CERTIFICATE_PATH -P $P12_PASSWORD -A -t cert -f pkcs12 -k $KEYCHAIN_FILE
             security -v set-key-partition-list -S apple-tool:,codesign:,apple: -k $KEYCHAIN_PASSWD $KEYCHAIN_FILE
         if: ${{ needs.check-secret.outputs.sign-state == 'exists' }}
-
-      - name: Install CMake
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '3.31.6'
 
       - name: Set file base name (MacOS_latest)
         id: set-file-base
