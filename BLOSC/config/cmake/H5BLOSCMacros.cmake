@@ -22,13 +22,12 @@ macro (EXTERNAL_BLOSC_LIBRARY compress_type)
     FetchContent_Declare (BLOSC
         URL ${BLOSC_URL}
         URL_HASH ""
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+            ${H5BLOSC_SOURCE_DIR}/config/blosc-CMakeLists.txt
+            <SOURCE_DIR>/CMakeLists.txt
     )
   endif ()
 
-  set (BUILD_SHARED OFF CACHE BOOL "" FORCE)
-  set (BUILD_TESTS OFF CACHE BOOL "" FORCE)
-  set (BUILD_FUZZERS OFF CACHE BOOL "" FORCE)
-  set (BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
   set (PREFER_EXTERNAL_SNAPPY OFF CACHE BOOL "" FORCE)
   set (PREFER_EXTERNAL_ZLIB OFF CACHE BOOL "" FORCE)
   set (PREFER_EXTERNAL_ZSTD OFF CACHE BOOL "" FORCE)
