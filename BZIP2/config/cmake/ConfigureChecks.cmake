@@ -168,9 +168,7 @@ macro (HDF_FUNCTION_TEST OTHER_TEST)
       )
     endif ()
 
-    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-      message (TRACE "Performing ${OTHER_TEST}")
-    endif ()
+    message (TRACE "Performing ${OTHER_TEST}")
     try_compile (${OTHER_TEST}
         ${CMAKE_BINARY_DIR}
         ${H5BZ2_RESOURCES_DIR}/H5PLTests.c
@@ -180,13 +178,9 @@ macro (HDF_FUNCTION_TEST OTHER_TEST)
     )
     if (${OTHER_TEST})
       set (${OTHER_TEST} 1 CACHE INTERNAL "Other test ${FUNCTION}")
-      if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-        message (VERBOSE "Performing Other Test ${OTHER_TEST} - Success")
-      endif ()
+      message (VERBOSE "Performing Other Test ${OTHER_TEST} - Success")
     else ()
-      if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-        message (VERBOSE "Performing Other Test ${OTHER_TEST} - Failed")
-      endif ()
+      message (VERBOSE "Performing Other Test ${OTHER_TEST} - Failed")
       set (${OTHER_TEST} "" CACHE INTERNAL "Other test ${FUNCTION}")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Performing Other Test ${OTHER_TEST} failed with the following output:\n"
@@ -197,24 +191,13 @@ macro (HDF_FUNCTION_TEST OTHER_TEST)
 endmacro ()
 
 #-----------------------------------------------------------------------------
-# Check for these functions before the time headers are checked
+#  Platform-specific flags
 #-----------------------------------------------------------------------------
-HDF_FUNCTION_TEST (STDC_HEADERS)
-
-#-----------------------------------------------------------------------------
-#  Check for large file support
-#-----------------------------------------------------------------------------
-
-# The linux-lfs option is deprecated.
-set (LINUX_LFS 0)
 
 set (HDF_EXTRA_C_FLAGS)
-set (HDF_EXTRA_FLAGS)
-if (MINGW OR NOT WINDOWS)
-  # Might want to check explicitly for Linux and possibly Cygwin
-  # instead of checking for not Solaris or Darwin.
-  if (NOT HAVE_SOLARIS AND NOT HAVE_DARWIN)
-  # Linux Specific flags
+
+# Linux-specific flags
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
   # This was originally defined as _POSIX_SOURCE which was updated to
   # _POSIX_C_SOURCE=199506L to expose a greater amount of POSIX
   # functionality so clock_gettime and CLOCK_MONOTONIC are defined
@@ -225,48 +208,36 @@ if (MINGW OR NOT WINDOWS)
   # http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
   set (HDF_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=200809L)
 
-  option (HDF_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
-  if (HDF_ENABLE_LARGE_FILE AND NOT DEFINED TEST_LFS_WORKS_RUN)
-    set (msg "Performing TEST_LFS_WORKS")
-    try_run (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
-        ${CMAKE_BINARY_DIR}
-        ${H5BZ2_RESOURCES_DIR}/H5PLTests.c
-        COMPILE_DEFINITIONS "-DTEST_LFS_WORKS"
-    )
+  # Set up large file support. This is only necessary on 32-bit systems
+  # but is used on all Linux systems. It has no effect on 64-bit systems
+  # so it's not worth hacking up a 32/64-bit test to selectively include it.
+  #
+  # The library currently does not use any of the 64-flavored API calls
+  # or types
+  set (HDF_EXTRA_C_FLAGS ${HDF_EXTRA_C_FLAGS} -D_LARGEFILE_SOURCE)
+  set (HDF_EXTRA_C_FLAGS ${HDF_EXTRA_C_FLAGS} -D_FILE_OFFSET_BITS=64)
 
-    # The LARGEFILE definitions were from the transition period
-    # and are probably no longer needed. The FILE_OFFSET_BITS
-    # check should be generalized for all POSIX systems as it
-    # is in the Autotools.
-    if (TEST_LFS_WORKS_COMPILE)
-      if (TEST_LFS_WORKS_RUN MATCHES 0)
-        set (TEST_LFS_WORKS 1 CACHE INTERNAL ${msg})
-        set (LARGEFILE 1)
-        set (HDF_EXTRA_FLAGS ${HDF_EXTRA_FLAGS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE)
-        if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-          message (VERBOSE "${msg}... yes")
-        endif ()
-      else ()
-        set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
-        if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-          message (VERBOSE "${msg}... no")
-        endif ()
-        file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-              "Test TEST_LFS_WORKS Run failed with the following exit code:\n ${TEST_LFS_WORKS_RUN}\n"
-        )
-      endif ()
-    else ()
-      set (TEST_LFS_WORKS "" CACHE INTERNAL ${msg})
-      if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-          message (VERBOSE "${msg}... no")
-      endif ()
-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
-          "Test TEST_LFS_WORKS Compile failed\n"
-      )
-    endif ()
-  endif ()
-  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${HDF_EXTRA_FLAGS})
-  endif ()
+  set (CMAKE_REQUIRED_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${HDF_EXTRA_C_FLAGS})
+endif ()
+
+# As of 2024, both AIX and Solaris are uncommon, but still exist! The default
+# compiler options are also often set to -m32, which produces 32-bit binaries.
+
+# 32-bit AIX compiles might require _LARGE_FILES, but we don't have a system on
+# which to test this (yet).
+#
+# https://www.ibm.com/docs/en/aix/7.1?topic=volumes-writing-programs-that-access-large-files
+
+# 32-bit Solaris probably needs _LARGEFILE_SOURCE and _FILE_OFFSET_BITS=64,
+# as in Linux, above.
+#
+# https://docs.oracle.com/cd/E23824_01/html/821-1474/lfcompile-5.html
+
+# MinGW and Cygwin
+if (MINGW OR CYGWIN)
+  set (CMAKE_REQUIRED_DEFINITIONS
+    "${CURRENT_TEST_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE"
+  )
 endif ()
 
 #-----------------------------------------------------------------------------
@@ -275,15 +246,11 @@ endif ()
 macro (HDF_CHECK_TYPE_SIZE type var)
   set (aType ${type})
   set (aVar  ${var})
-  if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-    message (TRACE "Checking size of ${aType} and storing into ${aVar}")
-  endif ()
+  message (TRACE "Checking size of ${aType} and storing into ${aVar}")
   CHECK_TYPE_SIZE (${aType}   ${aVar})
   if (NOT ${aVar})
     set (${aVar} 0 CACHE INTERNAL "SizeOf for ${aType}")
-    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
-      message (TRACE "Size of ${aType} was NOT Found")
-    endif ()
+    message (TRACE "Size of ${aType} was NOT Found")
   endif ()
 endmacro ()
 

@@ -34,6 +34,7 @@ endif()
 if (NOT H5PL_RESOURCES_DIR)
   include (${H5LZF_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
   include (${H5LZF_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
+  include (${H5LZF_SOURCE_DIR}/config/CacheURLs.cmake)
 
   SET_HDF_BUILD_TYPE()
 endif ()
