@@ -529,10 +529,10 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/ZSTD
 ##### Contact
 
 Mark Kittisopikul<br/>
-Email: kittisopikulm at janelia dot hhmi dot org
+Email: kittisopikulm at janelia dot hhmi dot org<br/>
 Github: [@mkitti](https://github.com/mkitti/)
 
-Nathan Zimmberberg
+Nathan Zimmerberg<br/>
 Email: nzimmerberg at gmail dot com<br/>
 Github: [@nhz2](https://github.com/nhz2)
 
