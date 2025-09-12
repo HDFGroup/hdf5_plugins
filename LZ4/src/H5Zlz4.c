@@ -179,7 +179,8 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
             goto error;
         }
 
-        if (cd_nelmts > 0 && cd_values[0] > 0) {
+	/* Acceleration can be from 1 to 9. */
+        if (cd_nelmts > 0 && cd_values[0] > 0 && cd_values[0] < 10) {
             acceleration = cd_values[0];
         }
         if (blockSize > nbytes) {
