@@ -172,7 +172,7 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
         size_t    maxDestSize;
         char     *rpos;  /* pointer to current read position */
         char     *roBuf; /* pointer to current write position */
-	int      acceleration = 1;
+        int      acceleration = 1;
 
         if (nbytes > INT32_MAX) {
             /* can only compress chunks up to 2GB */
