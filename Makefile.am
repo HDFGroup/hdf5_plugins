@@ -17,5 +17,10 @@ if BUILD_LZ4
 LZ4 = LZ4
 endif
 
+# Does the user want to build lz4?
+if BUILD_JPEG
+JPEG = JPEG
+endif
+
 # Build the desired subdirectories.
-SUBDIRS = libs $(BZIP2) $(LZ4) JPEG #BITGROOM #BITROUND #BSHUF # BLOSC BLOSC2 JPEG LZF
+SUBDIRS = libs $(BZIP2) $(LZ4) $(JPEG)
