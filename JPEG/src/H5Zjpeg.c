@@ -282,7 +282,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             PUSH_ERR("jpeg_h5_filter", H5E_CALLBACK, "Could not initialize JPEG compression object.");
             goto failed;
         }
-        jpegInfo.err = jpeg_std_error(&jpegErr);
+        jpegInfo.err = jpeg_std_error((struct jpeg_error_mgr *)&jpegErr);
         /* Now we can initialize the JPEG compression object. */
         jpeg_create_compress(&jpegInfo);
 

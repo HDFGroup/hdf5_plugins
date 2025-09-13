@@ -55,7 +55,7 @@
 #include "H5PLextern.h"
 #include "lz4.h"
 
-static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[],
+size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[],
                              size_t nbytes, size_t *buf_size, void **buf);
 
 #define H5Z_FILTER_LZ4 32004
@@ -100,7 +100,7 @@ H5PLget_plugin_info(void)
     return H5Z_LZ4;
 }
 
-static size_t
+size_t
 H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[], size_t nbytes,
                size_t *buf_size, void **buf)
 {
@@ -172,15 +172,14 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
         size_t    maxDestSize;
         char     *rpos;  /* pointer to current read position */
         char     *roBuf; /* pointer to current write position */
-        int      acceleration = 1;
+	int      acceleration = 1;
 
         if (nbytes > INT32_MAX) {
             /* can only compress chunks up to 2GB */
             goto error;
         }
 
-	/* Acceleration can be from 1 to 9. */
-        if (cd_nelmts > 0 && cd_values[0] > 0 && cd_values[0] < 10) {
+        if (cd_nelmts > 0 && cd_values[0] > 0) {
             acceleration = cd_values[0];
         }
         if (blockSize > nbytes) {
@@ -205,6 +204,7 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
 
         outSize = 12; /* size of the output buffer. Header size (12 bytes) is included */
 
+        /* printf("nbytes %ld nBlocks %ld\n", nbytes, nBlocks); */
         for (block = 0; block < nBlocks; ++block) {
             uint32_t compBlockSize; /// reserve space for compBlockSize
             size_t   origWritten = block * blockSize;
@@ -212,7 +212,10 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
                 blockSize = nbytes - origWritten;
 
             compBlockSize = LZ4_compress_fast(
-                rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize), acceleration); /// reserve space for compBlockSize
+                rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize), 1); /// reserve space for compBlockSize
+	    /* printf("blockSize %ld compBlockSize %d\n", blockSize, compBlockSize); */
+            /* compBlockSize = LZ4_compress_default( */
+            /*     rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize)); /// reserve space for compBlockSize */
             if (!compBlockSize)
                 goto error;
             if (compBlockSize >= blockSize) /* compression did not save any space, do a memcpy instead */

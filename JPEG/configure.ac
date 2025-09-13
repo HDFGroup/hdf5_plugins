@@ -7,9 +7,9 @@
 # Ed Hartnett 1/16/19
 
 # Initialize autoconf.
-AC_PREREQ(2.59)
-AC_INIT(H5JPEG, 0.1, help@hdfgroup.org)
-AC_CONFIG_HEADER([jpeg_config.h])
+AC_PREREQ([2.71])
+AC_INIT([H5JPEG],[0.1],[help@hdfgroup.org])
+AC_CONFIG_HEADERS([jpeg_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_MSG_NOTICE([*** This is a configure for JPEG ***])
@@ -23,9 +23,6 @@ AC_PROG_INSTALL
 
 LT_INIT(dlopen)
 
-# If the env. variable HDF5_PLUGIN_DIR is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
-# (i.e. > 2 GiB) files created during the large file testing.
 AC_MSG_CHECKING([where to put HDF5 plugins])
 HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-'/usr/local/hdf5/lib/plugin'}
 AC_ARG_WITH([hdf5-plugin-dir],
@@ -36,8 +33,8 @@ AC_MSG_RESULT($HDF5_PLUGIN_DIR)
 AC_SUBST([HDF5_PLUGIN_DIR])
 
 # Is the jpeg library present?
-#AC_CHECK_HEADERS([jpeg.h], [], [AC_MSG_ERROR([jpeg.h is required, set CPPFLAGS.])])
-#AC_CHECK_LIB([jpeg], [JPEG_compress], [], [AC_MSG_ERROR([libjpeg is required, set LDFLAGS.])])
+AC_CHECK_HEADERS([jpeglib.h], [], [AC_MSG_ERROR([jpeglib.h is required, set CPPFLAGS.])])
+AC_CHECK_LIB([jpeg], [jpeg_abort], [], [AC_MSG_ERROR([libjpeg is required, set LDFLAGS.])])
 
 # We need the math library
 AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
@@ -46,8 +43,6 @@ AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
 AC_CHECK_HEADERS([hdf5.h], [], [AC_MSG_ERROR([hdf5.h is required, set CPPFLAGS.])])
 AC_SEARCH_LIBS([H5Fflush], [hdf5dll hdf5], [], [AC_MSG_ERROR([libhdf5 is required, set LDFLAGS.])])
 
-# Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
