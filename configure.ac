@@ -22,7 +22,7 @@ AC_MSG_CHECKING([where to put HDF5 plugins])
 AC_ARG_WITH([hdf5-plugin-path],
             [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],
                             [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_PATH, if set)])],
-            [HDF5_PLUGIN_PATH=$with_hdf5_plugin_dir])
+            [HDF5_PLUGIN_PATH=$with_hdf5_plugin_path])
 HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-.}
 AC_MSG_RESULT($HDF5_PLUGIN_PATH)
 
