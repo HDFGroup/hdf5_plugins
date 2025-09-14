@@ -1,6 +1,6 @@
 # This is the main configure file for the hdf5_plugins project.
 
-# Ed Hartnett 12/24/2019
+# Edward Hartnett, Intelligent Data Design, Inc. 9/13/25
 
 AC_PREREQ([2.59])
 
@@ -16,19 +16,15 @@ AC_CONFIG_MACRO_DIR([m4])
 LT_PREREQ([2.4])
 LT_INIT()
 
-# If the env. variable HDF5_PLUGIN_DIR is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
-# (i.e. > 2 GiB) files created during the large file testing. This is
-# necessary at the top level to provide the help message and --with
-# option. If used, the option will be passed to the subdirs, and also
-# handled by the configure in each filter subdirectory.
+# If the env. variable HDF5_PLUGIN_PATH is set, or if
+# --with-hdf5-plugin-dir=<directory>, use it.
 AC_MSG_CHECKING([where to put HDF5 plugins])
-AC_ARG_WITH([hdf5-plugin-dir],
-            [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
-                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_DIR, if set)])],
-            [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
-HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-.}
-AC_MSG_RESULT($HDF5_PLUGIN_DIR)
+AC_ARG_WITH([hdf5-plugin-path],
+            [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],
+                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_PATH, if set)])],
+            [HDF5_PLUGIN_PATH=$with_hdf5_plugin_dir])
+HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-.}
+AC_MSG_RESULT($HDF5_PLUGIN_PATH)
 
 # Does the user want BZIP2?
 AC_MSG_CHECKING([whether BZIP2 filter library should be built and installed])
