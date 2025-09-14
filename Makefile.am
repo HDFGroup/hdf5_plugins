@@ -2,7 +2,7 @@
 
 # This file builds main directory for the hdf5_plugings project.
 
-# Ed Hartnett 12/24/2019
+# Edward Hartnett 12/24/2019
 
 # This directory stores libtool macros, put there by aclocal.
 ACLOCAL_AMFLAGS = -I m4
@@ -22,5 +22,10 @@ if BUILD_JPEG
 JPEG = JPEG
 endif
 
+# Does the user want to build lz4?
+if BUILD_LZF
+LZF = LZF
+endif
+
 # Build the desired subdirectories.
-SUBDIRS = libs $(BZIP2) $(LZ4) $(JPEG)
+SUBDIRS = libs $(BZIP2) $(LZ4) $(JPEG) $(LZF)

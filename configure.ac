@@ -53,6 +53,15 @@ test "x$enable_jpeg" = xno || enable_jpeg=yes
 AC_MSG_RESULT($enable_jpeg)
 AM_CONDITIONAL(BUILD_JPEG, [test "x$enable_jpeg" = xyes])
 
+# Does the user want LZF?
+AC_MSG_CHECKING([whether LZF filter library should be built and installed])
+AC_ARG_ENABLE([lzf],
+              [AS_HELP_STRING([--disable-lzf],
+                              [Disable the build and install of lzf filter library.])])
+test "x$enable_lzf" = xno || enable_lzf=yes
+AC_MSG_RESULT($enable_lzf)
+AM_CONDITIONAL(BUILD_LZF, [test "x$enable_lzf" = xyes])
+
 # Build the filter libraries as desired.
 if test "x$enable_bzip2" = xyes; then
    AC_CONFIG_SUBDIRS([BZIP2])
@@ -63,9 +72,11 @@ fi
 if test "x$enable_jpeg" = xyes; then
    AC_CONFIG_SUBDIRS([JPEG])
 fi
+if test "x$enable_lzf" = xyes; then
+   AC_CONFIG_SUBDIRS([LZF])
+fi
 #AC_CONFIG_SUBDIRS([BLOSC])
 #AC_CONFIG_SUBDIRS([BLOSC2])
-#AC_CONFIG_SUBDIRS([LZF])
 
 # These files will be created when the configure script is run.
 AC_CONFIG_FILES([Makefile
