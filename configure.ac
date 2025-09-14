@@ -65,10 +65,6 @@ if test "x$enable_jpeg" = xyes; then
 fi
 #AC_CONFIG_SUBDIRS([BLOSC])
 #AC_CONFIG_SUBDIRS([BLOSC2])
-#AC_CONFIG_SUBDIRS([BITGROOM])
-#AC_CONFIG_SUBDIRS([BITROUND])
-#AC_CONFIG_SUBDIRS([BSHUF])
-AC_CONFIG_SUBDIRS([JPEG])
 #AC_CONFIG_SUBDIRS([LZF])
 
 # These files will be created when the configure script is run.
