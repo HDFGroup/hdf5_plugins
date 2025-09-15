@@ -212,10 +212,7 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
                 blockSize = nbytes - origWritten;
 
             compBlockSize = LZ4_compress_fast(
-                rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize), 1); /// reserve space for compBlockSize
-	    /* printf("blockSize %ld compBlockSize %d\n", blockSize, compBlockSize); */
-            /* compBlockSize = LZ4_compress_default( */
-            /*     rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize)); /// reserve space for compBlockSize */
+                rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize), acceleration); /// reserve space for compBlockSize
             if (!compBlockSize)
                 goto error;
             if (compBlockSize >= blockSize) /* compression did not save any space, do a memcpy instead */
