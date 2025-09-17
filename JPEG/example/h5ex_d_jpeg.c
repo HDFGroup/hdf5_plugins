@@ -29,7 +29,7 @@
 #define DIM0            512
 #define DIM1            1024
 #define NUM_IMAGES      10
-#define JPEG_QUALITY    100
+#define JPEG_QUALITY    50
 #define CHUNK0          1
 #define CHUNK1          DIM0
 #define CHUNK2          DIM1
@@ -58,7 +58,7 @@ main(void)
     /* Number of columns */
     /* Number of rows */
     /* Color mode (0=Mono, 1=RGB) */
-    const unsigned int cd_values[4]  = {JPEG_QUALITY, DIM0, DIM1, 0}; /* jpeg default level is 2 */
+    const unsigned int cd_values[4]  = {JPEG_QUALITY, DIM0, DIM1, 0};
     unsigned int       values_out[4] = {99, 99, 99, 99};
     unsigned char     *wdata; /* Write buffer */
     unsigned char     *rdata; /* Read buffer */
@@ -187,7 +187,7 @@ main(void)
     switch (filter_id) {
         case H5Z_FILTER_JPEG:
             printf("%d\n", filter_id);
-            printf("   Number of parameters is %d with the value %u\n", nelmts, values_out[0]);
+            printf("   Number of parameters is %ld with the value %u\n", nelmts, values_out[0]);
             printf("   To find more about the filter check %s\n", filter_name);
             break;
         default:
