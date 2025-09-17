@@ -1,5 +1,3 @@
-# Copyright by The HDF Group. All rights reserved.
-
 # This builds the JPEG example directory.
 
 # Edward Hartnett 9/15/25
