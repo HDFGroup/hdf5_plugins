@@ -156,9 +156,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         int                           err       = 0;
         unsigned char                *output    = NULL;
 
-#ifdef JPEG_DEBUG
-        fprintf(stderr, "   decompressing nbytes: %ld\n", nbytes);
-#endif
+        printf("****   decompressing nbytes: %ld\n", nbytes);
         /* allocate and initialize JPEG decompression object */
 
         /* We set up the normal JPEG error routines, then override error_exit. */
@@ -197,6 +195,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         output = out_buf;
 
         while (jpegInfo.output_scanline < jpegInfo.output_height) {
+	    printf("****   jpegInfo.output_scanline: %d\n", jpegInfo.output_scanline);	    
             unsigned char *row_pointer[1] = {output};
 
             err = jpeg_read_scanlines(&jpegInfo, row_pointer, 1);
@@ -235,9 +234,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         int                         nwrite = 0;
         size_t                      expectedSize;
 
-#ifdef JPEG_DEBUG
-        fprintf(stderr, "    compressing nbytes: %ld\n", nbytes);
-#endif
+        printf("****    compressing nbytes: %ld cd_nelmts %ld\n", nbytes, cd_nelmts);
         if (cd_nelmts != 4) {
             PUSH_ERR("jpeg_h5_filter", H5E_CALLBACK, "cd_nelmts must be 4");
             goto failed;
@@ -250,6 +247,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         sizeX     = cd_values[1];
         sizeY     = cd_values[2];
         colorMode = cd_values[3];
+        printf("****    qualityFactor %d sizeX %d sizeY %d colorMode %d\n", qualityFactor, sizeX, sizeY, colorMode);
 
         /* Sanity check to make sure we have been passed a complete image */
         expectedSize = sizeX * sizeY;
@@ -320,10 +318,12 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
          * Pass TRUE unless you are very sure of what you're doing.
          */
         jpeg_start_compress(&jpegInfo, TRUE);
+	printf("****   starting compression\n");	    
 
         pData = (unsigned char *)*buf;
 
         while ((int)jpegInfo.next_scanline < sizeY) {
+	    printf("****   jpegInfo.next_scanline: %d\n", jpegInfo.next_scanline);	    
             row_pointer[0] = pData;
             nwrite         = jpeg_write_scanlines(&jpegInfo, row_pointer, 1);
             pData += sizeX * jpegInfo.input_components;
@@ -336,6 +336,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         /* Finish compression */
         jpeg_finish_compress(&jpegInfo);
         buf_size_out = outSize;
+        printf("****    compressed size: %ld\n", buf_size_out);
 
         out_buf = malloc(buf_size_out);
         if (!out_buf) {
