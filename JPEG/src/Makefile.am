@@ -1,5 +1,3 @@
-# Copyright by The HDF Group. All rights reserved.
-
 # This is the Makefile.am for the HDF5 JPEG filter library. This allows
 # the use of JPEG compression/decompression on HDF5 datasets.
 #
