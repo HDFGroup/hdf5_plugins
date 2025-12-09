@@ -17,7 +17,7 @@ LT_PREREQ([2.4])
 LT_INIT()
 
 # If the env. variable HDF5_PLUGIN_PATH is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it.
+# --with-hdf5-plugin-path=<directory>, use it.
 AC_MSG_CHECKING([where to put HDF5 plugins])
 AC_ARG_WITH([hdf5-plugin-path],
             [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],

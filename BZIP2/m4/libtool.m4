@@ -8245,7 +8245,7 @@ AC_SUBST([DLLTOOL])
 m4_defun([_LT_DECL_FILECMD],
 [AC_CHECK_TOOL([FILECMD], [file], [:])
 _LT_DECL([], [FILECMD], [1], [A file(cmd) program that detects file types])
-])# _LD_DECL_FILECMD
+])# _LT_DECL_FILECMD
 
 # _LT_DECL_SED
 # ------------

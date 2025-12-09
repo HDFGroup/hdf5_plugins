@@ -17,12 +17,12 @@ if BUILD_LZ4
 LZ4 = LZ4
 endif
 
-# Does the user want to build lz4?
+# Does the user want to build JPEG?
 if BUILD_JPEG
 JPEG = JPEG
 endif
 
-# Does the user want to build lz4?
+# Does the user want to build LZF?
 if BUILD_LZF
 LZF = LZF
 endif
