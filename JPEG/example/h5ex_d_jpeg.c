@@ -187,7 +187,7 @@ main(void)
     switch (filter_id) {
         case H5Z_FILTER_JPEG:
             printf("%d\n", filter_id);
-            printf("   Number of parameters is %ld with the value %u\n", nelmts, values_out[0]);
+            printf("   Number of parameters is %zu with the value %u\n", nelmts, values_out[0]);
             printf("   To find more about the filter check %s\n", filter_name);
             break;
         default:
