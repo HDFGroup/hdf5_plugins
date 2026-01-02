@@ -1,0 +1,3 @@
+[submodule "ZFP/H5Z-ZFP"]
+	path = ZFP/H5Z-ZFP
+	url = https://github.com/LLNL/H5Z-ZFP.git
