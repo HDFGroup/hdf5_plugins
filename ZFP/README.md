@@ -1,6 +1,6 @@
 # H5Z-ZFP Filter Plugin
 
-This directory integrates the H5Z-ZFP filter plugin from LLNL as a git submodule.
+This directory integrates the H5Z-ZFP filter plugin from LLNL using **git subtree**.
 
 ## Upstream Source
 
@@ -22,15 +22,13 @@ The filter supports 1-4 dimensional datasets of single and double precision inte
 
 ## Building
 
-### Initializing the Submodule
+### No Special Setup Required
 
-When cloning hdf5_plugins:
+The H5Z-ZFP source is included directly in this repository via git subtree. Simply clone and build:
+
 ```bash
-# Clone with submodules
-git clone --recursive https://github.com/HDFGroup/hdf5_plugins.git
-
-# Or initialize after cloning
-git submodule update --init --recursive
+git clone https://github.com/HDFGroup/hdf5_plugins.git
+# Everything is ready - no submodule initialization needed!
 ```
 
 ### Build Requirements
@@ -55,18 +53,22 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 cmake --build .
 ```
 
-## Updating to Newer Versions
+## Updating to Newer Versions (Maintainers Only)
 
-To update to a newer version of H5Z-ZFP:
+HDF Group maintainers can update to newer H5Z-ZFP versions using git subtree:
 
 ```bash
-cd ZFP/H5Z-ZFP
-git fetch origin
-git checkout master  # or specific version tag like v1.1.1
-cd ../..
-git add ZFP/H5Z-ZFP
-git commit -m "Update H5Z-ZFP to <version>"
+# One-time: Add upstream remote (if not already done)
+git remote add h5z-zfp https://github.com/LLNL/H5Z-ZFP.git
+
+# Update to latest master
+git subtree pull --prefix=ZFP/H5Z-ZFP h5z-zfp master --squash
+
+# Or update to specific version
+git subtree pull --prefix=ZFP/H5Z-ZFP h5z-zfp v1.1.1 --squash
 ```
+
+**Important**: The `--squash` flag is recommended to avoid importing full upstream history into hdf5_plugins.
 
 ## Reporting Issues
 
@@ -80,11 +82,13 @@ Issues with how H5Z-ZFP integrates with the hdf5_plugins build system should be 
 
 ## Policy: Upstream-First Development
 
-HDF Group does not maintain a fork of H5Z-ZFP. This directory uses the upstream repository directly via git submodule.
+HDF Group does not maintain a fork of H5Z-ZFP. This directory uses the upstream repository directly via git subtree.
+
+**Important**: Never modify files in `ZFP/H5Z-ZFP/` directly!
 
 If you need changes to the filter:
 1. Open an issue at https://github.com/LLNL/H5Z-ZFP/issues
 2. Submit a pull request to upstream
-3. Update the submodule pointer after the change is merged upstream
+3. After upstream merges, use `git subtree pull` to update (see above)
 
 This ensures the HDF community benefits from improvements and the upstream maintainers remain authoritative.
