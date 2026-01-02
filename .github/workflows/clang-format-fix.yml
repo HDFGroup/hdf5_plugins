@@ -33,7 +33,7 @@ jobs:
         clangFormatVersion: 17
         inplace: True
         style: file
-        exclude: './community'
+        exclude: './community ./ZFP/H5Z-ZFP'
 
     - uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9.1.4
       with:
