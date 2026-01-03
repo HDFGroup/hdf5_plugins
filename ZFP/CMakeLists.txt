@@ -244,6 +244,12 @@ endif ()
 #-----------------------------------------------------------------------------
 # Add HDF Group examples
 #-----------------------------------------------------------------------------
+# Examples are needed for testing, so enable them if testing is enabled
+if (H5PL_BUILD_TESTING AND NOT H5PL_BUILD_EXAMPLES)
+  set(H5PL_BUILD_EXAMPLES ON CACHE BOOL "Build h5zfp Examples (required for testing)" FORCE)
+  message(STATUS "Enabling H5PL_BUILD_EXAMPLES (required for H5PL_BUILD_TESTING)")
+endif ()
+
 option(H5PL_BUILD_EXAMPLES "Build h5zfp Examples" OFF)
 if (H5PL_BUILD_EXAMPLES)
   add_subdirectory(example)
