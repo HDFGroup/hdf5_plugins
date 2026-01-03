@@ -98,6 +98,7 @@ message(STATUS "H5ZFP link libs: ${H5PL_LINK_LIBS}")
 # ZFP compression library handling
 #-----------------------------------------------------------------------------
 include(ExternalProject)
+include(FetchContent)
 option(H5PL_ALLOW_EXTERNAL_SUPPORT "Allow External Library Building (NO GIT TGZ)" "NO")
 set(H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
 set_property(CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
@@ -139,13 +140,25 @@ else ()
     EXTERNAL_ZFP_LIBRARY(${H5PL_ALLOW_EXTERNAL_SUPPORT})
     set(H5_HAVE_ZFP_H 1)
     set(H5_HAVE_ZFP 1)
-    message(STATUS "ZFP library will be built from external source")
+    set(ZFP_FOUND 1)
+    message(STATUS "ZFP library built from external source")
+    message(STATUS "  ZFP_INCLUDE_DIRS: ${ZFP_INCLUDE_DIRS}")
+    message(STATUS "  ZFP_LIBRARIES: ${ZFP_LIBRARIES}")
   else ()
     message(FATAL_ERROR "ZFP library is required for ${H5ZFP_PACKAGE_NAME} filter plugin")
   endif ()
 endif ()
 
 set(H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZFP_LIBRARIES})
+
+# Set ZFP_DIR for H5Z-ZFP to find the ZFP package
+# The ZFP library target is now available as 'zfp'
+if (TARGET zfp)
+  # ZFP was built via FetchContent, export the binary dir
+  set(ZFP_DIR "${zfp_BINARY_DIR}" CACHE PATH "Path to ZFP CMake config" FORCE)
+  set(ZFP_ROOT "${zfp_BINARY_DIR}" CACHE PATH "Path to ZFP installation" FORCE)
+  message(STATUS "Setting ZFP_DIR to ${ZFP_DIR} for H5Z-ZFP")
+endif ()
 
 #-----------------------------------------------------------------------------
 # Add the upstream H5Z-ZFP filter source via subdirectory
