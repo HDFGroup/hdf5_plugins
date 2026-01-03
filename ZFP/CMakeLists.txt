@@ -190,7 +190,21 @@ endif ()
 # Note: H5Z-ZFP's CMakeLists.txt will build the filter plugin
 #-----------------------------------------------------------------------------
 message(STATUS "Building H5Z-ZFP filter from subtree")
-add_subdirectory(H5Z-ZFP)
+
+# H5Z-ZFP uses CMAKE_SOURCE_DIR which points to the top-level project
+# We need to override paths it uses for add_subdirectory
+# Set the source directory to H5Z-ZFP's location before adding it
+set(H5Z_ZFP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP")
+
+# We can't change CMAKE_SOURCE_DIR, but we can build the src/ directly
+# Instead of using add_subdirectory(H5Z-ZFP), include its src build
+add_subdirectory(H5Z-ZFP/src)
+
+# Optionally build tests from H5Z-ZFP if requested
+option(BUILD_TESTING "Build h5z-zfp Unit Testing" OFF)
+if (BUILD_TESTING AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP/test")
+  add_subdirectory(H5Z-ZFP/test)
+endif ()
 
 #-----------------------------------------------------------------------------
 # Export the library for parent build system
