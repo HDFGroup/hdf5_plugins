@@ -207,11 +207,26 @@ if (BUILD_TESTING AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP/test")
 endif ()
 
 #-----------------------------------------------------------------------------
+# Create compatibility alias for old target name
+#-----------------------------------------------------------------------------
+# The old HDF Group build created a target named ${H5ZFP_LIB_TARGET} (h5zfp)
+# H5Z-ZFP creates h5z_zfp_shared, so create an alias for compatibility
+if (TARGET h5z_zfp_shared)
+  # Get the library corename from BASIC_SETTINGS
+  set(H5ZFP_LIB_CORENAME "h5zfp")
+  set(H5ZFP_LIB_TARGET ${H5ZFP_LIB_CORENAME})
+
+  # Create alias so parent build system can find it by the old name
+  add_library(${H5ZFP_LIB_TARGET} ALIAS h5z_zfp_shared)
+
+  message(STATUS "Created alias: ${H5ZFP_LIB_TARGET} -> h5z_zfp_shared")
+endif ()
+
+#-----------------------------------------------------------------------------
 # Export the library for parent build system
 #-----------------------------------------------------------------------------
-# The H5Z-ZFP CMakeLists.txt creates the 'h5z_zfp' target
-# We need to export it for the parent build system
-set(H5ZFP_LIBRARIES_TO_EXPORT "h5z_zfp" CACHE STRING "H5ZFP libraries to export" FORCE)
+# Export the expected target name for the parent build system
+set(H5ZFP_LIBRARIES_TO_EXPORT "${H5ZFP_LIB_TARGET}" CACHE STRING "H5ZFP libraries to export" FORCE)
 
 #-----------------------------------------------------------------------------
 # Dashboard and Testing Settings
