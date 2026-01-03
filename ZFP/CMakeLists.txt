@@ -210,16 +210,15 @@ add_subdirectory(H5Z-ZFP/src)
 
 # Copy the plugin to the global plugins directory for testing
 # H5Z-ZFP builds to its own plugin/ dir, but tests expect plugins in build/plugins/
-if (TARGET h5z_zfp_shared)
-  add_custom_command(
-    TARGET h5z_zfp_shared
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "$<TARGET_FILE:h5z_zfp_shared>"
-      "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:h5z_zfp_shared>"
-    COMMENT "Copying ZFP plugin to ${CMAKE_BINARY_DIR}/plugins/"
-  )
-endif ()
+# This must come AFTER add_subdirectory so the target exists
+add_custom_command(
+  TARGET h5z_zfp_shared
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "$<TARGET_FILE:h5z_zfp_shared>"
+    "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:h5z_zfp_shared>"
+  COMMENT "Copying ZFP plugin to ${CMAKE_BINARY_DIR}/plugins/"
+)
 
 # Optionally build tests from H5Z-ZFP if requested
 # Note: H5Z-ZFP upstream tests are disabled - they have compatibility issues
