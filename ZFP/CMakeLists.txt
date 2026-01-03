@@ -210,13 +210,13 @@ add_subdirectory(H5Z-ZFP/src)
 
 # Copy the plugin to the global plugins directory for testing
 # H5Z-ZFP builds to its own plugin/ dir, but tests expect plugins in build/plugins/
-# This must come AFTER add_subdirectory so the target exists
-add_custom_command(
-  TARGET h5z_zfp_shared
-  POST_BUILD
+# Use a custom target since add_custom_command(TARGET) only works in same directory
+add_custom_target(copy_zfp_plugin ALL
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/plugins"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "$<TARGET_FILE:h5z_zfp_shared>"
     "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:h5z_zfp_shared>"
+  DEPENDS h5z_zfp_shared
   COMMENT "Copying ZFP plugin to ${CMAKE_BINARY_DIR}/plugins/"
 )
 
