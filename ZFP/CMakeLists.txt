@@ -198,6 +198,14 @@ set(H5Z_ZFP_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP")
 
 # We can't change CMAKE_SOURCE_DIR, but we can build the src/ directly
 # Instead of using add_subdirectory(H5Z-ZFP), include its src build
+# Set HDF5_INCLUDE_DIRS for H5Z-ZFP to use
+if (NOT DEFINED HDF5_INCLUDE_DIRS)
+  set(HDF5_INCLUDE_DIRS ${H5PL_HDF5_INCLUDE_DIRS})
+endif ()
+if (NOT DEFINED HDF5_LIBRARIES)
+  set(HDF5_LIBRARIES ${H5PL_HDF5_LINK_LIBS})
+endif ()
+
 add_subdirectory(H5Z-ZFP/src)
 
 # Optionally build tests from H5Z-ZFP if requested
