@@ -10,19 +10,18 @@
 # help@hdfgroup.org.
 #
 
-# Wrapper CMakeLists.txt for H5Z-ZFP submodule integration
+# Wrapper CMakeLists.txt for H5Z-ZFP subtree integration
 cmake_minimum_required(VERSION 3.18)
 project(H5ZFP_WRAPPER)
 
-# Verify submodule is initialized
+# Verify H5Z-ZFP directory exists
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP/CMakeLists.txt")
     message(FATAL_ERROR
-        "H5Z-ZFP submodule not found at ${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP\n"
-        "Please initialize submodules:\n"
-        "  git submodule update --init --recursive")
+        "H5Z-ZFP not found at ${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP\n"
+        "The upstream H5Z-ZFP code should be present via git subtree.")
 endif()
 
-message(STATUS "Using H5Z-ZFP from submodule at ${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP")
+message(STATUS "Using H5Z-ZFP from subtree at ${CMAKE_CURRENT_SOURCE_DIR}/H5Z-ZFP")
 
 # H5Z-ZFP expects these variables to be set
 # HDF5_ROOT should already be set by the parent project
