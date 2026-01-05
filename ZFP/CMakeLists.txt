@@ -160,38 +160,18 @@ endif ()
 
 set(H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${ZFP_LIBRARIES})
 
-# Create a ZFPConfig.cmake file for H5Z-ZFP to find
-# H5Z-ZFP's CMakeLists.txt calls find_package(ZFP REQUIRED CONFIG)
-# If we built ZFP via FetchContent, create a minimal config file
-if (TARGET zfp)
-  # ZFP was built via FetchContent, the target is available
-  # Create a minimal ZFPConfig.cmake file
-  set(ZFP_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/zfp-config")
-  file(MAKE_DIRECTORY "${ZFP_CONFIG_DIR}")
+# Create zfp::zfp target if it doesn't exist
+# H5Z-ZFP requires the modern namespaced target (lowercase namespace)
+if (TARGET zfp AND NOT TARGET zfp::zfp)
+  # ZFP was built via FetchContent, create alias in the same scope
+  add_library(zfp::zfp ALIAS zfp)
+  message(STATUS "Created zfp::zfp alias for FetchContent-built ZFP")
+endif ()
 
-  file(WRITE "${ZFP_CONFIG_DIR}/ZFPConfig.cmake" "
-# Generated ZFPConfig.cmake for FetchContent-built ZFP
-set(ZFP_FOUND TRUE)
-set(ZFP_VERSION \"${zfp_VERSION}\")
-set(ZFP_INCLUDE_DIRS \"${ZFP_INCLUDE_DIRS}\")
-set(ZFP_LIBRARIES \"${ZFP_LIBRARIES}\")
-
-# The zfp target is already available from FetchContent
-if(NOT TARGET zfp AND NOT TARGET ZFP::zfp)
-  message(FATAL_ERROR \"ZFP target not found\")
-endif()
-
-# Create alias if needed
-if(TARGET zfp AND NOT TARGET ZFP::zfp)
+# Also create uppercase ZFP::zfp for compatibility with other code that may expect it
+if (TARGET zfp AND NOT TARGET ZFP::zfp)
   add_library(ZFP::zfp ALIAS zfp)
-endif()
-")
-
-  set(ZFP_DIR "${ZFP_CONFIG_DIR}" CACHE PATH "Path to ZFP CMake config" FORCE)
-  set(ZFP_ROOT "${zfp_BINARY_DIR}" CACHE PATH "Path to ZFP installation" FORCE)
-  message(STATUS "Created ZFPConfig.cmake at ${ZFP_CONFIG_DIR} for H5Z-ZFP")
-  message(STATUS "  ZFP_DIR: ${ZFP_DIR}")
-  message(STATUS "  ZFP_INCLUDE_DIRS: ${ZFP_INCLUDE_DIRS}")
+  message(STATUS "Created ZFP::zfp alias for FetchContent-built ZFP")
 endif ()
 
 #-----------------------------------------------------------------------------
