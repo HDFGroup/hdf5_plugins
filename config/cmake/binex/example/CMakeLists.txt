@@ -103,7 +103,7 @@ if (H5PL_BUILD_TESTING)
               -D "GREP_ERRREF=Filter present but encoding disabled"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
+              -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/../../lib/plugin"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-clearall)
@@ -126,7 +126,7 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_REFERENCE=${testname}.tst"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
+              -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/../../lib/plugin"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
@@ -165,7 +165,7 @@ if (H5PL_BUILD_TESTING)
                   -D "TEST_REFERENCE=${testname}.ddl"
                   -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
                   -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-                  -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
+                  -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/../../lib/plugin"
                   -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
           )
         else ()
@@ -183,7 +183,7 @@ if (H5PL_BUILD_TESTING)
                   -D "TEST_REFERENCE=${testname}.ddl"
                   -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
                   -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-                  -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
+                  -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/../../lib/plugin"
                   -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
           )
         endif ()
