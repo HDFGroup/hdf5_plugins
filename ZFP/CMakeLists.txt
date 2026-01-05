@@ -135,6 +135,15 @@ if (ZFP_FOUND)
   set(ZFP_INCLUDE_DIR_GEN ${ZFP_INCLUDE_DIR})
   set(ZFP_INCLUDE_DIRS ${ZFP_INCLUDE_DIR})
   message(STATUS "Found ZFP library: ${ZFP_LIBRARIES}")
+
+  # Create zfp::zfp target if legacy installation doesn't provide it
+  # H5Z-ZFP requires the modern imported target
+  if (NOT TARGET zfp::zfp)
+    add_library(zfp::zfp INTERFACE IMPORTED)
+    target_link_libraries(zfp::zfp INTERFACE ${ZFP_LIBRARIES})
+    target_include_directories(zfp::zfp INTERFACE ${ZFP_INCLUDE_DIRS})
+    message(STATUS "Created zfp::zfp imported target for legacy ZFP installation")
+  endif ()
 else ()
   if (H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT" OR H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "TGZ")
     EXTERNAL_ZFP_LIBRARY(${H5PL_ALLOW_EXTERNAL_SUPPORT})
