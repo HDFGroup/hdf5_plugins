@@ -44,7 +44,7 @@ jobs:
     name: Check for recent commits
     runs-on: ubuntu-latest
     outputs:
-      has_changes: ${{ steps.check-new-commits.outputs.has-new-commits }}
+      has_changes: ${{ steps.check-new-commits.outputs.has-new-commits || steps.set-pr-commits.outputs.has-new-commits }}
       branch_ref: ${{ steps.get-branch-name.outputs.BRANCH_REF }}
       branch_sha: ${{ steps.get-branch-sha.outputs.BRANCH_SHA }}
     steps:
@@ -81,7 +81,12 @@ jobs:
         seconds: 86400 # One day in seconds
         branch: '${{ steps.get-branch-name.outputs.BRANCH_REF }}'
         token: ${{ secrets.GITHUB_TOKEN }}
-      if: ${{ (inputs.use_environ == 'snapshots' && inputs.use_ignore == 'check') }}
+      if: ${{ (inputs.use_environ == 'snapshots' && inputs.use_ignore == 'check' && github.event_name != 'pull_request') }}
+
+    - name: Set has-new-commits for pull requests
+      id: set-pr-commits
+      run: echo "has-new-commits=true" >> $GITHUB_OUTPUT
+      if: ${{ github.event_name == 'pull_request' }}
 
     - run: echo "You have ${{ steps.check-new-commits.outputs.new-commits-number }} new commit(s) in ${{ steps.get-branch-name.outputs.BRANCH_REF }} ✅!"
       if: ${{ steps.check-new-commits.outputs.has-new-commits == 'true' }}
