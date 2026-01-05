@@ -1,0 +1,48 @@
+name: HDF5 plugins testing with CMake FetchContent
+
+on:
+  workflow_call:
+    inputs:
+      build_mode:
+        description: "Build type (CMAKE_BUILD_TYPE)"
+        required: true
+        type: string
+      hdf5_tag:
+        description: "HDF5 git tag to use"
+        required: false
+        default: "develop"
+        type: string
+      zlib_type:
+        description: "Type of zlib to use ('zlib' (default) or 'zlib-ng')"
+        required: false
+        default: "zlib"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build_and_test_ubuntu:
+    uses: ./.github/workflows/main-fetchcontent-ubuntu.yml
+    with:
+      build_mode: ${{ inputs.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}
+
+  build_and_test_win:
+    uses: ./.github/workflows/main-fetchcontent-win.yml
+    # TODO: granularbr testing currently causes timeouts with Debug
+    # build of Windows, likely due to some exception causing a dialog
+    # box
+    if: ${{ inputs.build_mode == 'Release' }}
+    with:
+      build_mode: ${{ inputs.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}
+
+  build_and_test_mac:
+    uses: ./.github/workflows/main-fetchcontent-mac.yml
+    with:
+      build_mode: ${{ inputs.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}

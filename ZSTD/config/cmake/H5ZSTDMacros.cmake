@@ -18,12 +18,11 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
         GIT_REPOSITORY ${ZSTD_URL}
         GIT_TAG ${ZSTD_BRANCH}
         SOURCE_SUBDIR build/cmake
-        #SOURCE_SUBDIR this-directory-does-not-exist
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-            ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt
+            ${H5ZSTD_SOURCE_DIR}/config/patches/CMakeLists.txt
             <SOURCE_DIR>/build/cmake/CMakeLists.txt
             && ${CMAKE_COMMAND} -E copy
-            ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt
+            ${H5ZSTD_SOURCE_DIR}/config/patches/libCMakeLists.txt
             <SOURCE_DIR>/build/cmake/lib/CMakeLists.txt
     )
   elseif (${compress_type} MATCHES "TGZ")
@@ -32,10 +31,10 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
         URL_HASH ""
         SOURCE_SUBDIR build/cmake
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-            ${H5ZSTD_SOURCE_DIR}/config/CMakeLists.txt
+            ${H5ZSTD_SOURCE_DIR}/config/patches/v${HDF5_ZSTD_VERSION}-CMakeLists.txt
             <SOURCE_DIR>/build/cmake/CMakeLists.txt
             && ${CMAKE_COMMAND} -E copy
-            ${H5ZSTD_SOURCE_DIR}/config/libCMakeLists.txt
+            ${H5ZSTD_SOURCE_DIR}/config/patches/libCMakeLists.txt
             <SOURCE_DIR>/build/cmake/lib/CMakeLists.txt
     )
   endif ()
@@ -48,6 +47,10 @@ macro (EXTERNAL_ZSTD_LIBRARY compress_type)
   set (BUILD_TESTING_OLD ${BUILD_TESTING})
   # Make subproject to use 'BUILD_TESTING=OFF' setting.
   set (BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
+
+  set (ZSTD_BUILD_PROGRAMS OFF)
+  set (ZSTD_BUILD_CONTRIB OFF)
+  set (ZSTD_BUILD_TESTS OFF)
 
   FetchContent_MakeAvailable (ZSTD)
 

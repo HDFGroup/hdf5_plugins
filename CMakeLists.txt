@@ -28,6 +28,10 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
     cmake_policy(SET CMP0135 NEW)
 endif()
 
+if (NOT DEFINED HDF5_PACKAGE_NAME)
+  set (HDF5_PACKAGE_NAME "hdf5")
+endif ()
+
 #-----------------------------------------------------------------------------
 # Basic H5PL stuff here
 #-----------------------------------------------------------------------------
@@ -40,7 +44,7 @@ SET_HDF_BUILD_TYPE()
 set (H5PL_EXPORTED_TARGETS "")
 
 if (NOT DEFINED PL_PACKAGE_NAME)
-  set (PL_PACKAGE_NAME "pl")
+  set (PL_PACKAGE_NAME "h5pl")
 endif ()
 BASIC_SETTINGS (${PL_PACKAGE_NAME})
 
@@ -131,7 +135,7 @@ elseif (APPLE)
   #if (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
   #  FILTER_OPTION (BLOSC2)
   #else
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel" AND NOT CMAKE_C_COMPILER_ID MATCHES "Apple[Cc]lang")
+  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
       FILTER_OPTION (BLOSC2)
   else ()
     set (ENABLE_BLOSC2 OFF CACHE BOOL "" FORCE)

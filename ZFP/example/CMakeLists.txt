@@ -274,7 +274,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5ZFP_ENCODER)
     #UD ZFP
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32013,0,0,0 -l CHUNK=4x8)
     #UD ZFP accuracy mode
     ADD_H5_UD_MASK_TEST (ud_mesh_convert 0 mesh.h5 --enable-error-stack -v -f UD=32013,0,6,3,0,3539053052,1062232653,0,0
          -l X,Y,Z,Indexes:CHUNK=217

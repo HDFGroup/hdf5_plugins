@@ -196,7 +196,7 @@ if (H5PL_BUILD_TESTING)
   # skip because SZ filter is for floating point and ints compression ratio could vary slightly
   #if (NOT DISABLE_H5PL_ENCODER)
   #  #UD SZ
-  #  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32017,1,5,2,7,20,40,0 -l CHUNK=4x8)
+  #  ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32017,0,5,2,7,20,40,0 -l CHUNK=4x8)
   #endif ()
 
 endif ()

@@ -192,7 +192,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5PL_ENCODER)
     #UD BZIP2
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=307,0,1,9)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=307,0,1,9)
   endif ()
 
 endif ()

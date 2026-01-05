@@ -23,7 +23,7 @@ set (HDF5_PACKAGE_NAME "hdf5" CACHE STRING "Name of HDF5 package" FORCE)
 
 set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 
-set (BLOSC2_PACKAGE_NAME "blosc2" CACHE STRING "Name of BLOSC2 package" FORCE)
+set (BLOSC2_PACKAGE_NAME "Blosc2" CACHE STRING "Name of BLOSC2 package" FORCE)
 set (H5BLOSC2_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)
 
 set (BLOSC2_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC2_ZLIB package" FORCE)

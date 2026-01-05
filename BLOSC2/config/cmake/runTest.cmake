@@ -40,14 +40,12 @@ message (STATUS "COMMAND: ${TEST_EMULATOR} ${TEST_PROGRAM} ${TEST_ARGS}")
 if (TEST_LIBRARY_DIRECTORY)
   if (WIN32)
     set (ENV{PATH} "$ENV{PATH};${TEST_LIBRARY_DIRECTORY}")
-    set (ENV{HDF5_PLUGIN_PATH} "${TEST_LIBRARY_DIRECTORY}/plugins:${TEST_LIBRARY_DIRECTORY}/plugin:$ENV{HDF5_PLUGIN_PATH}")
   elseif (APPLE)
     set (ENV{DYLD_LIBRARY_PATH} "$ENV{DYLD_LIBRARY_PATH}:${TEST_LIBRARY_DIRECTORY}")
-    set (ENV{HDF5_PLUGIN_PATH} "${TEST_LIBRARY_DIRECTORY}/plugins:$ENV{HDF5_PLUGIN_PATH}")
   else ()
     set (ENV{LD_LIBRARY_PATH} "$ENV{LD_LIBRARY_PATH}:${TEST_LIBRARY_DIRECTORY}")
-    set (ENV{HDF5_PLUGIN_PATH} "${TEST_LIBRARY_DIRECTORY}/plugins:$ENV{HDF5_PLUGIN_PATH}")
   endif ()
+  set (ENV{HDF5_PLUGIN_PATH} "${TEST_LIBRARY_DIRECTORY}/plugins:${TEST_LIBRARY_DIRECTORY}/plugin:$ENV{HDF5_PLUGIN_PATH}")
 endif ()
 
 if (TEST_ENV_VAR)
@@ -66,7 +64,6 @@ if (NOT TEST_INPUT)
       OUTPUT_FILE ${TEST_OUTPUT}
       ERROR_FILE ${TEST_OUTPUT}.err
       OUTPUT_VARIABLE TEST_OUT
-      ERROR_VARIABLE TEST_ERROR
   )
 else ()
   # run the test program with stdin, capture the stdout/stderr and the result var
@@ -78,7 +75,6 @@ else ()
       OUTPUT_FILE ${TEST_OUTPUT}
       ERROR_FILE ${TEST_OUTPUT}.err
       OUTPUT_VARIABLE TEST_OUT
-      ERROR_VARIABLE TEST_ERROR
   )
 endif ()
 
@@ -96,21 +92,21 @@ message (STATUS "COMMAND Result: ${TEST_RESULT}")
 
 # if the .err file exists and ERRROR_APPEND is enabled
 if (EXISTS "${TEST_FOLDER}/${TEST_OUTPUT}.err")
-  file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_STREAM)
-  list (LENGTH TEST_STREAM test_len)
+  file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_ERROR)
+  list (LENGTH TEST_ERROR test_len)
   if (test_len GREATER 0)
     if (TEST_MASK_FILE)
-      STRING(REGEX REPLACE "CurrentDir is [^\n]+\n" "CurrentDir is (dir name)\n" TEST_STREAM "${TEST_STREAM}")
+      STRING(REGEX REPLACE "CurrentDir is [^\n]+\n" "CurrentDir is (dir name)\n" TEST_ERROR "${TEST_ERROR}")
     endif ()
     # remove special output
-    string (REGEX REPLACE "^.*_pmi_alps[^\n]+\n" "" TEST_STREAM "${TEST_STREAM}")
+    string (REGEX REPLACE "^.*_pmi_alps[^\n]+\n" "" TEST_ERROR "${TEST_ERROR}")
 
     if (NOT ERROR_APPEND)
       # write back to original .err file
-      file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT}.err "${TEST_STREAM}")
+      file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT}.err "${TEST_ERROR}")
     else ()
       # append error output to the stdout output file
-      file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
+      file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_ERROR}")
     endif ()
   endif ()
 endif ()
@@ -254,12 +250,22 @@ if (NOT TEST_SKIP_COMPARE)
           endif ()
           math (EXPR _FP_LEN "${len_ref} - 1")
           foreach (line RANGE 0 ${_FP_LEN})
-            list (GET test_act ${line} str_act)
-            list (GET test_ref ${line} str_ref)
-            if (NOT str_act STREQUAL str_ref)
-              if (str_act)
-                set (TEST_COMPARE_RESULT 1)
-                message (STATUS "line = ${line}\n***ACTUAL: ${str_act}\n****REFER: ${str_ref}\n")
+            if (line GREATER_EQUAL len_act)
+              message (STATUS "COMPARE FAILED: ran out of lines in ${TEST_FOLDER}/${TEST_OUTPUT}")
+              set (TEST_COMPARE_RESULT 1)
+              break ()
+            elseif (line GREATER_EQUAL len_ref)
+              message (STATUS "COMPARE FAILED: ran out of lines in ${TEST_FOLDER}/${TEST_REFERENCE}")
+              set (TEST_COMPARE_RESULT 1)
+              break ()
+            else ()
+              list (GET test_act ${line} str_act)
+              list (GET test_ref ${line} str_ref)
+              if (NOT str_act STREQUAL str_ref)
+                if (str_act)
+                  set (TEST_COMPARE_RESULT 1)
+                  message (STATUS "line = ${line}\n***ACTUAL: ${str_act}\n****REFER: ${str_ref}\n")
+                endif ()
               endif ()
             endif ()
           endforeach ()

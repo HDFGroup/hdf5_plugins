@@ -1,0 +1,61 @@
+name: HDF5 plugins testing
+
+# Run CI at 06:00 CDT (11:00 UTC) on Monday, for pull requests or on demand
+on:
+  schedule:
+    - cron: "0 11 * * 1"
+  workflow_dispatch:
+    inputs:
+      hdf5_tag:
+        description: "HDF5 git tag to use"
+        required: false
+        default: "develop"
+        type: string
+      zlib_type:
+        description: "Type of zlib to use ('zlib' (default) or 'zlib-ng')"
+        required: false
+        default: "zlib"
+        type: string
+  pull_request:
+    branches: [ "master" ]
+
+# Using concurrency to cancel any in-progress job or run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref && github.ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test-with-package-managers:
+    strategy:
+      matrix:
+        build_mode: ["Release", "Debug"]
+
+    name: "Test with filter libraries installed with package managers"
+
+    # Don't run the action if the commit message says to skip CI
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+
+    uses: ./.github/workflows/main-package-managers.yml
+    with:
+      build_mode: ${{ matrix.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}
+
+  test-with-fetchcontent:
+    strategy:
+      matrix:
+        build_mode: ["Release", "Debug"]
+
+    name: "Test with filter libraries built with CMake's FetchContent"
+
+    # Don't run the action if the commit message says to skip CI
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+
+    uses: ./.github/workflows/main-fetchcontent.yml
+    with:
+      build_mode: ${{ matrix.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}

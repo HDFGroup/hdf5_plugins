@@ -153,8 +153,8 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-              #-D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              #-D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
               -P "${H5BITGROOM_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (H5BITGROOM_UD-${testname} PROPERTIES
@@ -203,7 +203,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5BITGROOM_ENCODER)
     #UD BITGROOM
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32022,1,5,3,4,0,0,0 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32022,0,5,3,4,0,0,0 -l CHUNK=4x8)
   endif ()
 
 endif ()

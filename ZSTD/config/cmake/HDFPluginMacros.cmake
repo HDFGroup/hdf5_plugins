@@ -14,10 +14,10 @@
 macro (BASIC_SETTINGS varname)
   string (TOUPPER ${varname} PLUGIN_PACKAGE_VARNAME)
   string (TOLOWER ${varname} PLUGIN_VARNAME)
-  set (H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE "h5${PLUGIN_VARNAME}")
-  set (H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME "h5${PLUGIN_VARNAME}")
-  string (TOUPPER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_PACKAGE_NAME)
-  string (TOLOWER ${H5${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_NAME)
+  set (${PLUGIN_PACKAGE_VARNAME}_PACKAGE "${PLUGIN_VARNAME}")
+  set (${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME "${PLUGIN_VARNAME}")
+  string (TOUPPER ${${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_PACKAGE_NAME)
+  string (TOLOWER ${${PLUGIN_PACKAGE_VARNAME}_PACKAGE_NAME} PLUGIN_NAME)
   set (CMAKE_NO_SYSTEM_FROM_IMPORTED 1)
 
   #-----------------------------------------------------------------------------
@@ -101,7 +101,7 @@ macro (BASIC_SETTINGS varname)
   if (NOT ${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR)
     set (${PLUGIN_PACKAGE_NAME}_INSTALL_DOC_DIR ${${PLUGIN_PACKAGE_NAME}_INSTALL_DATA_DIR})
   endif ()
-  message(STATUS "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR}")
+  message(VERBOSE "Final: ${${PLUGIN_PACKAGE_NAME}_INSTALL_LIB_DIR}")
 
   #-----------------------------------------------------------------------------
   # Setup output Directories
@@ -226,9 +226,10 @@ macro (HDF5_SUPPORT link_hdf)
         set (H5PL_HDF5_DUMP_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5dump>)
         set (H5PL_HDF5_REPACK_EXECUTABLE $<TARGET_FILE:${HDF5_NAMESPACE}h5repack>)
       else ()
+        get_filename_component (_LIBRARY_PATH ${HDF5_INCLUDE_DIR} DIRECTORY)
+        set (HDF5_LIBRARY_PATH "${_LIBRARY_PATH}/lib")
         if (USE_SHARED_LIBS AND HDF5_shared_C_FOUND)
           set (H5PL_HDF5_LINK_LIBS ${H5PL_HDF5_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
-          set (HDF5_LIBRARY_PATH ${PACKAGE_PREFIX_DIR}/lib)
           if (${link_hdf})
             #plugin source needs to be linked with HDF5
             set (H5PL_LINK_LIBS ${H5PL_LINK_LIBS} ${HDF5_C_SHARED_LIBRARY})
