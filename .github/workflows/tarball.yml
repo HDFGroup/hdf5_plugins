@@ -68,12 +68,6 @@ jobs:
         SHORT_SHA=$(echo "${{ env.GITHUB_WF_SHA }}" | cut -c1-7)
         echo "BRANCH_SHA=$SHORT_SHA" >> $GITHUB_OUTPUT
 
-    - name: Debug branch info
-      run: |
-        echo "Branch ref: ${{ steps.get-branch-name.outputs.BRANCH_REF }}"
-        echo "Repository: ${{ github.repository }}"
-        echo "Event name: ${{ github.event_name }}"
-
     - name: Check for changed source
       id: check-new-commits
       uses: adriangl/check-new-commits-action@v1
