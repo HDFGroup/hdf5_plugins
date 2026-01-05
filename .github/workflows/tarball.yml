@@ -80,7 +80,7 @@ jobs:
       with:
         seconds: 86400 # One day in seconds
         branch: '${{ steps.get-branch-name.outputs.BRANCH_REF }}'
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
       if: ${{ (inputs.use_environ == 'snapshots' && inputs.use_ignore == 'check') }}
 
     - run: echo "You have ${{ steps.check-new-commits.outputs.new-commits-number }} new commit(s) in ${{ steps.get-branch-name.outputs.BRANCH_REF }} ✅!"
