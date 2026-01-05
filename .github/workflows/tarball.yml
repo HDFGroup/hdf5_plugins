@@ -73,7 +73,7 @@ jobs:
       uses: adriangl/check-new-commits-action@v1
       with:
         seconds: 86400 # One day in seconds
-        branch: '${{ steps.get-branch-name.outputs.branch_ref }}'
+        branch: '${{ steps.get-branch-name.outputs.BRANCH_REF }}'
       if: ${{ (inputs.use_environ == 'snapshots' && inputs.use_ignore == 'check') }}
 
     - run: echo "You have ${{ steps.check-new-commits.outputs.new-commits-number }} new commit(s) in ${{ steps.get-branch-name.outputs.BRANCH_REF }} ✅!"
