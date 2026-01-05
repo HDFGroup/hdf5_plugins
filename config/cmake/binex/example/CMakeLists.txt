@@ -102,6 +102,8 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ERRREF=1"
               -D "GREP_ERRREF=Filter present but encoding disabled"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-clearall)
@@ -123,6 +125,8 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.out"
               -D "TEST_REFERENCE=${testname}.tst"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
@@ -142,6 +146,8 @@ if (H5PL_BUILD_TESTING)
                 -D "TEST_EXPECT=0"
                 -D "TEST_REFERENCE=${testname}.ddl"
                 -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+                -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
                 -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
         )
       else ()
@@ -158,6 +164,8 @@ if (H5PL_BUILD_TESTING)
                   -D "TEST_EXPECT=0"
                   -D "TEST_REFERENCE=${testname}.ddl"
                   -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                  -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+                  -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
                   -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
           )
         else ()
@@ -174,6 +182,8 @@ if (H5PL_BUILD_TESTING)
                   -D "TEST_MASK_MOD=1"
                   -D "TEST_REFERENCE=${testname}.ddl"
                   -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                  -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+                  -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
                   -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
           )
         endif ()
