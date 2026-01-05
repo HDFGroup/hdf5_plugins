@@ -2,12 +2,12 @@
 # Each line is a file pattern followed by one or more owners.
 
 # These owners will be the default owners for everything in the repo.
-* @lrknox @byrnHDF @fortnern @jhendersonHDF @bmribler @glennsong09 @mattjala @brtnfld @ajelenak
+* @lrknox @fortnern @jhendersonHDF @bmribler @glennsong09 @mattjala @brtnfld @ajelenak
 
 # Order is important. The last matching pattern has the most precedence.
 # So if a pull request only touches javascript files, only these owners
 # will be requested to review.
 /ZSTD/            @mkitti @nhz2
-*.cmake           @byrnHDF @ajelenak
-CMakeLists.txt    @byrnHDF @ajelenak
-CMakeTests.*      @byrnHDF @ajelenak
+*.cmake           @jhendersonHDF @ajelenak
+CMakeLists.txt    @jhendersonHDF @ajelenak
+CMakeTests.*      @jhendersonHDF @ajelenak
