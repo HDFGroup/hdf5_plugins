@@ -1,5 +1,7 @@
 # Select HDF5 Filter Plugins Repository
 
+[![Daily Build](https://github.com/HDFGroup/hdf5_plugins/actions/workflows/daily-build.yml/badge.svg)](https://github.com/HDFGroup/hdf5_plugins/actions/workflows/daily-build.yml)
+
 This repository contains a select number of registered HDF5® filter plugins for use in HDF Group's development and testing activities of the HDF5® library. The HDF Group is the developer, maintainer, and steward of the HDF5® software. Find more
 information about The HDF Group, the HDF5® Community, and other HDF5® software projects,
 tools, and services at [The HDF Group's website](https://www.hdfgroup.org/).
