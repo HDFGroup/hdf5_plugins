@@ -75,7 +75,7 @@ jobs:
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
       use_environ: snapshots
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
+    if: ${{ (github.event_name != 'pull_request') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-ctest:
     needs: [get-old-names, call-workflow-tarball]
@@ -108,6 +108,7 @@ jobs:
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_environ: snapshots
+    if: ${{ github.event_name != 'pull_request' }}
 
   call-workflow-release:
     needs: [get-old-names, call-workflow-tarball, call-workflow-ctest]
@@ -120,7 +121,7 @@ jobs:
       file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
       use_tag: snapshot
       use_environ: snapshots
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
+    if: ${{ (github.event_name != 'pull_request') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-remove:
     needs: [get-old-names, call-workflow-tarball, call-workflow-ctest, call-workflow-release]
@@ -131,7 +132,7 @@ jobs:
       file_base: ${{ needs.get-old-names.outputs.plugin-name }}
       use_tag: snapshot
       use_environ: snapshots
-    if: ${{ ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) && (needs.get-old-names.outputs.hdf5-name != needs.call-workflow-tarball.outputs.file_base) }}
+    if: ${{ (github.event_name != 'pull_request') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) && (needs.get-old-names.outputs.hdf5-name != needs.call-workflow-tarball.outputs.file_base) }}
 
   call-workflow-versions:
     uses: ./.github/workflows/check-releases.yml
