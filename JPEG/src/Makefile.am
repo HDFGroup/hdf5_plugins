@@ -1,12 +1,10 @@
-# Copyright by The HDF Group. All rights reserved.
-
-# This is the Makefile.am for the HDF5 LZ4 filter library. This allows
-# the use of LZ4 compression/decompression on HDF5 datasets.
+# This is the Makefile.am for the HDF5 JPEG filter library. This allows
+# the use of JPEG compression/decompression on HDF5 datasets.
 #
-# Ed Hartnett 1/15/19
+# Ed Hartnett 9/14/25
 
 # This is where HDF5 wants us to install plugins.
-plugindir = @HDF5_PLUGIN_DIR@
+plugindir = @HDF5_PLUGIN_PATH@
 
 # This linker flag specifies libtool version info.
 # See http://www.gnu.org/software/libtool/manual/libtool.html#Libtool-versioning
