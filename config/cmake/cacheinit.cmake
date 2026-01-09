@@ -17,7 +17,7 @@
 
 set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
-set (H5PL_BUILD_TESTING ON CACHE BOOL "Build h5blosc Unit Testing" FORCE)
+set (H5PL_BUILD_TESTING ON CACHE BOOL "Build h5pl Unit Testing" FORCE)
 set (H5PL_H5PL_BUILD_TESTING ON CACHE BOOL "Enable h5pl examples" FORCE)
 
 set (H5PL_BUILD_EXAMPLES ON CACHE BOOL "Build h5pl Examples" FORCE)
