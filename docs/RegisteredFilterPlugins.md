@@ -61,6 +61,7 @@ Upon receiving a request with the above information, HDF Group will register the
 |`32028`   |<a href="#sperr">SPERR</a>    |SPERR is a lossy scientific (floating-point) data compressor that produces one of the best rate-distortion curves|
 |`32029`   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
 |`32030`   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
+|`32031`   |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
@@ -871,3 +872,19 @@ License: Under MIT License
 
 ##### Contact
 Cai Lab at University of Michigan: https://www.cai-lab.org
+
+---
+
+### JPEG2000 <a name="jpeg2000"></a>
+
+#### Filter Description
+
+JPEG2000 is the Swiss Army knife of image codecs. It supports lossy and lossless coding, up to 16384 components, bit depth up to 38 bits/sample, terapixel images, resolution and quality scalability, progressive decoding and sub-frame latency, region-of-interest accessibility, non-iterative optimal rate control, discontinuous media such as optical flow data and stereo disparity maps.
+
+#### Plugin ID `32031` Information
+
+https://github.com/hmaarrfk/hdf5_jpeg2000/
+
+##### Contact
+Mark Harfouche
+mark dot harfouche at gmail dot com
