@@ -4,12 +4,13 @@
 # library that enables lzf compression/decompression as a HDF5
 # filter. This is part of the hdf5_plugin project.
 
-# Allen Byrne, Ed Hartnett 1/14/19
+# Allen Byrne, Edward Hartnett 1/14/19
+# Edward Hartnett, 9/14/25
 
 # Initialize autoconf.
-AC_PREREQ(2.59)
-AC_INIT(H5LZF, 0.1, help@hdfgroup.org)
-AC_CONFIG_HEADER([lzf_config.h])
+AC_PREREQ([2.71])
+AC_INIT([H5LZF],[0.1],[help@hdfgroup.org])
+AC_CONFIG_HEADERS([lzf_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_MSG_NOTICE([*** This is a configure for LZ4 ***])
@@ -23,21 +24,18 @@ AC_PROG_INSTALL
 
 LT_INIT(dlopen)
 
-# If the env. variable HDF5_PLUGIN_DIR is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
-# (i.e. > 2 GiB) files created during the large file testing.
 AC_MSG_CHECKING([where to put HDF5 plugins])
-HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-'/usr/local/hdf5/lib/plugin'}
-AC_ARG_WITH([hdf5-plugin-dir],
-            [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
-                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_DIR, if set)])],
-            [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
-AC_MSG_RESULT($HDF5_PLUGIN_DIR)
-AC_SUBST([HDF5_PLUGIN_DIR])
+HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-'/usr/local/hdf5/lib/plugin'}
+AC_ARG_WITH([hdf5-plugin-path],
+            [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],
+                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_PATH, if set)])],
+            [HDF5_PLUGIN_PATH=$with_hdf5_plugin_path])
+AC_MSG_RESULT($HDF5_PLUGIN_PATH)
+AC_SUBST([HDF5_PLUGIN_PATH])
 
 # Is the lzf library present?
 AC_CHECK_HEADERS([lzf.h], [], [AC_MSG_ERROR([lzf.h is required, set CPPFLAGS.])])
-AC_CHECK_LIB([lzf], [LZF_compress], [], [AC_MSG_ERROR([liblzf is required, set LDFLAGS.])])
+AC_CHECK_LIB([lzf], [lzf_compress], [], [AC_MSG_ERROR([liblzf is required, set LDFLAGS.])])
 
 # We need the math library
 AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
@@ -45,9 +43,6 @@ AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
 # We need the HDF5 headers and library.
 AC_CHECK_HEADERS([hdf5.h], [], [AC_MSG_ERROR([hdf5.h is required, set CPPFLAGS.])])
 AC_SEARCH_LIBS([H5Fflush], [hdf5dll hdf5], [], [AC_MSG_ERROR([libhdf5 is required, set LDFLAGS.])])
-
-# Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.

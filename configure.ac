@@ -1,6 +1,6 @@
 # This is the main configure file for the hdf5_plugins project.
 
-# Ed Hartnett 12/24/2019
+# Edward Hartnett, Intelligent Data Design, Inc. 9/13/25
 
 AC_PREREQ([2.59])
 
@@ -16,19 +16,15 @@ AC_CONFIG_MACRO_DIR([m4])
 LT_PREREQ([2.4])
 LT_INIT()
 
-# If the env. variable HDF5_PLUGIN_DIR is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
-# (i.e. > 2 GiB) files created during the large file testing. This is
-# necessary at the top level to provide the help message and --with
-# option. If used, the option will be passed to the subdirs, and also
-# handled by the configure in each filter subdirectory.
+# If the env. variable HDF5_PLUGIN_PATH is set, or if
+# --with-hdf5-plugin-path=<directory>, use it.
 AC_MSG_CHECKING([where to put HDF5 plugins])
-AC_ARG_WITH([hdf5-plugin-dir],
-            [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
-                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_DIR, if set)])],
-            [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
-HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-.}
-AC_MSG_RESULT($HDF5_PLUGIN_DIR)
+AC_ARG_WITH([hdf5-plugin-path],
+            [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],
+                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_PATH, if set)])],
+            [HDF5_PLUGIN_PATH=$with_hdf5_plugin_path])
+HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-.}
+AC_MSG_RESULT($HDF5_PLUGIN_PATH)
 
 # Does the user want BZIP2?
 AC_MSG_CHECKING([whether BZIP2 filter library should be built and installed])
@@ -48,6 +44,24 @@ test "x$enable_lz4" = xno || enable_lz4=yes
 AC_MSG_RESULT($enable_lz4)
 AM_CONDITIONAL(BUILD_LZ4, [test "x$enable_lz4" = xyes])
 
+# Does the user want JPEG?
+AC_MSG_CHECKING([whether JPEG filter library should be built and installed])
+AC_ARG_ENABLE([jpeg],
+              [AS_HELP_STRING([--disable-jpeg],
+                              [Disable the build and install of jpeg filter library.])])
+test "x$enable_jpeg" = xno || enable_jpeg=yes
+AC_MSG_RESULT($enable_jpeg)
+AM_CONDITIONAL(BUILD_JPEG, [test "x$enable_jpeg" = xyes])
+
+# Does the user want LZF?
+AC_MSG_CHECKING([whether LZF filter library should be built and installed])
+AC_ARG_ENABLE([lzf],
+              [AS_HELP_STRING([--disable-lzf],
+                              [Disable the build and install of lzf filter library.])])
+test "x$enable_lzf" = xno || enable_lzf=yes
+AC_MSG_RESULT($enable_lzf)
+AM_CONDITIONAL(BUILD_LZF, [test "x$enable_lzf" = xyes])
+
 # Build the filter libraries as desired.
 if test "x$enable_bzip2" = xyes; then
    AC_CONFIG_SUBDIRS([BZIP2])
@@ -55,13 +69,14 @@ fi
 if test "x$enable_lz4" = xyes; then
    AC_CONFIG_SUBDIRS([LZ4])
 fi
+if test "x$enable_jpeg" = xyes; then
+   AC_CONFIG_SUBDIRS([JPEG])
+fi
+if test "x$enable_lzf" = xyes; then
+   AC_CONFIG_SUBDIRS([LZF])
+fi
 #AC_CONFIG_SUBDIRS([BLOSC])
 #AC_CONFIG_SUBDIRS([BLOSC2])
-#AC_CONFIG_SUBDIRS([BITGROOM])
-#AC_CONFIG_SUBDIRS([BITROUND])
-#AC_CONFIG_SUBDIRS([BSHUF])
-AC_CONFIG_SUBDIRS([JPEG])
-#AC_CONFIG_SUBDIRS([LZF])
 
 # These files will be created when the configure script is run.
 AC_CONFIG_FILES([Makefile
