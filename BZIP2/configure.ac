@@ -7,9 +7,9 @@
 # Allen Byrne, Ed Hartnett 1/14/19
 
 # Initialize autoconf.
-AC_PREREQ(2.59)
-AC_INIT(H5BZ2, 1.0, help@hdfgroup.org)
-AC_CONFIG_HEADER([bzip_config.h])
+AC_PREREQ([2.71])
+AC_INIT([H5BZ2],[1.0],[help@hdfgroup.org])
+AC_CONFIG_HEADERS([bzip_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # Initialize automake.
@@ -23,17 +23,17 @@ AC_PROG_INSTALL
 # Initialize libtool, checking for dlopen.
 LT_INIT(dlopen)
 
-# If the env. variable HDF5_PLUGIN_DIR is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
+# If the env. variable HDF5_PLUGIN_PATH is set, or if
+# --with-hdf5-plugin-path=<directory>, use it as a place for the large
 # (i.e. > 2 GiB) files created during the large file testing.
 AC_MSG_CHECKING([where to put HDF5 plugins])
-HDF5_PLUGIN_DIR=${HDF5_PLUGIN_DIR-'/usr/local/hdf5/lib/plugin'}
-AC_ARG_WITH([hdf5-plugin-dir],
-            [AS_HELP_STRING([--with-hdf5-plugin-dir=<directory>],
-                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_DIR, if set)])],
-            [HDF5_PLUGIN_DIR=$with_hdf5_plugin_dir])
-AC_MSG_RESULT($HDF5_PLUGIN_DIR)
-AC_SUBST([HDF5_PLUGIN_DIR])
+HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-'/usr/local/hdf5/lib/plugin'}
+AC_ARG_WITH([hdf5-plugin-path],
+            [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],
+                            [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_PATH, if set)])],
+            [HDF5_PLUGIN_PATH=$with_hdf5_plugin_path])
+AC_MSG_RESULT($HDF5_PLUGIN_PATH)
+AC_SUBST([HDF5_PLUGIN_PATH])
 
 # Is the bzip2 library and header present?
 AC_CHECK_HEADERS([bzlib.h], [], [AC_MSG_ERROR([bzlib.h is required, set CPPFLAGS.])])
@@ -46,8 +46,6 @@ AC_CHECK_LIB([m], [floor], [], [AC_MSG_ERROR([Math library is required.])])
 AC_CHECK_HEADERS([hdf5.h], [], [AC_MSG_ERROR([hdf5.h is required, set CPPFLAGS.])])
 AC_SEARCH_LIBS([H5Fflush], [hdf5dll hdf5], [], [AC_MSG_ERROR([libhdf5 is required, set LDFLAGS.])])
 
-# Check for other header files we need.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([fcntl.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
