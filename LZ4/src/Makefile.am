@@ -6,7 +6,7 @@
 # Allen Byrne, Ed Hartnett 1/14/19
 
 # This is where HDF5 wants us to install plugins.
-plugindir = @HDF5_PLUGIN_DIR@
+plugindir = @HDF5_PLUGIN_PATH@
 
 # This linker flag specifies libtool version info.
 # See http://www.gnu.org/software/libtool/manual/libtool.html#Libtool-versioning
