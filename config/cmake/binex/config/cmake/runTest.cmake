@@ -23,7 +23,7 @@ endif ()
 if (NOT TEST_OUTPUT)
   message (FATAL_ERROR "Require TEST_OUTPUT to be defined")
 endif ()
-if (NOT TEST_EXPECT)
+if (NOT DEFINED TEST_EXPECT)
   message (STATUS "Require TEST_EXPECT to be defined")
 endif ()
 
@@ -45,7 +45,7 @@ if (TEST_LIBRARY_DIRECTORY)
   else ()
     set (ENV{LD_LIBRARY_PATH} "$ENV{LD_LIBRARY_PATH}:${TEST_LIBRARY_DIRECTORY}")
   endif ()
-  set (ENV{HDF5_PLUGIN_PATH} "${TEST_LIBRARY_DIRECTORY}/plugins:$ENV{HDF5_PLUGIN_PATH}")
+  set (ENV{HDF5_PLUGIN_PATH} "${TEST_LIBRARY_DIRECTORY}/plugins:${TEST_LIBRARY_DIRECTORY}/plugin:$ENV{HDF5_PLUGIN_PATH}")
 endif ()
 
 if (TEST_ENV_VAR)
@@ -64,7 +64,6 @@ if (NOT TEST_INPUT)
       OUTPUT_FILE ${TEST_OUTPUT}
       ERROR_FILE ${TEST_OUTPUT}.err
       OUTPUT_VARIABLE TEST_OUT
-      ERROR_VARIABLE TEST_ERROR
   )
 else ()
   # run the test program with stdin, capture the stdout/stderr and the result var
@@ -76,7 +75,6 @@ else ()
       OUTPUT_FILE ${TEST_OUTPUT}
       ERROR_FILE ${TEST_OUTPUT}.err
       OUTPUT_VARIABLE TEST_OUT
-      ERROR_VARIABLE TEST_ERROR
   )
 endif ()
 
@@ -94,21 +92,21 @@ message (STATUS "COMMAND Result: ${TEST_RESULT}")
 
 # if the .err file exists and ERRROR_APPEND is enabled
 if (EXISTS "${TEST_FOLDER}/${TEST_OUTPUT}.err")
-  file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_STREAM)
-  list (LENGTH TEST_STREAM test_len)
+  file (READ ${TEST_FOLDER}/${TEST_OUTPUT}.err TEST_ERROR)
+  list (LENGTH TEST_ERROR test_len)
   if (test_len GREATER 0)
     if (TEST_MASK_FILE)
-      STRING(REGEX REPLACE "CurrentDir is [^\n]+\n" "CurrentDir is (dir name)\n" TEST_STREAM "${TEST_STREAM}")
+      STRING(REGEX REPLACE "CurrentDir is [^\n]+\n" "CurrentDir is (dir name)\n" TEST_ERROR "${TEST_ERROR}")
     endif ()
     # remove special output
-    string (REGEX REPLACE "^.*_pmi_alps[^\n]+\n" "" TEST_STREAM "${TEST_STREAM}")
+    string (REGEX REPLACE "^.*_pmi_alps[^\n]+\n" "" TEST_ERROR "${TEST_ERROR}")
 
     if (NOT ERROR_APPEND)
       # write back to original .err file
-      file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT}.err "${TEST_STREAM}")
+      file (WRITE ${TEST_FOLDER}/${TEST_OUTPUT}.err "${TEST_ERROR}")
     else ()
       # append error output to the stdout output file
-      file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_STREAM}")
+      file (APPEND ${TEST_FOLDER}/${TEST_OUTPUT} "${TEST_ERROR}")
     endif ()
   endif ()
 endif ()
