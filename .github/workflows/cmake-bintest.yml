@@ -79,9 +79,9 @@ jobs:
 
       - name: List files for the space (Win)
         run: |
-              ls -l ${{ github.workspace }}
-              ls -l ${{ github.workspace }}/hdf5
-              ls -l ${{ github.workspace }}/hdf5_plugins
+              Get-ChildItem -Path ${{ github.workspace }} -Force
+              Get-ChildItem -Path ${{ github.workspace }}/hdf5 -Force
+              Get-ChildItem -Path ${{ github.workspace }}/hdf5_plugins -Force
 
       - name: Uncompress plugins binary (Win)
         working-directory: ${{ github.workspace }}/hdf5_plugins
@@ -90,9 +90,9 @@ jobs:
 
       - name: List files for the space (Win)
         run: |
-              ls -l ${{ github.workspace }}
-              ls -l ${{ github.workspace }}/hdf5
-              ls -l ${{ github.workspace }}/hdf5_plugins
+              Get-ChildItem -Path ${{ github.workspace }} -Force
+              Get-ChildItem -Path ${{ github.workspace }}/hdf5 -Force
+              Get-ChildItem -Path ${{ github.workspace }}/hdf5_plugins -Force
 
       - name: create hdf5 location (Win)
         working-directory: ${{ github.workspace }}/hdf5
@@ -103,7 +103,7 @@ jobs:
         shell: pwsh
 
       - name: List files for the space (Win)
-        run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
+        run: Get-ChildItem -Path ${{ github.workspace }}/HDF_Group/HDF5 -Force
 
       - name: set hdf5lib name
         id: set-hdf5lib-name
@@ -114,7 +114,11 @@ jobs:
         shell: bash
 
       - name: List files for the binaries (Win)
-        run: ls -l ${{ github.workspace }}/HDF_Group/HDF5
+        run: |
+              Get-ChildItem -Path ${{ github.workspace }}/HDF_Group/HDF5 -Force
+              Get-ChildItem -Path ${{ github.workspace }}/HDF_Group/HDF5/bin -Recurse -Force
+              Get-ChildItem -Path ${{ github.workspace }}/HDF_Group/HDF5/lib -Recurse -Force
+              Get-ChildItem -Path ${{ github.workspace }}/HDF_Group/HDF5/plugin -Recurse -Force
 
       - name: Set Path
         run: echo "${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}/bin" >> "$GITHUB_PATH"
