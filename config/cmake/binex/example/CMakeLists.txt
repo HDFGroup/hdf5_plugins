@@ -72,6 +72,7 @@ if (H5PL_BUILD_TESTING)
   # Unix/Mac: HDF5/share/HDFPLExamples/example -> ../../../lib/plugin
   if (WIN32)
     set (_plugin_path "${PROJECT_SOURCE_DIR}/../../lib/plugin")
+    set (_plugin_path "${_plugin_path}:${PROJECT_SOURCE_DIR}/../../plugin")
   else ()
     set (_plugin_path "${PROJECT_SOURCE_DIR}/../../../lib/plugin")
     set (_plugin_path "${_plugin_path}:${PROJECT_SOURCE_DIR}/../../../lib64/plugin")
