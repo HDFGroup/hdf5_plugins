@@ -791,15 +791,15 @@ For instance, to change the support files to use a local directory, edit CMakeUs
   "version": 6,
   "configurePresets": [
     {
-      "name": "my-HDF5200",
+      "name": "my-HDF5210",
       "hidden": true,
       "environment": {
-        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"
+        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/2.1.0"
       },
       "cacheVariables": {
-        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"},
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/2.1.0"},
         "H5PL_VERS_MAJOR": {"type": "STRING", "value": "2"},
-        "H5PL_VERS_MINOR": {"type": "STRING", "value": "0"},
+        "H5PL_VERS_MINOR": {"type": "STRING", "value": "1"},
         "H5PL_VERS_RELEASE": {"type": "STRING", "value": "0"},
         "H5PL_BUILD_TESTING": "ON",
         "H5PL_BUILD_EXAMPLES": "ON"
@@ -809,10 +809,10 @@ For instance, to change the support files to use a local directory, edit CMakeUs
       "name": "my-HDF5Dev",
       "hidden": true,
       "environment": {
-        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"
+        "HDF5_ROOT": "${sourceParentDir}/HDF_Group/HDF5/2.1.0"
       },
       "cacheVariables": {
-        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/2.0.0"},
+        "HDF5_ROOT": {"type": "STRING", "value": "${sourceParentDir}/HDF_Group/HDF5/2.1.0"},
         "H5PL_BUILD_TESTING": "ON",
         "H5PL_BUILD_EXAMPLES": "ON"
       }
