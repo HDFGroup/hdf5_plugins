@@ -201,7 +201,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5LZ4_ENCODER)
     #UD LZ4
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,0,1,3 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32004,0,1,3 -l CHUNK=4x8)
   endif ()
 
 endif ()

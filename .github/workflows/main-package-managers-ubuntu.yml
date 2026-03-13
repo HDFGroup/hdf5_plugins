@@ -1,0 +1,112 @@
+name: HDF5 plugins testing with package managers on Ubuntu
+
+on:
+  workflow_call:
+    inputs:
+      build_mode:
+        description: "Build type (CMAKE_BUILD_TYPE)"
+        required: true
+        type: string
+      hdf5_tag:
+        description: "HDF5 git tag to use"
+        required: false
+        default: "develop"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # Install and test against filter libraries that are available from APT.
+  # Currently installs and tests against the following filters:
+  #   - Blosc2
+  #   - JPEG
+  #   - ZFP (Temporarily disabled until H5Z-ZFP CMake is fixed)
+  #
+  # The following filters are not yet tested against due to either missing packages or
+  # lack of ability for CMake to find the installed packages currently (CMake doesn't
+  # include a module for finding the package and the package doesn't include a CMake
+  # configuration file):
+  #   - Bitgroom
+  #   - Bitround
+  #   - Bitshuffle
+  #   - Blosc
+  #   - Bzip2
+  #   - LZ4
+  #   - LZF
+  #   - Zstandard
+  #
+  # No special testing of libaec and zlib(-ng) is currently performed, but they
+  # are installed and HDF5 is built with them. It is assumed that testing with
+  # libaec and zlib(-ng) is performed in the HDF5 repository instead.
+  build_and_test:
+    name: "Ubuntu GCC"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install filter libraries
+        run: |
+          sudo apt-get update
+          #sudo apt-get install libblosc-dev
+          sudo apt-get install libblosc2-dev
+          sudo apt-get install libjpeg-dev
+          sudo apt-get install libaec-dev
+          #sudo apt-get install liblz4-dev
+          #sudo apt-get install liblzf-dev
+          #sudo apt-get install libzfp-dev
+          sudo apt-get install zlib1g-dev
+          #sudo apt-get install libzstd-dev
+
+      - name: Get sources for HDF5 plugins project
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Get sources for HDF5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          repository: HDFGroup/hdf5
+          ref: "${{ inputs.hdf5_tag }}"
+          path: ${{ github.workspace }}/hdf5
+
+      - name: Build HDF5
+        run: |
+          cd ${{ github.workspace }}/hdf5
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/hdf5_build \
+            -DBUILD_STATIC_LIBS=OFF \
+            -DBUILD_TESTING=OFF \
+            -DHDF5_ENABLE_ZLIB_SUPPORT=ON \
+            -DHDF5_ENABLE_SZIP_SUPPORT=ON \
+            ..
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+          cmake --install . --config ${{ inputs.build_mode }}
+
+      - name: Build HDF5 plugins project
+        run: |
+          mkdir "${{ runner.workspace }}/build"
+          cd "${{ runner.workspace }}/build"
+          # TODO: Re-enable ZFP testing once CMake logic is fixed
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DHDF5_DIR=${{ github.workspace }}/hdf5_build/cmake \
+            -DH5PL_BUILD_TESTING=ON \
+            -DH5PL_BUILD_EXAMPLES=ON \
+            -DENABLE_BLOSC2=ON \
+            -DENABLE_JPEG=ON \
+            -DENABLE_ZFP=OFF \
+            -DENABLE_BITGROOM=OFF \
+            -DENABLE_BITROUND=OFF \
+            -DENABLE_BLOSC=OFF \
+            -DENABLE_BSHUF=OFF \
+            -DENABLE_BZIP2=OFF \
+            -DENABLE_LZ4=OFF \
+            -DENABLE_LZF=OFF \
+            -DENABLE_ZSTD=OFF \
+            $GITHUB_WORKSPACE
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+
+      - name: Test HDF5 plugins project
+        run: |
+          cd "${{ runner.workspace }}/build"
+          ctest . --output-on-failure --parallel 4 -C ${{ inputs.build_mode }}

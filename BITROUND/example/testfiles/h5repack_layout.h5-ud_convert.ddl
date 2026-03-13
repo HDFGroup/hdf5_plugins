@@ -5,13 +5,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
@@ -26,13 +23,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
@@ -47,13 +41,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
@@ -68,13 +59,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
@@ -89,13 +77,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
@@ -110,13 +95,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
@@ -131,13 +113,10 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 3840 (0.833:1 COMPRESSION)
+         SIZE 3840
       }
       FILTERS {
-         USER_DEFINED_FILTER {
-            FILTER_ID 32023
-            PARAMS { 3 4 0 0 0 }
-         }
+         NONE
       }
       FILLVALUE {
          FILL_TIME H5D_FILL_TIME_IFSET
