@@ -37,7 +37,7 @@ if (NOT H5PL_RESOURCES_DIR)
 
   SET_HDF_BUILD_TYPE()
 endif ()
-BASIC_SETTINGS (${MAFISC_PACKAGE_NAME})
+BASIC_SETTINGS (H5${MAFISC_PACKAGE_NAME})
 
 #-----------------------------------------------------------------------------
 # Specific H5MAFISC here

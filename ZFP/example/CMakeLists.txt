@@ -98,7 +98,7 @@ if (H5PL_BUILD_TESTING)
       set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
     endif ()
     set (last_test "${testname}")
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -143,7 +143,7 @@ if (H5PL_BUILD_TESTING)
     else ()
       set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5ZFP_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -204,7 +204,7 @@ if (H5PL_BUILD_TESTING)
     else ()
       set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5ZFP_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -274,7 +274,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5ZFP_ENCODER)
     #UD ZFP
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32013,1,0,0 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32013,0,0,0 -l CHUNK=4x8)
     #UD ZFP accuracy mode
     ADD_H5_UD_MASK_TEST (ud_mesh_convert 0 mesh.h5 --enable-error-stack -v -f UD=32013,0,6,3,0,3539053052,1062232653,0,0
          -l X,Y,Z,Indexes:CHUNK=217

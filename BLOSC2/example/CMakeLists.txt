@@ -98,7 +98,7 @@ if (H5PL_BUILD_TESTING)
       set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
     endif ()
     set (last_test "${testname}")
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -141,7 +141,7 @@ if (H5PL_BUILD_TESTING)
     else ()
       set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5BLOSC2_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -213,18 +213,18 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5BLOSC2_ENCODER)
     # ...UD BLOSC2
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32026,0,0)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,0)
     # ...BLOSC2_BLOSC2LZ
-    ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 -v -f UD=32026,0,7,0,0,0,0,5,1,0)
+    ADD_H5_UD_TEST (ud_convert_lz 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,7,0,0,0,0,5,1,0)
     # ...BLOSC2_LZ4
-    ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 -v -f UD=32026,0,7,0,0,0,0,5,1,1)
+    ADD_H5_UD_TEST (ud_convert_lz4 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,7,0,0,0,0,5,1,1)
     # ...BLOSC2_LZ4HC
-    ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 -v -f UD=32026,0,7,0,0,0,0,5,1,2)
+    ADD_H5_UD_TEST (ud_convert_lz4hc 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,7,0,0,0,0,5,1,2)
     # ...BLOSC2_SNAPPY
-    # ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 -v -f UD=32026,0,7,0,0,0,0,0,0,3)
+    # ADD_H5_UD_TEST (ud_convert_snappy 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,7,0,0,0,0,0,0,3)
     # ...BLOSC2_ZLIB
-    ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 -v -f UD=32026,0,7,0,0,0,0,5,1,4)
+    ADD_H5_UD_TEST (ud_convert_zlib 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,7,0,0,0,0,5,1,4)
     # ...BLOSC2_ZSTD
-    ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 -v -f UD=32026,0,7,0,0,0,0,5,1,5)
+    ADD_H5_UD_TEST (ud_convert_zstd 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32026,0,7,0,0,0,0,5,1,5)
   endif ()
 endif ()

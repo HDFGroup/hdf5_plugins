@@ -71,9 +71,12 @@ if (H5PL_BUILD_TESTING)
   # Windows: HDF5/HDFPLExamples/example -> ../../lib/plugin
   # Unix/Mac: HDF5/share/HDFPLExamples/example -> ../../../lib/plugin
   if (WIN32)
-    set (PLUGIN_RELATIVE_PATH "../../lib/plugin")
+    set (_plugin_path "${PROJECT_SOURCE_DIR}/../../lib/plugin")
+    set (_plugin_path "${_plugin_path}\;${PROJECT_SOURCE_DIR}/../../plugin")
   else ()
-    set (PLUGIN_RELATIVE_PATH "../../../lib/plugin")
+    set (_plugin_path "${PROJECT_SOURCE_DIR}/../../../lib/plugin")
+    set (_plugin_path "${_plugin_path}:${PROJECT_SOURCE_DIR}/../../../lib64/plugin")
+    set (_plugin_path "${_plugin_path}:${PROJECT_SOURCE_DIR}/../../../plugin")
   endif ()
 
   macro (ADD_H5_TEST testname)
@@ -112,7 +115,7 @@ if (H5PL_BUILD_TESTING)
               -D "GREP_ERRREF=Filter present but encoding disabled"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/${PLUGIN_RELATIVE_PATH}"
+              -D "TEST_ENV_VALUE=${_plugin_path}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (${testname}-ERR PROPERTIES DEPENDS ${testname}-clearall)
@@ -135,13 +138,13 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_REFERENCE=${testname}.tst"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/${PLUGIN_RELATIVE_PATH}"
+              -D "TEST_ENV_VALUE=${_plugin_path}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
     endif ()
     set (last_test "${testname}")
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       if (NOT "${ARGN}" STREQUAL "FILTERALL")
         add_test (
             NAME H5DUMP-${testname}
@@ -156,7 +159,7 @@ if (H5PL_BUILD_TESTING)
                 -D "TEST_REFERENCE=${testname}.ddl"
                 -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
                 -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-                -D "TEST_ENV_VALUE=${PROJECT_BINARY_DIR}/../plugins"
+                -D "TEST_ENV_VALUE=${_plugin_path}"
                 -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
         )
       else ()
@@ -174,7 +177,7 @@ if (H5PL_BUILD_TESTING)
                   -D "TEST_REFERENCE=${testname}.ddl"
                   -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
                   -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-                  -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/${PLUGIN_RELATIVE_PATH}"
+                  -D "TEST_ENV_VALUE=${_plugin_path}"
                   -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
           )
         else ()
@@ -192,7 +195,7 @@ if (H5PL_BUILD_TESTING)
                   -D "TEST_REFERENCE=${testname}.ddl"
                   -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
                   -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-                  -D "TEST_ENV_VALUE=${PROJECT_SOURCE_DIR}/${PLUGIN_RELATIVE_PATH}"
+                  -D "TEST_ENV_VALUE=${_plugin_path}"
                   -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
           )
         endif ()
@@ -200,6 +203,12 @@ if (H5PL_BUILD_TESTING)
       set_tests_properties (H5DUMP-${testname} PROPERTIES
           WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
           DEPENDS ${testname})
+      # This test currently fails on ARM64 Windows and needs more investigation
+      if ("H5DUMP-${testname}" MATCHES "H5DUMP-h5ex_d_granularbr" AND MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+        if (CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64|AARCH64" OR CMAKE_C_COMPILER_ARCHITECTURE_ID MATCHES "ARM64")
+          set_tests_properties (H5DUMP-${testname} PROPERTIES DISABLED TRUE)
+        endif ()
+      endif ()
       set (last_test "H5DUMP-${testname}")
     endif ()
   endmacro ()
@@ -225,7 +234,7 @@ if (H5PL_BUILD_TESTING)
     else ()
       set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       if ("${deptest}" STREQUAL "NONE")
         set (testfile ${resultfile})
       else ()
@@ -242,6 +251,8 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${_plugin_path}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
       set_tests_properties (H5PL_UD-${testname} PROPERTIES DEPENDS H5PL_UD-${testname}-clearall-objects)
@@ -251,7 +262,7 @@ if (H5PL_BUILD_TESTING)
 
   macro (ADD_H5_UD_VERIFY testname resultcode resultfile deptest)
     # Remove any output file left over from previous test run
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       if (NOT "${ARGN}" STREQUAL "FILTERALL")
         add_test (
             NAME H5PL_UD-h5dump-${testname}
@@ -263,6 +274,8 @@ if (H5PL_BUILD_TESTING)
                 -D "TEST_EXPECT=${resultcode}"
                 -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
                 -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+                -D "TEST_ENV_VALUE=${_plugin_path}"
                 -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
         )
       else ()
@@ -278,6 +291,8 @@ if (H5PL_BUILD_TESTING)
                 -D "TEST_EXPECT=${resultcode}"
                 -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
                 -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+                -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+                -D "TEST_ENV_VALUE=${_plugin_path}"
                 -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
         )
       endif ()

@@ -23,7 +23,7 @@ endif ()
 if (NOT TEST_OUTPUT)
   message (FATAL_ERROR "Require TEST_OUTPUT to be defined")
 endif ()
-if (NOT TEST_EXPECT)
+if (NOT DEFINED TEST_EXPECT)
   message (STATUS "Require TEST_EXPECT to be defined")
 endif ()
 

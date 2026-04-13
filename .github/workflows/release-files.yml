@@ -175,6 +175,7 @@ jobs:
         uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # v2.2.2
         with:
           tag_name: "${{ inputs.use_tag }}"
+          draft: true
           prerelease: false
           files: |
               ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz

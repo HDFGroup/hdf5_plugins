@@ -41,11 +41,12 @@ set (BSHUF_PACKAGE_NAME "bshuf" CACHE STRING "Name of BSHUF package" FORCE)
 
 ############################# blosc ################################################
 
+set (HDF5_BLOSC_VERSION "1.21.6" CACHE INTERNAL "Version of Blosc to use when building from external source")
 set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOSC from Github repository" FORCE)
 set (BLOSC_GIT_BRANCH "main" CACHE STRING "" FORCE)
 
 set (BLOSC_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BLOSC_TGZ_NAME "c-blosc-1.21.6.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
+set (BLOSC_TGZ_NAME "c-blosc-${HDF5_BLOSC_VERSION}.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
 
 set (BLOSC_PACKAGE_NAME "blosc" CACHE STRING "Name of BLOSC package" FORCE)
 
@@ -59,13 +60,14 @@ set (BLOSC_ZLIB_PACKAGE_NAME "zlib" CACHE STRING "Name of BLOSC_ZLIB package" FO
 
 ############################# blosc2 ################################################
 
+set (HDF5_BLOSC2_VERSION "2.17.1" CACHE INTERNAL "Version of Blosc2 to use when building from external source")
 set (BLOSC2_GIT_URL "https://github.com/Blosc/c-blosc2.git" CACHE STRING "Use BLOSC2 from Github repository" FORCE)
 set (BLOSC2_GIT_BRANCH "main" CACHE STRING "" FORCE)
 
 set (BLOSC2_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc2/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BLOSC2_TGZ_NAME "c-blosc2-2.17.1.tar.gz" CACHE STRING "Use BLOSC2 from compressed file" FORCE)
+set (BLOSC2_TGZ_NAME "c-blosc2-${HDF5_BLOSC2_VERSION}.tar.gz" CACHE STRING "Use BLOSC2 from compressed file" FORCE)
 
-set (BLOSC2_PACKAGE_NAME "blosc2" CACHE STRING "Name of BLOSC2 package" FORCE)
+set (BLOSC2_PACKAGE_NAME "Blosc2" CACHE STRING "Name of BLOSC2 package" FORCE)
 
 set (BLOSC2_ZLIB_GIT_URL "https://github.com/madler/zlib.git" CACHE STRING "Use ZLIB from  GitHub repository" FORCE)
 set (BLOSC2_ZLIB_GIT_BRANCH "develop" CACHE STRING "" FORCE)
@@ -138,10 +140,11 @@ set (ZFP_PACKAGE_NAME "zfp" CACHE STRING "Name of ZFP package" FORCE)
 
 ############################# zstd ################################################
 
-set (ZSTD_GIT_URL "https://github.com/facebook/zstd.git" CACHE STRING "Use ZSTD from  GitHub repository" FORCE)
+set (HDF5_ZSTD_VERSION "1.5.7" CACHE INTERNAL "Version of Zstd to use when building from external source")
+set (ZSTD_GIT_URL "https://github.com/facebook/zstd.git" CACHE STRING "Use ZSTD from GitHub repository" FORCE)
 set (ZSTD_GIT_BRANCH "dev" CACHE STRING "" FORCE)
 
-set (ZSTD_TGZ_ORIGPATH "https://github.com/facebook/zstd/releases/download/v1.5.7" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (ZSTD_TGZ_NAME "zstd-1.5.7.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)
+set (ZSTD_TGZ_ORIGPATH "https://github.com/facebook/zstd/releases/download/v${HDF5_ZSTD_VERSION}" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (ZSTD_TGZ_NAME "zstd-${HDF5_ZSTD_VERSION}.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)
 
 set (ZSTD_PACKAGE_NAME "zstd" CACHE STRING "Name of ZSTD package" FORCE)

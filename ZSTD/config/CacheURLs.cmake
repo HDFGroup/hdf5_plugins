@@ -15,8 +15,9 @@
 # EXTERNAL cache entries
 ########################
 
-set (ZSTD_GIT_URL "https://github.com/facebook/zstd.git" CACHE STRING "Use ZSTD from  GitHub repository" FORCE)
+set (HDF5_ZSTD_VERSION "1.5.7" CACHE INTERNAL "Version of Zstd to use when building from external source")
+set (ZSTD_GIT_URL "https://github.com/facebook/zstd.git" CACHE STRING "Use ZSTD from GitHub repository" FORCE)
 set (ZSTD_GIT_BRANCH "dev" CACHE STRING "" FORCE)
 
-set (ZSTD_TGZ_ORIGPATH "https://github.com/facebook/zstd/releases/download/v1.5.7" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (ZSTD_TGZ_NAME "zstd-1.5.7.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)
+set (ZSTD_TGZ_ORIGPATH "https://github.com/facebook/zstd/releases/download/v${HDF5_ZSTD_VERSION}" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (ZSTD_TGZ_NAME "zstd-${HDF5_ZSTD_VERSION}.tar.gz" CACHE STRING "Use ZSTD from compressed file" FORCE)

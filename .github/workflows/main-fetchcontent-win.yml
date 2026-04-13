@@ -1,0 +1,269 @@
+name: HDF5 plugins testing with CMake FetchContent on Windows
+
+on:
+  workflow_call:
+    inputs:
+      build_mode:
+        description: "Build type (CMAKE_BUILD_TYPE)"
+        required: true
+        type: string
+      hdf5_tag:
+        description: "HDF5 git tag to use"
+        required: false
+        default: "develop"
+        type: string
+      zlib_type:
+        description: "Type of zlib to use ('zlib' (default) or 'zlib-ng')"
+        required: false
+        default: "zlib"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # Test building filter libraries and hdf5_plugins project inline with CMake's
+  # FetchContent (git) functionality while building HDF5.
+  build_and_test_inline:
+    name: "Windows MSVC (hdf5_plugins built inline with HDF5)"
+    runs-on: windows-latest
+    steps:
+      - name: Get sources for HDF5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          repository: HDFGroup/hdf5
+          ref: "${{ inputs.hdf5_tag }}"
+          path: ${{ github.workspace }}/hdf5
+
+      - name: Set zlib-ng option
+        id: set_zlibng_option
+        shell: pwsh
+        run: |
+          if ("${{ inputs.zlib_type }}" -eq "zlib-ng") {
+            "zlibng_option=ON" >> $env:GITHUB_OUTPUT
+            "zlib_external=ON" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            "zlibng_option=OFF" >> $env:GITHUB_OUTPUT
+            "zlib_external=OFF" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Set environment for MSVC
+        run: |
+          # Set these environment variables so CMake picks the correct compiler
+          echo "CXX=cl.exe" >> $GITHUB_ENV
+          echo "CC=cl.exe" >> $GITHUB_ENV
+ 
+      # TODO: Re-enable ZSTD testing after CMake logic issue is fixed
+      - name: Build HDF5 and HDF5 plugins
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/hdf5"
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/hdf5_build" \
+            -DBUILD_STATIC_LIBS=OFF \
+            -DHDF5_ALLOW_EXTERNAL_SUPPORT=GIT \
+            -DHDF5_ENABLE_ZLIB_SUPPORT=OFF \
+            -DZLIB_USE_EXTERNAL=${{ steps.set_zlibng_option.outputs.zlib_external }} \
+            -DHDF5_USE_ZLIB_NG=${{ steps.set_zlibng_option.outputs.zlibng_option }} \
+            -DHDF5_ENABLE_SZIP_SUPPORT=ON \
+            -DSZIP_USE_EXTERNAL=ON \
+            -DHDF5_ENABLE_PLUGIN_SUPPORT=ON \
+            -DPLUGIN_USE_EXTERNAL=ON \
+            -DPLUGIN_USE_LOCALCONTENT=OFF \
+            -DH5PL_ALLOW_EXTERNAL_SUPPORT=GIT \
+            -DH5PL_BUILD_TESTING=ON \
+            -DH5PL_BUILD_EXAMPLES=ON \
+            -DENABLE_BLOSC=ON \
+            -DENABLE_BLOSC2=ON \
+            -DENABLE_BZIP2=ON \
+            -DENABLE_JPEG=ON \
+            -DENABLE_LZ4=ON \
+            -DENABLE_LZF=ON \
+            -DENABLE_ZFP=ON \
+            -DENABLE_ZSTD=OFF \
+            -DENABLE_BITGROOM=ON \
+            -DENABLE_BITROUND=ON \
+            -DENABLE_BSHUF=ON \
+            ..
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+          cmake --install . --config ${{ inputs.build_mode }}
+
+      - name: Test HDF5 and HDF5 plugins
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/hdf5/build"
+          ctest . --output-on-failure --parallel 4 -C ${{ inputs.build_mode }}
+
+  # Test building hdf5_plugins project against an already-installed HDF5. Filter
+  # libraries are built with FetchContent (git) while building hdf5_plugins.
+  build_and_test_git:
+    name: "Windows MSVC (hdf5_plugins built standalone; plugins built via git)"
+    runs-on: windows-latest
+    steps:
+      - name: Get sources for HDF5 plugins project
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Get sources for HDF5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          repository: HDFGroup/hdf5
+          ref: "${{ inputs.hdf5_tag }}"
+          path: ${{ github.workspace }}/hdf5
+
+      - name: Set zlib-ng option
+        id: set_zlibng_option
+        shell: pwsh
+        run: |
+          if ("${{ inputs.zlib_type }}" -eq "zlib-ng") {
+            "zlibng_option=ON" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            "zlibng_option=OFF" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Set environment for MSVC
+        run: |
+          # Set these environment variables so CMake picks the correct compiler
+          echo "CXX=cl.exe" >> $GITHUB_ENV
+          echo "CC=cl.exe" >> $GITHUB_ENV
+
+      - name: Build HDF5
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/hdf5"
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/hdf5_build" \
+            -DBUILD_STATIC_LIBS=OFF \
+            -DHDF5_ALLOW_EXTERNAL_SUPPORT=GIT \
+            -DHDF5_ENABLE_ZLIB_SUPPORT=ON \
+            -DZLIB_USE_EXTERNAL=ON \
+            -DHDF5_USE_ZLIB_NG=${{ steps.set_zlibng_option.outputs.zlibng_option }} \
+            -DHDF5_ENABLE_SZIP_SUPPORT=ON \
+            -DSZIP_USE_EXTERNAL=ON \
+            ..
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+          cmake --install . --config ${{ inputs.build_mode }}
+
+      - name: Build HDF5 plugins project
+        shell: bash
+        run: |
+          mkdir "${{ runner.workspace }}/build"
+          cd "${{ runner.workspace }}/build"
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DHDF5_DIR="${{ github.workspace }}/hdf5_build/cmake" \
+            -DH5PL_ALLOW_EXTERNAL_SUPPORT=GIT \
+            -DH5PL_BUILD_TESTING=ON \
+            -DH5PL_BUILD_EXAMPLES=ON \
+            -DENABLE_BLOSC=ON \
+            -DENABLE_BLOSC2=ON \
+            -DENABLE_BZIP2=ON \
+            -DENABLE_JPEG=ON \
+            -DENABLE_LZ4=ON \
+            -DENABLE_LZF=ON \
+            -DENABLE_ZFP=ON \
+            -DENABLE_ZSTD=ON \
+            -DENABLE_BITGROOM=ON \
+            -DENABLE_BITROUND=ON \
+            -DENABLE_BSHUF=ON \
+            $GITHUB_WORKSPACE
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+
+      - name: Test HDF5 plugins project
+        shell: bash
+        run: |
+          cd "${{ runner.workspace }}/build"
+          ctest . --output-on-failure --parallel 4 -C ${{ inputs.build_mode }}
+
+  # Test building hdf5_plugins project against an already-installed HDF5. Filter
+  # libraries are built with FetchContent (tgz) while building hdf5_plugins.
+  build_and_test_tgz:
+    name: "Windows MSVC (hdf5_plugins built standalone; plugins built via tgz)"
+    runs-on: windows-latest
+    steps:
+      - name: Get sources for HDF5 plugins project
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Get sources for HDF5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          repository: HDFGroup/hdf5
+          ref: "${{ inputs.hdf5_tag }}"
+          path: ${{ github.workspace }}/hdf5
+
+      - name: Set zlib-ng option
+        id: set_zlibng_option
+        shell: pwsh
+        run: |
+          if ("${{ inputs.zlib_type }}" -eq "zlib-ng") {
+            "zlibng_option=ON" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            "zlibng_option=OFF" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Set environment for MSVC
+        run: |
+          # Set these environment variables so CMake picks the correct compiler
+          echo "CXX=cl.exe" >> $GITHUB_ENV
+          echo "CC=cl.exe" >> $GITHUB_ENV
+
+      - name: Build HDF5
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/hdf5"
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/hdf5_build" \
+            -DBUILD_STATIC_LIBS=OFF \
+            -DHDF5_ALLOW_EXTERNAL_SUPPORT=TGZ \
+            -DHDF5_ENABLE_ZLIB_SUPPORT=ON \
+            -DZLIB_USE_EXTERNAL=ON \
+            -DZLIB_USE_LOCALCONTENT=OFF \
+            -DHDF5_USE_ZLIB_NG=${{ steps.set_zlibng_option.outputs.zlibng_option }} \
+            -DHDF5_ENABLE_SZIP_SUPPORT=ON \
+            -DSZIP_USE_EXTERNAL=ON \
+            -DLIBAEC_USE_LOCALCONTENT=OFF \
+            ..
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+          cmake --install . --config ${{ inputs.build_mode }}
+
+      - name: Build HDF5 plugins project
+        shell: bash
+        run: |
+          mkdir "${{ runner.workspace }}/build"
+          cd "${{ runner.workspace }}/build"
+          cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DHDF5_DIR="${{ github.workspace }}/hdf5_build/cmake" \
+            -DH5PL_ALLOW_EXTERNAL_SUPPORT=TGZ \
+            -DH5PL_BUILD_TESTING=ON \
+            -DH5PL_BUILD_EXAMPLES=ON \
+            -DENABLE_BLOSC=ON \
+            -DENABLE_BLOSC2=ON \
+            -DENABLE_BZIP2=ON \
+            -DENABLE_JPEG=ON \
+            -DENABLE_LZ4=ON \
+            -DENABLE_LZF=ON \
+            -DENABLE_ZFP=ON \
+            -DENABLE_ZSTD=ON \
+            -DENABLE_BITGROOM=ON \
+            -DENABLE_BITROUND=ON \
+            -DENABLE_BSHUF=ON \
+            $GITHUB_WORKSPACE
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+
+      - name: Test HDF5 plugins project
+        shell: bash
+        run: |
+          cd "${{ runner.workspace }}/build"
+          ctest . --output-on-failure --parallel 4 -C ${{ inputs.build_mode }}

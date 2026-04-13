@@ -1,0 +1,160 @@
+name: HDF5 plugins testing with package managers on Windows
+
+on:
+  workflow_call:
+    inputs:
+      build_mode:
+        description: "Build type (CMAKE_BUILD_TYPE)"
+        required: true
+        type: string
+      hdf5_tag:
+        description: "HDF5 git tag to use"
+        required: false
+        default: "develop"
+        type: string
+      zlib_type:
+        description: "Type of zlib to use ('zlib' (default) or 'zlib-ng')"
+        required: false
+        default: "zlib"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # Install and test against filter libraries that are available from vcpkg.
+  # Currently installs and tests against the following filters:
+  #   - Blosc
+  #   - Blosc2
+  #   - JPEG
+  #   - LZ4
+  #   - ZFP (Temporarily disabled until H5Z-ZFP CMake is fixed)
+  #   - Zstandard
+  #
+  # The following filters are not yet tested against due to either missing packages or
+  # lack of ability for CMake to find the installed packages currently (CMake doesn't
+  # include a module for finding the package and the package doesn't include a CMake
+  # configuration file):
+  #   - Bitgroom
+  #   - Bitround
+  #   - Bitshuffle
+  #   - Bzip2
+  #   - LZF
+  #
+  # No special testing of libaec and zlib(-ng) is currently performed, but they
+  # are installed and HDF5 is built with them. It is assumed that testing with
+  # libaec and zlib(-ng) is performed in the HDF5 repository instead.
+  build_and_test:
+    name: "Windows MSVC"
+    runs-on: windows-latest
+    steps:
+      - name: Install filter libraries
+        run: |
+          vcpkg install blosc
+          vcpkg install blosc2
+          #vcpkg install bzip2
+          vcpkg install libaec
+          vcpkg install libjpeg-turbo
+          vcpkg install lz4
+          #vcpkg install liblzf
+          #vcpkg install zfp
+          vcpkg install zstd
+
+      - name: Install zlib
+        if: ${{ inputs.zlib_type == 'zlib' }}
+        run: vcpkg install zlib
+
+      - name: Install zlib-ng
+        if: ${{ inputs.zlib_type == 'zlib-ng' }}
+        run: vcpkg install zlib-ng
+
+      - name: Get sources for HDF5 plugins project
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Get sources for HDF5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          repository: HDFGroup/hdf5
+          ref: "${{ inputs.hdf5_tag }}"
+          path: ${{ github.workspace }}/hdf5
+
+      - name: Set zlib-ng option
+        id: set_zlibng_option
+        shell: pwsh
+        run: |
+          if ("${{ inputs.zlib_type }}" -eq "zlib-ng") {
+            "zlibng_option=ON" >> $env:GITHUB_OUTPUT
+          }
+          else {
+            "zlibng_option=OFF" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Set environment for MSVC
+        run: |
+          # Set these environment variables so CMake picks the correct compiler
+          echo "CXX=cl.exe" >> $GITHUB_ENV
+          echo "CC=cl.exe" >> $GITHUB_ENV
+
+      - name: Build HDF5
+        shell: bash
+        run: |
+          cd "${{ github.workspace }}/hdf5"
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/hdf5_build" \
+            -DBUILD_STATIC_LIBS=OFF \
+            -DBUILD_TESTING=OFF \
+            -DHDF5_ENABLE_ZLIB_SUPPORT=ON \
+            -DHDF5_ENABLE_SZIP_SUPPORT=ON \
+            -DHDF5_USE_ZLIB_NG=${{ steps.set_zlibng_option.outputs.zlibng_option }} \
+            ..
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+          cmake --install . --config ${{ inputs.build_mode }}
+
+      - name: Build HDF5 plugins project
+        shell: bash
+        run: |
+          mkdir "${{ runner.workspace }}/build"
+          cd "${{ runner.workspace }}/build"
+          # TODO: Re-enable ZFP testing once CMake logic is fixed
+          cmake \
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
+            -DHDF5_DIR="${{ github.workspace }}/hdf5_build/cmake" \
+            -DH5PL_BUILD_TESTING=ON \
+            -DH5PL_BUILD_EXAMPLES=ON \
+            -DENABLE_BLOSC=ON \
+            -DENABLE_BLOSC2=ON \
+            -DENABLE_BZIP2=OFF \
+            -DENABLE_JPEG=ON \
+            -DENABLE_LZ4=ON \
+            -DENABLE_LZF=OFF \
+            -DENABLE_ZFP=OFF \
+            -DENABLE_ZSTD=ON \
+            -DENABLE_BITGROOM=OFF \
+            -DENABLE_BITROUND=OFF \
+            -DENABLE_BSHUF=OFF \
+            $GITHUB_WORKSPACE
+          cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
+
+      # Add vcpkg-installed .dlls and filter library .dlls to PATH
+      - name: Set PATH
+        shell: pwsh
+        run: |
+          if ("${{ inputs.build_mode }}" -eq "Debug") {
+            "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows/debug/bin/" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+            "${{ runner.workspace }}/build/bin/Debug" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+          }
+          else {
+            "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows/bin/" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+            "${{ runner.workspace }}/build/bin/Release" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+          }
+
+      - name: Test HDF5 plugins project
+        shell: bash
+        run: |
+          cd "${{ runner.workspace }}/build"
+          ctest . --output-on-failure --parallel 4 -C ${{ inputs.build_mode }}

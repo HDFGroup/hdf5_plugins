@@ -1,0 +1,43 @@
+name: HDF5 plugins testing with package managers
+
+on:
+  workflow_call:
+    inputs:
+      build_mode:
+        description: "Build type (CMAKE_BUILD_TYPE)"
+        required: true
+        type: string
+      hdf5_tag:
+        description: "HDF5 git tag to use"
+        required: false
+        default: "develop"
+        type: string
+      zlib_type:
+        description: "Type of zlib to use ('zlib' (default) or 'zlib-ng')"
+        required: false
+        default: "zlib"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build_and_test_ubuntu:
+    uses: ./.github/workflows/main-package-managers-ubuntu.yml
+    with:
+      build_mode: ${{ inputs.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+
+  build_and_test_win:
+    uses: ./.github/workflows/main-package-managers-win.yml
+    with:
+      build_mode: ${{ inputs.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}
+
+  build_and_test_mac:
+    uses: ./.github/workflows/main-package-managers-mac.yml
+    with:
+      build_mode: ${{ inputs.build_mode }}
+      hdf5_tag: ${{ inputs.hdf5_tag }}
+      zlib_type: ${{ inputs.zlib_type }}

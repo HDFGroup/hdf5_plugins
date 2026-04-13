@@ -18,7 +18,6 @@
 set (USE_SHARED_LIBS ON CACHE BOOL "Use Shared Libraries" FORCE)
 
 set (H5PL_BUILD_TESTING ON CACHE BOOL "Build h5pl Unit Testing" FORCE)
-set (H5PL_H5PL_BUILD_TESTING ON CACHE BOOL "Enable h5pl examples" FORCE)
 
 set (H5PL_BUILD_EXAMPLES ON CACHE BOOL "Build h5pl Examples" FORCE)
 
@@ -29,5 +28,4 @@ set (HDF5_NAMESPACE "hdf5::" CACHE STRING "Name space of HDF5 library" FORCE)
 set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)" FORCE)
 set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 
-set (PL_PACKAGE_NAME "pl" CACHE STRING "Name of plugins package" FORCE)
 set (H5PL_CPACK_ENABLE ON CACHE BOOL "Enable the CPACK include and components" FORCE)

@@ -15,11 +15,12 @@
 # EXTERNAL cache entries
 ########################
 
+set (HDF5_BLOSC2_VERSION "2.17.1" CACHE INTERNAL "Version of Blosc2 to use when building from external source")
 set (BLOSC2_GIT_URL "https://github.com/Blosc/c-blosc2.git" CACHE STRING "Use BLOSC2 from Github" FORCE)
-set (BLOSC2_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (BLOSC2_GIT_BRANCH "main" CACHE STRING "" FORCE)
 
 set (BLOSC2_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc2/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BLOSC2_TGZ_NAME "c-blosc2-2.17.1.tar.gz" CACHE STRING "Use BLOSC2 from compressed file" FORCE)
+set (BLOSC2_TGZ_NAME "c-blosc2-${HDF5_BLOSC2_VERSION}.tar.gz" CACHE STRING "Use BLOSC2 from compressed file" FORCE)
 
 set (BLOSC2_ZLIB_GIT_URL "https://github.com/madler/zlib.git" CACHE STRING "Use ZLIB from  GitHub repository" FORCE)
 set (BLOSC2_ZLIB_GIT_BRANCH "develop" CACHE STRING "" FORCE)

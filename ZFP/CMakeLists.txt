@@ -60,7 +60,7 @@ if (NOT H5ZFP_PACKAGE_NAME)
   set(H5ZFP_PACKAGE_NAME "zfp")
 endif()
 
-BASIC_SETTINGS(${H5ZFP_PACKAGE_NAME})
+BASIC_SETTINGS(H5${H5ZFP_PACKAGE_NAME})
 
 #-----------------------------------------------------------------------------
 # Version information (read from H5Z-ZFP)

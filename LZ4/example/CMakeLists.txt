@@ -98,7 +98,7 @@ if (H5PL_BUILD_TESTING)
       set_tests_properties (${testname} PROPERTIES DEPENDS ${testname}-clearall)
     endif ()
     set (last_test "${testname}")
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5DUMP-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -141,7 +141,7 @@ if (H5PL_BUILD_TESTING)
     else ()
       set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
     endif ()
-    if (HDF5_BUILD_TOOLS)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5LZ4_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -201,7 +201,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5LZ4_ENCODER)
     #UD LZ4
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 -v -f UD=32004,0,1,3 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32004,0,1,3 -l CHUNK=4x8)
   endif ()
 
 endif ()
