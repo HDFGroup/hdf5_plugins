@@ -22,8 +22,7 @@ AC_PROG_INSTALL
 LT_INIT(dlopen)
 
 # If the env. variable HDF5_PLUGIN_PATH is set, or if
-# --with-hdf5-plugin-dir=<directory>, use it as a place for the large
-# (i.e. > 2 GiB) files created during the large file testing.
+# --with-hdf5-plugin-path=<directory>, use it.
 AC_MSG_CHECKING([where to put HDF5 plugins])
 HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-'/usr/local/hdf5/lib/plugin'}
 AC_ARG_WITH([hdf5-plugin-path],

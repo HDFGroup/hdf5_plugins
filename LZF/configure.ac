@@ -13,7 +13,7 @@ AC_INIT([H5LZF],[0.1],[help@hdfgroup.org])
 AC_CONFIG_HEADERS([lzf_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_MSG_NOTICE([*** This is a configure for LZ4 ***])
+AC_MSG_NOTICE([*** This is a configure for LZF ***])
 
 # Initialize automake.
 AM_INIT_AUTOMAKE([foreign])
