@@ -17,7 +17,7 @@
 
 set (HDF5_BLOSC_VERSION "1.21.6" CACHE INTERNAL "Version of Blosc to use when building from external source")
 set (BLOSC_GIT_URL "https://github.com/Blosc/c-blosc.git" CACHE STRING "Use BLOSC from Github" FORCE)
-set (BLOSC_GIT_BRANCH "main" CACHE STRING "" FORCE)
+set (BLOSC_GIT_BRANCH "v${HDF5_BLOSC_VERSION}" CACHE STRING "" FORCE)
 
 set (BLOSC_TGZ_ORIGPATH "https://github.com/Blosc/c-blosc/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
 set (BLOSC_TGZ_NAME "c-blosc-${HDF5_BLOSC_VERSION}.tar.gz" CACHE STRING "Use BLOSC from compressed file" FORCE)
