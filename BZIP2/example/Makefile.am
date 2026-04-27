@@ -7,6 +7,13 @@
 # Link to our filter library.
 LDADD = ${top_builddir}/src/libh5bz2.la
 
-# Build example program.
-noinst_PROGRAMS = h5ex_d_bzip2
+# Build example program and run it as a test.
+check_PROGRAMS = h5ex_d_bzip2
+TESTS = run_tests.sh
+
+# Clean up HDF5 file created by example.
+CLEANFILES = *.h5
+
+EXTRA_DIST = run_tests.sh
+
 

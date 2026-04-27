@@ -156,9 +156,6 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         int                           err       = 0;
         unsigned char                *output    = NULL;
 
-#ifdef JPEG_DEBUG
-        fprintf(stderr, "   decompressing nbytes: %ld\n", nbytes);
-#endif
         /* allocate and initialize JPEG decompression object */
 
         /* We set up the normal JPEG error routines, then override error_exit. */
@@ -235,9 +232,6 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         int                         nwrite = 0;
         size_t                      expectedSize;
 
-#ifdef JPEG_DEBUG
-        fprintf(stderr, "    compressing nbytes: %ld\n", nbytes);
-#endif
         if (cd_nelmts != 4) {
             PUSH_ERR("jpeg_h5_filter", H5E_CALLBACK, "cd_nelmts must be 4");
             goto failed;
@@ -250,7 +244,6 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         sizeX     = cd_values[1];
         sizeY     = cd_values[2];
         colorMode = cd_values[3];
-
         /* Sanity check to make sure we have been passed a complete image */
         expectedSize = sizeX * sizeY;
         if (colorMode == 1)
@@ -282,7 +275,7 @@ H5Z_filter_jpeg(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             PUSH_ERR("jpeg_h5_filter", H5E_CALLBACK, "Could not initialize JPEG compression object.");
             goto failed;
         }
-        jpegInfo.err = jpeg_std_error(&jpegErr);
+
         /* Now we can initialize the JPEG compression object. */
         jpeg_create_compress(&jpegInfo);
 
