@@ -35,13 +35,8 @@ macro (EXTERNAL_BLOSC2_LIBRARY compress_type)
   set (BUILD_PLUGINS OFF CACHE BOOL "" FORCE)
   set (BLOSC_IS_SUBPROJECT ON CACHE BOOL "" FORCE)
   set (BLOSC_INSTALL OFF CACHE BOOL "" FORCE)
-  # Prevent blosc2's transitive deps (zlib-ng, lz4) from building as shared DLLs.
-  set (SAVED_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-  set (BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
   FetchContent_MakeAvailable(BLOSC2)
-
-  set (BUILD_SHARED_LIBS ${SAVED_BUILD_SHARED_LIBS} CACHE BOOL "" FORCE)
   if (WIN32 AND CMAKE_C_COMPILER_ID MATCHES "IntelLLVM")
     target_compile_options(blosc2_static PRIVATE -Wno-implicit-function-declaration)
   endif ()
