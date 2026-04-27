@@ -24,7 +24,7 @@ LT_INIT(dlopen)
 # If the env. variable HDF5_PLUGIN_PATH is set, or if
 # --with-hdf5-plugin-path=<directory>, use it.
 AC_MSG_CHECKING([where to put HDF5 plugins])
-HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH-'/usr/local/hdf5/lib/plugin'}
+HDF5_PLUGIN_PATH=${HDF5_PLUGIN_PATH:-'/usr/local/hdf5/lib/plugin'}
 AC_ARG_WITH([hdf5-plugin-path],
             [AS_HELP_STRING([--with-hdf5-plugin-path=<directory>],
                             [specify HDF5 plugin directory (defaults to /usr/local/hdf5/lib/plugin, or value of HDF5_PLUGIN_PATH, if set)])],
