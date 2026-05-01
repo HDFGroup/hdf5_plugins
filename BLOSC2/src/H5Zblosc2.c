@@ -679,7 +679,7 @@ b2_decomp_out:
     if (status > 0) {
         free(*buf);
         *buf      = outbuf;
-        *buf_size = outbuf_size;
+        *buf_size = ((size_t)status > outbuf_size) ? (size_t)status : outbuf_size;
         return status; /* Size of compressed/decompressed data */
     }
 
