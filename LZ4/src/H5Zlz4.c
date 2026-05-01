@@ -156,9 +156,9 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
             decompSize += blockSize;
         }
         free(*buf);
-        *buf   = outBuf;
+        *buf      = outBuf;
         *buf_size = (size_t)origSize;
-        outBuf = NULL;
+        outBuf    = NULL;
         ret_value =
             (size_t)origSize; // should always work, as orig_size cannot be > 2GB (sizeof(size_t) < 4GB)
     }
