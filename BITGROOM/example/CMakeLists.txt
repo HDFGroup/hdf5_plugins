@@ -32,17 +32,17 @@ foreach (example ${dyn_examples})
   endif ()
 endforeach ()
 
-# h5repack test input generator. Target name is plugin-suffixed because the
-# BITROUND and BITGROOM trees share the same CMake project and source file
-# basename (issue #240).
-add_executable (h5repack_floats_bitgroom ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
-TARGET_C_PROPERTIES (h5repack_floats_bitgroom ${LIB_TYPE})
-target_link_libraries (h5repack_floats_bitgroom PRIVATE ${H5PL_HDF5_LINK_LIBS})
-if (NOT WIN32)
-  target_link_libraries (h5repack_floats_bitgroom PRIVATE dl)
-endif ()
-
 if (H5PL_BUILD_TESTING)
+  # h5repack test input generator. Target name is plugin-suffixed because the
+  # BITROUND and BITGROOM trees share the same CMake project and source file
+  # basename (issue #240).
+  add_executable (h5repack_floats_bitgroom ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
+  TARGET_C_PROPERTIES (h5repack_floats_bitgroom ${LIB_TYPE})
+  target_link_libraries (h5repack_floats_bitgroom PRIVATE ${H5PL_HDF5_LINK_LIBS})
+  if (NOT WIN32)
+    target_link_libraries (h5repack_floats_bitgroom PRIVATE dl)
+  endif ()
+
   macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
