@@ -510,7 +510,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
                 goto b2nd_comp_out;
             }
 
-            bool    needs_free;
+            bool needs_free;
             if (b2nd_to_cframe(array, (uint8_t **)&outbuf, &status, &needs_free) < 0) {
                 PUSH_ERR("blosc2_filter", H5E_CALLBACK, "Cannot convert B2ND array to buffer");
                 goto b2nd_comp_out;
@@ -540,7 +540,7 @@ b2nd_comp_out:
                 goto b2_comp_out;
             }
 
-            bool    needs_free;
+            bool needs_free;
             status = blosc2_schunk_to_buffer(schunk, (uint8_t **)&outbuf, &needs_free);
             if (status < 0 || !needs_free) {
                 PUSH_ERR("blosc2_filter", H5E_CALLBACK, "Cannot convert super-chunk to buffer");
