@@ -12,6 +12,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: read
 
@@ -24,7 +27,7 @@ jobs:
       run-ignore: ${{ steps.getinputs.outputs.INPUTS_IGNORE }}
 
     steps:
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@v4.3.1
 
     - name: Get hdf5 release base name
       uses: dsaltares/fetch-gh-release-asset@master

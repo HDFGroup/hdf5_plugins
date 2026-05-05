@@ -4,6 +4,9 @@ name: hdf5 plugins check compression releases
 on:
   workflow_call:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-compression-releases:
     runs-on: ubuntu-latest
