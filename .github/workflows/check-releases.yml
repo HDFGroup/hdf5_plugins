@@ -173,7 +173,7 @@ jobs:
 
                # Save json report
     - name: Save json report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7.0.1
       with:
         name: compression-versions
         path: versions-file.json
