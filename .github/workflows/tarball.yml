@@ -114,7 +114,7 @@ jobs:
         run: |
           if [[ '${{ inputs.use_environ }}' == 'snapshots' ]]
           then
-            FILE_NAME_BASE=$(echo "hdf5_plugins-${{ needs.check_commits.outputs.branch_ref }}-${{ needs.check_commits.outputs.branch_sha }}")
+            FILE_NAME_BASE=$(echo "hdf5_plugins-${{ needs.check_commits.outputs.branch_ref }}-${{ needs.check_commits.outputs.branch_sha }}" | tr '/' '-')
           else
             if [[ '${{ inputs.use_tag }}' == 'snapshot' ]]
             then
