@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   # Test building filter libraries and hdf5_plugins project inline with CMake's
-  # FetchContent (git) functionality while building HDF5.
+  # FetchContent (tgz) functionality while building HDF5.
   build_and_test_inline:
     name: "Windows MSVC (hdf5_plugins built inline with HDF5)"
     runs-on: windows-latest
@@ -74,7 +74,7 @@ jobs:
             -DHDF5_ENABLE_PLUGIN_SUPPORT=ON \
             -DPLUGIN_USE_EXTERNAL=ON \
             -DPLUGIN_USE_LOCALCONTENT=OFF \
-            -DH5PL_ALLOW_EXTERNAL_SUPPORT=GIT \
+            -DH5PL_ALLOW_EXTERNAL_SUPPORT=TGZ \
             -DH5PL_BUILD_TESTING=ON \
             -DH5PL_BUILD_EXAMPLES=ON \
             -DENABLE_BLOSC=ON \
@@ -151,6 +151,9 @@ jobs:
           cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
           cmake --install . --config ${{ inputs.build_mode }}
 
+      # TODO: Blosc2 testing is currently disabled when it is fetched from
+      # the development git branch due to upstream changes which need fixes
+      # in the hdf5_plugins logic.
       - name: Build HDF5 plugins project
         shell: bash
         run: |
@@ -163,7 +166,7 @@ jobs:
             -DH5PL_BUILD_TESTING=ON \
             -DH5PL_BUILD_EXAMPLES=ON \
             -DENABLE_BLOSC=ON \
-            -DENABLE_BLOSC2=ON \
+            -DENABLE_BLOSC2=OFF \
             -DENABLE_BZIP2=ON \
             -DENABLE_JPEG=ON \
             -DENABLE_LZ4=ON \
