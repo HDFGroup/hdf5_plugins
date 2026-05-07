@@ -4,6 +4,9 @@ name: hdf5 plugins check compression releases
 on:
   workflow_call:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-compression-releases:
     runs-on: ubuntu-latest
@@ -170,7 +173,7 @@ jobs:
 
                # Save json report
     - name: Save json report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7.0.1
       with:
         name: compression-versions
         path: versions-file.json
