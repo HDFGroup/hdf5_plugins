@@ -615,9 +615,9 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
     unsigned long long int  msk_f64_u64_zro;
     unsigned long long int  msk_f64_u64_one;
     unsigned long long int  msk_f64_u64_hshv;
-    unsigned short          prc_bnr_ceil; /* [nbr] Exact binary digits of precision rounded-up */
-    unsigned short prc_bnr_xpl_rqr;       /* [nbr] Explicitly represented binary digits required to retain */
-    char           errmsg[256];
+    unsigned short          prc_bnr_ceil;    /* [nbr] Exact binary digits of precision rounded-up */
+    unsigned short          prc_bnr_xpl_rqr; /* [nbr] Explicitly represented binary digits required to retain */
+    char                    errmsg[256];
 
     /* Disallow unreasonable quantization */
     if (nsd <= 0)
@@ -625,10 +625,14 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
     if (nsd > 16)
         PUSH_ERR("ccr_bgr", H5E_CALLBACK, "assert(nsd <= 16) failed\n");
 
-    if (type == NC_FLOAT && prc_bnr_xpl_rqr >= bit_xpl_nbr_sgn_flt)
-        return;
-    if (type == NC_DOUBLE && prc_bnr_xpl_rqr >= bit_xpl_nbr_sgn_dbl)
-        return;
+    /* Note: an early-return check that read prc_bnr_xpl_rqr was previously
+     * here. It was likely a copy-paste from H5Zbitgroom.c's ccr_bgr(), where
+     * prc_bnr_xpl_rqr is computed once per call from NSD before the loop. In
+     * Granular BitRound, prc_bnr_xpl_rqr is computed per value inside the inner
+     * loop, so at this point in execution it is uninitialized -- the check was
+     * reading garbage stack memory. Removed because no meaningful "early skip"
+     * condition can be derived from a per-value variable that has not been
+     * computed yet. */
 
     switch (type) {
         case NC_FLOAT:
