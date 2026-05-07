@@ -615,9 +615,9 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
     unsigned long long int  msk_f64_u64_zro;
     unsigned long long int  msk_f64_u64_one;
     unsigned long long int  msk_f64_u64_hshv;
-    unsigned short          prc_bnr_ceil;    /* [nbr] Exact binary digits of precision rounded-up */
-    unsigned short          prc_bnr_xpl_rqr; /* [nbr] Explicitly represented binary digits required to retain */
-    char                    errmsg[256];
+    unsigned short          prc_bnr_ceil; /* [nbr] Exact binary digits of precision rounded-up */
+    unsigned short prc_bnr_xpl_rqr;       /* [nbr] Explicitly represented binary digits required to retain */
+    char           errmsg[256];
 
     /* Disallow unreasonable quantization */
     if (nsd <= 0)
