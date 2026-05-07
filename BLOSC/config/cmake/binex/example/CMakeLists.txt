@@ -29,7 +29,7 @@ foreach (example ${dyn_examples})
   TARGET_C_PROPERTIES (${example} ${LIB_TYPE})
   target_link_libraries (${example} PRIVATE ${H5PL_HDF5_LINK_LIBS})
   if (NOT WIN32)
-    target_link_libraries (${example} PRIVATE dl)
+    target_link_libraries (${example} PRIVATE ${CMAKE_DL_LIBS})
   endif ()
 endforeach ()
 
