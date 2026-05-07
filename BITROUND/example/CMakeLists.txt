@@ -153,23 +153,34 @@ if (H5PL_BUILD_TESTING)
       set_tests_properties (H5BITROUND_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
     endif ()
     set (last_test "H5BITROUND_UD-${testname}-clearall-objects")
+    if (WIN32)
+      set (TESTLIBDIR "${HDF5_TOOLS_DIR}")
+    else ()
+      set (TESTLIBDIR "${HDF5_LIBRARY_PATH}")
+    endif ()
     # Generate the float-data input file for h5repack. The Granular BitRound
     # filter's set_local() callback removes the filter from the pipeline on
     # non-float datasets, so the input must contain float data for the test
-    # to actually exercise the filter (issue #240).
+    # to actually exercise the filter (issue #240). Routed through
+    # runTest.cmake so PATH/DYLD_LIBRARY_PATH/LD_LIBRARY_PATH are set up for
+    # the helper to find the HDF5 runtime library on every platform
+    # (Windows in particular has no rpath equivalent and reports
+    # STATUS_DLL_NOT_FOUND if the HDF5 DLL is not on PATH).
     add_test (
         NAME H5BITROUND_UD-${testname}-gen-input
-        COMMAND $<TARGET_FILE:h5repack_floats_bitround>
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+        COMMAND "${CMAKE_COMMAND}"
+            -D "TEST_PROGRAM=$<TARGET_FILE:h5repack_floats_bitround>"
+            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+            -D "TEST_EXPECT=0"
+            -D "TEST_OUTPUT=h5repack_floats_bitround.out"
+            -D "TEST_SKIP_COMPARE=1"
+            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+            -P "${H5BITROUND_RESOURCES_DIR}/runTest.cmake"
     )
     set_tests_properties (H5BITROUND_UD-${testname}-gen-input PROPERTIES
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
         DEPENDS H5BITROUND_UD-${testname}-clearall-objects)
     set (last_test "H5BITROUND_UD-${testname}-gen-input")
-    if (WIN32)
-      set (${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
-    else ()
-      set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
-    endif ()
     if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5BITROUND_UD-${testname}
