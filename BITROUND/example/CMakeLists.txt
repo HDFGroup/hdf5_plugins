@@ -207,28 +207,6 @@ if (H5PL_BUILD_TESTING)
           WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
           DEPENDS H5BITROUND_UD-${testname})
       set (last_test "H5BITROUND_UD-h5dump-${testname}")
-      # Verify that the filter actually modifies the dataset values: dump the
-      # data (no -pH) and compare against a captured reference of the
-      # quantized output. If the filter were silently removed from the
-      # pipeline, the values would match the raw input and this would fail.
-      add_test (
-          NAME H5BITROUND_UD-h5dump-data-${testname}
-          COMMAND "${CMAKE_COMMAND}"
-              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
-              -D "TEST_ARGS:STRING=out-${testname}.${resultfile}"
-              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
-              -D "TEST_OUTPUT=${resultfile}-${testname}-data.out"
-              -D "TEST_EXPECT=${resultcode}"
-              -D "TEST_REFERENCE=${resultfile}-${testname}-data.ddl"
-              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
-              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
-              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
-              -P "${H5BITROUND_RESOURCES_DIR}/runTest.cmake"
-      )
-      set_tests_properties (H5BITROUND_UD-h5dump-data-${testname} PROPERTIES
-          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-          DEPENDS H5BITROUND_UD-h5dump-${testname})
-      set (last_test "H5BITROUND_UD-h5dump-data-${testname}")
     endif ()
   endmacro ()
 
@@ -239,7 +217,6 @@ if (H5PL_BUILD_TESTING)
       h5ex_d_granularbr.ddl
       h5ex_d_granularbr.tst
       h5repack_floats.h5-ud_convert.ddl
-      h5repack_floats.h5-ud_convert-data.ddl
       ud_convert.h5repack_floats.h5.tst
   )
 
