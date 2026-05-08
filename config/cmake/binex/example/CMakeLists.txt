@@ -316,7 +316,6 @@ if (H5PL_BUILD_TESTING)
       h5repack_layout.h5-ud_pl_lz4_convert.ddl
       h5repack_layout.h5-ud_pl_blosc_convert.ddl
       h5repack_layout.h5-ud_pl_bz2_convert.ddl
-      ud_convert.h5repack_layout.h5.tst
       ud_bz2_convert.h5repack_layout.h5.tst
       ud_blosc_convert.h5repack_layout.h5.tst
       ud_lz4_convert.h5repack_layout.h5.tst

@@ -87,7 +87,6 @@ $SRC_TESTFILES/h5repack_layout.h5-ud_pl_convert.ddl
 $SRC_TESTFILES/h5repack_layout.h5-ud_pl_lz4_convert.ddl
 $SRC_TESTFILES/h5repack_layout.h5-ud_pl_blosc_convert.ddl
 $SRC_TESTFILES/h5repack_layout.h5-ud_pl_bz2_convert.ddl
-$SRC_TESTFILES/ud_convert.h5repack_layout.h5.tst
 $SRC_TESTFILES/ud_bz2_convert.h5repack_layout.h5.tst
 $SRC_TESTFILES/ud_blosc_convert.h5repack_layout.h5.tst
 $SRC_TESTFILES/ud_lz4_convert.h5repack_layout.h5.tst
@@ -427,8 +426,6 @@ DUMPTEST h5repack_layout.h5-ud_pl_lz4_convert.ddl --enable-error-stack -pH out-u
 
 REPACKTEST1 ud_lz4_convert.h5repack_layout.h5 ud_mafisc_convert.h5repack_layout.h5 --enable-error-stack -v -f /dset4:UD=32013,1,0,0 -l CHUNK=10x10
 DUMPTEST h5repack_layout.h5-ud_pl_convert.ddl --enable-error-stack -pH out-ud_mafisc_convert.h5repack_layout.h5
-
-#rm -f ud_convert.h5repack_layout.h5
 
 echo "$nerrors tests failed in example"
 exit $nerrors
