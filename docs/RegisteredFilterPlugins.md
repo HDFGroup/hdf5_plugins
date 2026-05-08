@@ -673,6 +673,18 @@ Email: fapec at dapcom dot es
 
 #### Filter Description
 
+BitGroom is a lossy pre-compression filter for floating-point scientific data.
+It reduces the stored precision of each value by zeroing out mantissa bits that
+lie beyond a user-specified level of significance, producing output that
+compresses substantially more efficiently while introducing only small, bounded
+error.
+
+The filter converts a user-specified number of significant decimal digits `NSD` into a corresponding count of mantissa bits worth retaining (`NSB`), and then discarding everything beyond that point. The conversion follows from the relationship between binary and decimal precision `NSB = ceil(NSD × log2(10)) ≈ NSD × 3.32`. For a 32-bit float with 23 mantissa bits, choosing `NSD = 3` yields approximately 10 bits to keep, leaving 13 to be zeroed. For `NSD = 5`, roughly 17 bits are kept and 6 are zeroed.
+
+The discarded bits are not all set to the same value. Instead, they are zeroed on one value and set to one on the next, alternating throughout the dataset. This is a deliberate anti-bias measure: setting all discarded bits to zero would systematically nudge every value slightly downward in magnitude, producing a small but consistent negative offset across the dataset. By alternating, consecutive values are rounded in opposite directions, so the errors cancel over any ensemble of values and no net directional bias accumulates. The pattern also costs nothing in compression efficiency — long runs of all-zero bits and long runs of all-one bits are both highly compressible structures, so the lossless compressor handles either equally well.
+
+The number of mantissa bits retained is computed once, at the start of processing, and applied uniformly to every value in the dataset regardless of its magnitude. Because IEEE 754 floating-point already uses the exponent to represent scale, retaining the same number of mantissa bits across all values preserves the same *relative* precision everywhere — the ratio of the rounding error to the value itself is approximately constant across the variable's full dynamic range. It means the precision guarantee is independent of the actual distribution of values in the data. The relative error introduced to any single value `V` is bounded by: `|𝜀| ≤ 0.5 × |V| × 2^(−NSB)`. This bound holds for every finite, non-fill-value element in the dataset. Special values — infinities, NaNs, and any value matching the dataset's fill value — are passed through unmodified.
+
 The BitGroom quantization algorithm is documented in:
 
 Zender, C. S. (2016), Bit Grooming: Statistically accurate precision-preserving quantization with compression, evaluated in the netCDF Operators (NCO, v4.4.8+), Geosci. Model Dev., 9, 3199-3211, doi:10.5194/gmd-9-3199-2016.
@@ -691,9 +703,13 @@ Charlie Zender  (University of California, Irvine)
 
 #### Filter Description
 
-The GBG quantization algorithm is a significant improvement to the BitGroom filter documented in:
+Granular BitRound (GBR) is a lossy pre-compression filter for floating-point scientific data. It reduces the effective precision of each value to a level commensurate with the data's actual information content, producing output that compresses far more efficiently under subsequent lossless algorithms while introducing only controlled, bounded error.
 
-Zender, C. S. (2016), Bit Grooming: Statistically accurate precision-preserving quantization with compression, evaluated in the netCDF Operators (NCO, v4.4.8+), Geosci. Model Dev., 9, 3199-3211, doi:10.5194/gmd-9-3199-2016.
+GBR works by determining, **per dataset chunk**, the finest absolute precision that is worth preserving, and then rounding every value to the nearest multiple of that precision interval. Values that fall on the same multiple become identical at the bit level, and adjacent values that round to nearby multiples differ only in their low-order mantissa bits. Both effects create the repetition and structure that lossless compressors exploit.
+
+The precision interval $\delta$ is derived from two inputs: the observed range of values in the chunk (the difference between the maximum and minimum) and a user-specified count of significant decimal digits `NSD` to retain: $\delta = (\texttt{chunk\_max} - \texttt{chunk\_min}) / 10^{NSD}$. Each value is then rounded to the nearest multiple of $\delta$ using round-half-to-even (banker's rounding), which ensures that rounding errors are symmetrically distributed around zero and do not accumulate a systematic bias across an ensemble of values. The absolute error introduced to any single value is: $|\epsilon| ≤ \delta / 2$.
+
+This means the absolute uncertainty introduced to any value scales with the spread of the data around it. If a dataset's values all cluster in a narrow band the quantization interval is correspondingly fine, and very little precision is lost. If a different chunk of the same dataset shows a wider spread, the interval widens proportionally, always preserving exactly `NSD` decimal digits of resolution relative to the data's own dynamic range.
 
 #### Plugin ID `32023` Information
 
