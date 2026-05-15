@@ -11,7 +11,7 @@ Any member of the HDF5 community can register a plugin for their or a third-part
 * Maintainer's contact information. Minimum an email address, preferably additional information like personal website, GitHub or social network handles. More ways to contact the responsible maintainer is better.
 * Filter plugin's respository.
 * Description of the new plugin including the specifics of the filter parameters (`cd_nelmts` and `cd_values[]`) supported by the plugin.
-* A proposed **canonical name** for the filter. This is the short, stable string identifier that an HDF5 v3 (`H5Z_class3_t`) plugin will advertise in its `name` field and that the library will write into the on-disk filter-pipeline message. The canonical name must be non-empty, no more than 255 bytes, drawn from the character class `[A-Za-z0-9_.-]`, and is matched case-sensitively. See [Canonical Names](#canonical-names-hdf5-v3--h5z_class3_t) below for details. (Existing v1/v2 plugins without a canonical name continue to work unchanged; this only becomes load-bearing when a plugin opts into v3.)
+* A proposed **canonical name** for the filter. This is the short, stable string identifier that an `H5Z_class3_t` plugin will advertise in its `name` field and that the library will write into the on-disk filter-pipeline message. The canonical name must be non-empty, no more than 255 bytes, drawn from the character class `[A-Za-z0-9_.-]`, and is matched case-sensitively. See [Canonical Names](#canonical-names-h5z_class3_t-plugin-class) below for details. (Existing `H5Z_class1_t`/`H5Z_class2_t` plugins without a canonical name continue to work unchanged; this only becomes load-bearing when a plugin opts into the v3 plugin class.)
 * Links to any relevant documentation, including the licensing information.
 
 Upon receiving a request with the above information, HDF Group will register the new plugin by assigning it a filter plugin _identifier_. The current policy for assigning an identifier is explained below:
@@ -25,7 +25,7 @@ Upon receiving a request with the above information, HDF Group will register the
 
 ## List of Filter Plugins Registered with The HDF Group
 
-The **Canonical Name** column is the string identifier used by HDF5 v3 (`H5Z_class3_t`) plugins. Entries marked _(proposed)_ are pending confirmation by the plugin maintainer; see [Canonical Names](#canonical-names-hdf5-v3--h5z_class3_t) and the [tracking issue](https://github.com/HDFGroup/hdf5_plugins/issues/255).
+The **Canonical Name** column is the string identifier used by `H5Z_class3_t` plugins. Entries marked _(proposed)_ are pending confirmation by the plugin maintainer; see [Canonical Names](#canonical-names-h5z_class3_t-plugin-class) and the [tracking issue](https://github.com/HDFGroup/hdf5_plugins/issues/255).
 
 | Plugin Identifier | Canonical Name | For Filter | Short Description|
 |--------|--------|----------------|---------------------|
@@ -69,14 +69,14 @@ The **Canonical Name** column is the string identifier used by HDF5 v3 (`H5Z_cla
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
 
-## Canonical Names (HDF5 v3 / `H5Z_class3_t`)
+## Canonical Names (`H5Z_class3_t` plugin class)
 
-Starting with the v3 plugin class (`H5Z_class3_t`) introduced in HDF5 2.x, every registered filter has a **canonical name**: a short, stable string identifier used by callers, tools, and the on-disk format.
+Starting with the v3 filter plugin class (`H5Z_class3_t`), introduced in HDF5 2.x, every registered filter has a **canonical name**: a short, stable string identifier used by callers, tools, and the on-disk format.
 
 ### Where the canonical name appears
 
-* **In the plugin source.** A v3 plugin sets `H5Z_class3_t::name` to its canonical name.
-* **In the file.** When a v3-aware library adds a filter to a dataset's pipeline, it writes the canonical name into the filter-pipeline message (`H5O_PLINE`), so tools like `h5dump` can identify the filter even when the plugin shared library is not installed.
+* **In the plugin source.** An `H5Z_class3_t` plugin sets its `name` to the canonical name.
+* **In the file.** When an HDF5 library that supports `H5Z_class3_t` adds a filter to a dataset's pipeline, it writes the canonical name into the filter-pipeline message (`H5O_PLINE`), so tools like `h5dump` can identify the filter even when the plugin shared library is not installed.
 * **In the API.** The forthcoming `H5Pappend_filter("canonical_name", "params")` interface accepts the canonical name to identify the filter, and accepts a TOML inline table parameter string for typed configuration. (Numeric filter IDs continue to work via the existing `H5Pset_filter` interface.)
 * **In CLI tools.** `h5repack`, `h5dump`, and other tools display the canonical name when printing filter information.
 
@@ -97,13 +97,13 @@ The HDF Group assigns a canonical name alongside the numeric `id` at filter-regi
 
 Third-party plugins that have not gone through HDF Group filter registration should self-namespace their canonical names (for example, `org.example.fastlz`) to make accidental collisions vanishingly unlikely. Coordinated registration through The HDF Group remains the recommended path for plugins that want a short, bare name.
 
-### Updating an existing registration for v3
+### Updating an existing registration for `H5Z_class3_t`
 
-Existing filter plugins continue to work unchanged with HDF5 v3-aware libraries; the canonical name only becomes load-bearing when a plugin opts into the new `H5Z_class3_t` class. Maintainers of currently registered plugins should:
+Existing filter plugins continue to work unchanged with HDF5 2.x; the canonical name only becomes load-bearing when a plugin opts into the new `H5Z_class3_t` class. Maintainers of currently registered plugins should:
 
 1. Review the proposed canonical name in the table above for your filter ID.
 2. Confirm or propose a correction by replying on the [tracking issue](https://github.com/HDFGroup/hdf5_plugins/issues/255) or contacting the HDF Group [Helpdesk](mailto:help@hdfgroup.org). Confirmations replace _(proposed)_ in the table.
-3. When shipping a v3 build of the plugin, set `H5Z_class3_t::name` to the registered canonical name byte-identically.
+3. When porting the plugin to `H5Z_class3_t`, set the `name` field to the registered canonical name byte-identically.
 
 See the HDF5 RFC on string-configured filters (RFC-HDFG-2026-001) for the full v3 design.
 
