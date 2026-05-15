@@ -11,6 +11,7 @@ Any member of the HDF5 community can register a plugin for their or a third-part
 * Maintainer's contact information. Minimum an email address, preferably additional information like personal website, GitHub or social network handles. More ways to contact the responsible maintainer is better.
 * Filter plugin's respository.
 * Description of the new plugin including the specifics of the filter parameters (`cd_nelmts` and `cd_values[]`) supported by the plugin.
+* A proposed **canonical name** for the filter. This is the short, stable string identifier that an `H5Z_class3_t` plugin will advertise in its `name` field and that the library will write into the on-disk filter-pipeline message. The canonical name must be non-empty, no more than 255 bytes, drawn from the character class `[A-Za-z0-9_.-]`, and is matched case-sensitively. See [Canonical Names](#canonical-names-h5z_class3_t-plugin-class) below for details. (Existing `H5Z_class1_t`/`H5Z_class2_t` plugins without a canonical name continue to work unchanged; this only becomes load-bearing when a plugin opts into the v3 plugin class.)
 * Links to any relevant documentation, including the licensing information.
 
 Upon receiving a request with the above information, HDF Group will register the new plugin by assigning it a filter plugin _identifier_. The current policy for assigning an identifier is explained below:
@@ -24,47 +25,87 @@ Upon receiving a request with the above information, HDF Group will register the
 
 ## List of Filter Plugins Registered with The HDF Group
 
-| Plugin Identifier | For Filter | Short Description|
-|--------|----------------|---------------------|
-|`257`     |<a href="#hzip">hzip</a> |hzip compression used in Silo|
-|`258`     |<a href="#fpzip">fpzip</a> |Duplicate of plugin `32014`|
-|`305`     |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
-|`307`     |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
-|`32000`   |<a href="#lzf">LZF</a> |LZF lossless compression used by the h5py package|
-|`32001`   |<a href="#blosc">BLOSC</a>   |Blosc lossless compression used by PyTables|
-|`32002`   |<a href="#mafisc">MAFISC</a>  |Modified LZMA compression filter, MAFISC (Multidimensional Adaptive Filtering Improved Scientific data Compression)|
-|`32003`   |<a href="#snappy">Snappy</a>  |Snappy lossless compression|
-|`32004`   |<a href="#lz4">LZ4</a> |LZ4 fast lossless compression algorithm|
-|`32005`   |<a href="#apax">APAX</a>    |Samplify’s APAX Numerical Encoding Technology|
-|`32006`   |<a href="#cbf">CBF</a> |All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset|
-|`32007`   |<a href="#jpeg-xr">JPEG-XR</a> |Enables images to be compressed/decompressed with JPEG-XR compression|
-|`32008`   |<a href="#bitshuffle">bitshuffle</a>  |Extreme version of shuffle filter that shuffles data at bit level instead of byte level|
-|`32009`   |<a href="#spdp">SPDP</a>    |SPDP fast lossless compression algorithm for single- and double-precision floating-point data|
-|`32010`   |<a href="#lpc-rice">LPC-Rice</a>    |LPC-Rice multi-threaded lossless compression|
-|`32011`   |<a href="#ccsds-123">CCSDS-123</a>   |ESA CCSDS-123 multi-threaded compression filter|
-|`32012`   |<a href="#jpeg-ls">JPEG-LS</a> |CharLS JPEG-LS multi-threaded compression filter|
-|`32013`   |<a href="#zfp">zfp</a> |Lossy & lossless compression of floating point and integer datasets to meet rate, accuracy, and/or precision targets.|
-|`32014`   |<a href="#fpzip">fpzip</a>   |Fast and Efficient Lossy or Lossless Compressor for Floating-Point Data|
-|`32015`   |<a href="#zstandard">Zstandard</a>   |Real-time compression algorithm with wide range of compression / speed trade-off and fast decoder|
-|`32016`   |<a href="#b3d">B³D</a> |GPU based image compression method developed for light-microscopy applications|
-|`32017`   |<a href="#sz">SZ</a>  |An error-bounded lossy compressor for scientific floating-point data|
-|`32018`   |<a href="#fcidecomp">FCIDECOMP</a>   |EUMETSAT CharLS compression filter for use with netCDF|
-|`32019`   |<a href="#jpeg">JPEG</a>    |Jpeg compression filter|
-|`32020`   |<a href="#vbz">VBZ</a> |Compression filter for raw dna signal data used by Oxford Nanopore|
-|`32021`   |<a href="#fapec">FAPEC</a>  | Versatile and efficient data compressor supporting many kinds of data and using an outlier-resilient entropy coder|
-|`32022`   |<a href="#bitgroom">BitGroom</a>    |The BitGroom quantization algorithm|
-|`32023`   |<a href="#gbr">Granular BitRound (GBR)</a> |The GBR quantization algorithm is a significant improvement to the BitGroom filter|
-|`32024`   |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
-|`32025`   |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
-|`32026`   |<a href="#blosc2">BLOSC2</a>   |The recent new-generation version of the Blosc compression library|
-|`32027`   |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
-|`32028`   |<a href="#sperr">SPERR</a>    |SPERR is a lossy scientific (floating-point) data compressor that produces one of the best rate-distortion curves|
-|`32029`   |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
-|`32030`   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
-|`32031`   |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
+The **Canonical Name** column is the string identifier used by `H5Z_class3_t` plugins. Entries marked _(proposed)_ are pending confirmation by the plugin maintainer; see [Canonical Names](#canonical-names-h5z_class3_t-plugin-class) and the [tracking issue](https://github.com/HDFGroup/hdf5_plugins/issues/255).
+
+| Plugin Identifier | Canonical Name | For Filter | Short Description|
+|--------|--------|----------------|---------------------|
+|`257`     |`hzip` _(proposed)_ |<a href="#hzip">hzip</a> |hzip compression used in Silo|
+|`258`     |`fpzip-legacy` _(proposed)_ |<a href="#fpzip">fpzip</a> |Duplicate of plugin `32014`|
+|`305`     |`lzo` _(proposed)_ |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
+|`307`     |`bzip2` _(proposed)_ |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
+|`32000`   |`lzf` _(proposed)_ |<a href="#lzf">LZF</a> |LZF lossless compression used by the h5py package|
+|`32001`   |`blosc` _(proposed)_ |<a href="#blosc">BLOSC</a>   |Blosc lossless compression used by PyTables|
+|`32002`   |`mafisc` _(proposed)_ |<a href="#mafisc">MAFISC</a>  |Modified LZMA compression filter, MAFISC (Multidimensional Adaptive Filtering Improved Scientific data Compression)|
+|`32003`   |`snappy` _(proposed)_ |<a href="#snappy">Snappy</a>  |Snappy lossless compression|
+|`32004`   |`lz4` _(proposed)_ |<a href="#lz4">LZ4</a> |LZ4 fast lossless compression algorithm|
+|`32005`   |`apax` _(proposed)_ |<a href="#apax">APAX</a>    |Samplify’s APAX Numerical Encoding Technology|
+|`32006`   |`cbf` _(proposed)_ |<a href="#cbf">CBF</a> |All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset|
+|`32007`   |`jpeg-xr` _(proposed)_ |<a href="#jpeg-xr">JPEG-XR</a> |Enables images to be compressed/decompressed with JPEG-XR compression|
+|`32008`   |`bitshuffle` _(proposed)_ |<a href="#bitshuffle">bitshuffle</a>  |Extreme version of shuffle filter that shuffles data at bit level instead of byte level|
+|`32009`   |`spdp` _(proposed)_ |<a href="#spdp">SPDP</a>    |SPDP fast lossless compression algorithm for single- and double-precision floating-point data|
+|`32010`   |`lpc-rice` _(proposed)_ |<a href="#lpc-rice">LPC-Rice</a>    |LPC-Rice multi-threaded lossless compression|
+|`32011`   |`ccsds-123` _(proposed)_ |<a href="#ccsds-123">CCSDS-123</a>   |ESA CCSDS-123 multi-threaded compression filter|
+|`32012`   |`jpeg-ls` _(proposed)_ |<a href="#jpeg-ls">JPEG-LS</a> |CharLS JPEG-LS multi-threaded compression filter|
+|`32013`   |`zfp` _(proposed)_ |<a href="#zfp">zfp</a> |Lossy & lossless compression of floating point and integer datasets to meet rate, accuracy, and/or precision targets.|
+|`32014`   |`fpzip` _(proposed)_ |<a href="#fpzip">fpzip</a>   |Fast and Efficient Lossy or Lossless Compressor for Floating-Point Data|
+|`32015`   |`zstd` _(proposed)_ |<a href="#zstandard">Zstandard</a>   |Real-time compression algorithm with wide range of compression / speed trade-off and fast decoder|
+|`32016`   |`b3d` _(proposed)_ |<a href="#b3d">B³D</a> |GPU based image compression method developed for light-microscopy applications|
+|`32017`   |`sz` _(proposed)_ |<a href="#sz">SZ</a>  |An error-bounded lossy compressor for scientific floating-point data|
+|`32018`   |`fcidecomp` _(proposed)_ |<a href="#fcidecomp">FCIDECOMP</a>   |EUMETSAT CharLS compression filter for use with netCDF|
+|`32019`   |`jpeg` _(proposed)_ |<a href="#jpeg">JPEG</a>    |Jpeg compression filter|
+|`32020`   |`vbz` _(proposed)_ |<a href="#vbz">VBZ</a> |Compression filter for raw dna signal data used by Oxford Nanopore|
+|`32021`   |`fapec` _(proposed)_ |<a href="#fapec">FAPEC</a>  | Versatile and efficient data compressor supporting many kinds of data and using an outlier-resilient entropy coder|
+|`32022`   |`bitgroom` _(proposed)_ |<a href="#bitgroom">BitGroom</a>    |The BitGroom quantization algorithm|
+|`32023`   |`granular-bitround` _(proposed)_ |<a href="#gbr">Granular BitRound (GBR)</a> |The GBR quantization algorithm is a significant improvement to the BitGroom filter|
+|`32024`   |`sz3` _(proposed)_ |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
+|`32025`   |`delta-rice` _(proposed)_ |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
+|`32026`   |`blosc2` _(proposed)_ |<a href="#blosc2">BLOSC2</a>   |The recent new-generation version of the Blosc compression library|
+|`32027`   |`flac` _(proposed)_ |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
+|`32028`   |`sperr` _(proposed)_ |<a href="#sperr">SPERR</a>    |SPERR is a lossy scientific (floating-point) data compressor that produces one of the best rate-distortion curves|
+|`32029`   |`terse-prolix` _(proposed)_ |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
+|`32030`   |`ffmpeg` _(proposed)_ |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
+|`32031`   |`jpeg2000` _(proposed)_ |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
+
+## Canonical Names (`H5Z_class3_t` plugin class)
+
+Starting with the v3 filter plugin class (`H5Z_class3_t`), introduced in HDF5 2.x, every registered filter has a **canonical name**: a short, stable string identifier used by callers, tools, and the on-disk format.
+
+### Where the canonical name appears
+
+* **In the plugin source.** An `H5Z_class3_t` plugin sets its `name` to the canonical name.
+* **In the file.** When an HDF5 library that supports `H5Z_class3_t` adds a filter to a dataset's pipeline, it writes the canonical name into the filter-pipeline message (`H5O_PLINE`), so tools like `h5dump` can identify the filter even when the plugin shared library is not installed.
+* **In the API.** The forthcoming `H5Pappend_filter("canonical_name", "params")` interface accepts the canonical name to identify the filter, and accepts a TOML inline table parameter string for typed configuration. (Numeric filter IDs continue to work via the existing `H5Pset_filter` interface.)
+* **In CLI tools.** `h5repack`, `h5dump`, and other tools display the canonical name when printing filter information.
+
+### Syntactic rules
+
+* Non-NULL, non-empty.
+* At most 255 bytes.
+* Drawn from the character class `[A-Za-z0-9_.-]`.
+* Matched case-sensitively.
+
+Registrations that violate these rules are rejected by `H5Zregister()` with `H5E_BADVALUE`.
+
+### Allocation
+
+The HDF Group assigns a canonical name alongside the numeric `id` at filter-registration time. First-registered wins, exactly as for numeric IDs: if two plugins claim the same canonical name in one process, the second `H5Zregister()` call is rejected with `H5E_CANTREGISTER`. Coordination through this registry is the only guarantee that, for example, `"zfp"` means the same plugin on every system.
+
+### Self-namespacing (non-normative)
+
+Third-party plugins that have not gone through HDF Group filter registration should self-namespace their canonical names (for example, `org.example.fastlz`) to make accidental collisions vanishingly unlikely. Coordinated registration through The HDF Group remains the recommended path for plugins that want a short, bare name.
+
+### Updating an existing registration for `H5Z_class3_t`
+
+Existing filter plugins continue to work unchanged with HDF5 2.x; the canonical name only becomes load-bearing when a plugin opts into the new `H5Z_class3_t` class. Maintainers of currently registered plugins should:
+
+1. Review the proposed canonical name in the table above for your filter ID.
+2. Confirm or propose a correction by replying on the [tracking issue](https://github.com/HDFGroup/hdf5_plugins/issues/255) or contacting the HDF Group [Helpdesk](mailto:help@hdfgroup.org). Confirmations replace _(proposed)_ in the table.
+3. When porting the plugin to `H5Z_class3_t`, set the `name` field to the registered canonical name byte-identically.
+
+See the HDF5 RFC on string-configured filters (RFC-HDFG-2026-001) for the full v3 design.
 
 ## Information about Registered Filter Plugins
 
