@@ -8,6 +8,11 @@ on:
         description: "The hdf5 base name of the binaries"
         required: true
         type: string
+      hdf_tag:
+        description: "The hdf5 release tag for asset download (version only, without hdf5- prefix)"
+        required: false
+        type: string
+        default: ''
       file_base:
         description: "The common base name of the source tarballs"
         required: true
@@ -60,7 +65,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
           token: ${{ github.token }}
 
@@ -173,7 +178,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
           token: ${{ github.token }}
 
@@ -276,7 +281,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
           token: ${{ github.token }}
 
