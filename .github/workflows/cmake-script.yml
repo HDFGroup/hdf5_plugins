@@ -74,19 +74,21 @@ jobs:
 
       - name: Get hdf5 snapshot
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
+          repository: 'HDFGroup/hdf5'
+          tag: 'snapshot'
+          fileName: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
+          token: ${{ github.token }}
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
+          repository: 'HDFGroup/hdf5'
+          tag: '${{ inputs.use_hdf }}'
+          fileName: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
+          token: ${{ github.token }}
 
       - name: Uncompress gh binary (Win)
         run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win-vs2022_cl.zip
@@ -219,19 +221,21 @@ jobs:
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
+          repository: 'HDFGroup/hdf5'
+          tag: 'snapshot'
+          fileName: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
+          token: ${{ github.token }}
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
+          repository: 'HDFGroup/hdf5'
+          tag: '${{ inputs.use_hdf }}'
+          fileName: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
+          token: ${{ github.token }}
 
       - name: List files for the space (Linux)
         run: |
@@ -356,19 +360,21 @@ jobs:
 
       - name: Get hdf5 snapshot
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+          repository: 'HDFGroup/hdf5'
+          tag: 'snapshot'
+          fileName: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+          token: ${{ github.token }}
 
       - name: Get hdf5 release
         if: ${{ (inputs.use_environ == 'release') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+          repository: 'HDFGroup/hdf5'
+          tag: '${{ inputs.use_hdf }}'
+          fileName: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+          token: ${{ github.token }}
 
       - name: List files for the space (MacOS_latest)
         run: |
@@ -491,19 +497,21 @@ jobs:
 
       - name: Get hdf5 snapshot(Windows_intel)
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+          repository: 'HDFGroup/hdf5'
+          tag: 'snapshot'
+          fileName: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+          token: ${{ github.token }}
 
       - name: Get hdf5 release(Windows_intel)
         if: ${{ (inputs.use_environ == 'release') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+          repository: 'HDFGroup/hdf5'
+          tag: '${{ inputs.use_hdf }}'
+          fileName: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+          token: ${{ github.token }}
 
       - name: Uncompress gh binary (Windows_intel)
         run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win-vs2022_intel.zip
@@ -647,19 +655,21 @@ jobs:
 
       - name: Get hdf5 release (Linux_intel)
         if: ${{ (inputs.use_environ == 'snapshots') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/snapshot'
-          file: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
+          repository: 'HDFGroup/hdf5'
+          tag: 'snapshot'
+          fileName: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
+          token: ${{ github.token }}
 
       - name: Get hdf5 release (Linux_intel)
         if: ${{ (inputs.use_environ == 'release') }}
-        uses: dsaltares/fetch-gh-release-asset@master
+        uses: robinraju/release-downloader@v1
         with:
-          repo: 'HDFGroup/hdf5'
-          version: 'tags/${{ inputs.use_hdf }}'
-          file: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
+          repository: 'HDFGroup/hdf5'
+          tag: '${{ inputs.use_hdf }}'
+          fileName: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
+          token: ${{ github.token }}
 
       - name: List files for the space (Linux_intel)
         run: |

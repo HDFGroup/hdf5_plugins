@@ -30,11 +30,12 @@ jobs:
     - uses: actions/checkout@v6.0.2
 
     - name: Get hdf5 release base name
-      uses: dsaltares/fetch-gh-release-asset@master
+      uses: robinraju/release-downloader@v1
       with:
-        repo: 'HDFGroup/hdf5'
-        version: 'tags/snapshot'
-        file: 'last-file.txt'
+        repository: 'HDFGroup/hdf5'
+        tag: 'snapshot'
+        fileName: 'last-file.txt'
+        token: ${{ github.token }}
 
     - name: Read HDF5 base-name file
       id: gethdf5base
@@ -43,11 +44,12 @@ jobs:
     - run: echo "hdf5 base name is ${{ steps.gethdf5base.outputs.HDF5_NAME_BASE }}."
 
     - name: Get plugin release base name
-      uses: dsaltares/fetch-gh-release-asset@master
+      uses: robinraju/release-downloader@v1
       with:
-        repo: 'HDFGroup/hdf5_plugins'
-        version: 'tags/snapshot'
-        file: 'last-file.txt'
+        repository: 'HDFGroup/hdf5_plugins'
+        tag: 'snapshot'
+        fileName: 'last-file.txt'
+        token: ${{ github.token }}
 
     - name: Read base-name file
       id: getpluginbase
