@@ -29,8 +29,8 @@ The **Canonical Name** column is the string identifier used by `H5Z_class3_t` pl
 
 | Plugin Identifier | Canonical Name | For Filter | Short Description|
 |--------|--------|----------------|---------------------|
-|`257`     |`hzip` _(proposed)_ |<a href="#hzip">hzip</a> |hzip compression used in Silo|
-|`258`     |`fpzip-legacy` _(proposed)_ |<a href="#fpzip">fpzip</a> |Duplicate of plugin `32014`|
+|`257`     |`hzip-silo` |<a href="#hzip">hzip</a> |hzip compression used in Silo|
+|`258`     |`fpzip-silo` |<a href="#fpzip">fpzip</a> |Duplicate of plugin `32014`|
 |`305`     |`lzo` _(proposed)_ |<a href="#lzo">LZO</a> |LZO lossless compression used by PyTables|
 |`307`     |`bzip2` _(proposed)_ |<a href="#bzip2">BZIP2</a>   |BZIP2 lossless compression used by PyTables|
 |`32000`   |`lzf` _(proposed)_ |<a href="#lzf">LZF</a> |LZF lossless compression used by the h5py package|
@@ -42,29 +42,29 @@ The **Canonical Name** column is the string identifier used by `H5Z_class3_t` pl
 |`32006`   |`cbf` _(proposed)_ |<a href="#cbf">CBF</a> |All imgCIF/CBF compressions and decompressions, including Canonical, Packed, Packed Version 2, Byte Offset and Nibble Offset|
 |`32007`   |`jpeg-xr` _(proposed)_ |<a href="#jpeg-xr">JPEG-XR</a> |Enables images to be compressed/decompressed with JPEG-XR compression|
 |`32008`   |`bitshuffle` _(proposed)_ |<a href="#bitshuffle">bitshuffle</a>  |Extreme version of shuffle filter that shuffles data at bit level instead of byte level|
-|`32009`   |`spdp` _(proposed)_ |<a href="#spdp">SPDP</a>    |SPDP fast lossless compression algorithm for single- and double-precision floating-point data|
+|`32009`   |`spdp` |<a href="#spdp">SPDP</a>    |SPDP fast lossless compression algorithm for single- and double-precision floating-point data|
 |`32010`   |`lpc-rice` _(proposed)_ |<a href="#lpc-rice">LPC-Rice</a>    |LPC-Rice multi-threaded lossless compression|
 |`32011`   |`ccsds-123` _(proposed)_ |<a href="#ccsds-123">CCSDS-123</a>   |ESA CCSDS-123 multi-threaded compression filter|
 |`32012`   |`jpeg-ls` _(proposed)_ |<a href="#jpeg-ls">JPEG-LS</a> |CharLS JPEG-LS multi-threaded compression filter|
-|`32013`   |`zfp` _(proposed)_ |<a href="#zfp">zfp</a> |Lossy & lossless compression of floating point and integer datasets to meet rate, accuracy, and/or precision targets.|
-|`32014`   |`fpzip` _(proposed)_ |<a href="#fpzip">fpzip</a>   |Fast and Efficient Lossy or Lossless Compressor for Floating-Point Data|
-|`32015`   |`zstd` _(proposed)_ |<a href="#zstandard">Zstandard</a>   |Real-time compression algorithm with wide range of compression / speed trade-off and fast decoder|
+|`32013`   |`zfp` |<a href="#zfp">zfp</a> |Lossy & lossless compression of floating point and integer datasets to meet rate, accuracy, and/or precision targets.|
+|`32014`   |`fpzip` |<a href="#fpzip">fpzip</a>   |Fast and Efficient Lossy or Lossless Compressor for Floating-Point Data|
+|`32015`   |`zstd` |<a href="#zstandard">Zstandard</a>   |Real-time compression algorithm with wide range of compression / speed trade-off and fast decoder|
 |`32016`   |`b3d` _(proposed)_ |<a href="#b3d">B³D</a> |GPU based image compression method developed for light-microscopy applications|
-|`32017`   |`sz` _(proposed)_ |<a href="#sz">SZ</a>  |An error-bounded lossy compressor for scientific floating-point data|
+|`32017`   |`sz` |<a href="#sz">SZ</a>  |An error-bounded lossy compressor for scientific floating-point data|
 |`32018`   |`fcidecomp` _(proposed)_ |<a href="#fcidecomp">FCIDECOMP</a>   |EUMETSAT CharLS compression filter for use with netCDF|
-|`32019`   |`jpeg` _(proposed)_ |<a href="#jpeg">JPEG</a>    |Jpeg compression filter|
+|`32019`   |`jpeg` |<a href="#jpeg">JPEG</a>    |Jpeg compression filter|
 |`32020`   |`vbz` _(proposed)_ |<a href="#vbz">VBZ</a> |Compression filter for raw dna signal data used by Oxford Nanopore|
-|`32021`   |`fapec` _(proposed)_ |<a href="#fapec">FAPEC</a>  | Versatile and efficient data compressor supporting many kinds of data and using an outlier-resilient entropy coder|
+|`32021`   |`fapec` |<a href="#fapec">FAPEC</a>  | Versatile and efficient data compressor supporting many kinds of data and using an outlier-resilient entropy coder|
 |`32022`   |`bitgroom` _(proposed)_ |<a href="#bitgroom">BitGroom</a>    |The BitGroom quantization algorithm|
 |`32023`   |`granular-bitround` _(proposed)_ |<a href="#gbr">Granular BitRound (GBR)</a> |The GBR quantization algorithm is a significant improvement to the BitGroom filter|
-|`32024`   |`sz3` _(proposed)_ |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
+|`32024`   |`sz3` |<a href="#sz3">SZ3</a> |A modular error-bounded lossy compression framework for scientific datasets|
 |`32025`   |`delta-rice` _(proposed)_ |<a href="#delta-rice">Delta-Rice</a>  |Lossless compression algorithm optimized for digitized analog signals based on delta encoding and rice coding|
 |`32026`   |`blosc2` _(proposed)_ |<a href="#blosc2">BLOSC2</a>   |The recent new-generation version of the Blosc compression library|
 |`32027`   |`flac` _(proposed)_ |<a href="#flac">FLAC</a>    |FLAC audio compression filter in HDF5|
-|`32028`   |`sperr` _(proposed)_ |<a href="#sperr">SPERR</a>    |SPERR is a lossy scientific (floating-point) data compressor that produces one of the best rate-distortion curves|
+|`32028`   |`sperr` |<a href="#sperr">SPERR</a>    |SPERR is a lossy scientific (floating-point) data compressor that produces one of the best rate-distortion curves|
 |`32029`   |`terse-prolix` _(proposed)_ |<a href="#trpx">TERSE/PROLIX</a>    |A lossless and fast compression of the diffraction data|
 |`32030`   |`ffmpeg` _(proposed)_ |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
-|`32031`   |`jpeg2000` _(proposed)_ |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
+|`32031`   |`jpeg2000` |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
