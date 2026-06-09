@@ -398,7 +398,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
     char    errmsg[256];
 
     if (cd_nelmts < 4) {
-        sprintf(errmsg, "Too few filter parameters for B2ND: %d", cd_nelmts);
+        sprintf(errmsg, "Too few filter parameters for B2ND: %lu", cd_nelmts);
         PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
         goto failed;
     }
@@ -597,9 +597,9 @@ b2_comp_out:
                 goto b2nd_decomp_out;
             }
             for (int i = 0; i < array->ndim; i++) {
-                start[i] = 0;
-                stop[i]  = array->shape[i];
-                size *= array->shape[i];
+                size_t start[i] = 0;
+                size_t stop[i]  = array->shape[i];
+                size_t size *= array->shape[i];
                 if (ndim >= 0 && array->shape[i] != chunkshape[i]) {
                     /* The HDF5 filter pipeline needs the filter to always return full chunks,
                      * even for margin chunks where data does not fill the whole chunk
