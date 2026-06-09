@@ -596,10 +596,11 @@ b2_comp_out:
                 PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
                 goto b2nd_decomp_out;
             }
+            int64_t start[B2ND_MAX_DIM], stop[B2ND_MAX_DIM], size = typesize;
             for (int i = 0; i < array->ndim; i++) {
-                size_t start[i] = 0;
-                size_t stop[i]  = array->shape[i];
-                size_t size *= array->shape[i];
+                start[i] = 0;
+                stop[i]  = array->shape[i];
+                size *= array->shape[i];
                 if (ndim >= 0 && array->shape[i] != chunkshape[i]) {
                     /* The HDF5 filter pipeline needs the filter to always return full chunks,
                      * even for margin chunks where data does not fill the whole chunk
