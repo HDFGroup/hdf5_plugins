@@ -8,6 +8,11 @@ on:
         description: "The hdf5 base name of the binaries"
         required: true
         type: string
+      hdf_tag:
+        description: "The hdf5 release tag for asset download (version only, without hdf5- prefix)"
+        required: false
+        type: string
+        default: ''
       snap_name:
         description: 'The name in the source tarballs'
         type: string
@@ -86,7 +91,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
           token: ${{ github.token }}
 
@@ -233,7 +238,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
           token: ${{ github.token }}
 
@@ -372,7 +377,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
           token: ${{ github.token }}
 
@@ -510,7 +515,7 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: '${{ inputs.use_hdf }}'
-          fileName: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
+          fileName: '${{ inputs.hdf_tag }}-win-vs2022_intel.zip'
           token: ${{ github.token }}
 
       - name: Uncompress gh binary (Windows_intel)
@@ -667,7 +672,7 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
+          tag: '${{ inputs.hdf_tag }}'
           fileName: '${{ inputs.use_hdf }}-ubuntu-2404_intel.tar.gz'
           token: ${{ github.token }}
 
