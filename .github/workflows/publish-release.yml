@@ -35,7 +35,7 @@ jobs:
           with:
             repository: 'HDFGroup/hdf5_plugins'
             tag: '${{ inputs.use_tag }}'
-            fileName: '${{ inputs.use_hdf }}-*.*'
+            fileName: '${{ inputs.use_tag }}-*.*'
             out-file-path: 'PLUGINS'
             token: ${{ github.token }}
 

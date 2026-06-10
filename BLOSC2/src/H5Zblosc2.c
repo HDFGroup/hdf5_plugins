@@ -398,7 +398,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
     char    errmsg[256];
 
     if (cd_nelmts < 4) {
-        sprintf(errmsg, "Too few filter parameters for B2ND: %lu", cd_nelmts);
+        sprintf(errmsg, "Too few filter parameters for B2ND: %zu", cd_nelmts);
         PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
         goto failed;
     }
@@ -425,7 +425,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
             goto failed;
         }
         if (cd_nelmts < (size_t)(8 + ndim)) {
-            sprintf(errmsg, "Too few dimensions for B2ND in filter values (%z/%d)", cd_nelmts - 8, ndim);
+            sprintf(errmsg, "Too few dimensions for B2ND in filter values (%zu/%d)", cd_nelmts - 8, ndim);
             PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
             goto failed;
         }
@@ -440,7 +440,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
         /* We're compressing */
 
         if (cd_nelmts < 6) {
-            sprintf(errmsg, "Too few filter parameters for Blosc2 compression: %d", cd_nelmts);
+            sprintf(errmsg, "Too few filter parameters for Blosc2 compression: %zu", cd_nelmts);
             PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
             goto failed;
         }

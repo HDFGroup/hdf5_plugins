@@ -514,8 +514,8 @@ jobs:
         uses: robinraju/release-downloader@v1
         with:
           repository: 'HDFGroup/hdf5'
-          tag: '${{ inputs.use_hdf }}'
-          fileName: '${{ inputs.hdf_tag }}-win-vs2022_intel.zip'
+          tag: '${{ inputs.hdf_tag }}'
+          fileName: '${{ inputs.use_hdf }}-win-vs2022_intel.zip'
           token: ${{ github.token }}
 
       - name: Uncompress gh binary (Windows_intel)
