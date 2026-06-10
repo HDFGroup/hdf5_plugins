@@ -75,7 +75,7 @@
     2 /**< Ordinal position of missing value flag in parameter list (cd_params array) */
 #define CCR_FLT_PRM_PSN_MSS_VAL                                                                              \
     3 /**< Ordinal position of missing value in parameter list (cd_params array)                             \
-           NB: HDF5 dataset fill value uses two cd_params slots so it can be single or double-precision. \
+           NB: HDF5 dataset fill value uses two cd_params slots so it can be single or double-precision.     \
            Single-precision values are read as first 4-bytes starting at cd_params[4]                        \
            (and cd_params[5] is ignored), while double-precision values are read as first 8-bytes starting   \
            at cd_params[4] and ending with cd_params[5]. */

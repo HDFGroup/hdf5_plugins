@@ -75,7 +75,7 @@ static int
 roundtrip_f32(hid_t file_id)
 {
     hid_t   space_id = H5I_INVALID_HID, dcpl_id = H5I_INVALID_HID, dset_id = H5I_INVALID_HID;
-    int     ret = 1;
+    int     ret     = 1;
     hsize_t dims[1] = {N}, chunk[1] = {N};
     /* NSD=3, sizeof(data)=4, has_mss_val=0, mss_val_byt_1to4=0, mss_val_byt_5to8=0 */
     const unsigned int cd_values[5] = {3, 4, 0, 0, 0};
@@ -93,8 +93,8 @@ roundtrip_f32(hid_t file_id)
         goto done;
     if (H5Pset_filter(dcpl_id, H5Z_FILTER_BITGROOM, H5Z_FLAG_MANDATORY, 5, cd_values) < 0)
         goto done;
-    if ((dset_id = H5Dcreate(file_id, DSET_F32, H5T_IEEE_F32LE, space_id, H5P_DEFAULT, dcpl_id,
-                             H5P_DEFAULT)) < 0)
+    if ((dset_id =
+             H5Dcreate(file_id, DSET_F32, H5T_IEEE_F32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT)) < 0)
         goto done;
     if (H5Dwrite(dset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, input) < 0)
         goto done;
@@ -141,7 +141,7 @@ static int
 roundtrip_f64(hid_t file_id)
 {
     hid_t   space_id = H5I_INVALID_HID, dcpl_id = H5I_INVALID_HID, dset_id = H5I_INVALID_HID;
-    int     ret = 1;
+    int     ret     = 1;
     hsize_t dims[1] = {N}, chunk[1] = {N};
     /* NSD=3, sizeof(data)=8, has_mss_val=0, mss_val_byt_1to4=0, mss_val_byt_5to8=0 */
     const unsigned int cd_values[5] = {3, 8, 0, 0, 0};
@@ -159,8 +159,8 @@ roundtrip_f64(hid_t file_id)
         goto done;
     if (H5Pset_filter(dcpl_id, H5Z_FILTER_BITGROOM, H5Z_FLAG_MANDATORY, 5, cd_values) < 0)
         goto done;
-    if ((dset_id = H5Dcreate(file_id, DSET_F64, H5T_IEEE_F64LE, space_id, H5P_DEFAULT, dcpl_id,
-                             H5P_DEFAULT)) < 0)
+    if ((dset_id =
+             H5Dcreate(file_id, DSET_F64, H5T_IEEE_F64LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT)) < 0)
         goto done;
     if (H5Dwrite(dset_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, input) < 0)
         goto done;
