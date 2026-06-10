@@ -639,9 +639,14 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
                 mss_val_cmp_flt = NAN;
             bit_xpl_nbr_sgn = bit_xpl_nbr_sgn_flt;
             u32_ptr         = op1.ui32p;
-            /* Do not quantize the dataset fill value, +/- zero, or NaN. */
+            /* Do not quantize the dataset fill value, +/- zero, NaN, or +/- Inf.
+             * isfinite(val) covers !isnan(val) and additionally blocks +/- Inf,
+             * which would otherwise reach the bit-shift below with an out-of-range
+             * shift count (undefined behavior). netcdf-c upstream does not gate Inf;
+             * we diverge here because the standalone filter's loop body computes
+             * per-value bit masks that Inf inputs corrupt. */
             for (idx = 0L; idx < sz; idx++) {
-                if ((val = op1.fp[idx]) != mss_val_cmp_flt && val != 0.0 && !isnan(val)) {
+                if ((val = op1.fp[idx]) != mss_val_cmp_flt && val != 0.0 && isfinite(val)) {
                     mnt      = frexp(val, &xpn_bs2); /* DGG19 p. 4102 (8) */
                     mnt_fabs = fabs(mnt);
                     /* dgt_nbr = floor(log10(|val|)) + 1, computed via deterministic
@@ -654,10 +659,8 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
                      * exactly 0.5 (val is an exact power of 2). This integer-only
                      * formulation is bit-deterministic across platforms; the
                      * original libm-based form is not. */
-                    prc_bnr_xpl_rqr = (mnt_fabs == 0.0)
-                                          ? 0
-                                          : (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) -
-                                                                qnt_pwr); /* Protect against mnt = -0.0 */
+                    prc_bnr_xpl_rqr =
+                        (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) - qnt_pwr);
                     prc_bnr_xpl_rqr--; /* 20211003 Reduce formula result by 1 bit: Passes all tests, improves
                                           CR by ~10% */
 
@@ -688,9 +691,9 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
             bit_xpl_nbr_sgn = bit_xpl_nbr_sgn_dbl;
             u64_ptr         = op1.ui64p;
 
-            /* Do not quantize the dataset fill value, +/- zero, or NaN. */
+            /* See float branch above for why isfinite(val) is used instead of !isnan(val). */
             for (idx = 0L; idx < sz; idx++) {
-                if ((val = op1.dp[idx]) != mss_val_cmp_dbl && val != 0.0 && !isnan(val)) {
+                if ((val = op1.dp[idx]) != mss_val_cmp_dbl && val != 0.0 && isfinite(val)) {
                     mnt      = frexp(val, &xpn_bs2); /* DGG19 p. 4102 (8) */
                     mnt_fabs = fabs(mnt);
                     /* dgt_nbr = floor(log10(|val|)) + 1, computed via deterministic
@@ -703,10 +706,8 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
                      * exactly 0.5 (val is an exact power of 2). This integer-only
                      * formulation is bit-deterministic across platforms; the
                      * original libm-based form is not. */
-                    prc_bnr_xpl_rqr = (mnt_fabs == 0.0)
-                                          ? 0
-                                          : (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) -
-                                                                qnt_pwr); /* Protect against mnt = -0.0 */
+                    prc_bnr_xpl_rqr =
+                        (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) - qnt_pwr);
                     prc_bnr_xpl_rqr--; /* 20211003 Reduce formula result by 1 bit: Passes all tests, improves
                                           CR by ~10% */
 

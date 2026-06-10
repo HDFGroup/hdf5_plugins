@@ -548,12 +548,16 @@ ccr_bgr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
             // msk_f32_u32_hshv=msk_f32_u32_one & (msk_f32_u32_zro >> 1); /* Set one bit: the MSB of LSBs */
 
             /* Bit-Groom: alternately shave and set LSBs.
-             * Do not quantize the dataset fill value, +/- zero, or NaN. */
+             * Do not quantize the dataset fill value, +/- zero, NaN, or +/- Inf.
+             * isfinite(val_flt) covers !isnan(val_flt) and additionally blocks
+             * +/- Inf: the shave (AND) loop preserves Inf bit patterns, but the
+             * set (OR) loop turns +/- Inf (exponent all 1, mantissa 0) into a
+             * NaN (exponent all 1, mantissa non-zero) by ORing low mantissa bits. */
             for (idx = 0L; idx < sz; idx += 2L)
-                if ((val_flt = op1.fp[idx]) != mss_val_cmp_flt && val_flt != 0.0f && !isnan(val_flt))
+                if ((val_flt = op1.fp[idx]) != mss_val_cmp_flt && val_flt != 0.0f && isfinite(val_flt))
                     u32_ptr[idx] &= msk_f32_u32_zro;
             for (idx = 1L; idx < sz; idx += 2L)
-                if ((val_flt = op1.fp[idx]) != mss_val_cmp_flt && val_flt != 0.0f && !isnan(val_flt))
+                if ((val_flt = op1.fp[idx]) != mss_val_cmp_flt && val_flt != 0.0f && isfinite(val_flt))
                     u32_ptr[idx] |= msk_f32_u32_one;
             break;
         case NC_DOUBLE:
@@ -580,13 +584,12 @@ ccr_bgr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
             /* Bit Set   mask for OR:  Put ones into bits to be set, zeros in untouched bits */
             msk_f64_u64_one = ~msk_f64_u64_zro;
             // msk_f64_u64_hshv=msk_f64_u64_one & (msk_f64_u64_zro >> 1); /* Set one bit: the MSB of LSBs */
-            /* Bit-Groom: alternately shave and set LSBs.
-             * Do not quantize the dataset fill value, +/- zero, or NaN. */
+            /* See float branch above for why isfinite(val_dbl) is used instead of !isnan(val_dbl). */
             for (idx = 0L; idx < sz; idx += 2L)
-                if ((val_dbl = op1.dp[idx]) != mss_val_cmp_dbl && val_dbl != 0.0 && !isnan(val_dbl))
+                if ((val_dbl = op1.dp[idx]) != mss_val_cmp_dbl && val_dbl != 0.0 && isfinite(val_dbl))
                     u64_ptr[idx] &= msk_f64_u64_zro;
             for (idx = 1L; idx < sz; idx += 2L)
-                if ((val_dbl = op1.dp[idx]) != mss_val_cmp_dbl && val_dbl != 0.0 && !isnan(val_dbl))
+                if ((val_dbl = op1.dp[idx]) != mss_val_cmp_dbl && val_dbl != 0.0 && isfinite(val_dbl))
                     u64_ptr[idx] |= msk_f64_u64_one;
             break;
         default:

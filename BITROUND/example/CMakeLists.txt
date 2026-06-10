@@ -43,6 +43,15 @@ if (H5PL_BUILD_TESTING)
     target_link_libraries (h5repack_floats_bitround PRIVATE dl)
   endif ()
 
+  # Round-trip test for special floating-point values (NaN, +/- Inf, +/- zero).
+  # See the test definition lower in this file for the full description.
+  add_executable (h5filter_specials_bitround ${PROJECT_SOURCE_DIR}/h5filter_specials_bitround.c)
+  TARGET_C_PROPERTIES (h5filter_specials_bitround ${LIB_TYPE})
+  target_link_libraries (h5filter_specials_bitround PRIVATE ${H5PL_HDF5_LINK_LIBS})
+  if (NOT WIN32)
+    target_link_libraries (h5filter_specials_bitround PRIVATE dl)
+  endif ()
+
   macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
@@ -266,6 +275,43 @@ if (H5PL_BUILD_TESTING)
   if (NOT DISABLE_H5BITROUND_ENCODER)
     #UD BITROUND
     ADD_H5_UD_TEST (ud_convert 0 h5repack_floats.h5 --enable-error-stack -v -f UD=32023,0,5,3,4,0,0,0 -l CHUNK=4x8)
+
+    # Special-value round-trip test: writes a small chunked dataset containing
+    # NaN, +/- Inf, +/- zero, plus normal values; applies the Granular BitRound
+    # filter via H5Pset_filter; reads back; and asserts in C that the special
+    # values are preserved bit-exact while at least one normal value was
+    # quantized. The verdict comes from the program's exit code; no h5dump
+    # comparison is involved, so cross-platform NaN/Inf printf formatting
+    # cannot affect the result. TESTLIBDIR is already set by ADD_H5_UD_TEST
+    # above.
+    add_test (
+        NAME H5BITROUND_UD-specials-roundtrip-clearall
+        COMMAND ${CMAKE_COMMAND} -E remove
+            h5filter_specials_bitround.h5
+            h5filter_specials_bitround.out
+            h5filter_specials_bitround.out.err
+    )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5BITROUND_UD-specials-roundtrip-clearall PROPERTIES DEPENDS ${last_test})
+    endif ()
+    set (last_test "H5BITROUND_UD-specials-roundtrip-clearall")
+    add_test (
+        NAME H5BITROUND_UD-specials-roundtrip
+        COMMAND "${CMAKE_COMMAND}"
+            -D "TEST_PROGRAM=$<TARGET_FILE:h5filter_specials_bitround>"
+            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+            -D "TEST_EXPECT=0"
+            -D "TEST_OUTPUT=h5filter_specials_bitround.out"
+            -D "TEST_SKIP_COMPARE=1"
+            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+            -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+            -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+            -P "${H5BITROUND_RESOURCES_DIR}/runTest.cmake"
+    )
+    set_tests_properties (H5BITROUND_UD-specials-roundtrip PROPERTIES
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+        DEPENDS H5BITROUND_UD-specials-roundtrip-clearall)
+    set (last_test "H5BITROUND_UD-specials-roundtrip")
   endif ()
 
 endif ()
