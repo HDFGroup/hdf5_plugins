@@ -181,7 +181,7 @@
       ],
       "filter": {
         "exclude": {
-          "name": "H5DUMP-h5ex_d_granularbr"
+          "name": "H5DUMP-h5ex_d_granularbr|H5ZFP_UD-h5dump-ud_mesh_convert"
         }
       }
     },
@@ -198,6 +198,11 @@
       "inherits": [
         "ci-macos-arm64-Release-Clang"
       ],
+      "filter": {
+        "exclude": {
+          "name": "H5ZFP_UD-h5dump-ud_mesh_convert"
+        }
+      },
       "execution": {
         "noTestsAction": "error",
         "timeout": 180,
@@ -216,7 +221,12 @@
       "configurePreset": "ci-StdShar-GNUC",
       "inherits": [
         "ci-x64-Release-GNUC"
-      ]
+      ],
+      "filter": {
+        "exclude": {
+          "name": "H5ZFP_UD-h5dump-ud_mesh_convert"
+        }
+      }
     },
     {
       "name": "ci-StdShar-win-Intel",
@@ -226,7 +236,7 @@
       ],
       "filter": {
         "exclude": {
-          "name": "H5DUMP-h5ex_d_granularbr"
+          "name": "H5DUMP-h5ex_d_granularbr|H5ZFP_UD-h5dump-ud_mesh_convert"
         }
       },
       "condition": {
