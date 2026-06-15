@@ -24,6 +24,7 @@ jobs:
     outputs:
       hdf_tag: ${{ steps.get-tag-name.outputs.HDF_TAG }}
       rel_tag: ${{ steps.get-tag-name.outputs.RELEASE_TAG }}
+      use_hdf: ${{ steps.get-tag-name.outputs.USE_HDF }}
     steps:
     - name: Get tag name
       id: get-tag-name
@@ -33,6 +34,11 @@ jobs:
       run: |
         echo "HDF_TAG=$HDFTAG" >> $GITHUB_OUTPUT
         echo "RELEASE_TAG=$TAG" >> $GITHUB_OUTPUT
+        if [ "$HDFTAG" = "snapshot" ]; then
+          echo "USE_HDF=snapshot" >> $GITHUB_OUTPUT
+        else
+          echo "USE_HDF=hdf5-$HDFTAG" >> $GITHUB_OUTPUT
+        fi
 
   call-workflow-tarball:
     needs: log-the-inputs
@@ -48,7 +54,7 @@ jobs:
       cmake_version: "latest"
       preset_name: ci-StdShar
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
-      use_hdf: hdf5-${{ needs.log-the-inputs.outputs.hdf_tag }}
+      use_hdf: ${{ needs.log-the-inputs.outputs.use_hdf }}
       hdf_tag: ${{ needs.log-the-inputs.outputs.hdf_tag }}
       snap_name: hdf5_plugins-${{ needs.call-workflow-tarball.outputs.source_base }}
       use_environ: release
@@ -69,7 +75,7 @@ jobs:
     uses: ./.github/workflows/cmake-bintest.yml
     with:
       preset_name: ci-StdShar
-      use_hdf: hdf5-${{ needs.log-the-inputs.outputs.hdf_tag }}
+      use_hdf: ${{ needs.log-the-inputs.outputs.use_hdf }}
       hdf_tag: ${{ needs.log-the-inputs.outputs.hdf_tag }}
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_environ: release
