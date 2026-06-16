@@ -25,19 +25,19 @@ jobs:
     steps:
         # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - name: Get Sources
-          uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+          uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
           with:
             fetch-depth: 0
             ref: '${{ github.head_ref || github.ref_name }}'
 
         - name: Get plugins release
-          uses: dsaltares/fetch-gh-release-asset@master
+          uses: robinraju/release-downloader@v1
           with:
-            repo: 'HDFGroup/hdf5_plugins'
-            version: 'tags/${{ inputs.use_tag }}'
-            regex: true
-            target: 'PLUGINS/'
-            file: '${{ inputs.use_hdf }}-*.*'
+            repository: 'HDFGroup/hdf5_plugins'
+            tag: '${{ inputs.use_tag }}'
+            fileName: '${{ inputs.use_tag }}-*.*'
+            out-file-path: 'PLUGINS'
+            token: ${{ github.token }}
 
         - name: Setup AWS CLI
           uses: aws-actions/configure-aws-credentials@v6

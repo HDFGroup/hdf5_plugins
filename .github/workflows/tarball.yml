@@ -51,7 +51,7 @@ jobs:
       branch_ref: ${{ steps.get-branch-name.outputs.BRANCH_REF }}
       branch_sha: ${{ steps.get-branch-sha.outputs.BRANCH_SHA }}
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
 
     - name: Get branch name
       id: get-branch-name
@@ -73,7 +73,7 @@ jobs:
 
     - name: Check for changed source
       id: check-new-commits
-      uses: adriangl/check-new-commits-action@v1
+      uses: adriangl/check-new-commits-action@v2
       with:
         seconds: 86400 # One day in seconds
         branch: '${{ steps.get-branch-name.outputs.BRANCH_REF }}'
@@ -101,7 +101,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Get Sources
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           path: hdfsrc
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || needs.check_commits.outputs.branch_ref }}

@@ -34,6 +34,17 @@ foreach (example ${dyn_examples})
 endforeach ()
 
 if (H5PL_BUILD_TESTING)
+  # h5repack test input generator. Target name is plugin-suffixed because the
+  # BITROUND and BITGROOM trees share the same CMake project and source file
+  # basename (issue #240).
+  add_executable (h5repack_floats_bitgroom ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
+  target_include_directories(h5repack_floats_bitgroom PRIVATE ${H5PL_HDF5_INCLUDE_DIRS})
+  TARGET_C_PROPERTIES (h5repack_floats_bitgroom ${LIB_TYPE})
+  target_link_libraries (h5repack_floats_bitgroom PRIVATE ${H5PL_HDF5_LINK_LIBS})
+  if (NOT WIN32)
+    target_link_libraries (h5repack_floats_bitgroom PRIVATE ${CMAKE_DL_LIBS})
+  endif ()
+
   macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
@@ -121,21 +132,47 @@ if (H5PL_BUILD_TESTING)
         NAME H5BITGROOM_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
+            ${resultfile}
             out-${testname}.${resultfile}
             ${testname}.${resultfile}.out
             ${testname}.${resultfile}.out.err
             ${resultfile}-${testname}.out
             ${resultfile}-${testname}.out.err
+            ${resultfile}-${testname}-data.out
+            ${resultfile}-${testname}-data.out.err
     )
     if (NOT "${last_test}" STREQUAL "")
       set_tests_properties (H5BITGROOM_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
     endif ()
     set (last_test "H5BITGROOM_UD-${testname}-clearall-objects")
     if (WIN32)
-      set (${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+      set (TESTLIBDIR "${HDF5_TOOLS_DIR}")
     else ()
-      set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+      set (TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
+    # Generate the float-data input file for h5repack. The BitGroom filter's
+    # set_local() callback removes the filter from the pipeline on non-float
+    # datasets, so the input must contain float data for the test to actually
+    # exercise the filter (issue #240). Routed through runTest.cmake so
+    # PATH/DYLD_LIBRARY_PATH/LD_LIBRARY_PATH are set up for the helper to find
+    # the HDF5 runtime library on every platform (Windows in particular has
+    # no rpath equivalent and reports STATUS_DLL_NOT_FOUND if the HDF5 DLL is
+    # not on PATH).
+    add_test (
+        NAME H5BITGROOM_UD-${testname}-gen-input
+        COMMAND "${CMAKE_COMMAND}"
+            -D "TEST_PROGRAM=$<TARGET_FILE:h5repack_floats_bitgroom>"
+            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+            -D "TEST_EXPECT=0"
+            -D "TEST_OUTPUT=h5repack_floats_bitgroom.out"
+            -D "TEST_SKIP_COMPARE=1"
+            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+            -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+    )
+    set_tests_properties (H5BITGROOM_UD-${testname}-gen-input PROPERTIES
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+        DEPENDS H5BITGROOM_UD-${testname}-clearall-objects)
+    set (last_test "H5BITGROOM_UD-${testname}-gen-input")
     if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
           NAME H5BITGROOM_UD-${testname}
@@ -150,7 +187,7 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BITGROOM_UD-${testname} PROPERTIES DEPENDS H5BITGROOM_UD-${testname}-clearall-objects)
+      set_tests_properties (H5BITGROOM_UD-${testname} PROPERTIES DEPENDS H5BITGROOM_UD-${testname}-gen-input)
       add_test (
           NAME H5BITGROOM_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
@@ -167,23 +204,43 @@ if (H5PL_BUILD_TESTING)
           WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
           DEPENDS H5BITGROOM_UD-${testname})
       set (last_test "H5BITGROOM_UD-h5dump-${testname}")
+      # Verify that the filter actually modifies the dataset values: dump the
+      # data (no -pH) and compare against a captured reference of the
+      # quantized output. BitGroom's encoding is bit-deterministic across
+      # platforms (its inner loop is pure integer bit ops, with the bit-zero
+      # count derived once per call from NSD via ceil() of a constant
+      # expression), so the captured reference is portable.
+      add_test (
+          NAME H5BITGROOM_UD-h5dump-data-${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_ARGS:STRING=out-${testname}.${resultfile}"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_OUTPUT=${resultfile}-${testname}-data.out"
+              -D "TEST_EXPECT=${resultcode}"
+              -D "TEST_REFERENCE=${resultfile}-${testname}-data.ddl"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
+      )
+      set_tests_properties (H5BITGROOM_UD-h5dump-data-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS H5BITGROOM_UD-h5dump-${testname})
+      set (last_test "H5BITGROOM_UD-h5dump-data-${testname}")
     endif ()
   endmacro ()
 
   # --------------------------------------------------------------------
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
-  set (LIST_HDF5_TEST_FILES
-      h5repack_layout.h5
-  )
   set (LIST_OTHER_TEST_FILES
       h5ex_d_bitgroom.ddl
       h5ex_d_bitgroom.tst
-      h5repack_layout.h5-ud_convert.ddl
-      ud_convert.h5repack_layout.h5.tst
+      h5repack_floats.h5-ud_convert.ddl
+      h5repack_floats.h5-ud_convert-data.ddl
+      ud_convert.h5repack_floats.h5.tst
   )
 
-  foreach (h5_file ${LIST_HDF5_TEST_FILES} ${LIST_OTHER_TEST_FILES})
+  foreach (h5_file ${LIST_OTHER_TEST_FILES})
     HDFTEST_COPY_FILE("${PROJECT_SOURCE_DIR}/testfiles/${h5_file}" "${PROJECT_BINARY_DIR}/${h5_file}" "example_files")
   endforeach ()
   add_custom_target(example_files ALL COMMENT "Copying files needed by example tests" DEPENDS ${example_files_list})
@@ -192,7 +249,7 @@ if (H5PL_BUILD_TESTING)
 
   if (NOT DISABLE_H5PL_ENCODER)
     #UD BITGROOM
-    ADD_H5_UD_TEST (ud_convert 0 h5repack_layout.h5 --enable-error-stack -v -f UD=32022,0,5,3,4,0,0,0 -l CHUNK=4x8)
+    ADD_H5_UD_TEST (ud_convert 0 h5repack_floats.h5 --enable-error-stack -v -f UD=32022,0,5,3,4,0,0,0 -l CHUNK=4x8)
   endif ()
 
 endif ()
