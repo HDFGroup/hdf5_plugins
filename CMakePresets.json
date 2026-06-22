@@ -216,6 +216,7 @@
       "configurePreset": "ci-StdShar-GNUC",
       "inherits": [
         "ci-x64-Release-GNUC"
+      ]
     },
     {
       "name": "ci-StdShar-win-Intel",
