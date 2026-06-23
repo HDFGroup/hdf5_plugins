@@ -28,7 +28,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 8120
+         OFFSET 7881
       }
       FILTERS {
          NONE
@@ -47,7 +47,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 11320
+         OFFSET 11081
       }
       FILTERS {
          NONE
@@ -66,7 +66,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 14520
+         OFFSET 14281
       }
       FILTERS {
          NONE
@@ -121,7 +121,7 @@ GROUP "/" {
       STORAGE_LAYOUT {
          CONTIGUOUS
          SIZE 3200
-         OFFSET 26208
+         OFFSET 25981
       }
       FILTERS {
          NONE
