@@ -9,6 +9,11 @@
  * access to this file, you may request a copy from help@hdfgroup.org.       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include "hdf5.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
 /*
  * Round-trip test for special floating-point values through the BitGroom
  * filter. Verifies that NaN, +Inf, -Inf, -0.0, and +0.0 are passed through
@@ -22,11 +27,6 @@
  * on odd indices; the special values are placed at both even and odd
  * positions to exercise both loops.
  */
-
-#include "hdf5.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 
 #define FILENAME            "h5filter_specials_bitgroom.h5"
 #define DSET_F32            "f32"
@@ -128,11 +128,11 @@ roundtrip_f32(hid_t file_id)
     ret = 0;
 
 done:
-    if (dset_id >= 0)
+    if (dset_id > 0)
         H5Dclose(dset_id);
-    if (dcpl_id >= 0)
+    if (dcpl_id > 0)
         H5Pclose(dcpl_id);
-    if (space_id >= 0)
+    if (space_id > 0)
         H5Sclose(space_id);
     return ret;
 }
@@ -194,11 +194,11 @@ roundtrip_f64(hid_t file_id)
     ret = 0;
 
 done:
-    if (dset_id >= 0)
+    if (dset_id > 0)
         H5Dclose(dset_id);
-    if (dcpl_id >= 0)
+    if (dcpl_id > 0)
         H5Pclose(dcpl_id);
-    if (space_id >= 0)
+    if (space_id > 0)
         H5Sclose(space_id);
     return ret;
 }
@@ -210,7 +210,7 @@ main(void)
     int   r_f32 = 1, r_f64 = 1;
 
     file_id = H5Fcreate(FILENAME, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-    if (file_id < 0) {
+    if (file_id == H5I_INVALID_HID) {
         fprintf(stderr, "FAIL: H5Fcreate(%s) failed\n", FILENAME);
         return 1;
     }

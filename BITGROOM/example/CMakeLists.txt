@@ -44,7 +44,7 @@ if (H5PL_BUILD_TESTING)
   endif ()
 
   # Round-trip test for special floating-point values (NaN, +/- Inf, +/- zero).
-  # See the test definition lower in this file for the full description.
+  # See the test definition below for the full description.
   add_executable (h5filter_specials_bitgroom ${PROJECT_SOURCE_DIR}/h5filter_specials_bitgroom.c)
   TARGET_C_PROPERTIES (h5filter_specials_bitgroom ${LIB_TYPE})
   target_link_libraries (h5filter_specials_bitgroom PRIVATE ${H5PL_HDF5_LINK_LIBS})
@@ -272,14 +272,12 @@ if (H5PL_BUILD_TESTING)
     ADD_H5_UD_TEST (ud_convert 0 h5repack_floats.h5 --enable-error-stack -v -f UD=32022,0,5,3,4,0,0,0 -l CHUNK=4x8)
 
     # Special-value round-trip test: writes a small chunked dataset containing
-    # NaN, +/- Inf, +/- zero, plus normal values; applies the BitGroom filter
-    # via H5Pset_filter; reads back; and asserts in C that the special values
-    # are preserved bit-exact while at least one normal value was quantized.
-    # BitGroom alternates shave (AND) on even indices and set (OR) on odd
-    # indices; the special values straddle both. The verdict comes from the
-    # program's exit code; no h5dump comparison is involved, so cross-platform
-    # NaN/Inf printf formatting cannot affect the result. TESTLIBDIR is
-    # already set by ADD_H5_UD_TEST above.
+    # NaN, +/- Inf, +/- zero, plus normal values, then applies the BitGroom
+    # filter and reads the data back asserting that the special values are
+    # preserved bit-exact while at least one normal value was quantized. The
+    # verdict comes from the program's exit code; no h5dump comparison is
+    # involved, so cross-platform NaN/Inf printf formatting cannot affect the
+    # result. TESTLIBDIR is already set by ADD_H5_UD_TEST above.
     add_test (
         NAME H5BITGROOM_UD-specials-roundtrip-clearall
         COMMAND ${CMAKE_COMMAND} -E remove
