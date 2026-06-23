@@ -99,14 +99,14 @@
  * - 4: compression level
  * - 5: shuffle method
  * - 6: compressor code
- * - 7: chunk rank (number of dimensions) (present if 1 < rank <= BLOSC2_MAX_DIM, for B2ND)
+ * - 7: chunk rank (number of dimensions) (present if 1 < rank <= B2ND_MAX_DIM, for B2ND)
  * - 8 + i: length of chunk dimension i (0 <= i < rank)
  *
  * If a value is specified, all values before it must be specified too.
  *
  * If the chunk rank is specified, chunk dimensions must follow.
  */
-#define MAX_FILTER_VALUES (8 + BLOSC2_MAX_DIM)
+#define MAX_FILTER_VALUES (8 + B2ND_MAX_DIM)
 /* Compression level default */
 #define DEFAULT_CLEVEL 5
 /* Shuffle default */
@@ -168,7 +168,7 @@ H5PLget_plugin_info(void)
  *
  *    3. Compute the chunk size in bytes and store it in slot 3.
  *
- *    4. If 1 < rank <= BLOSC2_MAX_DIM, store it in slot 7, and chunk dimensions in the following slots.
+ *    4. If 1 < rank <= B2ND_MAX_DIM, store it in slot 7, and chunk dimensions in the following slots.
  */
 herr_t
 blosc2_set_local(hid_t dcpl, hid_t type, hid_t space)
@@ -244,7 +244,7 @@ blosc2_set_local(hid_t dcpl, hid_t type, hid_t space)
     fprintf(stderr, "Blosc2: Computed buffer size %d\n", bufsize);
 #endif
 
-    if (1 < ndim && ndim <= BLOSC2_MAX_DIM) {
+    if (1 < ndim && ndim <= B2ND_MAX_DIM) {
         if (nelements < 5) {
             values[4] = DEFAULT_CLEVEL;
         }
@@ -267,7 +267,7 @@ blosc2_set_local(hid_t dcpl, hid_t type, hid_t space)
          * so convey some information when tracing. */
         BLOSC_TRACE_WARNING("Chunk rank %d exceeds B2ND build limit %d, "
                             "using plain Blosc2 instead",
-                            ndim, BLOSC2_MAX_DIM);
+                            ndim, B2ND_MAX_DIM);
     }
 
     r = H5Pmodify_filter(dcpl, FILTER_BLOSC2, flags, nelements, values);
@@ -398,7 +398,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
     char    errmsg[256];
 
     if (cd_nelmts < 4) {
-        sprintf(errmsg, "Too few filter parameters for B2ND: %d", cd_nelmts);
+        sprintf(errmsg, "Too few filter parameters for B2ND: %zu", cd_nelmts);
         PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
         goto failed;
     }
@@ -410,7 +410,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
 
     /* Filter params that are only set for B2ND */
     int     ndim = -1;
-    int32_t chunkshape[BLOSC2_MAX_DIM];
+    int32_t chunkshape[B2ND_MAX_DIM];
     if (cd_nelmts >= 8) {
         /* Get chunk shape for B2ND */
         ndim = cd_values[7];
@@ -419,13 +419,13 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
             PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
             goto failed;
         }
-        if (ndim > BLOSC2_MAX_DIM) {
-            sprintf(errmsg, "Chunk rank %d (filter value) exceeds B2ND build limit %d", ndim, BLOSC2_MAX_DIM);
+        if (ndim > B2ND_MAX_DIM) {
+            sprintf(errmsg, "Chunk rank %d (filter value) exceeds B2ND build limit %d", ndim, B2ND_MAX_DIM);
             PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
             goto failed;
         }
         if (cd_nelmts < (size_t)(8 + ndim)) {
-            sprintf(errmsg, "Too few dimensions for B2ND in filter values (%z/%d)", cd_nelmts - 8, ndim);
+            sprintf(errmsg, "Too few dimensions for B2ND in filter values (%zu/%d)", cd_nelmts - 8, ndim);
             PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
             goto failed;
         }
@@ -440,7 +440,7 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
         /* We're compressing */
 
         if (cd_nelmts < 6) {
-            sprintf(errmsg, "Too few filter parameters for Blosc2 compression: %d", cd_nelmts);
+            sprintf(errmsg, "Too few filter parameters for Blosc2 compression: %zu", cd_nelmts);
             PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
             goto failed;
         }
@@ -489,10 +489,10 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
                 }
                 blocksize = sugg_blocksize;
             }
-            int32_t blockdims[BLOSC2_MAX_DIM];
+            int32_t blockdims[B2ND_MAX_DIM];
             cparams.blocksize = compute_b2nd_block_shape(blocksize, typesize, ndim, chunkshape, blockdims);
 
-            int64_t chunkshape_l[BLOSC2_MAX_DIM];
+            int64_t chunkshape_l[B2ND_MAX_DIM];
             for (int i = 0; i < ndim; i++) {
                 chunkshape_l[i] = chunkshape[i];
             }
@@ -596,7 +596,7 @@ b2_comp_out:
                 PUSH_ERR("blosc2_filter", H5E_CALLBACK, errmsg);
                 goto b2nd_decomp_out;
             }
-            int64_t start[BLOSC2_MAX_DIM], stop[BLOSC2_MAX_DIM], size = typesize;
+            int64_t start[B2ND_MAX_DIM], stop[B2ND_MAX_DIM], size = typesize;
             for (int i = 0; i < array->ndim; i++) {
                 start[i] = 0;
                 stop[i]  = array->shape[i];
