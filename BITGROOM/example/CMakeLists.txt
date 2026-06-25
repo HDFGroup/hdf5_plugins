@@ -43,6 +43,15 @@ if (H5PL_BUILD_TESTING)
     target_link_libraries (h5repack_floats_bitgroom PRIVATE dl)
   endif ()
 
+  # Round-trip test for special floating-point values (NaN, +/- Inf, +/- zero).
+  # See the test definition below for the full description.
+  add_executable (h5filter_specials_bitgroom ${PROJECT_SOURCE_DIR}/h5filter_specials_bitgroom.c)
+  TARGET_C_PROPERTIES (h5filter_specials_bitgroom ${LIB_TYPE})
+  target_link_libraries (h5filter_specials_bitgroom PRIVATE ${H5PL_HDF5_LINK_LIBS})
+  if (NOT WIN32)
+    target_link_libraries (h5filter_specials_bitgroom PRIVATE dl)
+  endif ()
+
   macro (ADD_H5_TEST testname)
     add_test (
         NAME ${testname}-clearall
@@ -261,6 +270,42 @@ if (H5PL_BUILD_TESTING)
   if (NOT DISABLE_H5BITGROOM_ENCODER)
     #UD BITGROOM
     ADD_H5_UD_TEST (ud_convert 0 h5repack_floats.h5 --enable-error-stack -v -f UD=32022,0,5,3,4,0,0,0 -l CHUNK=4x8)
+
+    # Special-value round-trip test: writes a small chunked dataset containing
+    # NaN, +/- Inf, +/- zero, plus normal values, then applies the BitGroom
+    # filter and reads the data back asserting that the special values are
+    # preserved bit-exact while at least one normal value was quantized. The
+    # verdict comes from the program's exit code; no h5dump comparison is
+    # involved, so cross-platform NaN/Inf printf formatting cannot affect the
+    # result. TESTLIBDIR is already set by ADD_H5_UD_TEST above.
+    add_test (
+        NAME H5BITGROOM_UD-specials-roundtrip-clearall
+        COMMAND ${CMAKE_COMMAND} -E remove
+            h5filter_specials_bitgroom.h5
+            h5filter_specials_bitgroom.out
+            h5filter_specials_bitgroom.out.err
+    )
+    if (NOT "${last_test}" STREQUAL "")
+      set_tests_properties (H5BITGROOM_UD-specials-roundtrip-clearall PROPERTIES DEPENDS ${last_test})
+    endif ()
+    set (last_test "H5BITGROOM_UD-specials-roundtrip-clearall")
+    add_test (
+        NAME H5BITGROOM_UD-specials-roundtrip
+        COMMAND "${CMAKE_COMMAND}"
+            -D "TEST_PROGRAM=$<TARGET_FILE:h5filter_specials_bitgroom>"
+            -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+            -D "TEST_EXPECT=0"
+            -D "TEST_OUTPUT=h5filter_specials_bitgroom.out"
+            -D "TEST_SKIP_COMPARE=1"
+            -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+            -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+            -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+            -P "${H5BITGROOM_RESOURCES_DIR}/runTest.cmake"
+    )
+    set_tests_properties (H5BITGROOM_UD-specials-roundtrip PROPERTIES
+        WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+        DEPENDS H5BITGROOM_UD-specials-roundtrip-clearall)
+    set (last_test "H5BITGROOM_UD-specials-roundtrip")
   endif ()
 
 endif ()

@@ -78,7 +78,7 @@
     2 /**< Ordinal position of missing value flag in parameter list (cd_params array) */
 #define CCR_FLT_PRM_PSN_MSS_VAL                                                                              \
     3 /**< Ordinal position of missing value in parameter list (cd_params array)                             \
-           NB: Missing value (_FillValue) uses two cd_params slots so it can be single or double-precision.  \
+           NB: HDF5 dataset fill value uses two cd_params slots so it can be single or double-precision.     \
            Single-precision values are read as first 4-bytes starting at cd_params[4]                        \
            (and cd_params[5] is ignored), while double-precision values are read as first 8-bytes starting   \
            at cd_params[4] and ending with cd_params[5]. */
@@ -91,12 +91,6 @@
 #ifndef NC_DOUBLE
 #define NC_DOUBLE 6
 #endif /* !NC_DOUBLE */
-#ifndef NC_FILL_FLOAT
-#define NC_FILL_FLOAT (9.9692099683868690e+36f) /* near 15 * 2^119 */
-#endif                                          /* !NC_FILL_FLOAT */
-#ifndef NC_FILL_DOUBLE
-#define NC_FILL_DOUBLE (9.9692099683868690e+36)
-#endif /* !NC_FILL_DOUBLE */
 
 /* Minimum number of explicit significant bits to preserve when zeroing/bit-masking floating point values
  Codes will preserve at least two explicit bits, IEEE significant representation contains one implicit bit
@@ -485,8 +479,10 @@ ccr_bgr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
 
     double prc_bnr_xct;     /* [nbr] Binary digits of precision, exact */
     double mss_val_cmp_dbl; /* Missing value for comparison to double precision values */
+    double val_dbl;         /* [frc] Copy of input value to avoid indirection */
 
     float mss_val_cmp_flt; /* Missing value for comparison to single precision values */
+    float val_flt;         /* [frc] Copy of input value to avoid indirection */
 
     int bit_xpl_nbr_sgn = -1; /* [nbr] Number of explicit bits in significand */
     int bit_xpl_nbr_zro;      /* [nbr] Number of explicit bits to zero */
@@ -527,11 +523,13 @@ ccr_bgr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
 
     switch (type) {
         case NC_FLOAT:
-            /* Missing value for comparison is _FillValue (if any) otherwise default NC_FILL_FLOAT/DOUBLE */
+            /* Comparison value is the dataset's HDF5 fill value (when user-defined),
+             * otherwise NaN -- which compares unequal to every finite value, so the
+             * fill-value test is an inert no-op when none was set on the dataset. */
             if (has_mss_val)
                 mss_val_cmp_flt = *mss_val.fp;
             else
-                mss_val_cmp_flt = NC_FILL_FLOAT;
+                mss_val_cmp_flt = NAN;
             bit_xpl_nbr_sgn = bit_xpl_nbr_sgn_flt;
             bit_xpl_nbr_zro = bit_xpl_nbr_sgn - prc_bnr_xpl_rqr;
             if (bit_xpl_nbr_zro > bit_xpl_nbr_sgn - NCO_PPC_BIT_XPL_NBR_MIN)
@@ -549,21 +547,27 @@ ccr_bgr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
             msk_f32_u32_one = ~msk_f32_u32_zro;
             // msk_f32_u32_hshv=msk_f32_u32_one & (msk_f32_u32_zro >> 1); /* Set one bit: the MSB of LSBs */
 
-            /* Bit-Groom: alternately shave and set LSBs */
+            /* Bit-Groom: alternately shave and set LSBs.
+             * Do not quantize the dataset fill value, +/- zero, NaN, or +/- Inf.
+             * isfinite(val_flt) covers !isnan(val_flt) and additionally blocks
+             * +/- Inf: the shave (AND) loop preserves Inf bit patterns, but the
+             * set (OR) loop turns +/- Inf (exponent all 1, mantissa 0) into a
+             * NaN (exponent all 1, mantissa non-zero) by ORing low mantissa bits. */
             for (idx = 0L; idx < sz; idx += 2L)
-                if (op1.fp[idx] != mss_val_cmp_flt)
+                if ((val_flt = op1.fp[idx]) != mss_val_cmp_flt && val_flt != 0.0f && isfinite(val_flt))
                     u32_ptr[idx] &= msk_f32_u32_zro;
             for (idx = 1L; idx < sz; idx += 2L)
-                if (op1.fp[idx] != mss_val_cmp_flt &&
-                    u32_ptr[idx] != 0U) /* Never quantize upwards floating point values of zero */
+                if ((val_flt = op1.fp[idx]) != mss_val_cmp_flt && val_flt != 0.0f && isfinite(val_flt))
                     u32_ptr[idx] |= msk_f32_u32_one;
             break;
         case NC_DOUBLE:
-            /* Missing value for comparison is _FillValue (if any) otherwise default NC_FILL_FLOAT/DOUBLE */
+            /* Comparison value is the dataset's HDF5 fill value (when user-defined),
+             * otherwise NaN -- which compares unequal to every finite value, so the
+             * fill-value test is an inert no-op when none was set on the dataset. */
             if (has_mss_val)
                 mss_val_cmp_dbl = *mss_val.dp;
             else
-                mss_val_cmp_dbl = NC_FILL_DOUBLE;
+                mss_val_cmp_dbl = NAN;
             bit_xpl_nbr_sgn = bit_xpl_nbr_sgn_dbl;
             bit_xpl_nbr_zro = bit_xpl_nbr_sgn - prc_bnr_xpl_rqr;
             if (bit_xpl_nbr_zro > bit_xpl_nbr_sgn - NCO_PPC_BIT_XPL_NBR_MIN)
@@ -580,13 +584,12 @@ ccr_bgr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
             /* Bit Set   mask for OR:  Put ones into bits to be set, zeros in untouched bits */
             msk_f64_u64_one = ~msk_f64_u64_zro;
             // msk_f64_u64_hshv=msk_f64_u64_one & (msk_f64_u64_zro >> 1); /* Set one bit: the MSB of LSBs */
-            /* Bit-Groom: alternately shave and set LSBs */
+            /* See float branch above for why isfinite(val_dbl) is used instead of !isnan(val_dbl). */
             for (idx = 0L; idx < sz; idx += 2L)
-                if (op1.dp[idx] != mss_val_cmp_dbl)
+                if ((val_dbl = op1.dp[idx]) != mss_val_cmp_dbl && val_dbl != 0.0 && isfinite(val_dbl))
                     u64_ptr[idx] &= msk_f64_u64_zro;
             for (idx = 1L; idx < sz; idx += 2L)
-                if (op1.dp[idx] != mss_val_cmp_dbl &&
-                    u64_ptr[idx] != 0ULL) /* Never quantize upwards floating point values of zero */
+                if ((val_dbl = op1.dp[idx]) != mss_val_cmp_dbl && val_dbl != 0.0 && isfinite(val_dbl))
                     u64_ptr[idx] |= msk_f64_u64_one;
             break;
         default:

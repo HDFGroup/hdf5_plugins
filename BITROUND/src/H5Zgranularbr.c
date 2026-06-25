@@ -75,7 +75,7 @@
     2 /**< Ordinal position of missing value flag in parameter list (cd_params array) */
 #define CCR_FLT_PRM_PSN_MSS_VAL                                                                              \
     3 /**< Ordinal position of missing value in parameter list (cd_params array)                             \
-           NB: Missing value (_FillValue) uses two cd_params slots so it can be single or double-precision.  \
+           NB: HDF5 dataset fill value uses two cd_params slots so it can be single or double-precision.     \
            Single-precision values are read as first 4-bytes starting at cd_params[4]                        \
            (and cd_params[5] is ignored), while double-precision values are read as first 8-bytes starting   \
            at cd_params[4] and ending with cd_params[5]. */
@@ -88,12 +88,6 @@
 #ifndef NC_DOUBLE
 #define NC_DOUBLE 6
 #endif /* !NC_DOUBLE */
-#ifndef NC_FILL_FLOAT
-#define NC_FILL_FLOAT (9.9692099683868690e+36f) /* near 15 * 2^119 */
-#endif                                          /* !NC_FILL_FLOAT */
-#ifndef NC_FILL_DOUBLE
-#define NC_FILL_DOUBLE (9.9692099683868690e+36)
-#endif /* !NC_FILL_DOUBLE */
 
 /* Minimum number of explicit significant bits to preserve when zeroing/bit-masking floating point values
  Codes will preserve at least two explicit bits, IEEE significant representation contains one implicit bit
@@ -636,15 +630,23 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
 
     switch (type) {
         case NC_FLOAT:
-            /* Missing value for comparison is _FillValue (if any) otherwise default NC_FILL_FLOAT/DOUBLE */
+            /* Comparison value is the dataset's HDF5 fill value (when user-defined),
+             * otherwise NaN -- which compares unequal to every finite value, so the
+             * fill-value test is an inert no-op when none was set on the dataset. */
             if (has_mss_val)
                 mss_val_cmp_flt = *mss_val.fp;
             else
-                mss_val_cmp_flt = NC_FILL_FLOAT;
+                mss_val_cmp_flt = NAN;
             bit_xpl_nbr_sgn = bit_xpl_nbr_sgn_flt;
             u32_ptr         = op1.ui32p;
+            /* Do not quantize the dataset fill value, +/- zero, NaN, or +/- Inf.
+             * isfinite(val) covers !isnan(val) and additionally blocks +/- Inf,
+             * which would otherwise reach the bit-shift below with an out-of-range
+             * shift count (undefined behavior). netcdf-c upstream does not gate Inf;
+             * we diverge here because the standalone filter's loop body computes
+             * per-value bit masks that Inf inputs corrupt. */
             for (idx = 0L; idx < sz; idx++) {
-                if ((val = op1.fp[idx]) != mss_val_cmp_flt && u32_ptr[idx] != 0U) {
+                if ((val = op1.fp[idx]) != mss_val_cmp_flt && val != 0.0 && isfinite(val)) {
                     mnt      = frexp(val, &xpn_bs2); /* DGG19 p. 4102 (8) */
                     mnt_fabs = fabs(mnt);
                     /* dgt_nbr = floor(log10(|val|)) + 1, computed via deterministic
@@ -657,10 +659,8 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
                      * exactly 0.5 (val is an exact power of 2). This integer-only
                      * formulation is bit-deterministic across platforms; the
                      * original libm-based form is not. */
-                    prc_bnr_xpl_rqr = (mnt_fabs == 0.0)
-                                          ? 0
-                                          : (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) -
-                                                                qnt_pwr); /* Protect against mnt = -0.0 */
+                    prc_bnr_xpl_rqr =
+                        (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) - qnt_pwr);
                     prc_bnr_xpl_rqr--; /* 20211003 Reduce formula result by 1 bit: Passes all tests, improves
                                           CR by ~10% */
 
@@ -681,16 +681,19 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
             }
             break;
         case NC_DOUBLE:
-            /* Missing value for comparison is _FillValue (if any) otherwise default NC_FILL_FLOAT/DOUBLE */
+            /* Comparison value is the dataset's HDF5 fill value (when user-defined),
+             * otherwise NaN -- which compares unequal to every finite value, so the
+             * fill-value test is an inert no-op when none was set on the dataset. */
             if (has_mss_val)
                 mss_val_cmp_dbl = *mss_val.dp;
             else
-                mss_val_cmp_dbl = NC_FILL_DOUBLE;
+                mss_val_cmp_dbl = NAN;
             bit_xpl_nbr_sgn = bit_xpl_nbr_sgn_dbl;
             u64_ptr         = op1.ui64p;
 
+            /* See float branch above for why isfinite(val) is used instead of !isnan(val). */
             for (idx = 0L; idx < sz; idx++) {
-                if ((val = op1.dp[idx]) != mss_val_cmp_dbl && u64_ptr[idx] != 0U) {
+                if ((val = op1.dp[idx]) != mss_val_cmp_dbl && val != 0.0 && isfinite(val)) {
                     mnt      = frexp(val, &xpn_bs2); /* DGG19 p. 4102 (8) */
                     mnt_fabs = fabs(mnt);
                     /* dgt_nbr = floor(log10(|val|)) + 1, computed via deterministic
@@ -703,10 +706,8 @@ ccr_gbr(const int nsd, const int type, const size_t sz, const int has_mss_val, p
                      * exactly 0.5 (val is an exact power of 2). This integer-only
                      * formulation is bit-deterministic across platforms; the
                      * original libm-based form is not. */
-                    prc_bnr_xpl_rqr = (mnt_fabs == 0.0)
-                                          ? 0
-                                          : (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) -
-                                                                qnt_pwr); /* Protect against mnt = -0.0 */
+                    prc_bnr_xpl_rqr =
+                        (unsigned short)abs(((mnt_fabs == 0.5) ? xpn_bs2 + 1 : xpn_bs2) - qnt_pwr);
                     prc_bnr_xpl_rqr--; /* 20211003 Reduce formula result by 1 bit: Passes all tests, improves
                                           CR by ~10% */
 
