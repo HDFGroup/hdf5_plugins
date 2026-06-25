@@ -9,11 +9,6 @@
  * access to this file, you may request a copy from help@hdfgroup.org.       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "hdf5.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-
 /*
  * Round-trip test for special floating-point values through the Granular
  * BitRound filter. Verifies that NaN, +Inf, -Inf, -0.0, and +0.0 are passed
@@ -23,6 +18,11 @@
  * mechanism (HDF5_PLUGIN_PATH); no h5dump comparison is involved so cross-
  * platform NaN/Inf printf formatting cannot affect the result.
  */
+
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include "hdf5.h"
 
 #define FILENAME              "h5filter_specials_bitround.h5"
 #define DSET_F32              "f32"
@@ -124,11 +124,11 @@ roundtrip_f32(hid_t file_id)
     ret = 0;
 
 done:
-    if (dset_id > 0)
+    if (dset_id != H5I_INVALID_HID)
         H5Dclose(dset_id);
-    if (dcpl_id > 0)
+    if (dcpl_id != H5I_INVALID_HID)
         H5Pclose(dcpl_id);
-    if (space_id > 0)
+    if (space_id != H5I_INVALID_HID)
         H5Sclose(space_id);
     return ret;
 }
@@ -190,11 +190,11 @@ roundtrip_f64(hid_t file_id)
     ret = 0;
 
 done:
-    if (dset_id > 0)
+    if (dset_id != H5I_INVALID_HID)
         H5Dclose(dset_id);
-    if (dcpl_id > 0)
+    if (dcpl_id != H5I_INVALID_HID)
         H5Pclose(dcpl_id);
-    if (space_id > 0)
+    if (space_id != H5I_INVALID_HID)
         H5Sclose(space_id);
     return ret;
 }
