@@ -27,7 +27,7 @@ jobs:
       run-ignore: ${{ steps.getinputs.outputs.INPUTS_IGNORE }}
 
     steps:
-    - uses: actions/checkout@v6.0.3
+    - uses: actions/checkout@v7.0.0
 
     - name: Get hdf5 release base name
       uses: robinraju/release-downloader@v1
