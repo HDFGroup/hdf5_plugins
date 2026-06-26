@@ -27,6 +27,11 @@ set (GRANULAR_BITROUND_TGZ_NAME "granular_bitround-1.0.tar.gz" CACHE STRING "Use
 
 set (GRANULAR_BITROUND_PACKAGE_NAME "granular_bitround" CACHE STRING "Name of GRANULAR_BITROUND package" FORCE)
 
+############################# bitround ################################################
+set (BITROUND_TGZ_NAME "bitround-1.0.tar.gz" CACHE STRING "Use BITROUND from compressed file" FORCE)
+
+set (BITROUND_PACKAGE_NAME "bitround" CACHE STRING "Name of BITROUND package" FORCE)
+
 ############################# bitshuffle ################################################
 
 set (BUILD_BSHUF_LZ4_LIBRARY_SOURCE ON CACHE BOOL "build the lz4 library within the BSHUF plugin" FORCE)
