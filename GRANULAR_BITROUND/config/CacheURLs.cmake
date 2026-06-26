@@ -15,8 +15,8 @@
 # EXTERNAL cache entries
 ########################
 
-set (BITROUND_GIT_URL "https://no_url/granularbr.git" CACHE STRING "Use BITROUND from repository" FORCE)
-set (BITROUND_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (GRANULAR_BITROUND_GIT_URL "https://no_url/granularbr.git" CACHE STRING "Use GRANULAR_BITROUND from repository" FORCE)
+set (GRANULAR_BITROUND_GIT_BRANCH "master" CACHE STRING "" FORCE)
 
-set (BITROUND_TGZ_ORIGPATH "https://no_url" CACHE STRING "Use PLUGINS from original location" FORCE)
-set (BITROUND_TGZ_NAME "granularbr-1.0.tar.gz" CACHE STRING "Use BITROUND from compressed file" FORCE)
+set (GRANULAR_BITROUND_TGZ_ORIGPATH "https://no_url" CACHE STRING "Use PLUGINS from original location" FORCE)
+set (GRANULAR_BITROUND_TGZ_NAME "granularbr-1.0.tar.gz" CACHE STRING "Use GRANULAR_BITROUND from compressed file" FORCE)

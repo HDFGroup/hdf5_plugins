@@ -24,7 +24,7 @@
 #include <string.h>
 #include "hdf5.h"
 
-#define FILENAME              "h5filter_specials_bitround.h5"
+#define FILENAME              "h5filter_specials_granular_bitround.h5"
 #define DSET_F32              "f32"
 #define DSET_F64              "f64"
 #define N                     16

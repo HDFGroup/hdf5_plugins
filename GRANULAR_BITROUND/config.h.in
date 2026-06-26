@@ -16,7 +16,7 @@
 #undef HAVE_LIBHDF5
 
 /* Define to 1 if you have the `granularbr' library (-lgranularbr). */
-#undef HAVE_LIBBITROUND
+#undef HAVE_LIBGRANULAR_BITROUND
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H

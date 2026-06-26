@@ -12,11 +12,11 @@ For CMake, you must supply the location of the cmake configuration files
     be set "ON" in order to build the example and run the tests.
 Example:
     set(ENV{HDF5_ROOT} "/temp/hdf5")
-    set(ENV{BITROUND_ROOT} "/temp/granularbr")
+    set(ENV{GRANULAR_BITROUND_ROOT} "/temp/granularbr")
     set(ENV{LD_LIBRARY_PATH} "/temp/granularbr/lib:/temp/hdf5/lib")
     set(ADD_BUILD_OPTIONS "-DH5PL_BUILD_EXAMPLES:BOOL=ON -DH5PL_BUILD_TESTING:BOOL=ON")
 
     For non-cmake built hdf5 or granularbr, use the location of the include/lib
     folders:
     set(ENV{HDF5_ROOT} "/temp/hdf5")
-    set(ENV{BITROUND_ROOT} "/temp/granularbr")
+    set(ENV{GRANULAR_BITROUND_ROOT} "/temp/granularbr")

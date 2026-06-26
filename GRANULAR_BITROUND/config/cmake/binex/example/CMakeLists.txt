@@ -35,14 +35,14 @@ endforeach ()
 
 if (H5PL_BUILD_TESTING)
   # h5repack test input generator. Target name is plugin-suffixed because the
-  # BITROUND and BITGROOM trees share the same CMake project and source file
+  # GRANULAR_BITROUND and BITGROOM trees share the same CMake project and source file
   # basename (issue #240).
-  add_executable (h5repack_floats_bitround ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
-  target_include_directories(h5repack_floats_bitround PRIVATE ${H5PL_HDF5_INCLUDE_DIRS})
-  TARGET_C_PROPERTIES (h5repack_floats_bitround ${LIB_TYPE})
-  target_link_libraries (h5repack_floats_bitround PRIVATE ${H5PL_HDF5_LINK_LIBS})
+  add_executable (h5repack_floats_granular_bitround ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
+  target_include_directories(h5repack_floats_granular_bitround PRIVATE ${H5PL_HDF5_INCLUDE_DIRS})
+  TARGET_C_PROPERTIES (h5repack_floats_granular_bitround ${LIB_TYPE})
+  target_link_libraries (h5repack_floats_granular_bitround PRIVATE ${H5PL_HDF5_LINK_LIBS})
   if (NOT WIN32)
-    target_link_libraries (h5repack_floats_bitround PRIVATE ${CMAKE_DL_LIBS})
+    target_link_libraries (h5repack_floats_granular_bitround PRIVATE ${CMAKE_DL_LIBS})
   endif ()
 
   macro (ADD_H5_TEST testname)
@@ -135,7 +135,7 @@ if (H5PL_BUILD_TESTING)
   macro (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
-        NAME H5BITROUND_UD-${testname}-clearall-objects
+        NAME H5GRANULAR_BITROUND_UD-${testname}-clearall-objects
         COMMAND    ${CMAKE_COMMAND}
             -E remove
             ${resultfile}
@@ -148,9 +148,9 @@ if (H5PL_BUILD_TESTING)
             ${resultfile}-${testname}-data.out.err
     )
     if (NOT "${last_test}" STREQUAL "")
-      set_tests_properties (H5BITROUND_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
+      set_tests_properties (H5GRANULAR_BITROUND_UD-${testname}-clearall-objects PROPERTIES DEPENDS ${last_test})
     endif ()
-    set (last_test "H5BITROUND_UD-${testname}-clearall-objects")
+    set (last_test "H5GRANULAR_BITROUND_UD-${testname}-clearall-objects")
     if (WIN32)
       set (TESTLIBDIR "${HDF5_TOOLS_DIR}")
     else ()
@@ -165,23 +165,23 @@ if (H5PL_BUILD_TESTING)
     # (Windows in particular has no rpath equivalent and reports
     # STATUS_DLL_NOT_FOUND if the HDF5 DLL is not on PATH).
     add_test (
-        NAME H5BITROUND_UD-${testname}-gen-input
+        NAME H5GRANULAR_BITROUND_UD-${testname}-gen-input
         COMMAND "${CMAKE_COMMAND}"
-            -D "TEST_PROGRAM=$<TARGET_FILE:h5repack_floats_bitround>"
+            -D "TEST_PROGRAM=$<TARGET_FILE:h5repack_floats_granular_bitround>"
             -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
             -D "TEST_EXPECT=0"
-            -D "TEST_OUTPUT=h5repack_floats_bitround.out"
+            -D "TEST_OUTPUT=h5repack_floats_granular_bitround.out"
             -D "TEST_SKIP_COMPARE=1"
             -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
             -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
     )
-    set_tests_properties (H5BITROUND_UD-${testname}-gen-input PROPERTIES
+    set_tests_properties (H5GRANULAR_BITROUND_UD-${testname}-gen-input PROPERTIES
         WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-        DEPENDS H5BITROUND_UD-${testname}-clearall-objects)
-    set (last_test "H5BITROUND_UD-${testname}-gen-input")
+        DEPENDS H5GRANULAR_BITROUND_UD-${testname}-clearall-objects)
+    set (last_test "H5GRANULAR_BITROUND_UD-${testname}-gen-input")
     if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
-          NAME H5BITROUND_UD-${testname}
+          NAME H5GRANULAR_BITROUND_UD-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${H5PL_HDF5_REPACK_EXECUTABLE}"
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
@@ -193,9 +193,9 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BITROUND_UD-${testname} PROPERTIES DEPENDS H5BITROUND_UD-${testname}-gen-input)
+      set_tests_properties (H5GRANULAR_BITROUND_UD-${testname} PROPERTIES DEPENDS H5GRANULAR_BITROUND_UD-${testname}-gen-input)
       add_test (
-          NAME H5BITROUND_UD-h5dump-${testname}
+          NAME H5GRANULAR_BITROUND_UD-h5dump-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=-pH;out-${testname}.${resultfile}"
@@ -206,10 +206,10 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BITROUND_UD-h5dump-${testname} PROPERTIES
+      set_tests_properties (H5GRANULAR_BITROUND_UD-h5dump-${testname} PROPERTIES
           WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-          DEPENDS H5BITROUND_UD-${testname})
-      set (last_test "H5BITROUND_UD-h5dump-${testname}")
+          DEPENDS H5GRANULAR_BITROUND_UD-${testname})
+      set (last_test "H5GRANULAR_BITROUND_UD-h5dump-${testname}")
       # Verify that the filter actually modifies the dataset values: dump the
       # data (no -pH) and compare against a captured reference of the
       # quantized output. Granular BitRound's encoding was made bit-
@@ -217,7 +217,7 @@ if (H5PL_BUILD_TESTING)
       # chain in ccr_gbr() with a deterministic power-of-10 table lookup
       # (see comment in src/H5Zgranularbr.c above ccr_gbr_dgt_nbr()).
       add_test (
-          NAME H5BITROUND_UD-h5dump-data-${testname}
+          NAME H5GRANULAR_BITROUND_UD-h5dump-data-${testname}
           COMMAND "${CMAKE_COMMAND}"
               -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
               -D "TEST_ARGS:STRING=out-${testname}.${resultfile}"
@@ -228,10 +228,10 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -P "${H5PL_RESOURCES_DIR}/runTest.cmake"
       )
-      set_tests_properties (H5BITROUND_UD-h5dump-data-${testname} PROPERTIES
+      set_tests_properties (H5GRANULAR_BITROUND_UD-h5dump-data-${testname} PROPERTIES
           WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-          DEPENDS H5BITROUND_UD-h5dump-${testname})
-      set (last_test "H5BITROUND_UD-h5dump-data-${testname}")
+          DEPENDS H5GRANULAR_BITROUND_UD-h5dump-${testname})
+      set (last_test "H5GRANULAR_BITROUND_UD-h5dump-data-${testname}")
     endif ()
   endmacro ()
 
@@ -254,7 +254,7 @@ if (H5PL_BUILD_TESTING)
   ADD_H5_TEST (h5ex_d_granularbr)
 
   if (NOT DISABLE_H5PL_ENCODER)
-    #UD BITROUND
+    #UD GRANULAR_BITROUND
     ADD_H5_UD_TEST (ud_convert 0 h5repack_floats.h5 --enable-error-stack -v -f UD=32023,0,5,3,4,0,0,0 -l CHUNK=4x8)
   endif ()
 

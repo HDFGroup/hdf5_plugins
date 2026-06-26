@@ -1,21 +1,21 @@
-@H5BITROUND_PACKAGE_NAME@ version @H5BITROUND_PACKAGE_VERSION_STRING@
+@H5GRANULAR_BITROUND_PACKAGE_NAME@ version @H5GRANULAR_BITROUND_PACKAGE_VERSION_STRING@
 ------------------------------------------------------------------------------
 
 This directory contains the binary (release) distribution of
-@H5BITROUND_PACKAGE_NAME@-@H5BITROUND_PACKAGE_VERSION_MAJOR@.@H5BITROUND_PACKAGE_VERSION_MINOR@ that was compiled on;
+@H5GRANULAR_BITROUND_PACKAGE_NAME@-@H5GRANULAR_BITROUND_PACKAGE_VERSION_MAJOR@.@H5GRANULAR_BITROUND_PACKAGE_VERSION_MINOR@ that was compiled on;
     @BINARY_PLATFORM@.
 
 It was built with the following options:
     -- @LIB_TYPE@ C libraries
-    -- @LIB_TYPE@ H5BITROUND tools
-    -- @LIB_TYPE@ BITROUND @BITROUND_VERSION_STRING@
+    -- @LIB_TYPE@ H5GRANULAR_BITROUND tools
+    -- @LIB_TYPE@ GRANULAR_BITROUND @GRANULAR_BITROUND_VERSION_STRING@
     -- @LIB_TYPE@ HDF5 @HDF5_VERSION_STRING@
 
 The contents of this directory are:
 
     COPYING                 - Copyright notice
     README.txt              - This file
-    @H5BITROUND_PACKAGE_NAME@-@H5BITROUND_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@    - H5BITROUND Install Utility
+    @H5GRANULAR_BITROUND_PACKAGE_NAME@-@H5GRANULAR_BITROUND_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@    - H5GRANULAR_BITROUND Install Utility
 
 Installation
 ===========================================================================
@@ -24,10 +24,10 @@ The customary location for the plugins is under the hdf5 libraries location.
    be installed into any location.
 On linux, the installer should be executed in the location to install the
    plugin. The plugins will install into the location:
-            <current dir>/HDF_Group/HDF5/1.@H5BITROUND_PACKAGE_VERSION_MINOR@/lib/plugin
+            <current dir>/HDF_Group/HDF5/1.@H5GRANULAR_BITROUND_PACKAGE_VERSION_MINOR@/lib/plugin
 On Windows, the installer will default to the same location as the hdf5 installer:
-   C:/Program Files/HDF_Group/HDF5/1.@H5BITROUND_PACKAGE_VERSION_MINOR@ and into the /lib/plugin dir.
-1. Execute @H5BITROUND_PACKAGE_NAME@-@H5BITROUND_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
+   C:/Program Files/HDF_Group/HDF5/1.@H5GRANULAR_BITROUND_PACKAGE_VERSION_MINOR@ and into the /lib/plugin dir.
+1. Execute @H5GRANULAR_BITROUND_PACKAGE_NAME@-@H5GRANULAR_BITROUND_PACKAGE_VERSION@-@BINARY_SYSTEM_NAME@.@BINARY_INSTALL_ENDING@
 2. Follow prompts
 ===========================================================================
 
