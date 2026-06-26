@@ -86,7 +86,7 @@ jobs:
             -DENABLE_ZFP=ON \
             -DENABLE_ZSTD=OFF \
             -DENABLE_BITGROOM=ON \
-            -DENABLE_BITROUND=ON \
+            -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BSHUF=ON \
             ..
           cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
@@ -174,7 +174,7 @@ jobs:
             -DENABLE_ZFP=ON \
             -DENABLE_ZSTD=ON \
             -DENABLE_BITGROOM=ON \
-            -DENABLE_BITROUND=ON \
+            -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BSHUF=ON \
             $GITHUB_WORKSPACE
           cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
@@ -260,7 +260,7 @@ jobs:
             -DENABLE_ZFP=ON \
             -DENABLE_ZSTD=ON \
             -DENABLE_BITGROOM=ON \
-            -DENABLE_BITROUND=ON \
+            -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BSHUF=ON \
             $GITHUB_WORKSPACE
           cmake --build . --parallel 4 --config ${{ inputs.build_mode }}

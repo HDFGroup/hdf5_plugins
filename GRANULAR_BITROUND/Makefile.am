@@ -1,6 +1,6 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This builds the main BITROUND directory. This is the granularbr
+# This builds the main GRANULAR_BITROUND directory. This is the granularbr
 # filter. It's similar to the built in HDF5 shuffle filter, but works
 # on a bit level instead of bytes.
 

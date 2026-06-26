@@ -35,7 +35,7 @@ endforeach ()
 
 if (H5PL_BUILD_TESTING)
   # h5repack test input generator. Target name is plugin-suffixed because the
-  # BITROUND and BITGROOM trees share the same CMake project and source file
+  # GRANULAR_BITROUND and BITGROOM trees share the same CMake project and source file
   # basename (issue #240).
   add_executable (h5repack_floats_bitgroom ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
   target_include_directories(h5repack_floats_bitgroom PRIVATE ${H5PL_HDF5_INCLUDE_DIRS})

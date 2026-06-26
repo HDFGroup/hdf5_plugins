@@ -22,10 +22,10 @@ set (BITGROOM_TGZ_NAME "bitgroom-1.0.tar.gz" CACHE STRING "Use BITGROOM from com
 
 set (BITGROOM_PACKAGE_NAME "bitgroom" CACHE STRING "Name of BITGROOM package" FORCE)
 
-############################# bitround ################################################
-set (BITROUND_TGZ_NAME "bitround-1.0.tar.gz" CACHE STRING "Use BITROUND from compressed file" FORCE)
+############################# granular bitround ################################################
+set (GRANULAR_BITROUND_TGZ_NAME "granular_bitround-1.0.tar.gz" CACHE STRING "Use GRANULAR_BITROUND from compressed file" FORCE)
 
-set (BITROUND_PACKAGE_NAME "bitround" CACHE STRING "Name of BITROUND package" FORCE)
+set (GRANULAR_BITROUND_PACKAGE_NAME "granular_bitround" CACHE STRING "Name of GRANULAR_BITROUND package" FORCE)
 
 ############################# bitshuffle ################################################
 

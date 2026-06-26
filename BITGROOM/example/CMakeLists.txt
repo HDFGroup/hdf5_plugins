@@ -34,7 +34,7 @@ endforeach ()
 
 if (H5PL_BUILD_TESTING)
   # h5repack test input generator. Target name is plugin-suffixed because the
-  # BITROUND and BITGROOM trees share the same CMake project and source file
+  # GRANULAR_BITROUND and BITGROOM trees share the same CMake project and source file
   # basename (issue #240).
   add_executable (h5repack_floats_bitgroom ${PROJECT_SOURCE_DIR}/h5repack_floats.c)
   TARGET_C_PROPERTIES (h5repack_floats_bitgroom ${LIB_TYPE})
@@ -224,7 +224,7 @@ if (H5PL_BUILD_TESTING)
       # Verify that the filter actually modifies the dataset values: dump the
       # data (no -pH) and compare against a captured reference of the quantized
       # output. BitGroom's encoding is bit-deterministic across platforms, so
-      # the captured reference is portable. The companion BITROUND test suite
+      # the captured reference is portable. The companion GRANULAR_BITROUND test suite
       # intentionally omits an equivalent check because the testing indicated
       # the Granular BitRound encoding introduces platform-dependent
       # 1-bit-different stored output.

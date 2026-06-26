@@ -1,7 +1,7 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This is the Makefile.am for the HDF5 BITROUND filter library. This allows
-# the use of BITROUND compression/decompression on HDF5 datasets.
+# This is the Makefile.am for the HDF5 GRANULAR_BITROUND filter library. This allows
+# the use of GRANULAR_BITROUND compression/decompression on HDF5 datasets.
 #
 # Ed Hartnett 1/15/19
 
