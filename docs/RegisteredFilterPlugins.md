@@ -266,22 +266,25 @@ The filter's source code is available from https://github.com/lz4/lz4.
 
 #### Plugin ID `32004` Information
 
-Number of `cd_values[]` parameters is one (`cd_nelmts = 1`).
+Number of `cd_values[]` parameters is up to two (`cd_nelmts <= 2`).
 
 | `cd_values[]` | Description |
 |---|---|
 | `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GiB (1,073,741,824 bytes). (optional) |
+| `[1]` | Encoder selector, stored unsigned but interpreted as signed `int`. `0` (default) selects `LZ4_compress_default`. A positive value selects `LZ4_compress_HC` at that level, clamped to `[LZ4HC_CLEVEL_MIN, LZ4HC_CLEVEL_MAX]` (currently `[2, 12]`; `9` is the LZ4HC default). A negative value selects `LZ4_compress_fast` with acceleration = `-cd_values[1]`, lower-bounded at `1` and clamped by liblz4 internally at `LZ4_ACCELERATION_MAX` (currently `65537`). Negative values store as their two's-complement bit pattern, so e.g. acceleration `8` prints as `4294967288` in `h5dump -p`. The on-disk chunk format is unchanged across all three encoders. (optional) |
 
  The description of the chunk binary format produced by this plugin is at [LZ4_HDF5_format.md](https://github.com/HDFGroup/hdf5_plugins/blob/master/LZ4/LZ4_HDF5_format.md).
 
-`h5repack` example for the `--filter` option: `<objects list>:UD=32004,0,0`.
+`h5repack` examples for the `--filter` option:
+* default encoder, default block size: `<objects list>:UD=32004,0,0`
+* LZ4HC level 9 (archival), default block size: `<objects list>:UD=32004,0,2,0,9`
 
-https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/src
+https://github.com/HDFGroup/hdf5_plugins/tree/master/LZ4/
 
 ##### Contact
 
-Michael Rissi (Dectris Ltd.)<br/>
-Email: michael dot rissi at dectris dot com
+HDF Group Helpdesk<br/>
+Email: help at hdfgroup dot org
 
 ---
 
