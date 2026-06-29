@@ -34,8 +34,8 @@
 #define H5Z_FILTER_LZ4 32004
 
 static int
-write_lz4_dataset(hid_t file_id, hid_t space_id, const hsize_t chunk[2], const char *name,
-                  size_t nelmts, const unsigned int *cd_values, const int *wdata)
+write_lz4_dataset(hid_t file_id, hid_t space_id, const hsize_t chunk[2], const char *name, size_t nelmts,
+                  const unsigned int *cd_values, const int *wdata)
 {
     hid_t dcpl_id = H5I_INVALID_HID;
     hid_t dset_id = H5I_INVALID_HID;
@@ -47,8 +47,7 @@ write_lz4_dataset(hid_t file_id, hid_t space_id, const hsize_t chunk[2], const c
         goto done;
     if (H5Pset_chunk(dcpl_id, 2, chunk) < 0)
         goto done;
-    if ((dset_id = H5Dcreate(file_id, name, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT)) <
-        0)
+    if ((dset_id = H5Dcreate(file_id, name, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT)) < 0)
         goto done;
     if (H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata) < 0)
         goto done;
@@ -133,8 +132,7 @@ run_encoder_check(const int *wdata, int expected_max, const hsize_t dims[2], con
     printf("....Encoder selector check ........\n");
     printf("  DS_HC9:  round-trip OK\n");
     printf("  DS_HC12: round-trip OK\n");
-    printf("  DS_HC99: round-trip OK; storage equals DS_HC12: %s\n",
-           size_hc99 == size_hc12 ? "yes" : "no");
+    printf("  DS_HC99: round-trip OK; storage equals DS_HC12: %s\n", size_hc99 == size_hc12 ? "yes" : "no");
 
     if (size_hc99 == size_hc12)
         ret = 0;

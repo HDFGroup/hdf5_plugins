@@ -239,9 +239,8 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
             if (nbytes - origWritten < blockSize) /* the last block may be < blockSize */
                 blockSize = nbytes - origWritten;
 
-            compBlockSize = lz4_encode(
-                rpos, roBuf + 4, (int)blockSize,
-                LZ4_compressBound((int)blockSize), encoderParam); /// reserve space for compBlockSize
+            compBlockSize = lz4_encode(rpos, roBuf + 4, (int)blockSize, LZ4_compressBound((int)blockSize),
+                                       encoderParam); /// reserve space for compBlockSize
             if (!compBlockSize)
                 goto error;
             if (compBlockSize >= blockSize) /* compression did not save any space, do a memcpy instead */
