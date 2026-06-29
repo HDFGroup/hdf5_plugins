@@ -1,6 +1,6 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This builds the BITROUND example directory.
+# This builds the GRANULAR_BITROUND example directory.
 
 # Ed Hartnett 1/15/19
 

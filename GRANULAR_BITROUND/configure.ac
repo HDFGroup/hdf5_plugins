@@ -1,6 +1,6 @@
 # Copyright by The HDF Group. All rights reserved.
 
-# This is the main configure file for the BITROUND filter, a HDF5 plugin
+# This is the main configure file for the GRANULAR_BITROUND filter, a HDF5 plugin
 # library that enables BitGrooming quantization as an HDF5 filter.
 # This file is modified from a configure.ac from the hdf5_plugin project.
 

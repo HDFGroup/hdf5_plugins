@@ -77,7 +77,7 @@ jobs:
             -DENABLE_ZFP=ON \
             -DENABLE_ZSTD=OFF \
             -DENABLE_BITGROOM=ON \
-            -DENABLE_BITROUND=ON \
+            -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BSHUF=ON \
             ..
           # NOTE: Currently a serial build has to be forced, as Blosc and Blosc2
@@ -157,7 +157,7 @@ jobs:
             -DENABLE_ZFP=ON \
             -DENABLE_ZSTD=ON \
             -DENABLE_BITGROOM=ON \
-            -DENABLE_BITROUND=ON \
+            -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BSHUF=ON \
             $GITHUB_WORKSPACE
           # NOTE: Currently, a serial build has to be forced as Blosc and Blosc2
@@ -234,7 +234,7 @@ jobs:
             -DENABLE_ZFP=ON \
             -DENABLE_ZSTD=ON \
             -DENABLE_BITGROOM=ON \
-            -DENABLE_BITROUND=ON \
+            -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BSHUF=ON \
             $GITHUB_WORKSPACE
           # NOTE: Currently, a serial build has to be forced as Blosc and Blosc2

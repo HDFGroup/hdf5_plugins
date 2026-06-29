@@ -95,8 +95,8 @@ set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
 # Bitgroom filter
 FILTER_OPTION (BITGROOM)
 
-# Bitround filter
-FILTER_OPTION (BITROUND)
+# Granular Bitround filter
+FILTER_OPTION (GRANULAR_BITROUND)
 
 # Bitshuffle filter
 FILTER_OPTION (BSHUF)

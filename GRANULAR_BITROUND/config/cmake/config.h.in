@@ -22,7 +22,7 @@
 #cmakedefine HAVE_LIBHDF5 @HAVE_LIBHDF5@
 
 /* Define to 1 if you have the `granularbr' library (-lgranularbr). */
-#cmakedefine HAVE_LIBBITROUND @HAVE_LIBBITROUND@
+#cmakedefine HAVE_LIBGRANULAR_BITROUND @HAVE_LIBGRANULAR_BITROUND@
 
 /* Define to 1 if you have the <math.h> header file. */
 #cmakedefine HAVE_MATH_H @HAVE_MATH_H@
@@ -87,28 +87,28 @@
 #define LT_OBJDIR "@LT_OBJDIR@"
 
 /* Name of package */
-#define PACKAGE "@H5BITROUND_PACKAGE@"
+#define PACKAGE "@H5GRANULAR_BITROUND_PACKAGE@"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "@H5BITROUND_PACKAGE_BUGREPORT@"
+#define PACKAGE_BUGREPORT "@H5GRANULAR_BITROUND_PACKAGE_BUGREPORT@"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "@H5BITROUND_PACKAGE_NAME@"
+#define PACKAGE_NAME "@H5GRANULAR_BITROUND_PACKAGE_NAME@"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "@H5BITROUND_PACKAGE_STRING@"
+#define PACKAGE_STRING "@H5GRANULAR_BITROUND_PACKAGE_STRING@"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "@H5BITROUND_PACKAGE_TARNAME@"
+#define PACKAGE_TARNAME "@H5GRANULAR_BITROUND_PACKAGE_TARNAME@"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL "@H5BITROUND_PACKAGE_URL@"
+#define PACKAGE_URL "@H5GRANULAR_BITROUND_PACKAGE_URL@"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "@H5BITROUND_PACKAGE_VERSION@"
+#define PACKAGE_VERSION "@H5GRANULAR_BITROUND_PACKAGE_VERSION@"
 
 /* Version number of package */
-#define VERSION "@H5BITROUND_VERSION@"
+#define VERSION "@H5GRANULAR_BITROUND_VERSION@"
 
 #if !defined(__APPLE__)
 /* The size of `size_t', as computed by sizeof. */

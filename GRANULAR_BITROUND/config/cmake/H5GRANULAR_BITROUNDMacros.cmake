@@ -12,15 +12,15 @@
 
 include (FetchContent)
 #-------------------------------------------------------------------------------
-macro (EXTERNAL_BITROUND_LIBRARY compress_type)
+macro (EXTERNAL_GRANULAR_BITROUND_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT")
-    FetchContent_Declare (BITROUND
-        GIT_REPOSITORY ${BITROUND_URL}
-        GIT_TAG ${BITROUND_BRANCH}
+    FetchContent_Declare (GRANULAR_BITROUND
+        GIT_REPOSITORY ${GRANULAR_BITROUND_URL}
+        GIT_TAG ${GRANULAR_BITROUND_BRANCH}
     )
   elseif (${compress_type} MATCHES "TGZ")
-    FetchContent_Declare (BITROUND
-        URL ${BITROUND_URL}
+    FetchContent_Declare (GRANULAR_BITROUND
+        URL ${GRANULAR_BITROUND_URL}
         URL_HASH ""
     )
   endif ()
@@ -34,26 +34,26 @@ macro (EXTERNAL_BITROUND_LIBRARY compress_type)
   # Make subproject to use 'H5PL_BUILD_TESTING=OFF' setting.
   set (H5PL_BUILD_TESTING OFF CACHE INTERNAL "Build Unit Testing" FORCE)
 
-  FetchContent_MakeAvailable(BITROUND)
+  FetchContent_MakeAvailable(GRANULAR_BITROUND)
 
   # Restore the old value of the parameter
   set (H5PL_BUILD_TESTING ${H5PL_BUILD_TESTING_OLD} CACHE BOOL "Build Unit Testing" FORCE)
   # Restore the old value of the parameter
   set (BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_OLD} CACHE BOOL "Type of libraries to build" FORCE)
 
-#  include (${BINARY_DIR}/BITROUND-targets.cmake)
-  set (BITROUND_LIBRARY "bitround")
+#  include (${BINARY_DIR}/GRANULAR_BITROUND-targets.cmake)
+  set (GRANULAR_BITROUND_LIBRARY "granular_bitround")
 
-  set (BITROUND_INCLUDE_DIR_GEN "${bitround_BINARY_DIR}")
-  set (BITROUND_INCLUDE_DIR "${bitround_SOURCE_DIR}")
-  set (BITROUND_FOUND 1)
-  set (BITROUND_LIBRARIES ${BITROUND_LIBRARY})
-  set (BITROUND_INCLUDE_DIRS ${BITROUND_INCLUDE_DIR_GEN} ${BITROUND_INCLUDE_DIR})
+  set (GRANULAR_BITROUND_INCLUDE_DIR_GEN "${granular_bitround_BINARY_DIR}")
+  set (GRANULAR_BITROUND_INCLUDE_DIR "${granular_bitround_SOURCE_DIR}")
+  set (GRANULAR_BITROUND_FOUND 1)
+  set (GRANULAR_BITROUND_LIBRARIES ${GRANULAR_BITROUND_LIBRARY})
+  set (GRANULAR_BITROUND_INCLUDE_DIRS ${GRANULAR_BITROUND_INCLUDE_DIR_GEN} ${GRANULAR_BITROUND_INCLUDE_DIR})
 endmacro ()
 
 #-------------------------------------------------------------------------------
-macro (PACKAGE_BITROUND_LIBRARY compress_type)
+macro (PACKAGE_GRANULAR_BITROUND_LIBRARY compress_type)
   if (${compress_type} MATCHES "GIT" OR ${compress_type} MATCHES "TGZ")
-    add_dependencies (BITROUND-GenHeader-Copy BITROUND)
+    add_dependencies (GRANULAR_BITROUND-GenHeader-Copy GRANULAR_BITROUND)
   endif ()
 endmacro ()

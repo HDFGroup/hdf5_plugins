@@ -45,8 +45,8 @@ endif ()
 # Bitgroom filter
 set (BITGROOM_AVAILABLE 1)
 
-# Bitround filter
-set (BITROUND_AVAILABLE 1)
+# Granular Bitround filter
+set (GRANULAR_BITROUND_AVAILABLE 1)
 
 # Bitshuffle filter
 set (BSHUF_AVAILABLE 1)
