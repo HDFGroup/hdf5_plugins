@@ -916,9 +916,9 @@ BitRound is a lossy pre-compression filter for floating-point scientific data. I
 
 BitRound works by operating directly on the IEEE 754 bit representation of each value, independent of any chunk-level statistics. It retains a fixed number of leading mantissa bits and clears every trailing mantissa bit to zero. Values whose high-order bits already agree become identical once their low-order bits are zeroed, and adjacent values that round to the same retained bit pattern collapse to a single bit string. Both effects create the long runs of zero bits and repeated byte patterns that lossless compressors exploit.
 
-The user specifies the number of significant mantissa bits to keep, `NSB`. Every value in the dataset is treated identically: the filter keeps `NSB` mantissa bits and applies round-half-to-even (banker's rounding) at that bit boundary, so that rounding errors are symmetrically distributed around zero and accumulate no systematic bias across an ensemble of values. Because the mantissa encodes the significand relative to each value's own exponent, the error introduced is *relative* rather than absolute: the maximum relative error for any single value is $|\epsilon| / |x| ≤ 2^{-(NSB+1)}$. Users who prefer to specify precision in decimal terms can convert a target of `NSD` significant decimal digits via $NSB = \lceil NSD \cdot \log_2 10 \rceil ≈ \lceil 3.32 \cdot NSD \rceil$.
+The user specifies the number of significant mantissa bits to keep, `NSB`. Every value in the dataset is treated identically: the filter rounds to nearest at that bit boundary by adding a half-ulp and then clearing the trailing mantissa bits (an integer "add-and-shave", with ties rounded away from zero). Because the mantissa encodes the significand relative to each value's own exponent, the error introduced is *relative* rather than absolute: the maximum relative error for any single value is $|\epsilon| / |x| ≤ 2^{-(NSB+1)}$. Users who prefer to specify precision in decimal terms can convert a target of `NSD` significant decimal digits via $NSB = \lceil NSD \cdot \log_2 10 \rceil ≈ \lceil 3.32 \cdot NSD \rceil$.
 
-This means the relative uncertainty introduced to any value is fixed in advance and uniform across the entire dataset, regardless of local dynamic range. A large value and a small value retain the same number of significant bits and therefore the same relative precision, while their absolute errors differ in proportion to their magnitudes. BitRound never inspects the minimum or maximum of a chunk; the precision it preserves does not adapt to the spread of the surrounding data, always retaining exactly `NSD` significant decimal digits of resolution relative to each value's own magnitude.
+This means the relative uncertainty introduced to any value is fixed in advance and uniform across the entire dataset, regardless of local dynamic range. A large value and a small value retain the same number of significant bits and therefore the same relative precision, while their absolute errors differ in proportion to their magnitudes. BitRound never inspects the minimum or maximum of a chunk; the precision it preserves does not adapt to the spread of the surrounding data, always retaining exactly `NSB` significant mantissa bits of resolution relative to each value's own magnitude.
 
 The algorithm paper: Klöwer M, Razinger M, Dominguez JJ, Düben PD, Palmer TN. "Compressing atmospheric data into its real information content." *Nat. Comput. Sci.* **1**(11), 713–724 (2021). [doi:10.1038/s43588-021-00156-2](https://doi.org/10.1038/s43588-021-00156-2)
 
@@ -927,13 +927,12 @@ The algorithm paper: Klöwer M, Razinger M, Dominguez JJ, Düben PD, Palmer TN. 
 | `cd_values[]` | Description |
 |---|---|
 | `[0]` | **NSB** — number of significant mantissa bits to retain. The only user-facing parameter. **mandatory** |
-| `[1]` | Datum size in bytes — `4` (float32) or `8` (float64). **reserved** |
-| `[2]` | Flag: whether a fill value is defined (`0` = no, `1` = yes). Tells the encode loop whether slot `[3]`/`[4]` holds a meaningful sentinel to skip. **reserved** |
-| `[3]` | Raw fill value bytes, low 32 bits. For float32 the value fits in `[3]` alone; for float64 it spans `[3]`+`[4]`. **reserved** |
-| `[4]` | Raw fill value bytes, high 32 bits. **reserved** |
+| `[1]` | Datum size in bytes — `4` (float32) or `8` (float64). **internal use, reserved** |
+| `[2]` | Flag: whether a fill value is defined (`0` = no, `1` = yes). Tells the encode loop whether slot `[3]`/`[4]` holds a meaningful sentinel to skip. **internal use, reserved** |
+| `[3]` | Raw fill value bytes, low 32 bits. For float32 the value fits in `[3]` alone; for float64 it spans `[3]`+`[4]`. **internal use, reserved** |
+| `[4]` | Raw fill value bytes, high 32 bits. **internal use, reserved** |
 
 Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BITROUND
-
 
 ##### Contact
 

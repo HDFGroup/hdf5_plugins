@@ -1,0 +1,51 @@
+HDF5 BitRound filter plugin -- provenance and license
+======================================================
+
+This plugin adapts two BSD-style sources, both authored by Charlie Zender:
+
+  * the BitRound quantization core, from netcdf-c (libsrc4/nc4var.c,
+    NC_QUANTIZE_BITROUND; PR #2232). The netcdf-c repository is copyright
+    UCAR (University Corporation for Atmospheric Research).
+
+  * the HDF5 filter-plugin scaffolding (cd_values layout, set_local /
+    can_apply pattern), from the BitGroom plugin in the ccr project,
+    copyright (c) Charlie Zender / ccr.
+
+Algorithm reference:
+  Kloewer M, Razinger M, Dominguez JJ, Dueben PD, Palmer TN. "Compressing
+  atmospheric data into its real information content." Nat. Comput. Sci.
+  1(11), 713-724 (2021). doi:10.1038/s43588-021-00156-2
+
+Both upstream sources are distributed under the BSD 3-Clause License, which
+also governs this plugin:
+
+BSD 3-Clause License
+
+Copyright (c) 2019, ccr
+Copyright (c) UCAR (netcdf-c)
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
