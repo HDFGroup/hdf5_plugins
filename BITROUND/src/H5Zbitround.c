@@ -36,7 +36,9 @@
 
 #define H5Z_FILTER_BITROUND 32032
 
-#define BR_FLT_NAME "BitRound filter (doi:10.1038/s43588-021-00156-2) https://github.com/HDFGroup/hdf5_plugins/tree/master/BITROUND"
+#define BR_FLT_NAME                                                                                          \
+    "BitRound filter (doi:10.1038/s43588-021-00156-2) "                                                      \
+    "https://github.com/HDFGroup/hdf5_plugins/tree/master/BITROUND"
 
 /* cd_values[] layout. Only slot [0] is user-supplied; set_local() derives the
  * rest from the dataset. Kept the same shape as the BitGroom/GranularBR
