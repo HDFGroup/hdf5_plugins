@@ -43,3 +43,13 @@ The size of the data field stored in big endian signed 32 bit format.
 
 If this value is equal to the known decompressed size of the block, the data is stored
 not compressed. Otherwise, the data is in the [LZ4 Block](https://github.com/lz4/lz4/blob/v1.10.0/doc/lz4_Block_format.md) format.
+
+## Encoder choice
+
+The on-disk format above is independent of the encoder the writer used.
+The plugin's `cd_values[1]` selects between `LZ4_compress_default`
+(value `0`, the default), `LZ4_compress_HC` (positive value, HC level),
+and accelerated `LZ4_compress_fast` (negative value, acceleration =
+`-cd_values[1]`). All three produce LZ4 Block payloads that the same
+`LZ4_decompress_safe` path reads, so files written with any encoder
+choice are bitstream-compatible with readers that only know the default.

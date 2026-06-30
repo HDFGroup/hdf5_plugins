@@ -20,17 +20,129 @@
 
  ************************************************************/
 
-#include "hdf5.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "hdf5.h"
 
 #define FILENAME       "h5ex_d_lz4.h5"
+#define FILENAME_ENC   "h5ex_d_lz4_enc.h5"
 #define DATASET        "DS1"
 #define DIM0           32
 #define DIM1           64
 #define CHUNK0         4
 #define CHUNK1         8
 #define H5Z_FILTER_LZ4 32004
+
+static int
+write_lz4_dataset(hid_t file_id, hid_t space_id, const hsize_t chunk[2], const char *name, size_t nelmts,
+                  const unsigned int *cd_values, const int *wdata)
+{
+    hid_t dcpl_id = H5I_INVALID_HID;
+    hid_t dset_id = H5I_INVALID_HID;
+    int   ret     = -1;
+
+    if ((dcpl_id = H5Pcreate(H5P_DATASET_CREATE)) < 0)
+        goto done;
+    if (H5Pset_filter(dcpl_id, H5Z_FILTER_LZ4, H5Z_FLAG_MANDATORY, nelmts, cd_values) < 0)
+        goto done;
+    if (H5Pset_chunk(dcpl_id, 2, chunk) < 0)
+        goto done;
+    if ((dset_id = H5Dcreate(file_id, name, H5T_STD_I32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT)) < 0)
+        goto done;
+    if (H5Dwrite(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata) < 0)
+        goto done;
+
+    ret = 0;
+done:
+    if (dset_id >= 0)
+        H5Dclose(dset_id);
+    if (dcpl_id >= 0)
+        H5Pclose(dcpl_id);
+    return ret;
+}
+
+static int
+read_and_check(hid_t file_id, const char *name, int expected_max, hsize_t *out_storage)
+{
+    hid_t   dset_id = H5I_INVALID_HID;
+    int     rdata[DIM0][DIM1];
+    int     i, j, max_seen;
+    hsize_t storage = 0;
+    int     ret     = -1;
+
+    if ((dset_id = H5Dopen(file_id, name, H5P_DEFAULT)) < 0)
+        goto done;
+    if (H5Dread(dset_id, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]) < 0)
+        goto done;
+    storage  = H5Dget_storage_size(dset_id);
+    max_seen = rdata[0][0];
+    for (i = 0; i < DIM0; i++)
+        for (j = 0; j < DIM1; j++)
+            if (max_seen < rdata[i][j])
+                max_seen = rdata[i][j];
+    if (max_seen != expected_max)
+        goto done;
+    if (out_storage)
+        *out_storage = storage;
+    ret = 0;
+done:
+    if (dset_id >= 0)
+        H5Dclose(dset_id);
+    return ret;
+}
+
+static int
+run_encoder_check(const int *wdata, int expected_max, const hsize_t dims[2], const hsize_t chunk[2])
+{
+    hid_t              file_id  = H5I_INVALID_HID;
+    hid_t              space_id = H5I_INVALID_HID;
+    hsize_t            size_hc9 = 0, size_hc12 = 0, size_hc99 = 0;
+    const unsigned int cd_hc9[2]  = {0, 9};
+    const unsigned int cd_hc12[2] = {0, 12};
+    const unsigned int cd_hc99[2] = {0, 99};
+    int                ret        = -1;
+
+    if ((file_id = H5Fcreate(FILENAME_ENC, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)) < 0)
+        goto done;
+    if ((space_id = H5Screate_simple(2, dims, NULL)) < 0)
+        goto done;
+
+    if (write_lz4_dataset(file_id, space_id, chunk, "DS_HC9", 2, cd_hc9, wdata) < 0)
+        goto done;
+    if (write_lz4_dataset(file_id, space_id, chunk, "DS_HC12", 2, cd_hc12, wdata) < 0)
+        goto done;
+    if (write_lz4_dataset(file_id, space_id, chunk, "DS_HC99", 2, cd_hc99, wdata) < 0)
+        goto done;
+
+    H5Sclose(space_id);
+    space_id = H5I_INVALID_HID;
+    H5Fclose(file_id);
+    file_id = H5I_INVALID_HID;
+
+    if ((file_id = H5Fopen(FILENAME_ENC, H5F_ACC_RDONLY, H5P_DEFAULT)) < 0)
+        goto done;
+
+    if (read_and_check(file_id, "DS_HC9", expected_max, &size_hc9) < 0)
+        goto done;
+    if (read_and_check(file_id, "DS_HC12", expected_max, &size_hc12) < 0)
+        goto done;
+    if (read_and_check(file_id, "DS_HC99", expected_max, &size_hc99) < 0)
+        goto done;
+
+    printf("....Encoder selector check ........\n");
+    printf("  DS_HC9:  round-trip OK\n");
+    printf("  DS_HC12: round-trip OK\n");
+    printf("  DS_HC99: round-trip OK; storage equals DS_HC12: %s\n", size_hc99 == size_hc12 ? "yes" : "no");
+
+    if (size_hc99 == size_hc12)
+        ret = 0;
+done:
+    if (space_id >= 0)
+        H5Sclose(space_id);
+    if (file_id >= 0)
+        H5Fclose(file_id);
+    return ret;
+}
 
 int
 main(void)
@@ -214,6 +326,11 @@ main(void)
     avail = H5Zfilter_avail(H5Z_FILTER_LZ4);
     if (avail)
         printf("lz4 filter is available now since H5Dread triggered loading of the filter.\n");
+
+    if (run_encoder_check(wdata[0], max, dims, chunk) < 0) {
+        printf("Encoder selector check FAILED\n");
+        goto done;
+    }
 
     ret_value = 0;
 

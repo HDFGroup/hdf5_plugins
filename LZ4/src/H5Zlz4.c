@@ -54,6 +54,7 @@
 
 #include "H5PLextern.h"
 #include "lz4.h"
+#include "lz4hc.h"
 
 static size_t H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[],
                              size_t nbytes, size_t *buf_size, void **buf);
@@ -98,6 +99,29 @@ const void *
 H5PLget_plugin_info(void)
 {
     return H5Z_LZ4;
+}
+
+static int
+lz4_encode(const char *src, char *dst, int srcSz, int dstCap, int encoderParam)
+{
+    if (encoderParam > 0) {
+        int level = encoderParam;
+        if (level < LZ4HC_CLEVEL_MIN)
+            level = LZ4HC_CLEVEL_MIN;
+        if (level > LZ4HC_CLEVEL_MAX)
+            level = LZ4HC_CLEVEL_MAX;
+        return LZ4_compress_HC(src, dst, srcSz, dstCap, level);
+    }
+    else if (encoderParam < 0) {
+        /* Widen before negating so encoderParam == INT_MIN cannot overflow. */
+        long accel = -(long)encoderParam;
+        if (accel < 1)
+            accel = 1;
+        /* No explicit upper clamp: LZ4_compress_fast() clamps internally to
+         * LZ4_ACCELERATION_MAX (currently 65537; see lz4.c). */
+        return LZ4_compress_fast(src, dst, srcSz, dstCap, (int)accel);
+    }
+    return LZ4_compress_default(src, dst, srcSz, dstCap);
 }
 
 static size_t
@@ -173,6 +197,7 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
         size_t    maxDestSize;
         char     *rpos;  /* pointer to current read position */
         char     *roBuf; /* pointer to current write position */
+        int       encoderParam;
 
         if (nbytes > INT32_MAX) {
             /* can only compress chunks up to 2GB */
@@ -185,6 +210,7 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
         else {
             blockSize = DEFAULT_BLOCK_SIZE;
         }
+        encoderParam = (cd_nelmts > 1) ? (int)cd_values[1] : 0;
         if (blockSize > nbytes) {
             blockSize = nbytes;
         }
@@ -213,8 +239,8 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
             if (nbytes - origWritten < blockSize) /* the last block may be < blockSize */
                 blockSize = nbytes - origWritten;
 
-            compBlockSize = LZ4_compress_default(
-                rpos, roBuf + 4, blockSize, LZ4_compressBound(blockSize)); /// reserve space for compBlockSize
+            compBlockSize = lz4_encode(rpos, roBuf + 4, (int)blockSize, LZ4_compressBound((int)blockSize),
+                                       encoderParam); /// reserve space for compBlockSize
             if (!compBlockSize)
                 goto error;
             if (compBlockSize >= blockSize) /* compression did not save any space, do a memcpy instead */
