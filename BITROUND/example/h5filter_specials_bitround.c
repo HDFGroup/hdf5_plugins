@@ -75,9 +75,9 @@ init_input_f64(double *buf, uint64_t *bits_out)
 static int
 roundtrip_f32(hid_t file_id)
 {
-    hid_t   space_id = H5I_INVALID_HID, dcpl_id = H5I_INVALID_HID, dset_id = H5I_INVALID_HID;
-    int     ret = 1, i, any_quantized = 0;
-    hsize_t dims[1] = {N}, chunk[1] = {N};
+    hid_t        space_id = H5I_INVALID_HID, dcpl_id = H5I_INVALID_HID, dset_id = H5I_INVALID_HID;
+    int          ret = 1, i, any_quantized = 0;
+    hsize_t      dims[1] = {N}, chunk[1] = {N};
     unsigned int nsb = 7; /* user-facing BitRound parameter: keep 7 mantissa bits */
     float        input[N], output[N];
     uint32_t     input_bits[N], output_bits[N];
@@ -139,9 +139,9 @@ done:
 static int
 roundtrip_f64(hid_t file_id)
 {
-    hid_t   space_id = H5I_INVALID_HID, dcpl_id = H5I_INVALID_HID, dset_id = H5I_INVALID_HID;
-    int     ret = 1, i, any_quantized = 0;
-    hsize_t dims[1] = {N}, chunk[1] = {N};
+    hid_t        space_id = H5I_INVALID_HID, dcpl_id = H5I_INVALID_HID, dset_id = H5I_INVALID_HID;
+    int          ret = 1, i, any_quantized = 0;
+    hsize_t      dims[1] = {N}, chunk[1] = {N};
     unsigned int nsb = 10;
     double       input[N], output[N];
     uint64_t     input_bits[N], output_bits[N];

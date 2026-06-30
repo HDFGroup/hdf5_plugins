@@ -45,10 +45,10 @@
 #define FILL_F64 (-999.0)
 
 /* Indices used for the special values sprinkled into the data. */
-#define IDX_FILL 3
-#define IDX_ZERO 7
+#define IDX_FILL  3
+#define IDX_ZERO  7
 #define IDX_NZERO 11
-#define IDX_NAN 17
+#define IDX_NAN   17
 
 static herr_t
 add_filters(hid_t dcpl, unsigned int nsb)
@@ -68,14 +68,14 @@ add_filters(hid_t dcpl, unsigned int nsb)
 static int
 check_f32(unsigned int nsb)
 {
-    hid_t   file = H5I_INVALID_HID, space = H5I_INVALID_HID, dcpl = H5I_INVALID_HID, dset = H5I_INVALID_HID;
-    hsize_t dims[1] = {N}, chunk[1] = {CHUNK};
-    float   wdata[N], rdata[N];
-    float   fill = FILL_F32;
-    float   nan_val;
-    uint32_t nan_bits = 0x7FC00000u; /* quiet NaN */
-    int      ret      = 1;
-    double   bound    = ldexp(1.0, -(int)(nsb + 1)); /* 2^-(NSB+1) */
+    hid_t    file = H5I_INVALID_HID, space = H5I_INVALID_HID, dcpl = H5I_INVALID_HID, dset = H5I_INVALID_HID;
+    hsize_t  dims[1] = {N}, chunk[1] = {CHUNK};
+    float    wdata[N], rdata[N];
+    float    fill = FILL_F32;
+    float    nan_val;
+    uint32_t nan_bits      = 0x7FC00000u; /* quiet NaN */
+    int      ret           = 1;
+    double   bound         = ldexp(1.0, -(int)(nsb + 1)); /* 2^-(NSB+1) */
     int      any_quantized = 0;
     hsize_t  i;
 
@@ -161,14 +161,14 @@ done:
 static int
 check_f64(unsigned int nsb)
 {
-    hid_t   file = H5I_INVALID_HID, space = H5I_INVALID_HID, dcpl = H5I_INVALID_HID, dset = H5I_INVALID_HID;
-    hsize_t dims[1] = {N}, chunk[1] = {CHUNK};
-    double  wdata[N], rdata[N];
-    double  fill = FILL_F64;
-    double  nan_val;
-    uint64_t nan_bits = 0x7FF8000000000000ULL; /* quiet NaN */
-    int      ret      = 1;
-    double   bound    = ldexp(1.0, -(int)(nsb + 1));
+    hid_t    file = H5I_INVALID_HID, space = H5I_INVALID_HID, dcpl = H5I_INVALID_HID, dset = H5I_INVALID_HID;
+    hsize_t  dims[1] = {N}, chunk[1] = {CHUNK};
+    double   wdata[N], rdata[N];
+    double   fill = FILL_F64;
+    double   nan_val;
+    uint64_t nan_bits      = 0x7FF8000000000000ULL; /* quiet NaN */
+    int      ret           = 1;
+    double   bound         = ldexp(1.0, -(int)(nsb + 1));
     int      any_quantized = 0;
     hsize_t  i;
 
