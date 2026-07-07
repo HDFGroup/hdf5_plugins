@@ -271,8 +271,13 @@ Number of `cd_values[]` parameters is up to two (`cd_nelmts <= 2`).
 | `cd_values[]` | Description |
 |---|---|
 | `[0]` | Block size in bytes at most 2,113,929,216 bytes. Default is 1 GiB (1,073,741,824 bytes). (optional) |
-| `[1]` | Encoder selector, stored unsigned but interpreted as signed `int`. `0` (default) selects `LZ4_compress_default`. A positive value selects `LZ4_compress_HC` at that level, clamped to `[LZ4HC_CLEVEL_MIN, LZ4HC_CLEVEL_MAX]` (currently `[2, 12]`; `9` is the LZ4HC default). A negative value selects `LZ4_compress_fast` with acceleration = `-cd_values[1]`, lower-bounded at `1` and clamped by liblz4 internally at `LZ4_ACCELERATION_MAX` (currently `65537`). Negative values store as their two's-complement bit pattern, so e.g. acceleration `8` prints as `4294967288` in `h5dump -p`. The on-disk chunk format is unchanged across all three encoders. (optional) |
+| `[1]` | Encoder selector, stored unsigned but interpreted as signed `int`. Negative values store as their two's-complement bit pattern, so `-8` prints as `4294967288` in `h5dump -p`. (optional) |
 
+`cd_values[1]` follows liblz4's `lz4frame` signed compression-level convention:
+
+ * `>= 2` selects `LZ4_compress_HC` at that level (`2..12`; higher values clamp to `12`, and `9` is the LZ4HC default).
+ * `0` or `1` selects the default fast encoder (`LZ4_compress_default`, acceleration `1`).
+ * A negative value selects `LZ4_compress_fast` with acceleration = `-cd_values[1] + 1` (so `-1` is acceleration `2`), clamped below at `-65536` (acceleration `LZ4_ACCELERATION_MAX`, currently `65537`). To request a specific acceleration `A >= 2`, set `cd_values[1] = 1 - A` (e.g. acceleration `9` → `-8`).
  The description of the chunk binary format produced by this plugin is at [LZ4_HDF5_format.md](https://github.com/HDFGroup/hdf5_plugins/blob/master/LZ4/LZ4_HDF5_format.md).
 
 `h5repack` examples for the `--filter` option:

@@ -101,27 +101,32 @@ H5PLget_plugin_info(void)
     return H5Z_LZ4;
 }
 
+/* liblz4 caps fast-mode acceleration at LZ4_ACCELERATION_MAX internally but
+ * does not expose the macro in lz4.h; mirror the value from lz4.c here. */
+#ifndef LZ4_ACCELERATION_MAX
+#define LZ4_ACCELERATION_MAX 65537
+#endif
+
 static int
 lz4_encode(const char *src, char *dst, int srcSz, int dstCap, int encoderParam)
 {
-    if (encoderParam > 0) {
-        int level = encoderParam;
-        if (level < LZ4HC_CLEVEL_MIN)
-            level = LZ4HC_CLEVEL_MIN;
-        if (level > LZ4HC_CLEVEL_MAX)
-            level = LZ4HC_CLEVEL_MAX;
-        return LZ4_compress_HC(src, dst, srcSz, dstCap, level);
+    /* Mirror liblz4's lz4frame compressionLevel convention:
+     *   >= LZ4HC_CLEVEL_MIN (2) -> LZ4HC at that level
+     *   0 or 1                  -> default fast (acceleration 1)
+     *   < 0                     -> fast, acceleration = -encoderParam + 1
+     * Clamp to the usable range first so the acceleration arithmetic cannot
+     * overflow. */
+    if (encoderParam > LZ4HC_CLEVEL_MAX)
+        encoderParam = LZ4HC_CLEVEL_MAX;
+    if (encoderParam < -(LZ4_ACCELERATION_MAX - 1))
+        encoderParam = -(LZ4_ACCELERATION_MAX - 1);
+
+    if (encoderParam >= LZ4HC_CLEVEL_MIN)
+        return LZ4_compress_HC(src, dst, srcSz, dstCap, encoderParam);
+    else {
+        int acceleration = (encoderParam < 0) ? -encoderParam + 1 : 1;
+        return LZ4_compress_fast(src, dst, srcSz, dstCap, acceleration);
     }
-    else if (encoderParam < 0) {
-        /* Widen before negating so encoderParam == INT_MIN cannot overflow. */
-        long accel = -(long)encoderParam;
-        if (accel < 1)
-            accel = 1;
-        /* No explicit upper clamp: LZ4_compress_fast() clamps internally to
-         * LZ4_ACCELERATION_MAX (currently 65537; see lz4.c). */
-        return LZ4_compress_fast(src, dst, srcSz, dstCap, (int)accel);
-    }
-    return LZ4_compress_default(src, dst, srcSz, dstCap);
 }
 
 static size_t

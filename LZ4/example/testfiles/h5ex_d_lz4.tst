@@ -13,3 +13,4 @@ lz4 filter is available now since H5Dread triggered loading of the filter.
   DS_HC9:  round-trip OK
   DS_HC12: round-trip OK
   DS_HC99: round-trip OK; storage equals DS_HC12: yes
+  DS_FAST: round-trip OK

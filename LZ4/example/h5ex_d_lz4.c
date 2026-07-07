@@ -100,6 +100,7 @@ run_encoder_check(const int *wdata, int expected_max, const hsize_t dims[2], con
     const unsigned int cd_hc9[2]  = {0, 9};
     const unsigned int cd_hc12[2] = {0, 12};
     const unsigned int cd_hc99[2] = {0, 99};
+    const unsigned int cd_fast[2] = {0, (unsigned int)(-8)}; /* fast, acceleration 9 */
     int                ret        = -1;
 
     if ((file_id = H5Fcreate(FILENAME_ENC, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT)) < 0)
@@ -112,6 +113,8 @@ run_encoder_check(const int *wdata, int expected_max, const hsize_t dims[2], con
     if (write_lz4_dataset(file_id, space_id, chunk, "DS_HC12", 2, cd_hc12, wdata) < 0)
         goto done;
     if (write_lz4_dataset(file_id, space_id, chunk, "DS_HC99", 2, cd_hc99, wdata) < 0)
+        goto done;
+    if (write_lz4_dataset(file_id, space_id, chunk, "DS_FAST", 2, cd_fast, wdata) < 0)
         goto done;
 
     H5Sclose(space_id);
@@ -128,11 +131,14 @@ run_encoder_check(const int *wdata, int expected_max, const hsize_t dims[2], con
         goto done;
     if (read_and_check(file_id, "DS_HC99", expected_max, &size_hc99) < 0)
         goto done;
+    if (read_and_check(file_id, "DS_FAST", expected_max, NULL) < 0)
+        goto done;
 
     printf("....Encoder selector check ........\n");
     printf("  DS_HC9:  round-trip OK\n");
     printf("  DS_HC12: round-trip OK\n");
     printf("  DS_HC99: round-trip OK; storage equals DS_HC12: %s\n", size_hc99 == size_hc12 ? "yes" : "no");
+    printf("  DS_FAST: round-trip OK\n");
 
     if (size_hc99 == size_hc12)
         ret = 0;
