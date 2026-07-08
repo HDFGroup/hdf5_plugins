@@ -203,6 +203,8 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
         char     *rpos;  /* pointer to current read position */
         char     *roBuf; /* pointer to current write position */
         int       encoderParam;
+        int       blockBound;
+        size_t    perBlock;
 
         if (nbytes > INT32_MAX) {
             /* can only compress chunks up to 2GB */
@@ -219,8 +221,25 @@ H5Z_filter_lz4(unsigned int flags, size_t cd_nelmts, const unsigned int cd_value
         if (blockSize > nbytes) {
             blockSize = nbytes;
         }
-        nBlocks     = (nbytes - 1) / blockSize + 1;
-        maxDestSize = nBlocks * LZ4_compressBound(blockSize) + 4 + 8 + nBlocks * 4;
+        nBlocks = (nbytes - 1) / blockSize + 1;
+
+        /* LZ4_compressBound returns 0 when blockSize exceeds LZ4_MAX_INPUT_SIZE,
+         * which sits ~32 MiB below INT32_MAX -- so a block in that gap passes the
+         * nbytes check above. Reject it before sizing the output buffer; this
+         * also guarantees the (int)blockSize casts below stay in range. */
+        blockBound = LZ4_compressBound((int)blockSize);
+        if (blockBound <= 0)
+            goto error;
+
+        /* Output size = nBlocks * (blockBound + 4-byte block header) + 12-byte
+         * chunk header. Guard the size_t arithmetic before malloc: a tiny
+         * blockSize makes nBlocks huge, and on a 32-bit platform the product
+         * can wrap, yielding an undersized buffer and a heap overflow in the
+         * write loop below. blockBound > 0 here, so perBlock cannot be zero. */
+        perBlock = (size_t)blockBound + 4;
+        if (nBlocks > (SIZE_MAX - 12) / perBlock)
+            goto error;
+        maxDestSize = nBlocks * perBlock + 12;
         if (NULL == (outBuf = malloc(maxDestSize))) {
             goto error;
         }
