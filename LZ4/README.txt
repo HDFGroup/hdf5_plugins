@@ -20,3 +20,38 @@ Example:
     folders:
     set(ENV{HDF5_ROOT} "/temp/hdf5")
     set(ENV{LZ4_ROOT} "/temp/lz4")
+
+Filter parameters (cd_values[])
+-------------------------------
+
+cd_values[0] -- block size (unchanged). 0 or absent selects the plugin
+default (1 GiB).
+
+cd_values[1] -- encoder selector (optional). Stored as unsigned int but
+interpreted as a signed int. It follows the same signed compression-level
+convention as liblz4's lz4frame API, so a value means the same thing here
+as it does everywhere else in the LZ4 ecosystem:
+
+    >= 2  : LZ4HC level (2..12); values above 12 are clamped to 12.
+            9 is the LZ4HC default and the recommended archival setting.
+   0 or 1 : default fast encoder (LZ4_compress_default; acceleration 1).
+     < 0  : fast encoder with acceleration = -cd_values[1] + 1, so -1 is
+            acceleration 2, -2 is acceleration 3, and so on. Values below
+            -65536 are clamped to -65536 (acceleration LZ4_ACCELERATION_MAX,
+            currently 65537).
+
+Note the negative side is offset by one: acceleration 1 is the default
+(0 or 1), so the first faster-than-default step is -1 (acceleration 2).
+To request a specific acceleration A (A >= 2), set cd_values[1] = 1 - A.
+For example, acceleration 8 -> cd_values[1] = -7; acceleration 9 -> -8.
+
+Because the slot is unsigned on disk, a negative value is stored as its
+two's-complement bit pattern. For example, cd_values[1] = -8 (acceleration
+9) is stored as 4294967288, which is what "h5dump -p" displays. The plugin
+casts the slot back to int when reading.
+
+cd_values[1] only affects writes. The on-disk chunk format is unchanged:
+LZ4HC, accelerated fast LZ4, and the default encoder all produce LZ4
+Block payloads that the existing reader (LZ4_decompress_safe) decodes
+without modification. Files written by the older plugin (cd_nelmts <= 1)
+are read by the new plugin identically.
