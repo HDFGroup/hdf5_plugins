@@ -197,6 +197,19 @@ endif ()
 
 add_subdirectory(H5Z-ZFP/src)
 
+#-----------------------------------------------------------------------------
+# H5Z-ZFP/src/CMakeLists.txt (vendored via subtree) hardcodes the shared
+# plugin's install destination to "plugin" instead of this project's
+# lib/plugin convention (H5ZFP_INSTALL_LIB_DIR, set above by
+# BASIC_SETTINGS). Relocate it at install time rather than editing the
+# subtree, so it isn't lost on the next subtree pull.
+install(CODE "
+  file(MAKE_DIRECTORY \"\${CMAKE_INSTALL_PREFIX}/${H5ZFP_INSTALL_LIB_DIR}\")
+  file(RENAME
+    \"\${CMAKE_INSTALL_PREFIX}/plugin/$<TARGET_FILE_NAME:h5z_zfp_shared>\"
+    \"\${CMAKE_INSTALL_PREFIX}/${H5ZFP_INSTALL_LIB_DIR}/$<TARGET_FILE_NAME:h5z_zfp_shared>\")
+")
+
 # Copy the plugin to the global plugins directory for testing
 # H5Z-ZFP builds to its own plugin/ dir, but tests expect plugins in build/plugins/
 # Use a custom target since add_custom_command(TARGET) only works in same directory
