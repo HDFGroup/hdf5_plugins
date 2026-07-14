@@ -195,28 +195,14 @@ if (NOT DEFINED HDF5_LIBRARIES)
   set(HDF5_LIBRARIES ${H5PL_HDF5_LINK_LIBS})
 endif ()
 
-add_subdirectory(H5Z-ZFP/src)
-
-#-----------------------------------------------------------------------------
-# H5Z-ZFP/src/CMakeLists.txt (vendored via subtree) hardcodes the shared
+# H5Z-ZFP/src/CMakeLists.txt (vendored via subtree) defaults the shared
 # plugin's install destination to "plugin" instead of this project's
 # lib/plugin convention (H5ZFP_INSTALL_LIB_DIR, set above by
-# BASIC_SETTINGS). Relocate it at install time rather than editing the
-# subtree, so it isn't lost on the next subtree pull.
-#
-# $ENV{DESTDIR} must be prepended by hand: unlike install(TARGETS)/
-# install(FILES), which route through the DESTDIR-aware file(INSTALL),
-# plain file(MAKE_DIRECTORY)/file(RENAME) are not DESTDIR-aware. CPack
-# (e.g. the DEB generator) stages into DESTDIR while CMAKE_INSTALL_PREFIX
-# keeps its literal configured value, so without this a package build
-# would try to create/rename outside the staging tree and fail.
-install(CODE "
-  set(_h5zfp_destdir \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\")
-  file(MAKE_DIRECTORY \"\${_h5zfp_destdir}/${H5ZFP_INSTALL_LIB_DIR}\")
-  file(RENAME
-    \"\${_h5zfp_destdir}/plugin/$<TARGET_FILE_NAME:h5z_zfp_shared>\"
-    \"\${_h5zfp_destdir}/${H5ZFP_INSTALL_LIB_DIR}/$<TARGET_FILE_NAME:h5z_zfp_shared>\")
-")
+# BASIC_SETTINGS). It honors H5Z_ZFP_PLUGIN_INSTALL_DIR if set before
+# add_subdirectory() (proposed upstream to LLNL/H5Z-ZFP), so point it at
+# our convention instead of relocating the installed file after the fact.
+set(H5Z_ZFP_PLUGIN_INSTALL_DIR ${H5ZFP_INSTALL_LIB_DIR})
+add_subdirectory(H5Z-ZFP/src)
 
 # Copy the plugin to the global plugins directory for testing
 # H5Z-ZFP builds to its own plugin/ dir, but tests expect plugins in build/plugins/
