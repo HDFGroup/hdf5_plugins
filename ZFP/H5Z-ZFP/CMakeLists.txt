@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
 # Fail immediately if not using an out-of-source build
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
@@ -57,6 +57,8 @@ set(CMAKE_INSTALL_BINDIR bin)
 set(CMAKE_INSTALL_LIBDIR lib)
 set(CMAKE_INSTALL_INCLUDEDIR include)
 set(CMAKE_INSTALL_CMAKEDIR lib/cmake/h5z_zfp)
+set(H5Z_ZFP_PLUGIN_INSTALL_DIR "plugin" CACHE STRING
+  "Install destination for the shared plugin library, relative to CMAKE_INSTALL_PREFIX (or absolute)")
 
 #------------------------------------------------------------------------------#
 # Required packages
@@ -73,7 +75,13 @@ if ((HDF5_IS_PARALLEL OR HDF5_ENABLE_PARALLEL) AND ("${HDF5_VERSION}" VERSION_EQ
 endif()
 
 # Find ZFP, relies on ZFP_DIR or ZFP_ROOT being set in environment.
-find_package(ZFP REQUIRED CONFIG)
+# Try CMake config mode first (for CMake-built ZFP), then fall back to
+# FindZFP.cmake module (for Makefile-built ZFP).
+find_package(ZFP QUIET CONFIG)
+if (NOT ZFP_FOUND)
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+  find_package(ZFP REQUIRED)
+endif ()
 if (NOT ZFP_FOUND)
   message (FATAL_ERROR "ZFP is Required for h5z_zfp")
 endif ()
@@ -94,6 +102,24 @@ if (BUILD_TESTING)
   include (CTest)
 
   add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+endif ()
+
+#------------------------------------------------------------------------------#
+# Documentation
+#------------------------------------------------------------------------------#
+find_package(Sphinx QUIET)
+if (NOT Sphinx_FOUND)
+  find_program(SPHINX_EXECUTABLE NAMES sphinx-build
+    DOC "Path to sphinx-build executable")
+endif ()
+if (SPHINX_EXECUTABLE)
+  set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/docs)
+  set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/docs)
+  add_custom_target(docs
+    COMMAND ${SPHINX_EXECUTABLE} -b html ${SPHINX_SOURCE} ${SPHINX_BUILD}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating HTML documentation with Sphinx"
+    VERBATIM)
 endif ()
 
 #------------------------------------------------------------------------------#
