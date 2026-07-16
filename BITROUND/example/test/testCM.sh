@@ -10,7 +10,7 @@
 # If you do not have access to either file, you may request a copy from
 # help@hdfgroup.org.
 
-# This file is for use of h5cc created with the autotools process
+# This file is for use of h5cc created with the CMake process
 # HDF5_HOME is expected to be set
 
 srcdir=..
