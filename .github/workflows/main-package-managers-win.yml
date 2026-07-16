@@ -136,6 +136,7 @@ jobs:
             -DENABLE_ZSTD=ON \
             -DENABLE_BITGROOM=OFF \
             -DENABLE_GRANULAR_BITROUND=OFF \
+            -DENABLE_BITROUND=OFF \
             -DENABLE_BSHUF=OFF \
             $GITHUB_WORKSPACE
           cmake --build . --parallel 4 --config ${{ inputs.build_mode }}

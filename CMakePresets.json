@@ -31,6 +31,8 @@
         "BITGROOM_PACKAGE_NAME": {"type": "STRING", "value": "bitgroom"},
         "GRANULAR_BITROUND_TGZ_NAME": {"type": "STRING", "value": "granular_bitround-1.0.tar.gz"},
         "GRANULAR_BITROUND_PACKAGE_NAME": {"type": "STRING", "value": "granular_bitround"},
+        "BITROUND_TGZ_NAME": {"type": "STRING", "value": "bitround-1.0.tar.gz"},
+        "BITROUND_PACKAGE_NAME": {"type": "STRING", "value": "bitround"},
         "BUILD_BSHUF_LZ4_LIBRARY_SOURCE": "ON",
         "BSHUF_TGZ_NAME": {"type": "STRING", "value": "bitshuffle-0.5.2.tar.gz"},
         "BSHUF_PACKAGE_NAME": {"type": "STRING", "value": "bshuf"},
