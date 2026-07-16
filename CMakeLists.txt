@@ -98,6 +98,9 @@ FILTER_OPTION (BITGROOM)
 # Granular Bitround filter
 FILTER_OPTION (GRANULAR_BITROUND)
 
+# Bitround filter
+FILTER_OPTION (BITROUND)
+
 # Bitshuffle filter
 FILTER_OPTION (BSHUF)
 
