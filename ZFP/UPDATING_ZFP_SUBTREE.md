@@ -98,6 +98,7 @@ mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
   -DENABLE_ZFP=ON \
   -DH5PL_ALLOW_EXTERNAL_SUPPORT=TGZ \
+  -DH5PL_BUILD_TESTING=ON \
   -DH5PL_TGZPATH=../libs \
   ..
 
