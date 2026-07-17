@@ -195,6 +195,13 @@ if (NOT DEFINED HDF5_LIBRARIES)
   set(HDF5_LIBRARIES ${H5PL_HDF5_LINK_LIBS})
 endif ()
 
+# H5Z-ZFP/src/CMakeLists.txt (vendored via subtree) defaults the shared
+# plugin's install destination to "plugin" instead of this project's
+# lib/plugin convention (H5ZFP_INSTALL_LIB_DIR, set above by
+# BASIC_SETTINGS). It honors H5Z_ZFP_PLUGIN_INSTALL_DIR if set before
+# add_subdirectory() (proposed upstream to LLNL/H5Z-ZFP), so point it at
+# our convention instead of relocating the installed file after the fact.
+set(H5Z_ZFP_PLUGIN_INSTALL_DIR ${H5ZFP_INSTALL_LIB_DIR})
 add_subdirectory(H5Z-ZFP/src)
 
 # Copy the plugin to the global plugins directory for testing
