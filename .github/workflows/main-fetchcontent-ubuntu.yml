@@ -145,7 +145,7 @@ jobs:
           cd "${{ runner.workspace }}/build"
           cmake \
             -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
-            -DHDF5_DIR=${{ github.workspace }}/hdf5_build/cmake \
+            -DHDF5_DIR=${{ github.workspace }}/hdf5_build/lib/cmake/hdf5 \
             -DH5PL_ALLOW_EXTERNAL_SUPPORT=GIT \
             -DH5PL_BUILD_TESTING=ON \
             -DH5PL_BUILD_EXAMPLES=ON \
@@ -223,7 +223,7 @@ jobs:
           cd "${{ runner.workspace }}/build"
           cmake \
             -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
-            -DHDF5_DIR=${{ github.workspace }}/hdf5_build/cmake \
+            -DHDF5_DIR=${{ github.workspace }}/hdf5_build/lib/cmake/hdf5 \
             -DH5PL_ALLOW_EXTERNAL_SUPPORT=TGZ \
             -DH5PL_BUILD_TESTING=ON \
             -DH5PL_BUILD_EXAMPLES=ON \
