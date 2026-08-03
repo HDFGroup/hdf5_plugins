@@ -9,6 +9,21 @@ on:
         type: string
         required: false
         default: check
+      win_asset_suffix:
+        description: 'HDF5 Windows release asset suffix (platform, version, compiler)'
+        type: string
+        required: false
+        default: win-vs2026_cl
+      mac_asset_suffix:
+        description: 'HDF5 MacOS release asset suffix (platform, version, compiler)'
+        type: string
+        required: false
+        default: macos15_clang
+      ubuntu_asset_suffix:
+        description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
+        type: string
+        required: false
+        default: ubuntu-2404_gcc
   pull_request:
     branches: [ "master" ]
 
@@ -19,6 +34,23 @@ permissions:
   contents: read
 
 jobs:
+  get-asset-suffixes:
+    runs-on: ubuntu-latest
+    outputs:
+      win-asset-suffix: ${{ steps.setassetsuffixes.outputs.WINASSETSUFFIX }}
+      mac-asset-suffix: ${{ steps.setassetsuffixes.outputs.MACASSETSUFFIX }}
+      ubuntu-asset-suffix: ${{ steps.setassetsuffixes.outputs.UBUNTUASSETSUFFIX }}
+
+    steps:
+    - id: setassetsuffixes
+      run: |
+        INPUT_VAL=${{ inputs.win_asset_suffix }}
+        echo "WINASSETSUFFIX=${INPUT_VAL:-"win-vs2026_cl"}" >> "$GITHUB_OUTPUT"
+        INPUT_VAL=${{ inputs.mac_asset_suffix }}
+        echo "MACASSETSUFFIX=${INPUT_VAL:-"macos15_clang"}" >> "$GITHUB_OUTPUT"
+        INPUT_VAL=${{ inputs.ubuntu_asset_suffix }}
+        echo "UBUNTUASSETSUFFIX=${INPUT_VAL:-"ubuntu-2404_gcc"}" >> "$GITHUB_OUTPUT"
+
   get-old-names:
     runs-on: ubuntu-latest
     outputs:
@@ -73,23 +105,29 @@ jobs:
       use_environ: snapshots
 
   call-workflow-c-script:
-    needs: [get-old-names, call-workflow-tarball]
+    needs: [get-asset-suffixes, get-old-names, call-workflow-tarball]
     uses: ./.github/workflows/cmake-script.yml
     with:
       cmake_version: "latest"
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      win_asset_suffix: ${{ needs.get-asset-suffixes.outputs.win-asset-suffix }}
+      mac_asset_suffix: ${{ needs.get-asset-suffixes.outputs.mac-asset-suffix }}
+      ubuntu_asset_suffix: ${{ needs.get-asset-suffixes.outputs.ubuntu-asset-suffix }}
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
       use_environ: snapshots
     if: ${{ (github.event_name != 'pull_request') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-ctest:
-    needs: [get-old-names, call-workflow-tarball]
+    needs: [get-asset-suffixes, get-old-names, call-workflow-tarball]
     uses: ./.github/workflows/cmake-ctest.yml
     with:
       cmake_version: 'latest'
       preset_name: ci-StdShar
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
+      win_asset_suffix: ${{ needs.get-asset-suffixes.outputs.win-asset-suffix }}
+      mac_asset_suffix: ${{ needs.get-asset-suffixes.outputs.mac-asset-suffix }}
+      ubuntu_asset_suffix: ${{ needs.get-asset-suffixes.outputs.ubuntu-asset-suffix }}
 #      use_tag: snapshot
       use_environ: snapshots
     secrets:
@@ -106,17 +144,20 @@ jobs:
 
   call-release-bintest:
     name: "CMake Test Release Binaries"
-    needs: [get-old-names, call-workflow-tarball, call-workflow-ctest]
+    needs: [get-asset-suffixes, get-old-names, call-workflow-tarball, call-workflow-ctest]
     uses: ./.github/workflows/cmake-bintest.yml
     with:
       preset_name: ci-StdShar
       use_hdf: ${{ needs.get-old-names.outputs.hdf5-name }}
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      win_asset_suffix: ${{ needs.get-asset-suffixes.outputs.win-asset-suffix }}
+      mac_asset_suffix: ${{ needs.get-asset-suffixes.outputs.mac-asset-suffix }}
+      ubuntu_asset_suffix: ${{ needs.get-asset-suffixes.outputs.ubuntu-asset-suffix }}
       use_environ: snapshots
     if: ${{ github.event_name != 'pull_request' }}
 
   call-workflow-release:
-    needs: [get-old-names, call-workflow-tarball, call-workflow-ctest]
+    needs: [get-asset-suffixes, get-old-names, call-workflow-tarball, call-workflow-ctest]
     permissions:
       contents: write # In order to allow tag creation
     uses: ./.github/workflows/release-files.yml
@@ -124,17 +165,23 @@ jobs:
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
       file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
+      win_asset_suffix: ${{ needs.get-asset-suffixes.outputs.win-asset-suffix }}
+      mac_asset_suffix: ${{ needs.get-asset-suffixes.outputs.mac-asset-suffix }}
+      ubuntu_asset_suffix: ${{ needs.get-asset-suffixes.outputs.ubuntu-asset-suffix }}
       use_tag: snapshot
       use_environ: snapshots
     if: ${{ (github.event_name != 'pull_request') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) }}
 
   call-workflow-remove:
-    needs: [get-old-names, call-workflow-tarball, call-workflow-ctest, call-workflow-release]
+    needs: [get-asset-suffixes, get-old-names, call-workflow-tarball, call-workflow-ctest, call-workflow-release]
     permissions:
       contents: write # In order to allow file deletion
     uses: ./.github/workflows/remove-files.yml
     with:
       file_base: ${{ needs.get-old-names.outputs.plugin-name }}
+      win_asset_suffix: ${{ needs.get-asset-suffixes.outputs.win-asset-suffix }}
+      mac_asset_suffix: ${{ needs.get-asset-suffixes.outputs.mac-asset-suffix }}
+      ubuntu_asset_suffix: ${{ needs.get-asset-suffixes.outputs.ubuntu-asset-suffix }}
       use_tag: snapshot
       use_environ: snapshots
     if: ${{ (github.event_name != 'pull_request') && ((needs.call-workflow-tarball.outputs.has_changes == 'true') || (needs.get-old-names.outputs.run-ignore == 'ignore')) && (needs.get-old-names.outputs.hdf5-name != needs.call-workflow-tarball.outputs.file_base) }}

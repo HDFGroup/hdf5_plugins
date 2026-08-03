@@ -22,6 +22,18 @@ on:
         description: "The common base name of the source tarballs"
         required: true
         type: string
+      win_asset_suffix:
+        description: 'HDF5 Windows release asset suffix (platform, version, compiler)'
+        type: string
+        required: true
+      mac_asset_suffix:
+        description: 'HDF5 MacOS release asset suffix (platform, version, compiler)'
+        type: string
+        required: true
+      ubuntu_asset_suffix:
+        description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
+        type: string
+        required: true
       use_environ:
         description: 'Environment to locate files'
         type: string
@@ -83,7 +95,7 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: 'snapshot'
-          fileName: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
+          fileName: '${{ inputs.use_hdf }}-${{ inputs.win_asset_suffix }}.zip'
           token: ${{ github.token }}
 
       - name: Get hdf5 release
@@ -92,11 +104,11 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: '${{ inputs.hdf_tag }}'
-          fileName: '${{ inputs.use_hdf }}-win-vs2022_cl.zip'
+          fileName: '${{ inputs.use_hdf }}-${{ inputs.win_asset_suffix }}.zip'
           token: ${{ github.token }}
 
       - name: Uncompress gh binary (Win)
-        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-win-vs2022_cl.zip
+        run: 7z x ${{ github.workspace }}/${{ inputs.use_hdf }}-${{ inputs.win_asset_suffix }}.zip
 
       - name: Uncompress hdf5 binary (Win)
         working-directory: ${{ github.workspace }}/hdf5
@@ -182,12 +194,12 @@ jobs:
           HDF5_ROOT: ${{ steps.set-hdf5lib-name.outputs.HDF5_ROOT }}
         run: |
           cd "${{ runner.workspace }}/hdf5_plugins"
-          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }},LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=VS202264,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
+          ctest -S HDF5PLconfig.cmake,CTEST_SITE_EXT=GH-${{ github.event.repository.full_name }},LOCAL_SUBMIT=ON,NINJA=TRUE,BUILD_GENERATOR=VS2026,CTEST_SOURCE_NAME=${{ steps.set-file-base.outputs.SOURCE_BASE }} -C Release -VV -O hdf5_plugins.log
         shell: bash
         continue-on-error: true
 
       # Save log files created by ctest script
-      - name: Save log (Windows_intel)
+      - name: Save log (Windows)
         uses: actions/upload-artifact@v7.0.1
         with:
           name: cl-win-log
@@ -230,7 +242,7 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: 'snapshot'
-          fileName: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
+          fileName: '${{ inputs.use_hdf }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz'
           token: ${{ github.token }}
 
       - name: Get hdf5 release
@@ -239,7 +251,7 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: '${{ inputs.hdf_tag }}'
-          fileName: '${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz'
+          fileName: '${{ inputs.use_hdf }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz'
           token: ${{ github.token }}
 
       - name: List files for the space (Linux)
@@ -248,7 +260,7 @@ jobs:
               ls ${{ runner.workspace }}
 
       - name: Uncompress gh binary (Linux)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-ubuntu-2404_gcc.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz
 
       - name: Uncompress hdf5 binary (Linux)
         run:  |
@@ -369,7 +381,7 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: 'snapshot'
-          fileName: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+          fileName: '${{ inputs.use_hdf }}-${{ inputs.mac_asset_suffix }}.tar.gz'
           token: ${{ github.token }}
 
       - name: Get hdf5 release
@@ -378,7 +390,7 @@ jobs:
         with:
           repository: 'HDFGroup/hdf5'
           tag: '${{ inputs.hdf_tag }}'
-          fileName: '${{ inputs.use_hdf }}-macos14_clang.tar.gz'
+          fileName: '${{ inputs.use_hdf }}-${{ inputs.mac_asset_suffix }}.tar.gz'
           token: ${{ github.token }}
 
       - name: List files for the space (MacOS_latest)
@@ -387,7 +399,7 @@ jobs:
               ls ${{ runner.workspace }}
 
       - name: Uncompress gh binary (MacOS_latest)
-        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-macos14_clang*.tar.gz
+        run: tar -zxvf ${{ github.workspace }}/${{ inputs.use_hdf }}-${{ inputs.mac_asset_suffix }}*.tar.gz
 
       - name: Uncompress hdf5 binary (MacOS_latest)
         run:  |

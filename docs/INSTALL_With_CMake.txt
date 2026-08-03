@@ -82,6 +82,8 @@ To build HDF5 Filter libraries you will need to:
    5. From the "myhdfstuff" directory execute the CTest Script with the
       following options:
 
+      On 64-bit Windows with Visual Studio 2026, execute:
+         ctest -S HDF5PLconfig.cmake,BUILD_GENERATOR=VS2026 -C Release -VV -O hdf5.log
       On 32-bit Windows with Visual Studio 2022, execute:
          ctest -S HDF5PLconfig.cmake,BUILD_GENERATOR=VS2022 -C Release -VV -O hdf5.log
       On 64-bit Windows with Visual Studio 2022, execute:
@@ -391,6 +393,7 @@ These five steps are described in detail below.
             * Unix Makefiles
             * Visual Studio 16 2019
             * Visual Studio 17 2022
+            * Visual Studio 18 2026
 
         <options> is:
             * XXX_INCLUDE_DIR:PATH=<path to XXX includes directory>
