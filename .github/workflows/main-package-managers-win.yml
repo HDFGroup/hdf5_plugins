@@ -95,6 +95,10 @@ jobs:
           echo "CXX=cl.exe" >> $GITHUB_ENV
           echo "CC=cl.exe" >> $GITHUB_ENV
 
+      # NOTE: VCPKG_USE_LEGACY_APPLOCAL is a temporary fix for an issue with vcpkg
+      # (https://github.com/microsoft/vcpkg-tool/issues/2076) that causes a race in
+      # CI which fails Windows ROS3 builds. This should be removed once the issue is
+      # resolved.
       - name: Build HDF5
         shell: bash
         run: |
@@ -103,6 +107,7 @@ jobs:
           cd build
           cmake \
             -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DVCPKG_USE_LEGACY_APPLOCAL=ON \
             -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
             -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/hdf5_build" \
             -DBUILD_STATIC_LIBS=OFF \
@@ -114,6 +119,10 @@ jobs:
           cmake --build . --parallel 4 --config ${{ inputs.build_mode }}
           cmake --install . --config ${{ inputs.build_mode }}
 
+      # NOTE: VCPKG_USE_LEGACY_APPLOCAL is a temporary fix for an issue with vcpkg
+      # (https://github.com/microsoft/vcpkg-tool/issues/2076) that causes a race in
+      # CI which fails Windows ROS3 builds. This should be removed once the issue is
+      # resolved.
       - name: Build HDF5 plugins project
         shell: bash
         run: |
@@ -122,6 +131,7 @@ jobs:
           # TODO: Re-enable ZFP testing once CMake logic is fixed
           cmake \
             -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DVCPKG_USE_LEGACY_APPLOCAL=ON \
             -DCMAKE_BUILD_TYPE=${{ inputs.build_mode }} \
             -DHDF5_DIR="${{ github.workspace }}/hdf5_build/cmake" \
             -DH5PL_BUILD_TESTING=ON \
