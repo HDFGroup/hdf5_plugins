@@ -14,6 +14,21 @@ on:
         type: string
         required: false
         default: snapshot
+      win_asset_suffix:
+        description: 'HDF5 Windows release asset suffix (platform, version, compiler)'
+        type: string
+        required: false
+        default: win-vs2026_cl
+      mac_asset_suffix:
+        description: 'HDF5 MacOS release asset suffix (platform, version, compiler)'
+        type: string
+        required: false
+        default: macos15_clang
+      ubuntu_asset_suffix:
+        description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
+        type: string
+        required: false
+        default: ubuntu-2404_gcc
 
 permissions:
   contents: read
@@ -44,7 +59,7 @@ jobs:
     needs: log-the-inputs
     uses: ./.github/workflows/tarball.yml
     with:
-      use_tag: master
+      use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
       use_environ: release
 
   call-workflow-ctest:
@@ -56,6 +71,9 @@ jobs:
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_hdf: ${{ needs.log-the-inputs.outputs.use_hdf }}
       hdf_tag: ${{ needs.log-the-inputs.outputs.hdf_tag }}
+      win_asset_suffix: ${{ inputs.win_asset_suffix }}
+      mac_asset_suffix: ${{ inputs.mac_asset_suffix }}
+      ubuntu_asset_suffix: ${{ inputs.ubuntu_asset_suffix }}
       snap_name: hdf5_plugins-${{ needs.call-workflow-tarball.outputs.source_base }}
       use_environ: release
     secrets:
@@ -78,6 +96,9 @@ jobs:
       use_hdf: ${{ needs.log-the-inputs.outputs.use_hdf }}
       hdf_tag: ${{ needs.log-the-inputs.outputs.hdf_tag }}
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
+      win_asset_suffix: ${{ inputs.win_asset_suffix }}
+      mac_asset_suffix: ${{ inputs.mac_asset_suffix }}
+      ubuntu_asset_suffix: ${{ inputs.ubuntu_asset_suffix }}
       use_environ: release
 
   call-workflow-release:
@@ -89,6 +110,9 @@ jobs:
       file_base: ${{ needs.call-workflow-tarball.outputs.file_base }}
       file_branch: ${{ needs.call-workflow-tarball.outputs.file_branch }}
       file_sha: ${{ needs.call-workflow-tarball.outputs.file_sha }}
+      win_asset_suffix: ${{ inputs.win_asset_suffix }}
+      mac_asset_suffix: ${{ inputs.mac_asset_suffix }}
+      ubuntu_asset_suffix: ${{ inputs.ubuntu_asset_suffix }}
       use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
       use_environ: release
 
