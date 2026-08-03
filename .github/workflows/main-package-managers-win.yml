@@ -97,7 +97,7 @@ jobs:
 
       # NOTE: VCPKG_USE_LEGACY_APPLOCAL is a temporary fix for an issue with vcpkg
       # (https://github.com/microsoft/vcpkg-tool/issues/2076) that causes a race in
-      # CI which fails Windows ROS3 builds. This should be removed once the issue is
+      # CI which fails Windows builds. This should be removed once the issue is
       # resolved.
       - name: Build HDF5
         shell: bash
@@ -121,7 +121,7 @@ jobs:
 
       # NOTE: VCPKG_USE_LEGACY_APPLOCAL is a temporary fix for an issue with vcpkg
       # (https://github.com/microsoft/vcpkg-tool/issues/2076) that causes a race in
-      # CI which fails Windows ROS3 builds. This should be removed once the issue is
+      # CI which fails Windows builds. This should be removed once the issue is
       # resolved.
       - name: Build HDF5 plugins project
         shell: bash
