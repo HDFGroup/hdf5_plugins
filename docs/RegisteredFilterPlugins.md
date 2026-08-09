@@ -929,7 +929,7 @@ realized.
 Plugin features:
 
 * Bare high-throughput JPEG2000 codestream.
-* Lossless compressopn only. For lossy compression use an HTJ2K library and write the chunk directly with `H5Dwrite_chunk`.
+* Lossless compression only. For lossy compression use an HTJ2K library and write the chunk directly with `H5Dwrite_chunk`.
 * Limited support of datatypes to ensure different HTJ2K libraries can read the chunks: `int8`, `uint8`, `int16`, `uint16`.
 * Chunk shapes with at most 2 non-unity dimensions.
 * No support for JPEG2000 "components"; no RGB image support.
@@ -937,7 +937,7 @@ Plugin features:
 
 Plugin's `cd_values[]` are described at https://github.com/silx-kit/h5z-htj2k#filter-cd_values.
 
-Repository https://github.com/silx-kit/h5z-htj2k.
+Repository: https://github.com/silx-kit/h5z-htj2k.
 
 ##### Contact
 
