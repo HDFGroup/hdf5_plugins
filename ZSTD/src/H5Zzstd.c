@@ -74,8 +74,8 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         }
         if (contentSize == ZSTD_CONTENTSIZE_UNKNOWN) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK,
-                     "zstd frame does not record its decompressed size; the data was likely compressed "
-                     "with the zstd streaming API, which this filter does not support");
+                     "zstd frame missing decompressed size; data was likely compressed "
+                     "with the zstd streaming API, which is not supported");
             goto error;
         }
         if (contentSize == 0) {
