@@ -917,15 +917,8 @@ mark dot harfouche at gmail dot com
 
 #### Plugin ID `32033` <a name="htj2k"></a>
 
-High Throughput JPEG 2000 (HTJ2K) is an addition to the JPEG 2000 family of
-International Standards developed by JPEG Committee (ISO/IEC JTC 1/SC 29/WG 1).
-HTJ2K brings an order of magnitude increase in throughput to JPEG 2000:
-approximately 10x for moderate to higher compressed bit rates and more than 30x
-for lossless coding. HTJ2K software and GPU throughputs become comparable to, if
-not higher than, that achievable with the original, much less functional, JPEG
-algorithm. Low-cost, high throughput hardware implementations can also be
-realized.
-
+[High Throughput JPEG 2000 (HTJ2K)](https://jpeg.org/jpeg2000/htj2k.html) is an addition to the JPEG 2000 family of International Standards developed by JPEG Committee (ISO/IEC JTC 1/SC 29/WG 1).
+HTJ2K brings an order of magnitude increase in throughput to JPEG 2000 at the expense of slightly reduced coding efficiency.
 Plugin features:
 
 * Bare high-throughput JPEG2000 codestream.
