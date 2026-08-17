@@ -22,8 +22,8 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
 
 #define H5Z_FILTER_ZSTD 32015
 
-#define PUSH_ERR(func, minor, str)                                                                           \
-    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
+#define PUSH_ERR(func, minor, ...)                                                                           \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
 
 const H5Z_class2_t H5Z_ZSTD[1] = {{
     H5Z_CLASS_T_VERS,              /* H5Z_class_t version */
@@ -65,17 +65,33 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
     if (flags & H5Z_FLAG_REVERSE) {
         /* We're decompressing */
-        size_t decompSize = ZSTD_getFrameContentSize(*buf, origSize);
-        if (decompSize == 0 || decompSize == ZSTD_CONTENTSIZE_UNKNOWN ||
-            decompSize == ZSTD_CONTENTSIZE_ERROR)
+        unsigned long long contentSize = ZSTD_getFrameContentSize(*buf, origSize);
+        if (contentSize == ZSTD_CONTENTSIZE_ERROR) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Input is not a valid zstd frame");
             goto error;
+        }
+        if (contentSize == ZSTD_CONTENTSIZE_UNKNOWN) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK,
+                     "zstd frame does not record its decompressed size; the data was likely compressed "
+                     "with the zstd streaming API, which this filter does not support");
+            goto error;
+        }
+        if (contentSize == 0) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "zstd frame has zero decompressed size");
+            goto error;
+        }
 
-        if (NULL == (outbuf = malloc(decompSize)))
+        if (NULL == (outbuf = malloc((size_t)contentSize))) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd decompression buffer");
             goto error;
+        }
 
-        decompSize = ZSTD_decompress(outbuf, decompSize, inbuf, origSize);
-        if (ZSTD_isError(decompSize))
+        size_t decompSize = ZSTD_decompress(outbuf, (size_t)contentSize, inbuf, origSize);
+        if (ZSTD_isError(decompSize)) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "zstd decompression failed: %s",
+                     ZSTD_getErrorName(decompSize));
             goto error;
+        }
 
 #ifdef ZSTD_DEBUG
         fprintf(stderr, "   decompressing nbytes: %ld\n", decompSize);
@@ -106,12 +122,17 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             aggression = ZSTD_maxCLevel();
 
         size_t compSize = ZSTD_compressBound(origSize);
-        if (NULL == (outbuf = malloc(compSize)))
+        if (NULL == (outbuf = malloc(compSize))) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd compression buffer");
             goto error;
+        }
 
         compSize = ZSTD_compress(outbuf, compSize, inbuf, origSize, aggression);
-        if (ZSTD_isError(compSize))
+        if (ZSTD_isError(compSize)) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "zstd compression failed: %s",
+                     ZSTD_getErrorName(compSize));
             goto error;
+        }
 
 #ifdef ZSTD_DEBUG
         fprintf(stderr, "    compressing nbytes: %ld\n", compSize);
