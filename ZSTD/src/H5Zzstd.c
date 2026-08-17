@@ -22,8 +22,10 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
 
 #define H5Z_FILTER_ZSTD 32015
 
-#define PUSH_ERR(func, minor, ...)                                                                           \
-    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, __VA_ARGS__)
+#define PUSH_ERR(func, minor, str)                                                                           \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str)
+#define PUSH_ERR2(func, minor, str, arg)                                                                     \
+    H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, arg)
 
 const H5Z_class2_t H5Z_ZSTD[1] = {{
     H5Z_CLASS_T_VERS,              /* H5Z_class_t version */
@@ -88,8 +90,8 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
         size_t decompSize = ZSTD_decompress(outbuf, (size_t)contentSize, inbuf, origSize);
         if (ZSTD_isError(decompSize)) {
-            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "zstd decompression failed: %s",
-                     ZSTD_getErrorName(decompSize));
+            PUSH_ERR2("H5Z_filter_zstd", H5E_CALLBACK, "zstd decompression failed: %s",
+                      ZSTD_getErrorName(decompSize));
             goto error;
         }
 
@@ -129,8 +131,8 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
         compSize = ZSTD_compress(outbuf, compSize, inbuf, origSize, aggression);
         if (ZSTD_isError(compSize)) {
-            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "zstd compression failed: %s",
-                     ZSTD_getErrorName(compSize));
+            PUSH_ERR2("H5Z_filter_zstd", H5E_CALLBACK, "zstd compression failed: %s",
+                      ZSTD_getErrorName(compSize));
             goto error;
         }
 
