@@ -63,6 +63,7 @@ Upon receiving a request with the above information, HDF Group will register the
 |`32030`   |<a href="#ffmpeg">FFMPEG</a>    |A lossy compression filter based on ffmpeg video library|
 |`32031`   |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
 |`32032`   |<a href="#bitround">BitRound</a>    | The BitRound floating-point value quantization algorithm |
+|`32033`   |<a href="#htj2k">HTJ2K</a>    | High-Throughput JPEG 2000 (HTJ2K) compression |
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
@@ -913,6 +914,27 @@ https://github.com/hmaarrfk/hdf5_jpeg2000/
 ##### Contact
 Mark Harfouche
 mark dot harfouche at gmail dot com
+
+#### Plugin ID `32033` <a name="htj2k"></a>
+
+[High Throughput JPEG 2000 (HTJ2K)](https://jpeg.org/jpeg2000/htj2k.html) is an addition to the JPEG 2000 family of International Standards developed by JPEG Committee (ISO/IEC JTC 1/SC 29/WG 1).
+HTJ2K brings an order of magnitude increase in throughput to JPEG 2000 at the expense of slightly reduced coding efficiency.
+Plugin features:
+
+* Bare high-throughput JPEG2000 codestream.
+* Lossless compression only. For lossy compression use an HTJ2K library and write the chunk directly with `H5Dwrite_chunk`.
+* Limited support of datatypes to ensure different HTJ2K libraries can read the chunks: `int8`, `uint8`, `int16`, `uint16`.
+* Chunk shapes with at most 3 non-unity dimensions.
+* Limited JPEG2000 "components" support: For chunks with 3 non-unity dimensions, the last non-unity dimension must be 3.
+* Not limited to a particular HTJ2K implementation.
+
+Plugin's `cd_values[]` are described at https://github.com/silx-kit/h5z-htj2k#filter-cd_values.
+
+Repository: https://github.com/silx-kit/h5z-htj2k.
+
+##### Contact
+
+https://github.com/silx-kit/h5z-htj2k
 
 ---
 
