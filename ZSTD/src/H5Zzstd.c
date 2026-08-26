@@ -8,6 +8,7 @@
  */
 
 #include <sys/types.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -82,13 +83,19 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "zstd frame has zero decompressed size");
             goto error;
         }
+        if (contentSize > SIZE_MAX) {
+            PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK,
+                     "zstd frame decompressed size exceeds addressable memory");
+            goto error;
+        }
+        size_t decompCapacity = (size_t)contentSize;
 
-        if (NULL == (outbuf = malloc((size_t)contentSize))) {
+        if (NULL == (outbuf = malloc(decompCapacity))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd decompression buffer");
             goto error;
         }
 
-        size_t decompSize = ZSTD_decompress(outbuf, (size_t)contentSize, inbuf, origSize);
+        size_t decompSize = ZSTD_decompress(outbuf, decompCapacity, inbuf, origSize);
         if (ZSTD_isError(decompSize)) {
             PUSH_ERR2("H5Z_filter_zstd", H5E_CALLBACK, "zstd decompression failed: %s",
                       ZSTD_getErrorName(decompSize));
@@ -96,7 +103,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         }
 
 #ifdef ZSTD_DEBUG
-        fprintf(stderr, "   decompressing nbytes: %ld\n", decompSize);
+        fprintf(stderr, "   decompressing nbytes: %zu\n", decompSize);
 #endif
 
         buf_size_out = decompSize;
@@ -137,7 +144,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         }
 
 #ifdef ZSTD_DEBUG
-        fprintf(stderr, "    compressing nbytes: %ld\n", compSize);
+        fprintf(stderr, "    compressing nbytes: %zu\n", compSize);
 #endif
 
         buf_size_out = compSize;
