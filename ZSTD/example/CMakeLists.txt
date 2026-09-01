@@ -120,6 +120,33 @@ if (H5PL_BUILD_TESTING)
     endif ()
   endmacro ()
 
+  # Test that reading a .h5 with corrupt zstd data properly throws an error
+  # via the zstd filter
+  macro (ADD_H5_DUMPFAIL_TEST testname errmsg)
+    if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
+      add_test (
+          NAME H5DUMP-${testname}
+          COMMAND "${CMAKE_COMMAND}"
+              -D "TEST_PROGRAM=${H5PL_HDF5_DUMP_EXECUTABLE}"
+              -D "TEST_ARGS:STRING=--enable-error-stack;-d;/DS1;${testname}.h5"
+              -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
+              -D "TEST_EXPECT=1"
+              -D "ERROR_APPEND=1"
+              -D "TEST_GREP_COMPARE=1"
+              -D "TEST_OUTPUT=${testname}.out"
+              -D "TEST_REFERENCE=${errmsg}"
+              -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
+              -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
+              -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
+              -P "${H5ZSTD_RESOURCES_DIR}/runTest.cmake"
+      )
+      set_tests_properties (H5DUMP-${testname} PROPERTIES
+          WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+          DEPENDS ${last_test})
+      set (last_test "H5DUMP-${testname}")
+    endif ()
+  endmacro ()
+
   macro (ADD_H5_UD_TEST testname resultcode resultfile)
     # Remove any output file left over from previous test run
     add_test (
@@ -183,6 +210,8 @@ if (H5PL_BUILD_TESTING)
   # Copy all the HDF5 files from the source directory into the test directory
   # --------------------------------------------------------------------
   set (LIST_HDF5_TEST_FILES
+      h5ex_d_zstd_corrupt.h5
+      h5ex_d_zstd_streaming.h5
 #      h5repack_layout.h5
   )
   set (LIST_OTHER_TEST_FILES
@@ -198,6 +227,9 @@ if (H5PL_BUILD_TESTING)
   add_custom_target(zstd_files ALL COMMENT "Copying files needed by zstd tests" DEPENDS ${zstd_files_list})
 
   ADD_H5_TEST (h5ex_d_zstd)
+
+  ADD_H5_DUMPFAIL_TEST (h5ex_d_zstd_corrupt "Input is not a valid zstd frame")
+  ADD_H5_DUMPFAIL_TEST (h5ex_d_zstd_streaming "zstd frame missing decompressed size")
 
 #  if (NOT DISABLE_H5ZSTD_ENCODER)
 #    #UD ZSTD
