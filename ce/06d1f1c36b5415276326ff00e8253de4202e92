@@ -1,0 +1,19 @@
+ZSTD/CMakeLists.txt
+  s_041cdcc59819de::t_d64a1fdb322cd4 102-106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ce06d1f1c36b5415276326ff00e8253de4202e92",
+  "prompts": {},
+  "sessions": {
+    "s_041cdcc59819de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7bfb5a84-84a4-4396-9577-0d027e36fc78",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "M. Scot Breitenfeld <brtnfld@hdfgroup.org>"
+    }
+  }
+}
