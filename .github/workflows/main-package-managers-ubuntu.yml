@@ -98,6 +98,7 @@ jobs:
             -DENABLE_BITGROOM=OFF \
             -DENABLE_GRANULAR_BITROUND=OFF \
             -DENABLE_BITROUND=OFF \
+            -DENABLE_SZ3=OFF \
             -DENABLE_BLOSC=OFF \
             -DENABLE_BSHUF=OFF \
             -DENABLE_BZIP2=OFF \
