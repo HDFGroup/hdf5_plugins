@@ -1,0 +1,433 @@
+# distutils: language = c++
+"""Python interface for SZ3 compression library."""
+
+from pysz cimport sz as c_sz
+cimport cython
+from cython.operator cimport dereference
+import numpy as np
+cimport numpy as cnp
+from libc.stdint cimport int8_t, int32_t, int64_t, uint64_t
+from libc.stddef cimport size_t
+from libc.string cimport memcpy
+from typing import Tuple
+from libcpp.vector cimport vector
+from libcpp.string cimport string
+
+# Initialize NumPy C API
+cnp.import_array()
+
+
+class szErrorBoundMode:
+    """Error bound modes"""
+    ABS = 0
+    REL = 1
+    PSNR = 2
+    L2NORM = 3
+    ABS_AND_REL = 4
+    ABS_OR_REL = 5
+
+
+class szAlgorithm:
+    """Compression algorithms"""
+    LORENZO_REG = 0
+    INTERP_LORENZO = 1
+    INTERP = 2
+    NOPRED = 3
+    LOSSLESS = 4
+
+
+cdef class szConfig:
+    """
+    Configuration class for SZ3 compression.
+    
+    Enum classes: szErrorBoundMode, szAlgorithm (module level)
+    
+    Parameters: Dimension sizes as individual ints, tuple, or list
+        szConfig(data.shape), szConfig(100, 200, 300), etc.
+    """
+
+    def __init__(self, *args):
+        """Initialize config with optional dimensions."""
+        self.conf = Config()
+        if args:
+            self.setDims(*args)
+    
+    def setDims(self, *args):
+        """Set dimensions. Accepts tuple/list or individual integers."""
+        cdef vector[size_t] dims
+        
+        # Handle both setDims(100, 200, 300) and setDims((100, 200, 300))
+        if len(args) == 1 and hasattr(args[0], '__iter__'):
+            dims_iter = args[0]
+        else:
+            dims_iter = args
+        
+        if not dims_iter:
+            raise ValueError("At least one dimension required")
+        
+        for arg in dims_iter:
+            if not isinstance(arg, int) or arg <= 0:
+                raise ValueError(f"Dimension must be positive integer, got {arg}")
+            dims.push_back(<size_t>arg)
+        
+        self.conf.setDims(dims.begin(), dims.end())
+
+    def loadcfg(self, cfgpath: str):
+        """Load configuration from INI file."""
+        cdef string cfgpathStr = cfgpath.encode('utf-8')
+        try:
+            self.conf.loadcfg(cfgpathStr)
+        except RuntimeError as e:
+            raise RuntimeError(f"Failed to load '{cfgpath}': {e}")
+    
+    # Read-only properties
+    @property
+    def dims(self):
+        """Get dimensions (read-only)."""
+        return tuple(self.conf.dims)
+    
+    @property
+    def num_elements(self):
+        """Get total number of elements (read-only)."""
+        return self.conf.num
+    
+    @property
+    def ndim(self):
+        """Get number of dimensions (read-only)."""
+        return self.conf.N
+    
+    # Error bounds (double)
+    @property
+    def absErrorBound(self):
+        return self.conf.absErrorBound
+    
+    @absErrorBound.setter
+    def absErrorBound(self, double value):
+        self.conf.absErrorBound = value
+    
+    @property
+    def relErrorBound(self):
+        return self.conf.relErrorBound
+    
+    @relErrorBound.setter
+    def relErrorBound(self, double value):
+        self.conf.relErrorBound = value
+    
+    @property
+    def psnrErrorBound(self):
+        return self.conf.psnrErrorBound
+    
+    @psnrErrorBound.setter
+    def psnrErrorBound(self, double value):
+        self.conf.psnrErrorBound = value
+    
+    @property
+    def l2normErrorBound(self):
+        return self.conf.l2normErrorBound
+    
+    @l2normErrorBound.setter
+    def l2normErrorBound(self, double value):
+        self.conf.l2normErrorBound = value
+    
+    # Enum properties (accept enum or int)
+    @property
+    def errorBoundMode(self):
+        """Get/set error bound mode. Use szErrorBoundMode enum."""
+        return self.conf.errorBoundMode
+    
+    @errorBoundMode.setter
+    def errorBoundMode(self, value):
+        if isinstance(value, int):
+            self.conf.errorBoundMode = value
+        elif hasattr(value, 'value'):  # Is an enum
+            self.conf.errorBoundMode = value.value
+        else:
+            raise TypeError(f"Expected int or Enum, got {type(value).__name__}")
+    
+    @property
+    def cmprAlgo(self):
+        """Get/set compression algorithm. Use szAlgorithm enum."""
+        return self.conf.cmprAlgo
+    
+    @cmprAlgo.setter
+    def cmprAlgo(self, value):
+        if isinstance(value, int):
+            self.conf.cmprAlgo = value
+        elif hasattr(value, 'value'):  # Is an enum
+            self.conf.cmprAlgo = value.value
+        else:
+            raise TypeError(f"Expected int or Enum, got {type(value).__name__}")
+    
+    @property
+    def openmp(self):
+        return self.conf.openmp
+    
+    @openmp.setter
+    def openmp(self, bint value):
+        self.conf.openmp = value
+
+    def __repr__(self):
+        return f"szConfig(dims={self.dims}, num_elements={self.num_elements})"
+
+
+cdef class sz:
+    """SZ3 compression/decompression with zero-copy NumPy API."""
+    
+    # Supported dtypes
+    _SUPPORTED_DTYPES = frozenset([
+        np.dtype(np.float32),
+        np.dtype(np.float64),
+        np.dtype(np.int32),
+        np.dtype(np.int64),
+    ])
+    
+    @staticmethod
+    def compress(cnp.ndarray data, config) -> Tuple[cnp.ndarray, float]:
+        """
+        Compress NumPy array using SZ3.
+        
+        Parameters
+        ----------
+        data : numpy.ndarray
+            Input data (float32, float64, int32, or int64)
+        config : szConfig
+            Configuration object
+        
+        Returns
+        -------
+        compressed : numpy.ndarray
+            Compressed data as uint8 array
+        ratio : float
+            Compression ratio (original_size / compressed_size)
+        """
+        # Validate dtype
+        if data.dtype not in sz._SUPPORTED_DTYPES:
+            raise TypeError(
+                f"Unsupported dtype: {data.dtype}. "
+                f"Supported: float32, float64, int32, int64"
+            )
+        
+        # Handle config parameter
+        # We need to cast the python object to our cdef class to access C++ internals
+        cdef szConfig conf
+        if isinstance(config, szConfig):
+            conf = config
+            # Always set dimensions based on input data
+            shape_tuple = tuple(<Py_ssize_t>data.shape[i] for i in range(data.ndim))
+            conf.setDims(*shape_tuple)
+        else:
+            raise TypeError(f"config must be szConfig, got {type(config)}")
+        
+        # Ensure C-contiguous for zero-copy
+        if not data.flags['C_CONTIGUOUS']:
+            data = np.ascontiguousarray(data)
+        
+        # Get data pointer (zero-copy input!)
+        cdef void* data_ptr = <void*> cnp.PyArray_DATA(data)
+        cdef size_t original_size = data.nbytes
+        
+        cdef size_t buffer_size = 0
+        if data.dtype == np.float32:
+            buffer_size = c_sz.SZ_compress_size_bound[float](conf.conf)
+        elif data.dtype == np.float64:
+            buffer_size = c_sz.SZ_compress_size_bound[double](conf.conf)
+        elif data.dtype == np.int32:
+            buffer_size = c_sz.SZ_compress_size_bound[int32_t](conf.conf)
+        elif data.dtype == np.int64:
+            buffer_size = c_sz.SZ_compress_size_bound[int64_t](conf.conf)
+        cdef cnp.ndarray[cnp.uint8_t, ndim=1] compressed = np.empty(buffer_size, dtype=np.uint8)
+        cdef char* compressed_ptr = <char*> cnp.PyArray_DATA(compressed)
+        cdef size_t compressed_size = 0
+        
+        # Compress into pre-allocated buffer
+        if data.dtype == np.float32:
+            compressed_size = c_sz.SZ_compress[float](
+                conf.conf,
+                <float*>data_ptr,
+                compressed_ptr,
+                buffer_size
+            )
+        elif data.dtype == np.float64:
+            compressed_size = c_sz.SZ_compress[double](
+                conf.conf,
+                <double*>data_ptr,
+                compressed_ptr,
+                buffer_size
+            )
+        elif data.dtype == np.int32:
+            compressed_size = c_sz.SZ_compress[int32_t](
+                conf.conf,
+                <int32_t*>data_ptr,
+                compressed_ptr,
+                buffer_size
+            )
+        elif data.dtype == np.int64:
+            compressed_size = c_sz.SZ_compress[int64_t](
+                conf.conf,
+                <int64_t*>data_ptr,
+                compressed_ptr,
+                buffer_size
+            )
+        
+        if compressed_size == 0:
+            raise RuntimeError("Compression failed")
+        
+        # Resize to actual compressed size (no copy, just view)
+        compressed = compressed[:compressed_size]
+        
+        ratio = original_size / float(compressed_size)
+        return compressed, ratio
+    
+
+    @staticmethod
+    def decompress(cnp.ndarray compressed, dtype, shape) -> Tuple[cnp.ndarray, szConfig]:
+        """
+        Decompress SZ3-compressed data.
+        
+        Parameters
+        ----------
+        compressed : numpy.ndarray
+            Compressed data (uint8 array)
+        dtype : numpy.dtype or type
+            Data type of original data
+        shape : tuple
+            Shape of the original data
+        
+        Returns
+        -------
+        decompressed : numpy.ndarray
+            Decompressed data with the specified shape
+        config : szConfig
+            Configuration object used during decompression (contains actual compression params)
+        """
+        # Validate compressed data
+        if compressed.dtype != np.uint8:
+            raise TypeError(f"Compressed data must be uint8, got {compressed.dtype}")
+        
+        # Validate and normalize dtype
+        dtype = np.dtype(dtype)
+        if dtype not in sz._SUPPORTED_DTYPES:
+            raise TypeError(
+                f"Unsupported dtype: {dtype}. "
+                f"Supported: float32, float64, int32, int64"
+            )
+        
+        # Create a new config object for decompression
+        cdef szConfig conf = szConfig()
+        conf.setDims(*shape)
+        
+        # Ensure compressed data is contiguous
+        if not compressed.flags['C_CONTIGUOUS']:
+            compressed = np.ascontiguousarray(compressed)
+        
+        cdef char* compressed_ptr = <char*> cnp.PyArray_DATA(compressed)
+        cdef size_t compressed_size = compressed.size
+        cdef size_t num_elements = conf.num_elements
+
+        # SZ_decompress writes as many values as the stream holds, so check them against shape. The 16-byte header
+        # ends with the payload size, and the Config follows the payload.
+        if compressed_size < 16:
+            raise ValueError("Compressed data is smaller than the SZ3 header")
+        cdef const unsigned char* pos = <const unsigned char*> compressed_ptr + 8
+        cdef uint64_t payload_size = 0
+        c_sz.read[uint64_t](payload_size, pos)
+        if payload_size > compressed_size - 16:
+            raise ValueError("Compressed data is truncated")
+        pos += payload_size
+        cdef size_t remaining = compressed_size - 16 - payload_size
+        cdef c_sz.Config stored
+        stored.load(pos, remaining)
+        if stored.num != num_elements:
+            raise ValueError(f"shape {tuple(shape)} holds {num_elements} values, the compressed data {stored.num}")
+        
+        # Pre-allocate NumPy array for decompressed data
+        cdef cnp.ndarray result = np.empty(num_elements, dtype=dtype)
+        
+        # Get pointer to NumPy array data
+        # Pass this to SZ_decompress - it will decompress directly into our buffer!
+        cdef float* float_ptr
+        cdef double* double_ptr
+        cdef int32_t* int32_ptr
+        cdef int64_t* int64_ptr
+        
+        if dtype == np.float32:
+            float_ptr = <float*> cnp.PyArray_DATA(result)
+            c_sz.SZ_decompress[float](
+                conf.conf,
+                compressed_ptr,
+                compressed_size,
+                float_ptr
+            )
+        elif dtype == np.float64:
+            double_ptr = <double*> cnp.PyArray_DATA(result)
+            c_sz.SZ_decompress[double](
+                conf.conf,
+                compressed_ptr,
+                compressed_size,
+                double_ptr
+            )
+        elif dtype == np.int32:
+            int32_ptr = <int32_t*> cnp.PyArray_DATA(result)
+            c_sz.SZ_decompress[int32_t](
+                conf.conf,
+                compressed_ptr,
+                compressed_size,
+                int32_ptr
+            )
+        elif dtype == np.int64:
+            int64_ptr = <int64_t*> cnp.PyArray_DATA(result)
+            c_sz.SZ_decompress[int64_t](
+                conf.conf,
+                compressed_ptr,
+                compressed_size,
+                int64_ptr
+            )
+        
+        # Data is now in our NumPy array! (zero-copy decompression)
+        # Reshape to original dimensions
+        return result.reshape(shape), conf
+    
+    @staticmethod
+    def verify(cnp.ndarray src_data, cnp.ndarray dec_data) -> Tuple[float, float, float]:
+        """
+        Compare decompressed data with original data.
+        
+        Parameters
+        ----------
+        src_data : numpy.ndarray
+            Original data before compression
+        dec_data : numpy.ndarray
+            Decompressed data to verify
+        
+        Returns
+        -------
+        max_diff : float
+            Maximum absolute difference
+        psnr : float
+            Peak Signal-to-Noise Ratio in dB
+        nrmse : float
+            Normalized Root Mean Square Error
+        """
+        # Check shapes match by comparing size and ndim
+        if src_data.ndim != dec_data.ndim or src_data.size != dec_data.size:
+            raise ValueError("Shape mismatch between src_data and dec_data")
+        
+        if src_data.dtype != dec_data.dtype:
+            raise ValueError("Dtype mismatch between src_data and dec_data")
+
+        # Integer differences and ranges can overflow the integer type.
+        if np.issubdtype(src_data.dtype, np.integer):
+            src_data = src_data.astype(np.float64)
+            dec_data = dec_data.astype(np.float64)
+        
+        # Calculate data range and difference
+        cdef double data_range = np.max(src_data) - np.min(src_data)
+        cdef cnp.ndarray diff = src_data - dec_data
+        cdef double max_diff = np.max(np.abs(diff))
+        
+        # Calculate MSE and derived metrics
+        cdef double mse = np.mean(diff ** 2)
+        cdef double nrmse = np.sqrt(mse) / data_range if data_range > 0 else 0.0
+        cdef double psnr = 20 * np.log10(data_range) - 10 * np.log10(mse) if mse > 0 else float('inf')
+        
+        return max_diff, psnr, nrmse
