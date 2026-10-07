@@ -1,0 +1,548 @@
+name: Build & Test
+
+on: [ push ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BUILD_TYPE: Release
+  TEST_URL: https://raw.githubusercontent.com/szcompressor/SZ3/master/tools/sz3/testfloat_8_8_128.dat
+  DIMS: "128 8 8"
+  MODE: ABS
+  TOL: 1
+
+# Anything that needs more than one configuration of anything lives in its own workflow:
+# packaging.yml for install and consume, hdf5.yml for the filter against more than one HDF5.
+jobs:
+  workflow-env:
+    name: Every workflow declares the env it reads
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for env keys that interpolate to nothing
+        shell: bash
+        run: python3 tools/test/check_workflow_env.py
+
+  build-linux:
+    name: Build & Test (Linux)
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.calc.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install HDF5 and Zstd
+        run: |
+          sudo apt-get update
+          # libzstd-dev, not libzstd1: only the -dev package carries the libzstd.pc that sends this
+          # job down the system-Zstd path. hdf5-tools is what registers SZ3_FilterSuite: the
+          # test only exists when h5repack, h5dump and h5ls are all found at configure time.
+          sudo apt-get install -y libhdf5-dev hdf5-tools libzstd-dev
+
+      - name: Create build dir
+        run: cmake -E make_directory build
+
+      - name: Configure
+        shell: bash
+        working-directory: build
+        run: |
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DBUILD_TESTING=ON \
+            -DBUILD_H5Z_FILTER=ON
+
+      - name: Build
+        shell: bash
+        working-directory: build
+        run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel 4
+
+      - name: Run CTest
+        shell: bash
+        working-directory: build
+        run: ctest --output-on-failure --no-tests=error -C ${{ env.BUILD_TYPE }}
+
+      - name: Download test data
+        shell: bash
+        run: |
+          curl -L -o input.dat ${{ env.TEST_URL }}
+
+      - name: Run sz3 and check error
+        shell: bash
+        working-directory: build
+        run: |
+          ./tools/sz3/sz3 -f -i ../input.dat -3 ${{ env.DIMS }} -M ${{ env.MODE }} ${{ env.TOL }} -a \
+                           -o out.dat -z out.sz3 \
+            | tee sz3.log
+          ../tools/test/checkMaxError.sh sz3.log ${{ env.TOL }}
+
+      - name: cmake found OpenMP on this runner
+        shell: bash
+        working-directory: build
+        run: |
+          # find_package(OpenMP) is not REQUIRED, so a runner without it builds an sz3 that never
+          # writes an OpenMP stream. Asked here, the two steps below fail for what they are about
+          # instead of passing on a serial stream.
+          grep -q '^OpenMP_CXX_FLAGS:STRING=.' CMakeCache.txt \
+            || { echo "cmake found no OpenMP on this runner, so the OpenMP path is untested"; exit 1; }
+
+      - name: The OpenMP path stays inside the error bound
+        shell: bash
+        working-directory: build
+        run: |
+          # The OpenMP path splits the data along the slowest dimension and compresses each piece on
+          # its own thread, so it has its own stream framing and its own decoder. Nothing else in CI
+          # enters it.
+          printf '[GlobalSettings]\nOpenMP = YES\n' > omp.config
+          ./tools/sz3/sz3 -f -i ../input.dat -3 ${{ env.DIMS }} -M ${{ env.MODE }} ${{ env.TOL }} -a \
+                           -c omp.config -o omp.dat -z omp.sz3 \
+            | tee omp.log
+          ../tools/test/checkMaxError.sh omp.log ${{ env.TOL }}
+
+      - name: An OpenMP stream decodes the same under any thread count
+        shell: bash
+        run: |
+          tools/test/openmpThreadCounts.sh build/tools/sz3/sz3 input.dat ${{ env.TOL }} \
+              -3 ${{ env.DIMS }}
+
+      - name: Compute SHA256 of compressed
+        id: calc
+        shell: bash
+        working-directory: build
+        run: |
+          DIGEST=$(sha256sum out.sz3 | awk '{print $1}')
+          [ -n "$DIGEST" ] || { echo "no digest to compare against macOS"; exit 1; }
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Linux-compressed artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: temp-linux-out-sz3
+          path: build/out.sz3
+
+  sanitizers:
+    name: Build & Test (Linux, ASan + UBSan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Zstd
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzstd-dev
+
+      # No HDF5 filter here. The point is SZ3's own writes, and linking HDF5 would report its
+      # allocations as ours the moment leak detection is on.
+      - name: Configure
+        shell: bash
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DBUILD_TESTING=ON \
+            -DBUILD_H5Z_FILTER=OFF \
+            -DCMAKE_C_FLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined -g" \
+            -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-sanitize-recover=undefined -g" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --parallel 4
+
+      - name: Run CTest
+        shell: bash
+        working-directory: build
+        env:
+          ASAN_OPTIONS: detect_leaks=1
+        run: ctest --output-on-failure --no-tests=error
+
+      # The unit tests check each stage against its own size_est(); this runs the whole CLI at a
+      # block size where the regression coefficients dominate the buffer.
+      - name: A small block size does not run off the compressor's buffer
+        shell: bash
+        working-directory: build
+        env:
+          ASAN_OPTIONS: detect_leaks=1
+        run: |
+          python3 -c "
+          import struct, random
+          random.seed(1)
+          n = 16384
+          v = [i * 0.5 + random.uniform(-1, 1) for i in range(n)]
+          open('ramp.f32', 'wb').write(struct.pack('<%df' % n, *v))
+          "
+          for eb in 1e-1 1e-2 1e-3 1e-4 1e-5; do
+            for bs in 2 3 4 6; do
+              printf '[GlobalSettings]\nCmprAlgo = ALGO_LORENZO_REG\nErrorBoundMode = ABS\nAbsErrorBound = %s\n[AlgoSettings]\nBlockSize = %s\n' "$eb" "$bs" > ramp.ini
+              ./tools/sz3/sz3 -f -i ramp.f32 -z ramp.sz -1 16384 -c ramp.ini
+            done
+          done
+
+  fma:
+    name: Build & Test (Linux, with and without FMA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Zstd
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzstd-dev
+
+      - name: Build
+        shell: bash
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          cmake --build build --target sz3 --parallel 4
+          cmake -S . -B build-fma -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DBUILD_TESTING=ON \
+                -DCMAKE_C_FLAGS=-march=x86-64-v3 -DCMAKE_CXX_FLAGS=-march=x86-64-v3
+          cmake --build build-fma --target sz3 test_reconstruction --parallel 4
+
+      # Without FMA instructions in this build, the tests below would compare two identical builds.
+      - name: The FMA build fuses multiply-adds
+        shell: bash
+        run: objdump -d build-fma/tools/sz3/sz3 | grep -q vfmadd
+
+      - name: Both builds decode every stream either writes to the same bytes
+        shell: bash
+        run: tools/test/crossBuildDecode.sh build build-fma tools/sz3/testfloat_8_8_128.dat -3 ${{ env.DIMS }}
+
+      - name: The compressor's reconstruction equals the decompressor's output
+        shell: bash
+        run: build-fma/tools/test/test_reconstruction
+
+  wasm32:
+    name: Build & Test (wasm32, 32-bit size_t)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Zstd
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzstd-dev
+
+      - name: Install Emscripten
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git "$RUNNER_TEMP/emsdk"
+          "$RUNNER_TEMP/emsdk/emsdk" install 6.0.11
+          "$RUNNER_TEMP/emsdk/emsdk" activate 6.0.11
+
+      # A wasm32 build has a 4-byte size_t. Every size in the stream has to be written as 8 bytes
+      # for its data and a 64-bit build's to be the same stream.
+      - name: Build
+        shell: bash
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          cmake --build build --target sz3 --parallel 4
+          source "$RUNNER_TEMP/emsdk/emsdk_env.sh"
+          # Emscripten's OpenMP is found but does not link; NODERAWFS lets sz3 open files under node.
+          emcmake cmake -S . -B build-wasm -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+                -DSZ3_USE_BUNDLED_ZSTD=ON -DCMAKE_DISABLE_FIND_PACKAGE_OpenMP=ON \
+                -DCMAKE_CXX_FLAGS=-fexceptions \
+                -DCMAKE_EXE_LINKER_FLAGS="-fexceptions -sNODERAWFS=1 -sALLOW_MEMORY_GROWTH=1 -sEXIT_RUNTIME=1"
+          cmake --build build-wasm --target sz3 --parallel 4
+          printf '#!/bin/sh\nexec node "$(dirname "$0")/sz3.js" "$@"\n' > build-wasm/tools/sz3/sz3
+          chmod +x build-wasm/tools/sz3/sz3
+
+      - name: Both builds decode every stream either writes to the same bytes
+        shell: bash
+        run: tools/test/crossBuildDecode.sh build build-wasm tools/sz3/testfloat_8_8_128.dat -3 ${{ env.DIMS }}
+
+  toolchains:
+    name: ${{ matrix.cc }} shared=${{ matrix.shared }}
+    runs-on: ubuntu-latest
+    # Separate from build-linux, which feeds one digest to compare and one artifact to
+    # build-windows; a matrix would make both ambiguous.
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc-12, gcc-14, clang-16, clang-18]
+        shared: ["ON", "OFF"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install the toolchain and HDF5
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libhdf5-dev hdf5-tools libzstd-dev ${{ matrix.cc }}
+
+      - name: Build and test
+        shell: bash
+        run: |
+          # A header-only library sees more of a compiler than most: every template it has is
+          # instantiated in the consumer's translation unit. BUILD_SHARED_LIBS decides what shape
+          # hdf5sz3 and SZ3c take, and the static one is what a packager on Windows gets.
+          CXX=${{ matrix.cc }}
+          case "$CXX" in clang-*) CXX="clang++-${CXX#clang-}";; gcc-*) CXX="g++-${CXX#gcc-}";; esac
+          cmake -S . -B build \
+                -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+                -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+                -DCMAKE_CXX_COMPILER="$CXX" \
+                -DBUILD_SHARED_LIBS=${{ matrix.shared }} \
+                -DBUILD_TESTING=ON \
+                -DBUILD_H5Z_FILTER=ON
+          cmake --build build --parallel 4
+          (cd build && ctest --output-on-failure --no-tests=error -C ${{ env.BUILD_TYPE }})
+          if [ "${{ matrix.shared }}" = "ON" ]; then
+            test -e build/tools/H5Z-SZ3/libhdf5sz3.so
+          else
+            test -e build/tools/H5Z-SZ3/libhdf5sz3.a
+          fi
+
+  build-macos:
+    name: Build & Test (macOS)
+    runs-on: macos-latest
+    outputs:
+      digest: ${{ steps.calc.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install HDF5
+        run: |
+          brew update
+          brew install hdf5
+
+      - name: Create build dir
+        run: cmake -E make_directory build
+
+      - name: Configure
+        shell: bash
+        working-directory: build
+        run: |
+          cmake .. \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DBUILD_TESTING=ON \
+            -DBUILD_H5Z_FILTER=ON
+
+      - name: Build
+        shell: bash
+        working-directory: build
+        run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel 4
+
+      - name: Run CTest
+        shell: bash
+        working-directory: build
+        run: ctest --output-on-failure --no-tests=error -C ${{ env.BUILD_TYPE }}
+
+      - name: Download test data
+        shell: bash
+        run: |
+          curl -L -o input.dat ${{ env.TEST_URL }}
+
+      - name: Run sz3 and check error
+        shell: bash
+        working-directory: build
+        run: |
+          ./tools/sz3/sz3 -f -i ../input.dat -3 ${{ env.DIMS }} -M ${{ env.MODE }} ${{ env.TOL }} -a \
+                           -o out.dat -z out.sz3 \
+            | tee sz3.log
+          ../tools/test/checkMaxError.sh sz3.log ${{ env.TOL }}
+
+      - name: Compute SHA256 of compressed
+        id: calc
+        shell: bash
+        working-directory: build
+        run: |
+          DIGEST=$(shasum -a 256 out.sz3 | awk '{print $1}')
+          [ -n "$DIGEST" ] || { echo "no digest to compare against Linux"; exit 1; }
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+
+  build-windows:
+    name: Build & Test (Windows)
+    runs-on: windows-latest
+    needs: build-linux
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Bootstrap vcpkg & install HDF5
+        shell: pwsh
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git C:\vcpkg
+          cd C:\vcpkg
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe install hdf5:x64-windows
+          echo "VCPKG_ROOT=C:\vcpkg" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Create build dir
+        shell: pwsh
+        run: cmake -E make_directory build
+
+      - name: Configure
+        shell: pwsh
+        working-directory: build
+        run: |
+          cmake .. `
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+            -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake `
+            -DVCPKG_TARGET_TRIPLET=x64-windows `
+            -DBUILD_TESTING=ON `
+            -DBUILD_H5Z_FILTER=ON
+
+      - name: Build
+        shell: pwsh
+        working-directory: build
+        run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel 4
+
+      - name: Run CTest
+        shell: pwsh
+        working-directory: build
+        run: ctest --output-on-failure --no-tests=error -C ${{ env.BUILD_TYPE }}
+
+      - name: Build static libraries
+        shell: pwsh
+        run: |
+          # Static is what GROMACS builds on Windows; the H5Z tools link the static hdf5sz3.
+          cmake -S . -B build-static `
+            -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake `
+            -DVCPKG_TARGET_TRIPLET=x64-windows `
+            -DBUILD_SHARED_LIBS=OFF `
+            -DBUILD_H5Z_FILTER=ON
+          cmake --build build-static --config ${{ env.BUILD_TYPE }} --parallel 4
+
+      - name: Download test data
+        shell: pwsh
+        run: Invoke-WebRequest -UseBasicParsing -Uri ${{ env.TEST_URL }} -OutFile input.dat
+
+      - name: Run sz3 and check error
+        shell: pwsh
+        working-directory: build
+        run: |
+          .\tools\sz3\Release\sz3.exe -f -i ..\input.dat -3 ${{ env.DIMS }} -M ${{ env.MODE }} ${{ env.TOL }} -a `
+                              -o out.dat -z out.sz3 2>&1 | Tee-Object sz3.log
+          $match = Select-String -Pattern 'Max absolute error =\s*([0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?)' -Path sz3.log
+          if (-not $match) {
+            Write-Error "Could not parse Max absolute error!"
+            exit 1
+          }
+
+          $err = [double]$match.Matches[0].Groups[1].Value
+          Write-Host "Parsed error: $err"
+
+          if ($err -gt [double]${{ env.TOL }}) {
+            Write-Error "Error $err exceeds tolerance ${{ env.TOL }}"
+            exit 1
+          }
+
+
+      - name: Download Linux-compressed artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: temp-linux-out-sz3
+          path: .
+
+      - name: Run sz3 to decompress and check error
+        shell: pwsh
+        working-directory: build
+        run: |
+          .\tools\sz3\Release\sz3.exe -f -i ..\input.dat -z ..\out.sz3 -a -o out_recon.dat `
+            2>&1 | Tee-Object sz3.log
+
+          $match = Select-String -Pattern 'Max absolute error =\s*([0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?)' -Path sz3.log
+          if (-not $match) {
+            Write-Error "Could not parse Max absolute error!"
+            exit 1
+          }
+
+          $err = [double]$match.Matches[0].Groups[1].Value
+          Write-Host "Parsed error: $err"
+
+          if ($err -gt [double]${{ env.TOL }}) {
+            Write-Error "Error $err exceeds tolerance ${{ env.TOL }}"
+            exit 1
+          }
+
+  build-windows-mingw:
+    name: Build & Test (Windows MinGW)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup MSYS2 with MinGW64
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-libgomp
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            make
+
+      # hdf5 comes in through a separate pacman call so it can carry --assume-installed. msys2's
+      # gcc-libgfortran pins gcc-libs to an exact build that the repository has already moved past,
+      # so fc-libs cannot resolve and pacman drops hdf5 from the transaction with only a warning.
+      # SZ3 asks for HDF5's C component alone, so the Fortran runtime is not ours to need.
+      - name: Install HDF5 without its Fortran runtime
+        run: |
+          pacman -S --noconfirm --needed \
+                 --assume-installed mingw-w64-x86_64-fc-libs \
+                 mingw-w64-x86_64-hdf5
+          # pacman warns and returns 0 when it drops a package it could not resolve, which is how
+          # this went unnoticed in the first place. Ask for the file the build actually needs.
+          test -f /mingw64/include/hdf5.h
+
+      - name: Create build dir
+        run: cmake -E make_directory build
+
+      - name: Configure
+        working-directory: build
+        run: |
+          cmake .. \
+            -G "Ninja" \
+            -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+            -DBUILD_TESTING=ON \
+            -DBUILD_H5Z_FILTER=ON
+
+      - name: Build
+        working-directory: build
+        run: cmake --build . --config ${{ env.BUILD_TYPE }} --parallel 4
+
+      - name: Run CTest
+        working-directory: build
+        run: |
+          export PATH="$PWD/bin:$PWD/lib:$PATH"
+          ctest --output-on-failure --no-tests=error -C ${{ env.BUILD_TYPE }}
+
+      - name: Download test data
+        run: |
+          curl -L -o input.dat ${{ env.TEST_URL }}
+
+      - name: Run sz3 and check error
+        working-directory: build
+        run: |
+          ./tools/sz3/sz3.exe -f -i ../input.dat -3 ${{ env.DIMS }} -M ${{ env.MODE }} ${{ env.TOL }} -a \
+                           -o out.dat -z out.sz3 \
+            | tee sz3.log
+          # Through bash: a Windows checkout carries no executable bit for the script to be run by.
+          bash ../tools/test/checkMaxError.sh sz3.log ${{ env.TOL }}
+
+  compare:
+    name: Compare Digests (Linux vs macOS)
+    runs-on: ubuntu-latest
+    needs: [ build-linux, build-macos ]
+    steps:
+      - name: Check that Linux and macOS digests match
+        shell: bash
+        run: |
+          L=${{ needs.build-linux.outputs.digest }}
+          M=${{ needs.build-macos.outputs.digest }}
+          echo "linux: $L"
+          echo "macos: $M"
+          # Two digests that never arrived are equal to each other, so this job would report the
+          # platforms agreeing when neither had said anything.
+          if [ -z "$L" ] || [ -z "$M" ]; then
+            echo "::error ::A digest did not reach this job, so nothing was compared."
+            exit 1
+          fi
+          if [[ "$L" != "$M" ]]; then
+            echo "::error ::Compressed outputs differ between Linux and macOS!"
+            exit 1
+          fi
+          echo "Linux and macOS compressed outputs are identical."

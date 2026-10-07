@@ -1,0 +1,166 @@
+"""
+Setup script for pysz - Python bindings for SZ3
+Automatically downloads and builds SZ3 with bundled zstd, or with PYSZ_SZ3_PREFIX set, uses an installed SZ3 and the
+Zstd installed beside it.
+"""
+
+import os
+import sys
+import shutil
+import subprocess
+from pathlib import Path
+from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext as _build_ext
+from Cython.Build import cythonize
+import numpy as np
+
+
+
+# A released tag: a published wheel has to be buildable from a published source.
+SZ3_VERSION = "3.4.0"
+
+# Both layouts, because the bundled Zstd's name and location changed after v3.3.2.
+ZSTD_HEADER_DIRS = (("tools", "zstd", "lib"), ("build", "_deps", "zstdfetched-src", "lib"))
+ZSTD_LIBRARY_DIRS = (("build", "tools", "zstd"),
+                     ("build", "tools", "zstd", "Release"),
+                     ("build", "tools", "zstd", "Debug"))
+ZSTD_LIBRARY_NAMES = ("sz3_zstd", "zstd")
+
+
+def find_zstd_header_dir(sz3_dir):
+    for parts in ZSTD_HEADER_DIRS:
+        candidate = sz3_dir.joinpath(*parts)
+        if (candidate / "zstd.h").is_file():
+            return candidate
+    raise RuntimeError(f"no bundled zstd.h under {sz3_dir}; is SZ3_VERSION a tag that bundles Zstd?")
+
+
+def find_zstd_library(sz3_dir):
+    """The link name of the bundled Zstd this SZ3 build produced, and the directory holding it."""
+    for name in ZSTD_LIBRARY_NAMES:
+        for parts in ZSTD_LIBRARY_DIRS:
+            directory = sz3_dir.joinpath(*parts)
+            for pattern in (f"lib{name}.*", f"{name}.lib"):
+                if any(directory.glob(pattern)):
+                    return name, directory
+    raise RuntimeError(f"no bundled Zstd library under {sz3_dir / 'build' / 'tools' / 'zstd'}")
+
+
+class BuildSZ3Extension(_build_ext):
+
+    def run(self):
+        sz3_prefix = os.environ.get("PYSZ_SZ3_PREFIX")
+        if sz3_prefix:
+            # As a distribution builds it: SZ3's headers, and the Zstd it was built with, from one prefix.
+            prefix = Path(sz3_prefix)
+            zstd_name = "sz3_zstd" if any((prefix / "lib").glob("*sz3_zstd*")) else "zstd"
+            for ext in self.extensions:
+                ext.include_dirs.insert(0, str(prefix / "include"))
+                ext.library_dirs.append(str(prefix / "lib"))
+                ext.libraries.append(zstd_name)
+            super().run()
+            return
+
+        sz3_dir = self.download_and_build_sz3()
+        zstd_name, zstd_dir = find_zstd_library(sz3_dir)
+        print(f"Linking bundled Zstd: {zstd_name} from {zstd_dir}")
+
+        for ext in self.extensions:
+            ext.include_dirs.insert(0, str(sz3_dir / "include"))
+            ext.include_dirs.insert(0, str(sz3_dir / "build" / "include"))
+            ext.include_dirs.append(str(find_zstd_header_dir(sz3_dir)))
+            ext.libraries.append(zstd_name)
+            ext.library_dirs.append(str(zstd_dir))
+
+        super().run()
+
+        # A shared one has to ride along next to the extension; a static one is already in it.
+        package_dir = Path(self.build_lib) / "pysz"
+        if package_dir.exists():
+            for pattern in (f"lib{zstd_name}.dylib", f"lib{zstd_name}.so", f"{zstd_name}.dll"):
+                for shared in sorted(zstd_dir.glob(pattern)):
+                    shutil.copy2(shared, package_dir / shared.name)
+                    print(f"Copied {shared.name} to package")
+                    return
+
+    def download_and_build_sz3(self):
+        build_temp = Path(self.build_temp).absolute()
+        build_temp.mkdir(parents=True, exist_ok=True)
+        sz3_dir = build_temp / "SZ3"
+        
+        if (sz3_dir / "build" / "include" / "SZ3" / "version.hpp").exists():
+            print(f"SZ3 already built at: {sz3_dir}")
+            return sz3_dir
+        
+        if not sz3_dir.exists():
+            print(f"Cloning SZ3 v{SZ3_VERSION}...")
+            subprocess.run([
+                "git", "clone", "--depth", "1",
+                "--branch", f"v{SZ3_VERSION}",
+                "--single-branch",
+                "https://github.com/szcompressor/SZ3.git",
+                str(sz3_dir)
+            ], check=True)
+
+        build_dir = sz3_dir / "build"
+        build_dir.mkdir(exist_ok=True)
+        
+        cmake_args = ["cmake"]
+        cmake_args.extend([
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DBUILD_TESTING=OFF",
+            "-DBUILD_SZ3_BINARY=OFF",
+            "-DSZ3_USE_BUNDLED_ZSTD=ON",
+            ".."
+        ])
+        subprocess.run(cmake_args, cwd=build_dir, check=True)
+        subprocess.run(["cmake", "--build", ".", "-j"], cwd=build_dir, check=True)
+        print(f"Built SZ3 v{SZ3_VERSION}")
+        return sz3_dir
+
+
+
+
+def create_extensions():
+    include_dirs = [np.get_include()]
+    library_dirs = []
+    libraries = []  # the bundled Zstd is appended once the build knows what it is called
+    extra_compile_args = []
+    extra_link_args = []
+    
+    if sys.platform == 'win32':
+        extra_compile_args.extend(['/std:c++17', '/O2'])
+    elif sys.platform == 'darwin':
+        extra_compile_args.extend(['-std=c++17', '-O3', '-stdlib=libc++'])
+        extra_link_args.extend(['-stdlib=libc++', '-Wl,-rpath,@loader_path'])
+    elif sys.platform == 'linux':
+        extra_compile_args.extend(['-std=c++17', '-O3'])
+        extra_link_args.extend(['-Wl,-rpath,$ORIGIN'])
+    
+    extensions = [
+        Extension(
+            "pysz.sz",
+            sources=["src/pysz/sz.pyx"],
+            include_dirs=include_dirs,
+            libraries=libraries,
+            library_dirs=library_dirs,
+            language='c++',
+            extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
+        ),
+    ]
+    
+    return cythonize(extensions, compiler_directives={'language_level': '3', 'embedsignature': True})
+
+
+if __name__ == "__main__":
+    setup(
+        name="pysz",
+        version="1.1.0",
+        packages=["pysz"],
+        package_dir={"": "src"},
+        ext_modules=create_extensions(),
+        cmdclass={'build_ext': BuildSZ3Extension},
+        test_suite="tests",
+        tests_require=["pytest"],
+    )

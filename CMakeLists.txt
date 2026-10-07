@@ -187,6 +187,14 @@ else ()
   set (ENABLE_LZF OFF CACHE BOOL "" FORCE)
 endif ()
 
+# SZ3 filter
+#   SZ3 has no decode-only build, and its CMake requires CMake 3.19
+if (NOT MINGW AND NOT DISABLE_H5PL_ENCODER AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.19")
+  FILTER_OPTION (SZ3)
+else ()
+  set (ENABLE_SZ3 OFF CACHE BOOL "" FORCE)
+endif ()
+
 # ZFP filter
 if (WIN32)
   if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
