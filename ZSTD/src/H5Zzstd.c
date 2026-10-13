@@ -90,7 +90,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         }
         size_t decompCapacity = (size_t)contentSize;
 
-        if (NULL == (outbuf = malloc(decompCapacity))) {
+        if (NULL == (outbuf = H5allocate_memory(decompCapacity, 0))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd decompression buffer");
             goto error;
         }
@@ -131,7 +131,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             aggression = ZSTD_maxCLevel();
 
         size_t compSize = ZSTD_compressBound(origSize);
-        if (NULL == (outbuf = malloc(compSize))) {
+        if (NULL == (outbuf = H5allocate_memory(compSize, 0))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd compression buffer");
             goto error;
         }
@@ -149,13 +149,13 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
         buf_size_out = compSize;
     }
-    free(*buf);
+    H5free_memory(*buf);
     *buf      = outbuf;
     *buf_size = buf_size_out;
     return buf_size_out;
 
 error:
     if (outbuf)
-        free(outbuf);
+        H5free_memory(outbuf);
     return 0;
 }
