@@ -119,10 +119,11 @@ set(SZ3_USE_BUNDLED_ZSTD ON)
 # (H5SZ3_INSTALL_LIB_DIR, set above by BASIC_SETTINGS).
 set(SZ3_INSTALL ON)
 set(H5Z_SZ3_PLUGIN_INSTALL_DIR ${H5SZ3_INSTALL_LIB_DIR})
-# SZ3 declares H5Z_SZ3_PLUGIN_INSTALL_DIR as a cache entry. Under CMake's old
-# behavior (policy CMP0126), creating that entry hides this variable on the
-# first configure, so ask for the new behavior.
-set(CMAKE_POLICY_DEFAULT_CMP0126 NEW)
+# SZ3 declares H5Z_SZ3_PLUGIN_INSTALL_DIR as a cache entry. Before CMake 3.21
+# (policy CMP0126), creating that entry hides the variable above on the first
+# configure. An internal entry, rewritten on every configure, prevents that and
+# still follows changes to H5SZ3_INSTALL_LIB_DIR.
+set(H5Z_SZ3_PLUGIN_INSTALL_DIR "${H5Z_SZ3_PLUGIN_INSTALL_DIR}" CACHE INTERNAL "")
 add_subdirectory(SZ3)
 
 # Copy the plugin to the global plugins directory for testing

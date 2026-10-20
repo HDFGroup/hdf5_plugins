@@ -101,8 +101,8 @@ ctest -R "SZ3|sz3"
 
 The tests mask the SZ3 version, the filter parameters, and the compressed sizes and ratios, so a
 new SZ3 version alone does not change the expected output. If a test still fails because the
-data read back changed, update the reference files in all three copies:
-`SZ3/example/testfiles/`, `SZ3/config/cmake/binex/example/testfiles/` and
+data read back changed, update the reference files in `SZ3/example/testfiles/` and
+`SZ3/config/cmake/binex/example/testfiles/`, and `h5ex_d_sz3.tst` and `h5ex_d_sz3.ddl` in
 `config/cmake/binex/example/testfiles/`.
 
 ### 7. Commit and Push
