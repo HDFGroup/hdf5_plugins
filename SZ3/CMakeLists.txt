@@ -14,7 +14,7 @@
 # This integrates the upstream H5Z-SZ3 filter (tools/H5Z-SZ3 of SZ3, via git
 # subtree) with the HDF Group's hdf5_plugins build system and testing infrastructure.
 
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.19)
 project(H5SZ3 C CXX)
 
 if (POLICY CMP0074)
@@ -41,11 +41,6 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/SZ3/tools/H5Z-SZ3/CMakeLists.txt")
         "SZ3 not found at ${CMAKE_CURRENT_SOURCE_DIR}/SZ3\n"
         "The upstream SZ3 code should be present via git subtree.")
 endif()
-
-# SZ3's CMake requires CMake 3.19
-if (CMAKE_VERSION VERSION_LESS "3.19")
-  message(FATAL_ERROR "The SZ3 filter plugin requires CMake 3.19 or newer")
-endif ()
 
 message(STATUS "Using SZ3 from subtree at ${CMAKE_CURRENT_SOURCE_DIR}/SZ3")
 
@@ -123,8 +118,11 @@ set(SZ3_USE_BUNDLED_ZSTD ON)
 # parent project. Point it at this project's lib/plugin convention
 # (H5SZ3_INSTALL_LIB_DIR, set above by BASIC_SETTINGS).
 set(SZ3_INSTALL ON)
-set(H5Z_SZ3_PLUGIN_INSTALL_DIR ${H5SZ3_INSTALL_LIB_DIR} CACHE STRING
-    "Directory to install the HDF5 filter plugin copy into; empty installs no copy")
+set(H5Z_SZ3_PLUGIN_INSTALL_DIR ${H5SZ3_INSTALL_LIB_DIR})
+# SZ3 declares H5Z_SZ3_PLUGIN_INSTALL_DIR as a cache entry. Under CMake's old
+# behavior (policy CMP0126), creating that entry hides this variable on the
+# first configure, so ask for the new behavior.
+set(CMAKE_POLICY_DEFAULT_CMP0126 NEW)
 add_subdirectory(SZ3)
 
 # Copy the plugin to the global plugins directory for testing

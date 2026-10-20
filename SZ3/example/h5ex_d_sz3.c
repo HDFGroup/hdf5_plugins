@@ -4,10 +4,9 @@
  *                                                                           *
  * This file is part of the HDF5 SZ3 filter plugin source.  The full         *
  * copyright notice, including terms governing use, modification, and        *
- * terms governing use, modification, and redistribution, is contained in    *
- * the file COPYING, which can be found at the root of the SZ3 source code   *
- * distribution tree.  If you do not have access to this file, you may       *
- * request a copy from help@hdfgroup.org.                                    *
+ * redistribution, is contained in the file COPYING, which can be found at   *
+ * the root of the SZ3 source code distribution tree.  If you do not have    *
+ * access to this file, you may request a copy from help@hdfgroup.org.       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /************************************************************
@@ -111,8 +110,10 @@ main(void)
         goto done;
     }
     status = H5Pset_chunk(dcpl_id, 2, chunk);
-    if (status < 0)
+    if (status < 0) {
         printf("failed to set chunk.\n");
+        goto done;
+    }
 
     /*
      * Create the dataset.
@@ -129,8 +130,10 @@ main(void)
      */
     printf("....Writing sz3 compressed data ................\n");
     status = H5Dwrite(dset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata[0]);
-    if (status < 0)
+    if (status < 0) {
         printf("failed to write data.\n");
+        goto done;
+    }
 
     /*
      * Close and release resources.

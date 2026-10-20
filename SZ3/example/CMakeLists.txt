@@ -62,6 +62,8 @@ if (H5PL_BUILD_TESTING)
             -D "TEST_EXPECT=0"
             -D "TEST_OUTPUT=${testname}.out"
             -D "TEST_REFERENCE=${testname}.tst"
+            -D "TEST_FILTER:STRING=(parameters is|filter check) [^\r\n]*"
+            -D "TEST_FILTER_REPLACE:STRING=\\1 XXXX"
             -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
             -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
             -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
@@ -79,8 +81,8 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_OUTPUT=${testname}.ddl.out"
               -D "TEST_EXPECT=0"
               -D "TEST_REFERENCE=${testname}.ddl"
-              -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
-              -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+              -D "TEST_FILTER:STRING=(COMMENT|PARAMS|SIZE) [^\r\n]*"
+              -D "TEST_FILTER_REPLACE:STRING=\\1 XXXX"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"
@@ -110,9 +112,9 @@ if (H5PL_BUILD_TESTING)
     endif ()
     set (last_test "H5SZ3_UD-${testname}-clearall-objects")
     if (WIN32)
-      set (${TESTLIBDIR} "${HDF5_TOOLS_DIR}")
+      set (TESTLIBDIR "${HDF5_TOOLS_DIR}")
     else ()
-      set (${TESTLIBDIR} "${HDF5_LIBRARY_PATH}")
+      set (TESTLIBDIR "${HDF5_LIBRARY_PATH}")
     endif ()
     if (HDF5_BUILD_TOOLS OR HDF5_PROVIDES_TOOLS)
       add_test (
@@ -122,7 +124,7 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_ARGS:STRING=${ARGN};${PROJECT_BINARY_DIR}/${resultfile};${PROJECT_BINARY_DIR}/out-${testname}.${resultfile}"
               -D "TEST_FOLDER=${PROJECT_BINARY_DIR}"
               -D "TEST_EXPECT=${resultcode}"
-              -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n"
+              -D "TEST_FILTER:STRING=O?...ing file[^\n]+\n|\\([0-9.]+:1\\) +"
               -D "TEST_OUTPUT=${testname}.${resultfile}.out"
               -D "TEST_REFERENCE=${testname}.${resultfile}.tst"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
@@ -140,8 +142,8 @@ if (H5PL_BUILD_TESTING)
               -D "TEST_OUTPUT=${resultfile}-${testname}.out"
               -D "TEST_EXPECT=${resultcode}"
               -D "TEST_REFERENCE=${resultfile}-${testname}.ddl"
-              -D "TEST_FILTER:STRING=PARAMS {[ -0-9]*}"
-              -D "TEST_FILTER_REPLACE:STRING=PARAMS { XXXX }"
+              -D "TEST_FILTER:STRING=(COMMENT|PARAMS|SIZE) [^\r\n]*"
+              -D "TEST_FILTER_REPLACE:STRING=\\1 XXXX"
               -D "TEST_LIBRARY_DIRECTORY=${TESTLIBDIR}"
               -D "TEST_ENV_VAR=HDF5_PLUGIN_PATH"
               -D "TEST_ENV_VALUE=${CMAKE_BINARY_DIR}/plugins"

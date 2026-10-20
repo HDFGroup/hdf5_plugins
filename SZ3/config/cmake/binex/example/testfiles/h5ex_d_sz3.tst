@@ -4,8 +4,8 @@ sz3 filter is available for encoding and decoding.
 ....Close the file and reopen for reading ........
 Filter info is available from the dataset creation property
    Filter identifier is 32024
-   Number of parameters is 10 with the value 50593792
-   To find more about the filter check H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
+   Number of parameters is XXXX
+   To find more about the filter check XXXX
 ....Reading sz3 compressed data ................
 Maximum value in DS1 is 1890.00
 Maximum absolute error is within the error bound 0.001

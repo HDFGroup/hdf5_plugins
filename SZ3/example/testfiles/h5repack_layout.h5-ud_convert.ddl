@@ -5,13 +5,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 135 (23.704:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
@@ -27,13 +27,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 135 (23.704:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
@@ -49,13 +49,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 135 (23.704:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
@@ -71,13 +71,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 135 (23.704:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
@@ -93,13 +93,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 20, 10 )
-         SIZE 552 (5.797:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
@@ -115,13 +115,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 135 (23.704:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
@@ -137,13 +137,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE 135 (23.704:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {

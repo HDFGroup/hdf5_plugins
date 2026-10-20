@@ -5,13 +5,13 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 32, 64 ) / ( 32, 64 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 9015 (0.909:1 COMPRESSION)
+         SIZE XXXX
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32024
-            COMMENT H5Z-SZ3-3.4.0 (data format 3.4.0); see https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
-            PARAMS { XXXX }
+            COMMENT XXXX
+            PARAMS XXXX
          }
       }
       FILLVALUE {
