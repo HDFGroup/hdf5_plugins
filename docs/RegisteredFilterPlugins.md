@@ -739,7 +739,7 @@ SZ3 is a modular error-bounded lossy compression framework for scientific datase
 
 #### Plugin ID `32024` Information
 
-This filter is documented, implemented, and maintained at: https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3.
+This plugin is documented, implemented, and maintained at: https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3.
 
 License: https://github.com/szcompressor/SZ3/blob/master/copyright-and-BSD-license.txt
 
