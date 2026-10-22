@@ -1,12 +1,3 @@
-# Name of Filter:
+# SZ3
 
-## Filter ID:
-
-## Websites / respositories:
-
-## Last known maintainer(s):
-
-Don't add email addresses without permission!
-
-## Description:
-
+The SZ3 filter (ID 32024) is in this repository under [`SZ3/`](../../SZ3/).

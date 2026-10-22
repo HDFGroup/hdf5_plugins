@@ -1,0 +1,46 @@
+#include <cmath>
+#include <cstdint>
+#include <random>
+
+#include "SZ3/lossless/Lossless_bypass.hpp"
+#include "SZ3/lossless/Lossless_zstd.hpp"
+#include "gtest/gtest.h"
+
+template <class Lossless>
+void runFunctionalTest() {
+    Lossless lossless;
+    size_t N = 1000;
+    std::vector<SZ3::uchar> src(N);
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 255);
+    for (size_t i = 0; i < N; i++) {
+        src[i] = static_cast<SZ3::uchar>(dis(gen));
+    }
+    std::vector<SZ3::uchar> dst(SZ3::Lossless_zstd::compress_bound(src.size()) + sizeof(size_t));
+    size_t compressedSize = lossless.compress(src.data(), src.size(), dst.data(), dst.size());
+
+    std::vector<SZ3::uchar> decompressed(N);
+    SZ3::uchar* decompressed_pos = decompressed.data();
+    size_t decompressedSize = lossless.decompress(dst.data(), compressedSize, decompressed_pos, decompressed.size());
+
+    EXPECT_EQ(decompressedSize, src.size());
+    EXPECT_EQ(std::vector<SZ3::uchar>(decompressed.data(), decompressed.data() + decompressedSize), src);
+}
+
+template <typename Lossless>
+void runAllTest() {
+    runFunctionalTest<Lossless>();
+}
+
+TEST(LosslessTest, LosslessZstd) { runAllTest<SZ3::Lossless_zstd>(); }
+TEST(LosslessTest, LosslessBypass) { runAllTest<SZ3::Lossless_bypass>(); }
+
+// A buffer too small for even the size header is refused, not written past.
+TEST(LosslessTest, LosslessZstdRefusesBufferSmallerThanHeader) {
+    std::vector<SZ3::uchar> src(100, 7);
+    for (size_t cap = 0; cap < sizeof(size_t); cap++) {
+        std::vector<SZ3::uchar> dst(cap);
+        EXPECT_THROW(SZ3::Lossless_zstd().compress(src.data(), src.size(), dst.data(), cap), std::length_error);
+    }
+}

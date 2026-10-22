@@ -124,6 +124,7 @@ jobs:
             -DENABLE_BITGROOM=OFF \
             -DENABLE_GRANULAR_BITROUND=OFF \
             -DENABLE_BITROUND=OFF \
+            -DENABLE_SZ3=OFF \
             -DENABLE_BSHUF=OFF \
             $GITHUB_WORKSPACE
           cmake --build . --parallel 3 --config ${{ inputs.build_mode }}

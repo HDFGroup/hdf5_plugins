@@ -389,4 +389,39 @@ This has 1 optional value;
 Default h5repack parameter: UD=32015,0,0
 .................................
 
+SZ3 Filter
+=================================
+Filter ID: 32024
+
+Filter Description:
+  SZ3 is a modular error-bounded lossy compression framework for scientific
+  datasets. It compresses float, double and 1, 2, 4 or 8-byte integer
+  datasets in host byte order, with chunks of up to 4 dimensions longer
+  than 1, within a user-set error bound (absolute, relative, PSNR or L2 norm).
+
+  The filter source is H5Z-SZ3, maintained in the SZ3 repository; the plugin
+  is built by SZ3's own CMake from the SZ3 source in SZ3/SZ3 (git subtree),
+  with the Zstd library bundled in SZ3.
+
+Link to the filter:
+    https://github.com/szcompressor/SZ3/tree/master/tools/H5Z-SZ3
+
+Link to the compression library:
+    https://github.com/szcompressor/SZ3
+
+--------------------------------------------
+Compression Library Included: SZ3 version 3.4.0
+
+Plugin cd_value option
+--------------------------------------------
+cd_values[0] is the SZ3 data format version, (major << 24) | (minor << 16) |
+(patch << 8), followed by the SZ3 configuration serialized by SZ3. Without
+cd_values the filter uses SZ3's default settings: the ALGO_INTERP_LORENZO
+algorithm with an absolute error bound of 1e-3. Use H5Pset_sz3() from the
+H5Z-SZ3 library, or cdvalueHelper from SZ3, to produce cd_values for other
+settings. Decompression reads the settings from the compressed data.
+
+Default h5repack parameter: UD=32024,0
+.................................
+
 

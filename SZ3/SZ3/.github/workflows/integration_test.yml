@@ -1,0 +1,111 @@
+name: Integration Test
+
+on:
+  pull_request:
+    branches:
+      - master
+
+# One run per pull request. A newer push supersedes the one in flight, which otherwise queues a
+# second full matrix and evicts the long jobs of the first.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # A dataset entry may name the fields to run, so one too slow to be a single job is spread
+        # over several. hacc took 2h09 as one job, scale-letkf 1h00 and exaalt-helium 46m; the rest
+        # were already under half an hour. Split to keep every job near 35 minutes.
+        dataset:
+          - exaalt-small
+          - cesm-atm
+          - miranda
+          - hurricane
+          - exaalt-copper
+          - "hacc:vx.f32"
+          - "hacc:vz.f32"
+          - "hacc:vy.f32"
+          - "hacc:zz.f32"
+          - "hacc:xx.f32"
+          - "hacc:yy.f32"
+          - "exaalt-helium:dataset1-7852x1037.x.f32.dat,dataset1-7852x1037.y.f32.dat,dataset1-7852x1037.z.f32.dat"
+          - "exaalt-helium:dataset2-2338x106711.x.f32.dat,dataset2-2338x106711.y.f32.dat,dataset2-2338x106711.z.f32.dat"
+          - "scale-letkf:T-98x1200x1200.f32,PRES-98x1200x1200.f32,U-98x1200x1200.f32,V-98x1200x1200.f32,QC-98x1200x1200.f32,QS-98x1200x1200.f32"
+          - "scale-letkf:QG-98x1200x1200.f32,QV-98x1200x1200.f32,W-98x1200x1200.f32,QI-98x1200x1200.f32,RH-98x1200x1200.f32,QR-98x1200x1200.f32"
+          # Molecular dynamics trajectories, which arrive as {frames, atoms, xyz}. Nothing above
+          # has three as its last dimension, so ALGO_BIOMD only ever sees the
+          # layout it was written for through this.
+          - md-peg-1chain
+          - md-ifabp-water
+          - md-adk-equilibrium
+          - md-cg-fiber
+          - md-membrane-peptide
+          - md-nhaa-equilibrium
+          - md-yiip-equilibrium
+      fail-fast: false
+    name: Test ${{ matrix.dataset }}
+
+    steps:
+
+    - name: Disk space report before modification
+      shell: bash
+      run: |
+        echo "Memory and swap:"
+        sudo free -h
+        echo
+        sudo swapon --show
+        echo
+
+        echo "Available storage:"
+        sudo df -h
+        echo
+
+    - name: Maximize build disk space
+      shell: bash
+      run: |
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo docker image prune --all --force
+        sudo docker builder prune -a
+
+    - name: Disk space report after modification
+      shell: bash
+      run: |
+        echo "Memory and swap:"
+        sudo free -h
+        echo
+        sudo swapon --show
+        echo
+
+        echo "Available storage:"
+        sudo df -h
+
+    - uses: actions/checkout@v5
+
+    - name: Set up Python 3
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libhdf5-dev hdf5-tools
+        python -m pip install --upgrade pip
+        pip install numpy h5py requests --no-binary h5py
+        # Reads the DCD, XTC and NetCDF trajectories the md-* datasets are published as.
+        pip install MDAnalysis
+
+    - name: Run integration test
+      run: |
+        python tools/test/integration/integration_test_driver.py tools/test/integration/datasets.json ${{ matrix.dataset }}
+
+    - name: Upload compression metrics
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: metrics-${{ strategy.job-index }}
+        path: integration_metrics.csv
+        if-no-files-found: ignore

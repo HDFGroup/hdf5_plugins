@@ -109,6 +109,12 @@ if (NOT MINGW AND NOT H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
   set (LZF_AVAILABLE 1)
 endif ()
 
+# SZ3 filter
+#   SZ3 has no decode-only build, and its CMake requires CMake 3.19
+if (NOT MINGW AND NOT DISABLE_H5PL_ENCODER AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.19")
+  set (SZ3_AVAILABLE 1)
+endif ()
+
 # ZFP filter
 if (WIN32)
   if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
