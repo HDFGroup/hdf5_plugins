@@ -16,7 +16,7 @@
 ########################
 
 set (BZ2_GIT_URL "https://github.com/libarchive/bzip2.git" CACHE STRING "Use BZ2 from  GitHub repository" FORCE)
-set (BZ2_GIT_BRANCH "master" CACHE STRING "" FORCE)
+set (BZ2_GIT_BRANCH "bzip2-1.0.8" CACHE STRING "" FORCE)
 
 set (BZ2_TGZ_ORIGPATH "https://github.com/libarchive/bzip2/archive/refs/tags" CACHE STRING "Use PLUGINS from original location" FORCE)
 set (BZ2_TGZ_NAME "bzip2-bzip2-1.0.8.tar.gz" CACHE STRING "Use BZ2 from compressed file" FORCE)
