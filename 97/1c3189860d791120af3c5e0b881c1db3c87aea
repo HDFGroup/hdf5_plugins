@@ -1,0 +1,19 @@
+docs/PluginLibraries.txt
+  s_51d716c748acfd::t_09c16959dec527 413
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "971c3189860d791120af3c5e0b881c1db3c87aea",
+  "prompts": {},
+  "sessions": {
+    "s_51d716c748acfd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "59c3a2a3-2dd3-4a63-acfe-6ba8e18f00cf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "M. Scot Breitenfeld <brtnfld@hdfgroup.org>"
+    }
+  }
+}
