@@ -1,0 +1,19 @@
+SZ3/CMakeLists.txt
+  s_51d716c748acfd::t_ef74f99b55a63a 99-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "75b238938bc5f702f0ad207ccdaf8b1d5530fcdf",
+  "prompts": {},
+  "sessions": {
+    "s_51d716c748acfd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "59c3a2a3-2dd3-4a63-acfe-6ba8e18f00cf",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "M. Scot Breitenfeld <brtnfld@hdfgroup.org>"
+    }
+  }
+}
