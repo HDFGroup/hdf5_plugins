@@ -1,246 +1,146 @@
-#
-# Copyright by The HDF Group.
-# All rights reserved.
-#
-# This file is part of HDF5.  The full HDF5 copyright notice, including
-# terms governing use, modification, and redistribution, is contained in
-# the COPYING file, which can be found at the root of the source code
-# distribution tree, or in https://www.hdfgroup.org/licenses.
-# If you do not have access to either file, you may request a copy from
-# help@hdfgroup.org.
-#
-cmake_minimum_required(VERSION 3.18)
-project (H5PL C)
+cmake_minimum_required(VERSION 3.19)
+project(SZ3 VERSION 3.4.0)
 
-if (POLICY CMP0074)
-  # find_package() uses <PackageName>_ROOT variables.
-  cmake_policy (SET CMP0074 NEW)
-endif ()
+#data version defines the version of the compressed data format
+#it is not always equal to the program version (e.g., SZ3 v3.1.0 and SZ3 v.3.1.1 may use the same data version of v.3.1.0)
+#only update data version if the new version of the program changes compressed data format
+set(SZ3_DATA_VERSION 3.4.0)
 
-if (POLICY CMP0083)
-  # To control generation of Position Independent Executable (PIE) or not,
-  # some flags are required at link time.
-  cmake_policy (SET CMP0083 NEW)
-endif ()
+include(GNUInstallDirs)
+# Off when SZ3 is added with add_subdirectory or FetchContent: the parent installs what it needs of SZ3.
+string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}" SZ3_IS_TOP_LEVEL)
+option(SZ3_INSTALL "install SZ3's headers, libraries, tools and CMake package" ${SZ3_IS_TOP_LEVEL})
 
-# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
-if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
-    cmake_policy(SET CMP0135 NEW)
-endif()
 
-if (NOT DEFINED HDF5_PACKAGE_NAME)
-  set (HDF5_PACKAGE_NAME "hdf5")
-endif ()
-
-#-----------------------------------------------------------------------------
-# Basic H5PL stuff here
-#-----------------------------------------------------------------------------
-include (${H5PL_SOURCE_DIR}/config/cmake/HDFMacros.cmake)
-include (${H5PL_SOURCE_DIR}/config/cmake/HDFPluginMacros.cmake)
-include (${H5PL_SOURCE_DIR}/config/CacheURLs.cmake)
-
-SET_HDF_BUILD_TYPE()
-
-set (H5PL_EXPORTED_TARGETS "")
-
-if (NOT DEFINED PL_PACKAGE_NAME)
-  set (PL_PACKAGE_NAME "h5pl")
-endif ()
-BASIC_SETTINGS (${PL_PACKAGE_NAME})
-
-if (NOT H5PL_VERS_MAJOR)
-  set (H5PL_VERS_MAJOR "2")
-endif ()
-if (NOT H5PL_VERS_MINOR)
-  set (H5PL_VERS_MINOR "2")
-endif ()
-if (NOT H5PL_VERS_RELEASE)
-  set (H5PL_VERS_RELEASE "0")
-endif ()
-set (H5PL_OVERRIDE_VERSION "${H5PL_VERS_MAJOR}.${H5PL_VERS_MINOR}.${H5PL_VERS_RELEASE}")
-
-set (H5PL_SOVERS_MAJOR 1)
-set (H5PL_SOVERS_MINOR 0)
-set (H5PL_SOVERS_INTERFACE 4)
-set (H5PL_SOVERS_RELEASE 0)
-math (EXPR H5PL_SOVERS_MAJOR ${H5PL_SOVERS_INTERFACE}-${H5PL_SOVERS_RELEASE})
-
-set (H5PL_PACKAGE_VERSION "${H5PL_VERS_MAJOR}.${H5PL_VERS_MINOR}.${H5PL_VERS_RELEASE}")
-set (H5PL_PACKAGE_VERSION_STRING "${H5PL_PACKAGE_VERSION}")
-set (H5PL_PACKAGE_VERSION_MAJOR "${H5PL_VERS_MAJOR}")
-set (H5PL_PACKAGE_VERSION_MINOR "${H5PL_VERS_MINOR}")
-set (H5PL_PACKAGE_STRING "${H5PL_PACKAGE_NAME}")
-set (H5PL_PACKAGE_TARNAME "${H5PL_PACKAGE_NAME}${HDF_PACKAGE_EXT}")
-set (H5PL_PACKAGE_URL "http://www.hdfgroup.org")
-set (H5PL_PACKAGE_BUGREPORT "help@hdfgroup.org")
-
-#-----------------------------------------------------------------------------
-# Include some macros for reusable code
-#-----------------------------------------------------------------------------
-include (${H5PL_RESOURCES_DIR}/H5PLMacros.cmake)
-
-#-----------------------------------------------------------------------------
-# HDF5 support
-#-----------------------------------------------------------------------------
-HDF5_SUPPORT (TRUE)
-message (STATUS "HDF5 link libs: ${H5PL_LINK_LIBS}")
-
-#-----------------------------------------------------------------------------
-# External plugin targets for the H5PL super project.
-#-----------------------------------------------------------------------------
-include (ExternalProject)
-set (H5PL_ALLOW_EXTERNAL_SUPPORT "NO" CACHE STRING "Allow External Library Building (NO GIT TGZ)")
-set_property (CACHE H5PL_ALLOW_EXTERNAL_SUPPORT PROPERTY STRINGS NO GIT TGZ)
-
-# Bitgroom filter
-FILTER_OPTION (BITGROOM)
-
-# Granular Bitround filter
-FILTER_OPTION (GRANULAR_BITROUND)
-
-# Bitround filter
-FILTER_OPTION (BITROUND)
-
-# Bitshuffle filter
-FILTER_OPTION (BSHUF)
-
-# BLOSC filter
-if (WIN32)
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND MSVC_VERSION GREATER 1600)
-    FILTER_OPTION (BLOSC)
-  else ()
-    set (ENABLE_BLOSC OFF CACHE BOOL "" FORCE)
-  endif ()
-elseif (APPLE)
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
-    FILTER_OPTION (BLOSC)
-  elseif (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-    FILTER_OPTION (BLOSC)
-  else ()
-    set (ENABLE_BLOSC OFF CACHE BOOL "" FORCE)
-  endif ()
-else ()
-  FILTER_OPTION (BLOSC)
-endif ()
-
-# BLOSC2 filter
-if (WIN32)
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-    if (NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang" AND MSVC_VERSION GREATER 1600)
-      FILTER_OPTION (BLOSC2)
-    else ()
-      set (ENABLE_BLOSC2 OFF CACHE BOOL "" FORCE)
+# Cache defaults, so only at top level: set from a subproject they would apply to the parent's whole build.
+if (SZ3_IS_TOP_LEVEL)
+    option(BUILD_SHARED_LIBS "build shared libraries by default" ON)
+    set(default_build_type "Release")
+    if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+        message(STATUS "No build type was set. Setting build type to ${default_build_type}.")
+        set(CMAKE_BUILD_TYPE ${default_build_type} CACHE
+                STRING "Choose the type to build" FORCE)
+        set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+                "MinSizeRel" "RelWithDebInfo")
     endif ()
-  else ()
-    set (ENABLE_BLOSC2 OFF CACHE BOOL "" FORCE)
-  endif ()
-elseif (APPLE)
-  #if (CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-  #  FILTER_OPTION (BLOSC2)
-  #else
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
-      FILTER_OPTION (BLOSC2)
-  else ()
-    set (ENABLE_BLOSC2 OFF CACHE BOOL "" FORCE)
-  endif ()
+    option(BUILD_TESTING "Build tests" OFF)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif ()
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+else () #-Wunused-parameter
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreorder -Wsign-compare -Wsuggest-override -Wold-style-cast -Wcast-qual -Wextra-semi -Wnon-virtual-dtor -Wcast-align -Wunused-variable")
+endif ()
+
+configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/SZ3/version.hpp.in
+        ${CMAKE_CURRENT_BINARY_DIR}/include/SZ3/version.hpp)
+
+# SZ3::SZ3core is SZ3 with only the dependencies it cannot work without. SZ3::SZ3 adds the optional
+# ones SZ3 was built with, such as OpenMP. SZ3's headers still use OpenMP in a consumer compiled with it.
+add_library(SZ3core INTERFACE)
+add_library(SZ3::SZ3core ALIAS SZ3core)
+target_include_directories(
+        SZ3core INTERFACE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+)
+target_compile_features(SZ3core
+        INTERFACE cxx_std_17
+)
+
+add_library(${PROJECT_NAME} INTERFACE)
+add_library(SZ3::SZ3 ALIAS ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} INTERFACE SZ3core)
+find_package(OpenMP)
+if (OpenMP_FOUND)
+    # BUILD_INTERFACE only: SZ3Config.cmake names the OpenMP target for the language the consumer
+    # actually enabled. Exported as it stands, OpenMP::OpenMP_CXX is a target a C-only consumer
+    # cannot be given, and CMake ends the consumer's configure over it.
+    target_link_libraries(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:OpenMP::OpenMP_CXX>)
+endif ()
+
+option(SZ3_DEBUG_TIMINGS "print debug timing information" OFF)
+if (SZ3_DEBUG_TIMINGS)
+    target_compile_definitions(SZ3core INTERFACE SZ3_DEBUG_TIMINGS=1)
 else ()
-  FILTER_OPTION (BLOSC2)
+    target_compile_definitions(SZ3core INTERFACE SZ3_DEBUG_TIMINGS=0)
 endif ()
 
-# BZIP2 filter
-if (NOT MINGW)
-  FILTER_OPTION (BZIP2)
+# "${MSVC}" reads as ON under MSVC and OFF everywhere else. Keep the quotes.
+option(SZ3_USE_BUNDLED_ZSTD "prefer the bundled version of Zstd" "${MSVC}")
+if (NOT SZ3_USE_BUNDLED_ZSTD)
+    # The search SZ3Config.cmake repeats in the consumer's project.
+    find_library(SZ3_ZSTD_LIBRARY NAMES zstd)
+endif ()
+if (SZ3_ZSTD_LIBRARY AND NOT SZ3_USE_BUNDLED_ZSTD)
+    # BUILD_INTERFACE, and no include directory: both are paths on this machine only.
+    target_link_libraries(SZ3core INTERFACE $<BUILD_INTERFACE:${SZ3_ZSTD_LIBRARY}>)
 else ()
-  set (ENABLE_BZIP2 OFF CACHE BOOL "" FORCE)
+    # What this build uses, for SZ3Config.cmake: the option only states a preference.
+    set(SZ3_USE_BUNDLED_ZSTD ON)
+    add_subdirectory(tools/zstd)
+    target_link_libraries(SZ3core INTERFACE sz3_zstd)
 endif ()
 
-# JPEG filter
-if (NOT WIN32)
-  FILTER_OPTION (JPEG)
-else ()
-  set (ENABLE_JPEG OFF CACHE BOOL "" FORCE)
+option(BUILD_SZ3_BINARY "build SZ3 tools" ${SZ3_IS_TOP_LEVEL})
+
+# Only at top level: a parent's BUILD_TESTING is for its own tests, and SZ3's would fetch a second googletest.
+if (BUILD_TESTING AND SZ3_IS_TOP_LEVEL)
+    enable_testing()
+    add_subdirectory(tools/test)
 endif ()
 
-# LZ4 filter
-if (NOT MINGW)
-  if (WIN32)
-    if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel[Ll][Ll][Vv][Mm]")
-      if (MSVC_VERSION GREATER_EQUAL 1930 AND NOT CMAKE_C_COMPILER_ID MATCHES "[Cc]lang")
-        FILTER_OPTION (LZ4)
-      else ()
-        set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
-      endif ()
-    else ()
-      set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
-    endif ()
-  else ()
-    FILTER_OPTION (LZ4)
-  endif ()
-else ()
-  set (ENABLE_LZ4 OFF CACHE BOOL "" FORCE)
+
+if (BUILD_SZ3_BINARY)
+    add_subdirectory(tools/sz3)
+    add_subdirectory(tools/sz3c)
 endif ()
 
-# LZF filter
-if (NOT MINGW AND NOT H5PL_ALLOW_EXTERNAL_SUPPORT MATCHES "GIT")
-  FILTER_OPTION (LZF)
-else ()
-  set (ENABLE_LZF OFF CACHE BOOL "" FORCE)
+option(BUILD_H5Z_FILTER "build the H5Z-SZ3 filter" OFF)
+if (BUILD_H5Z_FILTER)
+    add_subdirectory(tools/H5Z-SZ3)
 endif ()
 
-# SZ3 filter
-#   SZ3 has no decode-only build, and its CMake requires CMake 3.19
-if (NOT MINGW AND NOT DISABLE_H5PL_ENCODER AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.19")
-  FILTER_OPTION (SZ3)
-else ()
-  set (ENABLE_SZ3 OFF CACHE BOOL "" FORCE)
+option(BUILD_MDZ "build MDZ (MMD-SZ)" OFF)
+if (BUILD_MDZ)
+    add_subdirectory(tools/mdz)
 endif ()
 
-# ZFP filter
-if (WIN32)
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
-    FILTER_OPTION (ZFP)
-  else ()
-    set (ENABLE_ZFP OFF CACHE BOOL "" FORCE)
-  endif ()
-else ()
-  FILTER_OPTION (ZFP)
+option(BUILD_PARAVIEW_PLUGIN "build the ParaView plugin" OFF)
+if (BUILD_PARAVIEW_PLUGIN)
+    add_subdirectory(tools/paraview)
 endif ()
 
-# ZSTD filter
-if (WIN32)
-    FILTER_OPTION (ZSTD)
-elseif (APPLE)
-  if (NOT CMAKE_C_COMPILER_ID MATCHES "Intel")
-    FILTER_OPTION (ZSTD)
-  else ()
-    set (ENABLE_ZSTD OFF CACHE BOOL "" FORCE)
-  endif ()
-else ()
-  FILTER_OPTION (ZSTD)
+if (SZ3_INSTALL)
+    install(TARGETS ${PROJECT_NAME} SZ3core
+            EXPORT SZ3Targets
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            PATTERN "version.hpp.in" EXCLUDE)
+    install(FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/include/SZ3/version.hpp"
+            DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/SZ3/"
+    )
+    install(EXPORT SZ3Targets NAMESPACE SZ3:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SZ3)
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/SZ3Config.cmake.in
+            "${CMAKE_CURRENT_BINARY_DIR}/SZ3Config.cmake"
+            INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SZ3
+    )
+    write_basic_package_version_file(
+            "${CMAKE_CURRENT_BINARY_DIR}/SZ3ConfigVersion.cmake"
+            VERSION ${PROJECT_VERSION}
+            COMPATIBILITY SameMajorVersion
+    )
+    install(FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/SZ3Config.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/SZ3ConfigVersion.cmake
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SZ3
+    )
 endif ()
-
-#-----------------------------------------------------------------------------
-# Dashboard and Testing Settings
-#-----------------------------------------------------------------------------
-option (H5PL_BUILD_TESTING "Build h5pl Unit Testing" OFF)
-if (H5PL_BUILD_TESTING)
-  set (DART_TESTING_TIMEOUT 1200 CACHE STRING
-       "Timeout in seconds for each test (default 1200=20minutes)")
-  enable_testing ()
-  include (CTest)
-  include (${PROJECT_SOURCE_DIR}/CTestConfig.cmake)
-  configure_file (${${PLUGIN_PACKAGE_NAME}_RESOURCES_DIR}/CTestCustom.cmake ${PROJECT_BINARY_DIR}/CTestCustom.ctest @ONLY)
-endif ()
-
-#-----------------------------------------------------------------------------
-# Community Filters
-#-----------------------------------------------------------------------------
-option (H5PL_COMMUNITY "Enable building community filters" OFF)
-add_subdirectory (community)
-
-#-----------------------------------------------------------------------------
-# Add file(s) to CMake Install
-#-----------------------------------------------------------------------------
-option (H5PL_CPACK_ENABLE "Enable the CPACK include and components" ON)
-INSTALL_SUPPORT (H5PL)
-
+#export sz3 target for external use
+export(TARGETS SZ3 SZ3core FILE SZ3.cmake)

@@ -1,0 +1,63 @@
+{
+  "exaalt-small": {"path": "sdrbench:exaalt/small"},
+  "hurricane": {"path": "sdrbench:hurricane-isabel/snapshot", "fields": ["QCLOUD", "W", "QRAIN", "QGRAUP", "QSNOW", "U", "TC", "P", "QVAPOR", "V", "QICE", "CLOUD", "PRECIP"]},
+  "miranda": {"path": "sdrbench:miranda/small"},
+  "cesm-atm": {"path": "sdrbench:cesm-atm/2d", "fields": ["CLDMED", "ODV_bcar1", "SNOWHICE", "QREFHT", "FLNS"]},
+  "scale-letkf": {"path": "sdrbench:scale-letkf/original"},
+  "hacc": {"path": "sdrbench:hacc/medium"},
+  "exaalt-copper-1": {"path": "sdrbench:exaalt/copper-1"},
+  "exaalt-copper-2": {"path": "sdrbench:exaalt/copper-2"},
+  "exaalt-helium-1": {"path": "sdrbench:exaalt/helium-1"},
+  "exaalt-helium-2": {"path": "sdrbench:exaalt/helium-2"},
+  "md-peg-1chain": {
+    "path": "mdtraj:peg-1chain",
+    "fields": {
+      "xyz.f32": {"dims": [50, 13406, 3], "dtype": "float32"},
+      "x.f32": {"dims": [50, 13406], "dtype": "float32"}
+    }
+  },
+  "md-ifabp-water": {
+    "path": "mdtraj:ifabp-water",
+    "fields": {
+      "xyz.f32": {"dims": [500, 12445, 3], "dtype": "float32"},
+      "x.f32": {"dims": [500, 12445], "dtype": "float32"}
+    }
+  },
+  "md-adk-equilibrium": {
+    "path": "mdtraj:adk-equilibrium",
+    "fields": {
+      "xyz.f32": {"dims": [4187, 3341, 3], "dtype": "float32"},
+      "x.f32": {"dims": [4187, 3341], "dtype": "float32"}
+    }
+  },
+  "md-cg-fiber": {
+    "path": "mdtraj:cg-fiber",
+    "fields": {
+      "xyz.f32": {"dims": [2221, 8364, 3], "dtype": "float32"},
+      "x.f32": {"dims": [2221, 8364], "dtype": "float32"}
+    }
+  },
+  "md-membrane-peptide": {
+    "path": "mdtraj:membrane-peptide",
+    "fields": {
+      "xyz.f32": {"dims": [1001, 18727, 3], "dtype": "float32"},
+      "x.f32": {"dims": [1001, 18727], "dtype": "float32"}
+    }
+  },
+  "md-nhaa-equilibrium": {
+    "path": "mdtraj:nhaa-equilibrium",
+    "max_frames": 200,
+    "fields": {
+      "xyz.f32": {"dims": [200, 60702, 3], "dtype": "float32"},
+      "x.f32": {"dims": [200, 60702], "dtype": "float32"}
+    }
+  },
+  "md-yiip-equilibrium": {
+    "path": "mdtraj:yiip-equilibrium",
+    "max_frames": 100,
+    "fields": {
+      "xyz.f32": {"dims": [100, 111815, 3], "dtype": "float32"},
+      "x.f32": {"dims": [100, 111815], "dtype": "float32"}
+    }
+  }
+}

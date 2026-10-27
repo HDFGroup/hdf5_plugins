@@ -1,11 +1,23 @@
-BLOSC/build*
-BZIP2/autom4te.cache
-BZIP2/bin/reconfigure.local
-BZIP2/bin/reconfigure.system
-BZIP2/build*
-BZIP2/buildat
-LZ4/autom4te.cache
-LZ4/bin/reconfigure.local
-LZ4/bin/reconfigure.system
-LZ4/build
-/CMakeUserPresets.*
+test.dat
+compressed.out
+perf.data*
+# Anchored to the repo root, and glob so build-release and friends are covered too
+/build*
+debug
+cmake-build-debug
+cmake-build-release
+.idea
+install
+.DS_Store
+.vscode
+.cache
+.claude
+tmp
+docs/site/html
+sz3_install
+sz3_build
+/test
+
+# Python bytecode
+__pycache__/
+*.pyc
