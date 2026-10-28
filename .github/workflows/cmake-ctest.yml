@@ -47,6 +47,11 @@ on:
         description: "3.18.0 or later, latest"
         required: true
         type: string
+      skip_mac:
+        description: 'Skip the MacOS build and test'
+        type: boolean
+        required: false
+        default: false
     secrets:
         APPLE_CERTS_BASE64:
             required: true
@@ -452,6 +457,7 @@ jobs:
     name: "MacOS Clang CMake"
     runs-on: macos-15
     needs: [check-secret]
+    if: ${{ !inputs.skip_mac }}
     steps:
       - name: Install Dependencies (MacOS_latest)
         run: brew install ninja

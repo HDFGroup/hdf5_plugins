@@ -38,6 +38,11 @@ on:
         description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
         type: string
         required: true
+      skip_mac:
+        description: 'Skip the MacOS release files'
+        type: boolean
+        required: false
+        default: false
 
 # Minimal permissions to be inherited by any job that doesn't declare its own permissions
 permissions:
@@ -115,12 +120,14 @@ jobs:
               path: ${{ github.workspace }}
 
       - name: Get published binary (MacOS)
+        if: ${{ !inputs.skip_mac }}
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
               name: tgz-${{ inputs.mac_asset_suffix }}-binary
               path: ${{ github.workspace }}
 
       - name: Get published dmg binary (MacOS)
+        if: ${{ !inputs.skip_mac }}
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
               name: tgz-${{ inputs.mac_asset_suffix }}-dmg-binary
@@ -148,8 +155,11 @@ jobs:
         run: |
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}.zip >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
-          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
-          sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.dmg >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+          if [[ '${{ inputs.skip_mac }}' != 'true' ]]
+          then
+            sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+            sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.dmg >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
+          fi
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.deb >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
           sha256sum ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.rpm >> ${{ steps.get-file-base.outputs.FILE_BASE }}.sha256sums.txt
@@ -171,8 +181,8 @@ jobs:
               last-file.txt
               ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}.zip
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.dmg
+              ${{ !inputs.skip_mac && format('{0}-{1}.tar.gz', steps.get-file-base.outputs.FILE_BASE, inputs.mac_asset_suffix) || '' }}
+              ${{ !inputs.skip_mac && format('{0}-{1}.dmg', steps.get-file-base.outputs.FILE_BASE, inputs.mac_asset_suffix) || '' }}
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.deb
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.rpm
@@ -192,8 +202,8 @@ jobs:
           files: |
               ${{ steps.get-file-base.outputs.FILE_BASE }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}.zip
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.dmg
+              ${{ !inputs.skip_mac && format('{0}-{1}.tar.gz', steps.get-file-base.outputs.FILE_BASE, inputs.mac_asset_suffix) || '' }}
+              ${{ !inputs.skip_mac && format('{0}-{1}.dmg', steps.get-file-base.outputs.FILE_BASE, inputs.mac_asset_suffix) || '' }}
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.deb
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.rpm
