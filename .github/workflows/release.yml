@@ -65,7 +65,6 @@ jobs:
     uses: ./.github/workflows/tarball.yml
     with:
       use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
-      skip_mac: ${{ inputs.skip_mac }}
       use_environ: release
 
   call-workflow-ctest:
@@ -122,5 +121,6 @@ jobs:
       mac_asset_suffix: ${{ inputs.mac_asset_suffix }}
       ubuntu_asset_suffix: ${{ inputs.ubuntu_asset_suffix }}
       use_tag: ${{ needs.log-the-inputs.outputs.rel_tag }}
+      skip_mac: ${{ inputs.skip_mac }}
       use_environ: release
 
