@@ -5,7 +5,7 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 32, 64 ) / ( 32, 64 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 4, 8 )
-         SIZE 4863 (1.685:1 COMPRESSION)
+         SIZE XXX (1.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
