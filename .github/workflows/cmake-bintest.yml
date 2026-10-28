@@ -38,11 +38,6 @@ on:
         type: string
         required: true
         default: snapshots
-      skip_mac:
-        description: 'Skip the MacOS binary test'
-        type: boolean
-        required: false
-        default: false
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -275,7 +270,6 @@ jobs:
   # MacOS w/ Clang + CMake
     name: "MacOS Clang Binary Test"
     runs-on: macos-15
-    if: ${{ !inputs.skip_mac }}
     steps:
       - name: Install Dependencies (MacOS_latest)
         run: brew install ninja
