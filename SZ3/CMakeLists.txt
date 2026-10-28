@@ -96,6 +96,19 @@ include(${H5SZ3_RESOURCES_DIR}/ConfigureChecks.cmake)
 HDF5_SUPPORT(TRUE)
 message(STATUS "H5SZ3 link libs: ${H5PL_LINK_LIBS}")
 
+# The upstream filter links HDF5::HDF5 and finds HDF5 only when that target is
+# missing. Define it from the HDF5 found above, so the filter uses that HDF5
+# (also when hdf5_plugins is built inline with HDF5, where there is none to find).
+# An imported target, so SZ3's exports name it instead of requiring the HDF5
+# library targets to be in an export set.
+if (H5PL_HDF5_HEADER AND H5PL_HDF5_LINK_LIBS AND NOT TARGET HDF5::HDF5)
+  add_library(HDF5::HDF5 INTERFACE IMPORTED)
+  set_target_properties(HDF5::HDF5 PROPERTIES
+    INTERFACE_LINK_LIBRARIES "${H5PL_HDF5_LINK_LIBS}"
+    INTERFACE_INCLUDE_DIRECTORIES "${H5PL_HDF5_INCLUDE_DIRS}"
+  )
+endif ()
+
 #-----------------------------------------------------------------------------
 # Add the upstream H5Z-SZ3 filter via SZ3's own CMake
 # Note: SZ3 is a header-only C++17 library; with BUILD_H5Z_FILTER its

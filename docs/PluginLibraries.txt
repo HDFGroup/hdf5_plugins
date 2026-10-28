@@ -410,7 +410,7 @@ Link to the compression library:
     https://github.com/szcompressor/SZ3
 
 --------------------------------------------
-Compression Library Included: SZ3 version 3.4.0
+Compression Library Included: SZ3 version 3.4.0 (upstream master db2eca3, after v3.4.0)
 
 Plugin cd_value option
 --------------------------------------------

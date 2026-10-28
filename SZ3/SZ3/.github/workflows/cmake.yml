@@ -253,7 +253,8 @@ jobs:
 
   toolchains:
     name: ${{ matrix.cc }} shared=${{ matrix.shared }}
-    runs-on: ubuntu-latest
+    # Keep older compiler packages available as ubuntu-latest advances.
+    runs-on: ubuntu-24.04
     # Separate from build-linux, which feeds one digest to compare and one artifact to
     # build-windows; a matrix would make both ambiguous.
     strategy:
@@ -266,8 +267,11 @@ jobs:
 
       - name: Install the toolchain and HDF5
         run: |
+          toolchain=${{ matrix.cc }}
+          # g++ installs the matching gcc too; gcc alone does not install g++.
+          case "$toolchain" in gcc-*) toolchain="g++-${toolchain#gcc-}";; esac
           sudo apt-get update
-          sudo apt-get install -y libhdf5-dev hdf5-tools libzstd-dev ${{ matrix.cc }}
+          sudo apt-get install -y libhdf5-dev hdf5-tools libzstd-dev "$toolchain"
 
       - name: Build and test
         shell: bash
@@ -463,16 +467,16 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Setup MSYS2 with MinGW64
+      - name: Setup MSYS2 with UCRT64
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
           install: >-
-            mingw-w64-x86_64-gcc
-            mingw-w64-x86_64-libgomp
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-ninja
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-libgomp
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
             make
 
       # hdf5 comes in through a separate pacman call so it can carry --assume-installed. msys2's
@@ -482,11 +486,11 @@ jobs:
       - name: Install HDF5 without its Fortran runtime
         run: |
           pacman -S --noconfirm --needed \
-                 --assume-installed mingw-w64-x86_64-fc-libs \
-                 mingw-w64-x86_64-hdf5
+                 --assume-installed mingw-w64-ucrt-x86_64-fc-libs \
+                 mingw-w64-ucrt-x86_64-hdf5
           # pacman warns and returns 0 when it drops a package it could not resolve, which is how
           # this went unnoticed in the first place. Ask for the file the build actually needs.
-          test -f /mingw64/include/hdf5.h
+          test -f /ucrt64/include/hdf5.h
 
       - name: Create build dir
         run: cmake -E make_directory build
