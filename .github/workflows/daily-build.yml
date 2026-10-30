@@ -47,7 +47,7 @@ jobs:
         INPUT_VAL=${{ inputs.win_asset_suffix }}
         echo "WINASSETSUFFIX=${INPUT_VAL:-"win-vs2026_cl"}" >> "$GITHUB_OUTPUT"
         INPUT_VAL=${{ inputs.mac_asset_suffix }}
-        echo "MACASSETSUFFIX=${INPUT_VAL:-"macos26_clang"}" >> "$GITHUB_OUTPUT"
+        echo "MACASSETSUFFIX=${INPUT_VAL:-"macos15_clang"}" >> "$GITHUB_OUTPUT"
         INPUT_VAL=${{ inputs.ubuntu_asset_suffix }}
         echo "UBUNTUASSETSUFFIX=${INPUT_VAL:-"ubuntu-2404_gcc"}" >> "$GITHUB_OUTPUT"
 
