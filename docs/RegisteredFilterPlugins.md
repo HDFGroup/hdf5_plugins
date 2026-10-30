@@ -64,6 +64,7 @@ Upon receiving a request with the above information, HDF Group will register the
 |`32031`   |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
 |`32032`   |<a href="#bitround">BitRound</a>    | The BitRound floating-point value quantization algorithm |
 |`32033`   |<a href="#htj2k">HTJ2K</a>    | High-Throughput JPEG 2000 (HTJ2K) compression |
+|`32034`   |<a href="#phidelity-sci">Phidelity Sci</a>    | Error-bounded lossy and lossless compression of floating-point data |
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
@@ -971,3 +972,44 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BITROUND
 
 HDF Group Helpdesk<br>
 help at hdfgroup dot org
+
+---
+
+### Phidelity Sci <a name="phidelity-sci"></a>
+
+#### Filter Description
+
+Phidelity Sci compresses `float32` and `float64` data under one of three contracts chosen by the user: a guaranteed maximum absolute error, a guaranteed maximum relative error, or lossless (bit-exact) storage. Chunks of one to three dimensions are supported.
+
+Filter properties:
+
+* Every compressed chunk carries checksums. A damaged chunk is rejected rather than decoded incorrectly.
+* The compressed format is frozen and versioned. A newer decoder reads every earlier format version.
+* Output does not depend on the number of threads used to produce it.
+* Chunks the filter cannot handle, such as those of a non-floating-point datatype, are stored unfiltered. With the filter marked optional, a chunk that compression would enlarge is also stored raw.
+
+More information: https://www.deep-phi.com/en/scientific.
+
+#### Plugin ID `32034` Information
+
+The user sets the first four `cd_values[]`; the filter's `set_local` callback completes them to nine.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Compressed format version. **User-set, mandatory.** |
+| `[1]` | Flags word: selects the contract (maximum absolute error, maximum relative error, or lossless) and the encoder setting. **User-set, mandatory.** |
+| `[2]` | Error bound, low 32 bits of the IEEE 754 64-bit floating-point value. **User-set, mandatory.** |
+| `[3]` | Error bound, high 32 bits of the IEEE 754 64-bit floating-point value. **User-set, mandatory.** |
+| `[4]` | Chunk element datatype. **Set by `set_local`** |
+| `[5]` | Number of chunk dimensions, 1 to 3. **Set by `set_local`** |
+| `[6]`-`[8]` | Chunk dimensions, one value per dimension given in `[5]`. **Set by `set_local`** |
+
+The plugin is distributed in binary form only, under a proprietary evaluation licence. There is no public source repository. Binaries are available from the maintainer on request. A separate read-only plugin, which decompresses but does not compress, may be freely redistributed in unmodified binary form so that data written with this filter remains readable.
+
+The plugin unique name registered with the HDF5 library (the `name` field of its `H5Z_class2_t`) is `phidelity_sci`.
+
+##### Contact
+
+Sébastien Philippe, Deep Phi<br/>
+Email: dondenathea at gmail dot com<br/>
+Web: https://www.deep-phi.com
