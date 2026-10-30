@@ -269,7 +269,7 @@ jobs:
   test_binary_mac_latest:
   # MacOS w/ Clang + CMake
     name: "MacOS Clang Binary Test"
-    runs-on: macos-26
+    runs-on: macos-15
     steps:
       - name: Install Dependencies (MacOS_latest)
         run: brew install ninja
