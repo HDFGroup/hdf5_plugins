@@ -8,6 +8,7 @@
  */
 
 #include <sys/types.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -90,7 +91,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         }
         size_t decompCapacity = (size_t)contentSize;
 
-        if (NULL == (outbuf = malloc(decompCapacity))) {
+        if (NULL == (outbuf = H5allocate_memory(decompCapacity, false))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd decompression buffer");
             goto error;
         }
@@ -131,7 +132,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             aggression = ZSTD_maxCLevel();
 
         size_t compSize = ZSTD_compressBound(origSize);
-        if (NULL == (outbuf = malloc(compSize))) {
+        if (NULL == (outbuf = H5allocate_memory(compSize, false))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd compression buffer");
             goto error;
         }
@@ -149,13 +150,16 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
         buf_size_out = compSize;
     }
-    free(*buf);
+    /* *buf was allocated by HDF5 (H5allocate_memory) and is never NULL here.
+     * H5free_memory() is a thin wrapper around free(), so a NULL pointer would
+     * also be a safe no-op; no NULL check is needed. */
+    H5free_memory(*buf);
     *buf      = outbuf;
     *buf_size = buf_size_out;
     return buf_size_out;
 
 error:
     if (outbuf)
-        free(outbuf);
+        H5free_memory(outbuf);
     return 0;
 }
