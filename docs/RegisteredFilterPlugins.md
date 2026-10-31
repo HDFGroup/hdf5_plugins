@@ -996,13 +996,13 @@ The user sets the first four `cd_values[]`; the filter's `set_local` callback co
 
 | `cd_values[]` | Description |
 |---|---|
-| `[0]` | Compressed format version. **User-set, mandatory.** |
+| `[0]` | `cd_values[]` parameters definition version. **User-set, mandatory.** |
 | `[1]` | Flags word: selects the contract (maximum absolute error, maximum relative error, or lossless) and the encoder setting. **User-set, mandatory.** |
 | `[2]` | Error bound, low 32 bits of the IEEE 754 64-bit floating-point value. **User-set, mandatory.** |
 | `[3]` | Error bound, high 32 bits of the IEEE 754 64-bit floating-point value. **User-set, mandatory.** |
-| `[4]` | Chunk element datatype. **Set by `set_local`** |
-| `[5]` | Number of chunk dimensions, 1 to 3. **Set by `set_local`** |
-| `[6]`-`[8]` | Chunk dimensions, one value per dimension given in `[5]`. **Set by `set_local`** |
+| `[4]` | Chunk element datatype. **Set by `set_local.`** |
+| `[5]` | Number of chunk dimensions, 1 to 3. **Set by `set_local.`** |
+| `[6]`-`[8]` | Chunk dimensions, one value per dimension given in `[5]`. **Set by `set_local.`** |
 
 The plugin is distributed in binary form only, under a proprietary evaluation licence. There is no public source repository. Binaries are available from the maintainer on request. A separate read-only plugin, which decompresses but does not compress, may be freely redistributed in unmodified binary form so that data written with this filter remains readable.
 
