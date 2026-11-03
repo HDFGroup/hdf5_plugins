@@ -23,13 +23,13 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
 
 #define H5Z_FILTER_ZSTD 32015
 
-#define PUSH_ERR(func, str)                                                         \
+#define PUSH_ERR(func, str)                                                                                  \
     fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: %s\n", (int)__LINE__, func, str)
-#define PUSH_ERR2(func, str, arg)                                                   \
-    do {                                                                            \
-        fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: ", (int)__LINE__, func);     \
-        fprintf(stderr, str, arg);                                                  \
-        fprintf(stderr, "\n");                                                      \
+#define PUSH_ERR2(func, str, arg)                                                                            \
+    do {                                                                                                     \
+        fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: ", (int)__LINE__, func);                       \
+        fprintf(stderr, str, arg);                                                                           \
+        fprintf(stderr, "\n");                                                                               \
     } while (0)
 
 /* Use H5Z_class3_t if available (introduced in HDF5 2.3.0) */
@@ -49,7 +49,8 @@ const H5Z_class3_t H5Z_ZSTD[1] = {{
     NULL,                        /* The "can apply" callback     */
     NULL,                        /* The "set local" callback     */
     (H5Z_func_t)H5Z_filter_zstd, /* The actual filter function   */
-    H5Z_FEAT_FILTER_THREADSAFE | H5Z_FEAT_FILTER_NO_H5_CALLS, /* This filter is thread-safe and does not re-enter the HDF5 library */
+    H5Z_FEAT_FILTER_THREADSAFE |
+        H5Z_FEAT_FILTER_NO_H5_CALLS, /* This filter is thread-safe and does not re-enter the HDF5 library */
 }};
 #else /* H5_VERSION_GE */
 const H5Z_class2_t H5Z_ZSTD[1] = {{
@@ -99,9 +100,8 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             goto error;
         }
         if (contentSize == ZSTD_CONTENTSIZE_UNKNOWN) {
-            PUSH_ERR("H5Z_filter_zstd",
-                     "zstd frame missing decompressed size; data was likely compressed "
-                     "with the zstd streaming API, which is not supported");
+            PUSH_ERR("H5Z_filter_zstd", "zstd frame missing decompressed size; data was likely compressed "
+                                        "with the zstd streaming API, which is not supported");
             goto error;
         }
         if (contentSize == 0) {
@@ -109,8 +109,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             goto error;
         }
         if (contentSize > SIZE_MAX) {
-            PUSH_ERR("H5Z_filter_zstd",
-                     "zstd frame decompressed size exceeds addressable memory");
+            PUSH_ERR("H5Z_filter_zstd", "zstd frame decompressed size exceeds addressable memory");
             goto error;
         }
         size_t decompCapacity = (size_t)contentSize;
@@ -122,8 +121,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
         size_t decompSize = ZSTD_decompress(outbuf, decompCapacity, inbuf, origSize);
         if (ZSTD_isError(decompSize)) {
-            PUSH_ERR2("H5Z_filter_zstd", "zstd decompression failed: %s",
-                      ZSTD_getErrorName(decompSize));
+            PUSH_ERR2("H5Z_filter_zstd", "zstd decompression failed: %s", ZSTD_getErrorName(decompSize));
             goto error;
         }
 
@@ -163,8 +161,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
 
         compSize = ZSTD_compress(outbuf, compSize, inbuf, origSize, aggression);
         if (ZSTD_isError(compSize)) {
-            PUSH_ERR2("H5Z_filter_zstd", "zstd compression failed: %s",
-                      ZSTD_getErrorName(compSize));
+            PUSH_ERR2("H5Z_filter_zstd", "zstd compression failed: %s", ZSTD_getErrorName(compSize));
             goto error;
         }
 
