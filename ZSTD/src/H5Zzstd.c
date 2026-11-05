@@ -27,9 +27,10 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
     fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: %s\n", (int)__LINE__, func, str)
 #define PUSH_ERR2(func, str, arg)                                                                            \
     do {                                                                                                     \
-        fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: ", (int)__LINE__, func);                       \
-        fprintf(stderr, str, arg);                                                                           \
-        fprintf(stderr, "\n");                                                                               \
+        char _err_msg[256];                                                                                  \
+        snprintf(_err_msg, sizeof(_err_msg), str, arg);                                                      \
+        _err_msg[sizeof(_err_msg) - 1] = '\0';                                                               \
+        fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: %s\n", (int)__LINE__, func, _err_msg);         \
     } while (0)
 
 /* Use H5Z_class3_t if available (introduced in HDF5 2.3.0) */
