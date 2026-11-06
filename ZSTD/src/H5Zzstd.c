@@ -23,6 +23,8 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
 
 #define H5Z_FILTER_ZSTD 32015
 
+/* Only enable error printing if ZSTD_DEBUG is defined, since there's currently no way to cleanly integrate ZSTD plguin errors with the main HDF5 error stack */
+#ifdef ZSTD_DEBUG
 #define PUSH_ERR(func, str)                                                                                  \
     fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: %s\n", (int)__LINE__, func, str)
 #define PUSH_ERR2(func, str, arg)                                                                            \
@@ -32,6 +34,10 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
         _err_msg[sizeof(_err_msg) - 1] = '\0';                                                               \
         fprintf(stderr, "  ERROR: " __FILE__ " line %d in %s: %s\n", (int)__LINE__, func, _err_msg);         \
     } while (0)
+#else /* ZSTD_DEBUG */
+#define PUSH_ERR(func, minor, str) /* No-op */
+#define PUSH_ERR2(func, minor, str, arg) /* No-op */
+#endif /* ZSTD_DEBUG */
 
 /* Use H5Z_class3_t if available (introduced in HDF5 2.3.0) */
 #if H5_VERSION_GE(2, 3, 0)
