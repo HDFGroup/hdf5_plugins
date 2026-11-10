@@ -118,6 +118,31 @@ static size_t blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const
                                      size_t nbytes, size_t *buf_size, void **buf);
 herr_t        blosc2_set_local(hid_t dcpl, hid_t type, hid_t space);
 
+/* Use H5Z_class3_t if available (introduced in HDF5 2.3.0) */
+#if H5_VERSION_GE(2, 3, 0)
+/**
+ * The filter table maps filter identification numbers to structs that
+ * contain a pointers to the blosc filter function.
+ */
+const H5Z_class3_t blosc2_H5Filter[1] = {{
+    H5Z_CLASS_T_VERS_3,            /**<  H5Z_class_t version */
+    (H5Z_filter_t)(FILTER_BLOSC2), /**<  Filter id number */
+#ifdef FILTER_DECODE_ONLY
+    0, /**<  encoder_present flag (false is not available) */
+#else
+    1, /**<  encoder_present flag (set to true) */
+#endif
+    1, /**<  decoder_present flag (set to true) */
+    "HDF5 blosc2 filter; see "
+    "https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md", /* Filter name for
+                                                                                               debugging */
+    NULL,                                     /**<  The "can apply" callback */
+    (H5Z_set_local_func_t)(blosc2_set_local), /**<  The "set local" callback */
+    (H5Z_func_t)(blosc2_filter_function),     /**<  The actual filter function */
+    H5Z_FEAT_FILTER_THREADSAFE |
+        H5Z_FEAT_FILTER_NO_H5_CALLS, /* This filter is thread-safe and does not re-enter the HDF5 library */
+}};
+#else /* H5_VERSION_GE */
 /**
  * The filter table maps filter identification numbers to structs that
  * contain a pointers to the blosc filter function.
@@ -138,6 +163,7 @@ const H5Z_class2_t blosc2_H5Filter[1] = {{
     (H5Z_set_local_func_t)(blosc2_set_local), /**<  The "set local" callback */
     (H5Z_func_t)(blosc2_filter_function),     /**<  The actual filter function */
 }};
+#endif /* H5_VERSION_GE */
 
 H5PL_type_t
 H5PLget_plugin_type(void)
