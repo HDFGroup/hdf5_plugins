@@ -450,7 +450,7 @@ jobs:
   # MacOS w/ Clang + CMake
   #
     name: "MacOS Clang CMake"
-    runs-on: macos-15
+    runs-on: macos-26
     needs: [check-secret]
     steps:
       - name: Install Dependencies (MacOS_latest)
