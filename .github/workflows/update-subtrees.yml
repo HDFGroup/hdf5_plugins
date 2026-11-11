@@ -1,0 +1,172 @@
+name: hdf5 plugins update Blosc subtrees
+
+# Check the upstream Blosc filter repositories at 07:00 CDT (12:00 UTC) on Monday, or on
+# demand, and open a pull request when a subtree is behind. The pull request still needs
+# a review: an update can change test reference output.
+on:
+  schedule:
+    - cron: "0 12 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  update-subtree:
+    name: Update ${{ matrix.title }} subtree
+    if: github.repository_owner == 'HDFGroup'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # hdf5-blosc rarely tags releases, so follow its default branch and propose
+          # an update only when the filter sources or license files change.
+          - name: blosc
+            title: Blosc
+            prefix: BLOSC/hdf5-blosc
+            url: https://github.com/Blosc/hdf5-blosc
+            track: master
+            watch: src LICENSES
+            doc: BLOSC/UPDATING_BLOSC_SUBTREE.md
+          - name: blosc2
+            title: Blosc2
+            prefix: BLOSC2/HDF5-Blosc2
+            url: https://github.com/Blosc/HDF5-Blosc2
+            track: tags
+            watch: src LICENSES LICENSE.txt
+            doc: BLOSC2/UPDATING_BLOSC2_SUBTREE.md
+
+    steps:
+      # A pull request opened with GITHUB_TOKEN does not start the pull request CI.
+      # Set the SUBTREE_UPDATE_TOKEN secret (a fine-grained token with contents and
+      # pull-request write access) so that CI runs on the update.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0  # git subtree needs the earlier squash commits
+          token: ${{ secrets.SUBTREE_UPDATE_TOKEN || github.token }}
+
+      - name: Check upstream and open a pull request
+        env:
+          GH_TOKEN: ${{ secrets.SUBTREE_UPDATE_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
+          HAVE_TOKEN: ${{ secrets.SUBTREE_UPDATE_TOKEN != '' }}
+          BASE: ${{ github.event.repository.default_branch }}
+          NAME: ${{ matrix.name }}
+          TITLE: ${{ matrix.title }}
+          PREFIX: ${{ matrix.prefix }}
+          URL: ${{ matrix.url }}
+          TRACK: ${{ matrix.track }}
+          WATCH: ${{ matrix.watch }}
+          DOC: ${{ matrix.doc }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          current=$(git log -1 --format=%B --grep="^git-subtree-dir: ${PREFIX}/*\$" \
+                    | sed -n 's/^git-subtree-split: *//p')
+          if [ -z "$current" ]; then
+            echo "::error::No git-subtree-split commit found for $PREFIX"
+            exit 1
+          fi
+
+          git fetch --quiet --no-tags "$URL" \
+            "+refs/heads/*:refs/upstream/heads/*" "+refs/tags/*:refs/upstream/tags/*"
+
+          if [ "$TRACK" = tags ]; then
+            version=$(git for-each-ref --format='%(refname:strip=3)' refs/upstream/tags \
+                      | grep -E '^v?[0-9]+(\.[0-9]+)*$' | sort -V | tail -n 1 || true)
+            if [ -z "$version" ]; then
+              echo "::error::No release tags found in $URL"
+              exit 1
+            fi
+            target=$(git rev-parse "refs/upstream/tags/$version^{commit}")
+          else
+            target=$(git rev-parse "refs/upstream/heads/$TRACK^{commit}")
+            version="$TRACK-${target:0:7}"
+          fi
+          echo "$PREFIX: current ${current:0:7}, upstream $version (${target:0:7})"
+
+          if ! git cat-file -e "$current^{commit}" 2>/dev/null; then
+            echo "::error::Current split commit $current is not in $URL"
+            exit 1
+          fi
+          if git merge-base --is-ancestor "$target" "$current"; then
+            echo "$PREFIX is up to date"
+            exit 0
+          fi
+          # shellcheck disable=SC2086  # WATCH is a list of paths
+          if [ "$TRACK" != tags ] && [ -z "$(git log --format=%h "$current..$target" -- $WATCH)" ]; then
+            echo "No upstream changes under: $WATCH"
+            exit 0
+          fi
+
+          branch="subtree/$NAME-$version"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "Branch $branch already exists; nothing to do"
+            exit 0
+          fi
+          open=$(gh pr list --state open --limit 200 --json headRefName \
+                 --jq "map(select(.headRefName | startswith(\"subtree/$NAME-\"))) | .[0].headRefName // empty")
+          if [ -n "$open" ]; then
+            echo "Pull request from $open is still open; merge or close it first"
+            exit 0
+          fi
+
+          git switch -c "$branch"
+          git subtree merge --prefix="$PREFIX" --squash \
+            -m "Update $TITLE subtree to $version" "$target"
+          split=$(git log -1 --format=%B --grep="^git-subtree-dir: ${PREFIX}/*\$" \
+                  | sed -n 's/^git-subtree-split: *//p')
+          if [ "$split" != "$target" ]; then
+            echo "::error::New git-subtree-split is '$split', expected $target"
+            exit 1
+          fi
+
+          body=$RUNNER_TEMP/body.md
+          {
+            echo "Updates \`$PREFIX\` from $URL/commit/$current to $URL/commit/$target ($version)."
+            echo
+            if [ "$TRACK" != tags ]; then
+              echo "This is an untagged commit on \`$TRACK\`. Review the upstream commits before merging."
+              echo
+            fi
+            echo "### Upstream commits"
+            echo
+            echo '```'
+            git log --format='%h %s' "$current..$target"
+            echo '```'
+            echo
+            echo "### Changed upstream files"
+            echo
+            echo '```'
+            git diff --stat "$current" "$target"
+            echo '```'
+            echo
+            echo "### Before merging"
+            echo
+            echo "Follow \`$DOC\`:"
+            echo
+            echo "- [ ] CI passes. If only expected output changed (filter name, defaults, compression ratio), update the reference files listed in step 6"
+            echo "- [ ] New upstream source files are added to \`${PREFIX%/*}/src/CMakeLists.txt\` and \`${PREFIX%/*}/src/Makefile.am\`"
+            echo "- [ ] The installed license files still exist at the paths in the checklist"
+            echo "- [ ] \`${PREFIX%/*}/README.md\` names the new upstream version"
+            echo
+            echo "**Merge with a merge commit (or rebase), not a squash merge.** A squash merge drops the \`git-subtree-split:\` metadata, and later updates then fail."
+          } > "$body"
+
+          git push origin "$branch"
+          gh pr create --base "$BASE" --head "$branch" \
+            --title "Update $TITLE subtree to $version" --body-file "$body"
+
+          if [ "$HAVE_TOKEN" != true ]; then
+            echo "::warning::SUBTREE_UPDATE_TOKEN is not set, so CI does not run on this pull request. Close and reopen it to start CI."
+          fi
