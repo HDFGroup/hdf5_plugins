@@ -170,9 +170,13 @@ H5PLget_plugin_type(void)
 {
     return H5PL_TYPE_FILTER;
 }
+
 const void *
 H5PLget_plugin_info(void)
 {
+    /* Initialize blosc2 */
+    blosc2_init();
+
     return blosc2_H5Filter;
 }
 
@@ -460,8 +464,6 @@ blosc2_filter_function(unsigned int flags, size_t cd_nelmts, const unsigned int 
         }
     }
 
-    blosc2_init();
-
     if (!(flags & H5Z_FLAG_REVERSE)) {
         /* We're compressing */
 
@@ -716,7 +718,6 @@ b2_decomp_out:
 failed:
     if (outbuf)
         free(outbuf);
-    blosc2_destroy();
 
     return 0;
 } /* End filter function */
