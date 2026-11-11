@@ -1,0 +1,51 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ["*"]
+  workflow_dispatch: # allows you to trigger manually
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+# When this workflow is queued, automatically cancel any previous running
+# or pending jobs from the same branch
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest # x86-64
+          - ubuntu-24.04-arm # ARM
+          - macos-15-intel # x86-64
+          - macos-latest # ARM
+          - windows-latest  # x86-64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0
+        with:
+          pixi-version: v0.57.0
+          environments: default
+
+      - name: Build
+        run: pixi run build
+
+      - name: Let unit tests find blosc.dll
+        if: runner.os == 'Windows'
+        run: cp build/blosc/bin/blosc.dll build/
+
+      - name: Unit tests
+        run: pixi run test
