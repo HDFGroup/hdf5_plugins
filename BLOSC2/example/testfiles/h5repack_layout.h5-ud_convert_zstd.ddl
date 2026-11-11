@@ -10,7 +10,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 3200 5 1 5 2 40 20 }
          }
       }
@@ -32,7 +32,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 3200 5 1 5 2 40 20 }
          }
       }
@@ -54,7 +54,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 3200 5 1 5 2 40 20 }
          }
       }
@@ -76,7 +76,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 3200 5 1 5 2 40 20 }
          }
       }
@@ -98,7 +98,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 800 5 1 5 2 20 10 }
          }
       }
@@ -120,7 +120,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 3200 5 1 5 2 40 20 }
          }
       }
@@ -142,7 +142,7 @@ GROUP "/" {
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32026
-            COMMENT HDF5 blosc2 filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc2
             PARAMS { 1 0 4 3200 5 1 5 2 40 20 }
          }
       }

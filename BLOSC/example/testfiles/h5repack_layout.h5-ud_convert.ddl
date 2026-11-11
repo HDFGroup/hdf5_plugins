@@ -5,12 +5,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE XXX (10.XXXX:1 COMPRESSION)
+         SIZE XXX (3.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 3200 }
          }
       }
@@ -27,12 +27,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE XXX (10.XXXX:1 COMPRESSION)
+         SIZE XXX (3.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 3200 }
          }
       }
@@ -49,12 +49,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE XXX (10.XXXX:1 COMPRESSION)
+         SIZE XXX (3.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 3200 }
          }
       }
@@ -71,12 +71,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE XXX (10.XXXX:1 COMPRESSION)
+         SIZE XXX (3.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 3200 }
          }
       }
@@ -93,12 +93,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, H5S_UNLIMITED ) }
       STORAGE_LAYOUT {
          CHUNKED ( 20, 10 )
-         SIZE XXX (3.XXXX:1 COMPRESSION)
+         SIZE XXX (2.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 800 }
          }
       }
@@ -115,12 +115,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE XXX (10.XXXX:1 COMPRESSION)
+         SIZE XXX (3.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 3200 }
          }
       }
@@ -137,12 +137,12 @@ GROUP "/" {
       DATASPACE  SIMPLE { ( 40, 20 ) / ( 40, 20 ) }
       STORAGE_LAYOUT {
          CHUNKED ( 40, 20 )
-         SIZE XXX (10.XXXX:1 COMPRESSION)
+         SIZE XXX (3.XXXX:1 COMPRESSION)
       }
       FILTERS {
          USER_DEFINED_FILTER {
             FILTER_ID 32001
-            COMMENT HDF5 blosc filter; see https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md
+            COMMENT blosc
             PARAMS { 2 2 4 3200 }
          }
       }

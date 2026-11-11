@@ -26,21 +26,31 @@ add_definitions (${HDF5_EXTRA_C_FLAGS})
 #-----------------------------------------------------------------------------
 # Setup include Directories
 #-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+# The filter sources come from the upstream Blosc/hdf5-blosc repository,
+# included as a git subtree in ../hdf5-blosc (see ../UPDATING_BLOSC_SUBTREE.md).
+# Only its src/ files are used; its own CMakeLists.txt downloads c-blosc and
+# is not part of this build.
+#-----------------------------------------------------------------------------
+set (H5BLOSC_UPSTREAM_SRC_DIR ${H5BLOSC_SRC_SOURCE_DIR}/../hdf5-blosc/src)
+
 set (H5BLOSC_INCLUDE_DIRS ${H5BLOSC_INCLUDE_DIRS}
     ${H5PL_HDF5_INCLUDE_DIRS} ${H5BLOSC_BINARY_DIR}
     ${H5BLOSC_SRC_SOURCE_DIR}
+    ${H5BLOSC_UPSTREAM_SRC_DIR}
 )
 
 #-----------------------------------------------------------------------------
 # Define H5BLOSC Library
 #-----------------------------------------------------------------------------
 set (H5BLOSC_SRCS
-    ${H5BLOSC_SRC_SOURCE_DIR}/H5Zblosc.c
+    ${H5BLOSC_UPSTREAM_SRC_DIR}/blosc_filter.c
+    ${H5BLOSC_UPSTREAM_SRC_DIR}/blosc_plugin.c
 )
 
 add_library (${H5BLOSC_LIB_TARGET} MODULE ${H5BLOSC_SRCS})
 if (DISABLE_H5BLOSC_ENCODER)
-  set_target_properties(${H5BLOSC_LIB_TARGET} PROPERTIES COMPILE_DEFINITIONS "FILTER_DECODE_ONLY")
+  message (WARNING "DISABLE_H5BLOSC_ENCODER has no effect: the upstream Blosc/hdf5-blosc filter always includes the encoder")
 endif ()
 target_include_directories(${H5BLOSC_LIB_TARGET} PRIVATE ${H5BLOSC_INCLUDE_DIRS})
 target_link_libraries (${H5BLOSC_LIB_TARGET} PRIVATE ${H5PL_LINK_LIBS})
@@ -63,6 +73,18 @@ if (H5PL_BUILD_TESTING)
         "${CMAKE_BINARY_DIR}/plugins/$<TARGET_FILE_NAME:${H5BLOSC_LIB_TARGET}>"
   )
 endif ()
+
+#-----------------------------------------------------------------------------
+# The upstream hdf5-blosc licenses ask binary redistributions to carry their notices
+#-----------------------------------------------------------------------------
+install (
+    FILES
+        ${H5BLOSC_SRC_SOURCE_DIR}/../hdf5-blosc/LICENSES/BLOSC_HDF5.txt
+        ${H5BLOSC_SRC_SOURCE_DIR}/../hdf5-blosc/LICENSES/BLOSC.txt
+        ${H5BLOSC_SRC_SOURCE_DIR}/../hdf5-blosc/LICENSES/H5PY.txt
+    DESTINATION ${H5BLOSC_INSTALL_DOC_DIR}/BLOSC
+    COMPONENT libraries
+)
 
 #-----------------------------------------------------------------------------
 # Add Target(s) to CMake Install for import into other projects
