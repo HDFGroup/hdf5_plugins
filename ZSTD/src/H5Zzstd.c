@@ -28,6 +28,27 @@ static size_t H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsign
 #define PUSH_ERR2(func, minor, str, arg)                                                                     \
     H5Epush(H5E_DEFAULT, __FILE__, func, __LINE__, H5E_ERR_CLS, H5E_PLINE, minor, str, arg)
 
+/* Use H5Z_class3_t if available (introduced in HDF5 2.3.0) */
+#if H5_VERSION_GE(2, 3, 0)
+const H5Z_class3_t H5Z_ZSTD[1] = {{
+    H5Z_CLASS_T_VERS_3,            /* H5Z_class_t version */
+    (H5Z_filter_t)H5Z_FILTER_ZSTD, /* Filter id number             */
+#ifdef FILTER_DECODE_ONLY
+    0, /* encoder_present flag (false is not available) */
+#else
+    1, /* encoder_present flag (set to true) */
+#endif
+    1, /* decoder_present flag (set to true) */
+    "HDF5 zstd filter; see "
+    "https://github.com/HDFGroup/hdf5_plugins/blob/master/docs/RegisteredFilterPlugins.md",
+    /* Filter name for debugging    */
+    NULL,                        /* The "can apply" callback     */
+    NULL,                        /* The "set local" callback     */
+    (H5Z_func_t)H5Z_filter_zstd, /* The actual filter function   */
+    H5Z_FEAT_FILTER_THREADSAFE |
+        H5Z_FEAT_FILTER_NO_H5_CALLS, /* This filter is thread-safe and does not re-enter the HDF5 library */
+}};
+#else /* H5_VERSION_GE */
 const H5Z_class2_t H5Z_ZSTD[1] = {{
     H5Z_CLASS_T_VERS,              /* H5Z_class_t version */
     (H5Z_filter_t)H5Z_FILTER_ZSTD, /* Filter id number             */
@@ -44,6 +65,7 @@ const H5Z_class2_t H5Z_ZSTD[1] = {{
     NULL,                        /* The "set local" callback     */
     (H5Z_func_t)H5Z_filter_zstd, /* The actual filter function   */
 }};
+#endif /* H5_VERSION_GE */
 
 H5PL_type_t
 H5PLget_plugin_type(void)
