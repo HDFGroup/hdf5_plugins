@@ -179,7 +179,6 @@ H5PLget_plugin_info(void)
     blosc2_init();
     (void)blosc2_get_io_cb(BLOSC2_IO_FILESYSTEM);
     (void)blosc2_list_compressors();
-    blosc2_init();
 
     return blosc2_H5Filter;
 }
