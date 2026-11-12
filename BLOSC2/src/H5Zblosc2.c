@@ -174,11 +174,11 @@ H5PLget_plugin_type(void)
 const void *
 H5PLget_plugin_info(void)
 {
-     /* Initialize blosc2, and do c-blosc2's lazy one-time setup here while HDF5 is still
-      * serial */
-     blosc2_init();
-     (void)blosc2_get_io_cb(BLOSC2_IO_FILESYSTEM);
-     (void)blosc2_list_compressors();
+    /* Initialize blosc2, and do c-blosc2's lazy one-time setup here while HDF5 is still
+     * serial */
+    blosc2_init();
+    (void)blosc2_get_io_cb(BLOSC2_IO_FILESYSTEM);
+    (void)blosc2_list_compressors();
     blosc2_init();
 
     return blosc2_H5Filter;
@@ -318,7 +318,7 @@ blosc2_set_local(hid_t dcpl, hid_t type, hid_t space)
 int32_t
 compute_blosc2_blocksize(int32_t chunksize, int32_t typesize, int clevel, int compcode)
 {
-    uint8_t data_dest[BLOSC2_MAX_OVERHEAD];
+    uint8_t        data_dest[BLOSC2_MAX_OVERHEAD];
     blosc2_cparams cparams = BLOSC2_CPARAMS_DEFAULTS;
     cparams.compcode       = (compcode < 0) ? DEFAULT_COMPCODE : compcode;
     cparams.clevel         = clevel;
