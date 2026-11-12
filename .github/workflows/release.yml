@@ -23,7 +23,7 @@ on:
         description: 'HDF5 MacOS release asset suffix (platform, version, compiler)'
         type: string
         required: false
-        default: macos15_clang
+        default: macos26_clang
       ubuntu_asset_suffix:
         description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
         type: string
@@ -74,7 +74,7 @@ jobs:
       win_asset_suffix: ${{ inputs.win_asset_suffix }}
       mac_asset_suffix: ${{ inputs.mac_asset_suffix }}
       ubuntu_asset_suffix: ${{ inputs.ubuntu_asset_suffix }}
-      snap_name: hdf5_plugins-${{ needs.call-workflow-tarball.outputs.source_base }}
+      snap_name: ${{ needs.call-workflow-tarball.outputs.file_base }}
       use_environ: release
     secrets:
         APPLE_CERTS_BASE64: ${{ secrets.APPLE_CERTS_BASE64 }}

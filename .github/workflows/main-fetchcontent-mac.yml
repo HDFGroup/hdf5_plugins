@@ -84,6 +84,7 @@ jobs:
             -DENABLE_BITGROOM=ON \
             -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BITROUND=ON \
+            -DENABLE_SZ3=ON \
             -DENABLE_BSHUF=ON \
             ..
           cmake --build . --parallel 3 --config ${{ inputs.build_mode }}
@@ -168,6 +169,7 @@ jobs:
             -DENABLE_BITGROOM=ON \
             -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BITROUND=ON \
+            -DENABLE_SZ3=ON \
             -DENABLE_BSHUF=ON \
             $GITHUB_WORKSPACE
           cmake --build . --parallel 3 --config ${{ inputs.build_mode }}
@@ -244,6 +246,7 @@ jobs:
             -DENABLE_BITGROOM=ON \
             -DENABLE_GRANULAR_BITROUND=ON \
             -DENABLE_BITROUND=ON \
+            -DENABLE_SZ3=ON \
             -DENABLE_BSHUF=ON \
             $GITHUB_WORKSPACE
           cmake --build . --parallel 3 --config ${{ inputs.build_mode }}

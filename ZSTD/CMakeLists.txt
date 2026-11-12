@@ -99,7 +99,11 @@ endif ()
 #-----------------------------------------------------------------------------
 # zstd Library Settings
 #-----------------------------------------------------------------------------
-if (NOT ZSTD_USE_EXTERNAL)
+if (ZSTD_USE_EXTERNAL)
+  # Ignore a ZSTD_FOUND left in the cache by another project (pkg-config
+  # results are cached), which would skip building the library here
+  set (ZSTD_FOUND FALSE)
+else ()
   find_package (ZSTD NAMES ${ZSTD_PACKAGE_NAME})
   if (ZSTD_FOUND)
     if (TARGET zstd::libzstd)

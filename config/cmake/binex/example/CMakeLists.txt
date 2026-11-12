@@ -48,6 +48,9 @@ set (extra_examples)
 if (ZFP_AVAILABLE)
   set (extra_examples ${extra_examples} h5ex_d_zfp)
 endif ()
+if (SZ3_AVAILABLE)
+  set (extra_examples ${extra_examples} h5ex_d_sz3)
+endif ()
 
 if (USE_SHARED_LIBS)
   add_definitions (-DH5_BUILT_AS_DYNAMIC_LIB)
@@ -340,6 +343,9 @@ if (H5PL_BUILD_TESTING)
   endif ()
   ## special filter
   ADD_H5_TEST (h5ex_d_zfp FILTERALL)
+  if (SZ3_AVAILABLE)
+    ADD_H5_TEST (h5ex_d_sz3 FILTERALL)
+  endif ()
 
   if (NOT DISABLE_H5PL_ENCODER)
     #UD BZ2$

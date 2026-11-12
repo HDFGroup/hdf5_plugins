@@ -156,7 +156,7 @@ jobs:
 
     - name: create-json
       id: create-json
-      uses: jsdaniell/create-json@v1.2.3
+      uses: jsdaniell/create-json@v1.2.4
       with:
         name: "versions-file.json"
         json: '{"bitshuffle":"${{ steps.get-bitshuffle-release.outputs.tag_name }}"",
@@ -173,7 +173,7 @@ jobs:
 
                # Save json report
     - name: Save json report
-      uses: actions/upload-artifact@v7.0.1
+      uses: actions/upload-artifact@v7.0.2
       with:
         name: compression-versions
         path: versions-file.json
