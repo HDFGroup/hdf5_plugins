@@ -318,7 +318,7 @@ blosc2_set_local(hid_t dcpl, hid_t type, hid_t space)
 int32_t
 compute_blosc2_blocksize(int32_t chunksize, int32_t typesize, int clevel, int compcode)
 {
-    static uint8_t data_dest[BLOSC2_MAX_OVERHEAD];
+    uint8_t data_dest[BLOSC2_MAX_OVERHEAD];
     blosc2_cparams cparams = BLOSC2_CPARAMS_DEFAULTS;
     cparams.compcode       = (compcode < 0) ? DEFAULT_COMPCODE : compcode;
     cparams.clevel         = clevel;
