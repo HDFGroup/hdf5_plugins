@@ -174,7 +174,11 @@ H5PLget_plugin_type(void)
 const void *
 H5PLget_plugin_info(void)
 {
-    /* Initialize blosc2 */
+     /* Initialize blosc2, and do c-blosc2's lazy one-time setup here while HDF5 is still
+      * serial */
+     blosc2_init();
+     (void)blosc2_get_io_cb(BLOSC2_IO_FILESYSTEM);
+     (void)blosc2_list_compressors();
     blosc2_init();
 
     return blosc2_H5Filter;
