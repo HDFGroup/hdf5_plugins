@@ -84,6 +84,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
                 size_t *buf_size, void **buf)
 {
     size_t buf_size_out = 0;
+    size_t outbuf_alloc = 0;      /* Allocated size of outbuf, returned through *buf_size */
     size_t origSize     = nbytes; /* Number of bytes for output (compressed) buffer */
     void  *outbuf       = NULL;
     void  *inbuf        = NULL; /* Pointer to input buffer */
@@ -112,6 +113,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             goto error;
         }
         size_t decompCapacity = (size_t)contentSize;
+        outbuf_alloc          = decompCapacity;
 
         if (NULL == (outbuf = H5allocate_memory(decompCapacity, false))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd decompression buffer");
@@ -153,13 +155,13 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         else if (aggression > ZSTD_maxCLevel())
             aggression = ZSTD_maxCLevel();
 
-        size_t compSize = ZSTD_compressBound(origSize);
-        if (NULL == (outbuf = H5allocate_memory(compSize, false))) {
+        outbuf_alloc = ZSTD_compressBound(origSize);
+        if (NULL == (outbuf = H5allocate_memory(outbuf_alloc, false))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd compression buffer");
             goto error;
         }
 
-        compSize = ZSTD_compress(outbuf, compSize, inbuf, origSize, aggression);
+        size_t compSize = ZSTD_compress(outbuf, outbuf_alloc, inbuf, origSize, aggression);
         if (ZSTD_isError(compSize)) {
             PUSH_ERR2("H5Z_filter_zstd", H5E_CALLBACK, "zstd compression failed: %s",
                       ZSTD_getErrorName(compSize));
@@ -177,7 +179,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
      * also be a safe no-op; no NULL check is needed. */
     H5free_memory(*buf);
     *buf      = outbuf;
-    *buf_size = buf_size_out;
+    *buf_size = outbuf_alloc;
     return buf_size_out;
 
 error:
