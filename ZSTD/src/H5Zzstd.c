@@ -83,7 +83,8 @@ static size_t
 H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_values[], size_t nbytes,
                 size_t *buf_size, void **buf)
 {
-    size_t buf_size_out = 0;
+    size_t nbytes_out   = 0;      /* Number of valid bytes in outbuf, the return value */
+    size_t buf_size_out = 0;      /* Allocated size of outbuf, returned through *buf_size */
     size_t origSize     = nbytes; /* Number of bytes for output (compressed) buffer */
     void  *outbuf       = NULL;
     void  *inbuf        = NULL; /* Pointer to input buffer */
@@ -112,6 +113,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
             goto error;
         }
         size_t decompCapacity = (size_t)contentSize;
+        buf_size_out          = decompCapacity;
 
         if (NULL == (outbuf = H5allocate_memory(decompCapacity, false))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd decompression buffer");
@@ -129,7 +131,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         fprintf(stderr, "   decompressing nbytes: %zu\n", decompSize);
 #endif
 
-        buf_size_out = decompSize;
+        nbytes_out = decompSize;
     }
     else {
         /* We're compressing */
@@ -153,13 +155,13 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         else if (aggression > ZSTD_maxCLevel())
             aggression = ZSTD_maxCLevel();
 
-        size_t compSize = ZSTD_compressBound(origSize);
-        if (NULL == (outbuf = H5allocate_memory(compSize, false))) {
+        buf_size_out = ZSTD_compressBound(origSize);
+        if (NULL == (outbuf = H5allocate_memory(buf_size_out, false))) {
             PUSH_ERR("H5Z_filter_zstd", H5E_CALLBACK, "Can't allocate zstd compression buffer");
             goto error;
         }
 
-        compSize = ZSTD_compress(outbuf, compSize, inbuf, origSize, aggression);
+        size_t compSize = ZSTD_compress(outbuf, buf_size_out, inbuf, origSize, aggression);
         if (ZSTD_isError(compSize)) {
             PUSH_ERR2("H5Z_filter_zstd", H5E_CALLBACK, "zstd compression failed: %s",
                       ZSTD_getErrorName(compSize));
@@ -170,7 +172,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
         fprintf(stderr, "    compressing nbytes: %zu\n", compSize);
 #endif
 
-        buf_size_out = compSize;
+        nbytes_out = compSize;
     }
     /* *buf was allocated by HDF5 (H5allocate_memory) and is never NULL here.
      * H5free_memory() is a thin wrapper around free(), so a NULL pointer would
@@ -178,7 +180,7 @@ H5Z_filter_zstd(unsigned int flags, size_t cd_nelmts, const unsigned int cd_valu
     H5free_memory(*buf);
     *buf      = outbuf;
     *buf_size = buf_size_out;
-    return buf_size_out;
+    return nbytes_out;
 
 error:
     if (outbuf)
