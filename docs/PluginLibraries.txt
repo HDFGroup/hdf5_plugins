@@ -144,16 +144,18 @@ Filter Description:
     processors so as to accelerate the compression/decompression
     process to a maximum.
 
-Links:
-    http://blosc.org/
-    http://www.pytables.org
+  The filter source is hdf5-blosc, maintained by the Blosc project and
+  included in BLOSC/hdf5-blosc (git subtree).
 
-Contact Information:
-    Francesc Alted
-    Email: faltet at pytables dot org
+Link to the filter:
+    https://github.com/Blosc/hdf5-blosc
+
+Link to the compression library:
+    http://blosc.org/
+    https://github.com/Blosc/c-blosc
 
 --------------------------------------------
-Compression Library Included: c-blosc version 1.21.0
+Compression Library Included: c-blosc version 1.21.6
 
 Plugin cd_value option
 --------------------------------------------
@@ -161,24 +163,27 @@ This has 7 values, the first 4 are reserved for use by the filter. The
     last 3 are optional.
     The 4 reserved values correspond to;
         Filter revision number
-        LZF compression filter version number
+        Blosc format version number
         The datatype size
         Pre-computed chunk size in bytes
 
     The optional parameters, which are position dependent:
-        The compression level:
+        The compression level, default is 5:
             0 (no compression) through 9 (maximum compression)
-        Shuffle
+        Shuffle, default is byte-wise shuffle
             no shuffle:        0
             byte-wise shuffle: 1
             bit-wise shuffle:  2
-        The Blosc compressor used, default is zstd
+        The Blosc compressor used, default is BLOSCLZ
             BLOSCLZ: 0
             LZ4:     1
             LZ4HC:   2
-            SNAPPY:  3
+            SNAPPY:  3 (not available with the bundled c-blosc, which is
+                        built with DEACTIVATE_SNAPPY)
             ZLIB:    4
             ZSTD:    5
+    Before the filter source was taken from hdf5-blosc, the default
+    compressor was ZSTD.
 
 Common h5repack parameters
     default: UD=32001,0,0
@@ -188,6 +193,63 @@ Common h5repack parameters
     SNAPPY:  UD=32001,0,7,0,0,0,0,5,1,3
     ZLIB:    UD=32001,0,7,0,0,0,0,5,1,4
     ZSTD:    UD=32001,0,7,0,0,0,0,5,1,5
+.................................
+
+BLOSC2 Filter
+=================================
+Filter ID: 32026
+
+Filter Description:
+  Blosc2 is the new-generation version of the Blosc compressor. It adds
+  multidimensional (B2ND) compression, which the filter uses for chunks of
+  rank 2 or more, and more filters (delta, precision truncation). Blosc1 data
+  (filter ID 32001) is handled by the BLOSC filter, not by this one.
+
+  The filter source is HDF5-Blosc2, maintained by the Blosc project and
+  included in BLOSC2/HDF5-Blosc2 (git subtree).
+
+Link to the filter:
+    https://github.com/Blosc/HDF5-Blosc2
+
+Link to the compression library:
+    https://www.blosc.org/
+    https://github.com/Blosc/c-blosc2
+
+--------------------------------------------
+Compression Library Included: c-blosc2 version 2.17.1
+
+Plugin cd_value option
+--------------------------------------------
+This has 7 values, the first 4 are reserved for use by the filter. The
+    last 3 are optional. For chunks of rank 2 or more, the filter also
+    stores the chunk rank and shape after them.
+    The 4 reserved values correspond to;
+        Filter revision number
+        Block size (0 lets Blosc2 choose)
+        The datatype size
+        Pre-computed chunk size in bytes
+
+    The optional parameters, which are position dependent:
+        The compression level, default is 5:
+            0 (no compression) through 9 (maximum compression)
+        Filter, default is byte-wise shuffle
+            none:                0
+            byte-wise shuffle:   1
+            bit-wise shuffle:    2
+            delta:               3
+            truncate precision:  4
+        The Blosc2 compressor used, default is BLOSCLZ
+            BLOSCLZ: 0
+            LZ4:     1
+            LZ4HC:   2
+            ZLIB:    4
+            ZSTD:    5
+
+Common h5repack parameters
+    default: UD=32026,0,0
+    BLOSCLZ: UD=32026,0,7,0,0,0,0,5,1,0
+    LZ4:     UD=32026,0,7,0,0,0,0,5,1,1
+    ZSTD:    UD=32026,0,7,0,0,0,0,5,1,5
 .................................
 
 MAFISC Filter

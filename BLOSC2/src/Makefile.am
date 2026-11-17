@@ -16,4 +16,6 @@ libh5blosc2_la_LDFLAGS = -version-info 0:0:0
 # The libh5blosc2 library for plugin module.
 # Build it as shared library.
 plugin_LTLIBRARIES = libh5blosc2.la
-libh5blosc2_la_SOURCES = H5Zblosc2.c #blosc2.c blosc2lz.c shuffle.c
+# The filter sources come from the upstream git subtree in ../HDF5-Blosc2.
+libh5blosc2_la_CPPFLAGS = -I$(srcdir)/../HDF5-Blosc2/src
+libh5blosc2_la_SOURCES = ../HDF5-Blosc2/src/blosc2_filter.c ../HDF5-Blosc2/src/blosc2_plugin.c

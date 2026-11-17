@@ -13,7 +13,7 @@ AC_CONFIG_HEADER([blosc_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # Initialize automake.
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 # Checks for programs.
 AC_PROG_CC

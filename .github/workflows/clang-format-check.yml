@@ -20,4 +20,4 @@ jobs:
         extensions: 'c,h,cpp,hpp,java'
         clangFormatVersion: 17
         style: file
-        exclude: './community ./ZFP/H5Z-ZFP ./SZ3/SZ3'
+        exclude: './community ./ZFP/H5Z-ZFP ./SZ3/SZ3 ./BLOSC/hdf5-blosc ./BLOSC2/HDF5-Blosc2'

@@ -159,15 +159,15 @@ jobs:
       uses: jsdaniell/create-json@v1.2.4
       with:
         name: "versions-file.json"
-        json: '{"bitshuffle":"${{ steps.get-bitshuffle-release.outputs.tag_name }}"",
-                "blosc":"${{ steps.get-blosc-release.outputs.tag_name }}"
-                "blosc2":"${{ steps.get-blosc2-release.outputs.tag_name }}"
-                "fpzip":"${{ steps.get-fpzip-release.outputs.tag_name }}"
-                "libjpeg":"${{ steps.get-libjpeg-release.outputs.tag_name }}"
-                "lz4":"${{ steps.get-lz4-release.outputs.tag_name }}"
-                "zfp":"${{ steps.get-zfp-release.outputs.tag_name }}"
-                "zstd":"${{ steps.get-zstd-release.outputs.tag_name }}"
-                "zlib":"${{ steps.get-zlib-release.outputs.tag_name }}"
+        json: '{"bitshuffle":"${{ steps.get-bitshuffle-release.outputs.tag_name }}",
+                "blosc":"${{ steps.get-blosc-release.outputs.tag_name }}",
+                "blosc2":"${{ steps.get-blosc2-release.outputs.tag_name }}",
+                "fpzip":"${{ steps.get-fpzip-release.outputs.tag_name }}",
+                "libjpeg":"${{ steps.get-libjpeg-release.outputs.tag_name }}",
+                "lz4":"${{ steps.get-lz4-release.outputs.tag_name }}",
+                "zfp":"${{ steps.get-zfp-release.outputs.tag_name }}",
+                "zstd":"${{ steps.get-zstd-release.outputs.tag_name }}",
+                "zlib":"${{ steps.get-zlib-release.outputs.tag_name }}",
                 "zlib-ng":"${{ steps.get-zlib-ng-release.outputs.tag_name }}"
                }'
 
