@@ -405,20 +405,6 @@ jobs:
           tar -zcvf ${{ steps.set-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz hdf5_plugins
         shell: bash
 
-      - name: Publish deb binary (Linux)
-        id: publish-ctest-deb-binary
-        run: |
-          mkdir "${{ runner.workspace }}/builddeb"
-          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-GNUC/*.deb ${{ runner.workspace }}/builddeb/${{ steps.set-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.deb
-        shell: bash
-
-      - name: Publish rpm binary (Linux)
-        id: publish-ctest-rpm-binary
-        run: |
-          mkdir "${{ runner.workspace }}/buildrpm"
-          cp ${{ runner.workspace }}/hdf5_plugins/build/${{ inputs.preset_name }}-GNUC/*.rpm ${{ runner.workspace }}/buildrpm/${{ steps.set-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.rpm
-        shell: bash
-
       - name: List files in the space (Linux)
         run: |
               ls ${{ github.workspace }}
@@ -430,20 +416,6 @@ jobs:
         with:
               name: tgz-${{ inputs.ubuntu_asset_suffix }}-binary
               path: ${{ runner.workspace }}/build/${{ steps.set-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz
-              if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
-
-      - name: Save published binary deb (Linux)
-        uses: actions/upload-artifact@v7.0.2
-        with:
-              name: deb-${{ inputs.ubuntu_asset_suffix }}-binary
-              path: ${{ runner.workspace }}/builddeb/${{ steps.set-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.deb
-              if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
-
-      - name: Save published binary rpm (Linux)
-        uses: actions/upload-artifact@v7.0.2
-        with:
-              name: rpm-${{ inputs.ubuntu_asset_suffix }}-binary
-              path: ${{ runner.workspace }}/buildrpm/${{ steps.set-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.rpm
               if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn`
 
   build_and_test_mac_latest:
