@@ -64,6 +64,7 @@ Upon receiving a request with the above information, HDF Group will register the
 |`32031`   |<a href="#jpeg2000">JPEG2000</a>    | A compression filter for lossy and lossless coding|
 |`32032`   |<a href="#bitround">BitRound</a>    | The BitRound floating-point value quantization algorithm |
 |`32033`   |<a href="#htj2k">HTJ2K</a>    | High-Throughput JPEG 2000 (HTJ2K) compression |
+|`32034`   |<a href="#phidelity-sci">Phidelity Sci</a>    | Error-bounded lossy and lossless compression of floating-point data |
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
@@ -971,3 +972,60 @@ Repository: https://github.com/HDFGroup/hdf5_plugins/tree/master/BITROUND
 
 HDF Group Helpdesk<br>
 help at hdfgroup dot org
+
+---
+
+### Phidelity Sci <a name="phidelity-sci"></a>
+
+#### Filter Description
+
+Phidelity Sci compresses `float32` and `float64` data under one of three contracts chosen by the user: a guaranteed maximum absolute error, a guaranteed maximum relative error, or lossless (bit-exact) storage. Chunks of one to three dimensions are supported.
+
+Filter properties:
+
+* Every compressed chunk carries checksums. A damaged chunk is rejected rather than decoded incorrectly.
+* The compressed format is frozen and versioned. A newer decoder reads every earlier format version.
+* Output does not depend on the number of threads used to produce it.
+* Chunks the filter cannot handle, such as those of a non-floating-point datatype, are stored unfiltered. With the filter marked optional, a chunk that compression would enlarge is also stored raw.
+
+More information: https://www.deep-phi.com/en/scientific.
+
+#### Plugin ID `32034` Information
+
+The user sets the first four `cd_values[]`; the filter's `set_local` callback completes them to nine.
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | `cd_values[]` parameters definition version. Must be 1. This is the version of the `cd_values` layout only, independent of the compressed format version, which is stored in each compressed chunk. **User-set, mandatory.** |
+| `[1]` | Flags word: selects the contract (maximum absolute error, maximum relative error, or lossless) and the encoder setting. **User-set, mandatory.**<br/>- Bits 0–7: encoder setting — `0` = fast (default), `1` = size (smaller output, slower encoding); <br/>- Bits 8–9: contract — `0` = maximum absolute error, `1` = lossless (bit-exact), `2` = maximum relative error;<br/>- Bits 10–31: reserved, must be `0`.|
+| `[2]` | Error bound, low 32 bits of the IEEE 754 64-bit floating-point value (absolute, or relative to each value depending on the contract). Ignored in lossless mode. **User-set, mandatory.** |
+| `[3]` | Error bound, high 32 bits of the IEEE 754 64-bit floating-point value (absolute, or relative to each value depending on the contract). Ignored in lossless mode. **User-set, mandatory.** |
+| `[4]` | Chunk element datatype: `0` = float32; `1` = float64; `255` = datatype not handled by the filter. **Set by `set_local`.** |
+| `[5]` | Number of chunk dimensions, 1 to 3. **Set by `set_local`.** |
+| `[6]` up to `[8]` | Chunk dimensions, one value per dimension given in `[5]`. **Set by `set_local`.** |
+
+If the filter is optional, chunks are stored unfiltered when the filter does not support the datatype or when compression would enlarge them. If the filter is mandatory, the dataset creation or the write fails instead.
+
+The plugin is distributed in binary form only, under a proprietary license. There is no public source repository. Binaries are available from the maintainer on request. A separate read-only plugin, which decompresses but does not compress, may be freely redistributed in unmodified binary form so that data written with this filter remains readable.
+
+The plugin unique name registered with the HDF5 library (the `name` field of its `H5Z_class2_t`) is `phidelity_sci`.
+
+##### `h5repack` Examples
+
+* Absolute error `<= 1e-4`, fast setting:
+
+        h5repack -f UD=32034,0,4,1,0,3944497965,1058682594 in.h5 out.h5
+
+* Lossless:
+
+        h5repack -f UD=32034,0,4,1,256,0,0 in.h5 out.h5
+
+* Relative error `<= 1e-3`, size setting:
+
+        h5repack -f UD=32034,0,4,1,513,3539053052,1062232653 in.h5 out.h5
+
+##### Contact
+
+Sébastien Philippe, Deep Phi<br/>
+Email: dondenathea at gmail dot com<br/>
+Web: https://www.deep-phi.com
