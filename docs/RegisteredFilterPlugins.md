@@ -65,6 +65,7 @@ Upon receiving a request with the above information, HDF Group will register the
 |`32032`   |<a href="#bitround">BitRound</a>    | The BitRound floating-point value quantization algorithm |
 |`32033`   |<a href="#htj2k">HTJ2K</a>    | High-Throughput JPEG 2000 (HTJ2K) compression |
 |`32034`   |<a href="#phidelity-sci">Phidelity Sci</a>    | Error-bounded lossy and lossless compression of floating-point data |
+|`32035`   |<a href="#mans">MANS</a>    | Lossless compression of unsigned 16-bit and 32-bit integer data |
 
 > [!NOTE]
 > Please contact the maintainer of a filter plugin for help with the plugin or its filter in the HDF5 library.
@@ -1029,3 +1030,69 @@ The plugin unique name registered with the HDF5 library (the `name` field of its
 Sébastien Philippe, Deep Phi<br/>
 Email: dondenathea at gmail dot com<br/>
 Web: https://www.deep-phi.com
+
+---
+
+### MANS <a name="mans"></a>
+
+#### Filter Description
+
+MANS is a lossless compressor for multi-byte unsigned integer data, aimed at detector data and other scientific integer data. It first applies Adaptive Data Mapping (ADM), which maps unsigned 16-bit and 32-bit integers to 8-bit symbols, and then entropy-codes those symbols with asymmetric numeral systems (ANS).
+
+Filter properties:
+
+* Lossless (bit-exact) only. Both the encoder and the decoder are supported.
+* Limited to chunked datasets of unsigned 16-bit and unsigned 32-bit integers. The filter's `can_apply` callback rejects every other datatype.
+* Two modes, selected by the user:
+
+    * P-mode pairs ADM with a parallel ANS coder and is the portable mode
+    * R-mode pairs ADM with FSE and reaches a higher compression ratio
+
+* Mapping geometry of one to three dimensions. For chunks with more than three dimensions, the third and later dimensions are multiplied into the third mapping dimension.
+* Thread counts for the ADM stage are not user-facing. They are chosen by the `set_local` callback from an autotuning table and default to `32`.
+* Every compressed chunk starts with a 40-byte header that records the codec, the mode, the raw byte length and the geometry used for that chunk.
+
+The algorithm paper: Huang W, Yang J, Yin S, Li H, Gu Y, Liu Z, Jing X, Wei Z, Fu S, Hu H, Tan G, Tao D. "MANS: Efficient and Portable ANS Encoding for Multi-Byte Integer Data on CPUs and GPUs." In *Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis* (SC '25), 1299–1314 (2025). [doi:10.1145/3712285.3759825](https://doi.org/10.1145/3712285.3759825)
+
+Repository: https://github.com/hpdps-group/MANS.
+
+#### Plugin ID `32035` Information
+
+The user sets a single value (`cd_nelmts` is `1`). The plugin's `set_local` callback then replaces it with the ten values that are stored in the plugin pipeline.
+
+User-set parameter (**mandatory**):
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Mode:<br/>`0` = P-mode (ADM followed by a parallel ANS coder; the portable mode)<br/>`1` = R-mode (ADM followed by FSE; higher compression ratio) |
+
+Parameters stored in the plugin pipeline by `set_local`:
+
+| `cd_values[]` | Description |
+|---|---|
+| `[0]` | Backend the plugin encodes with. The plugin always writes `0` (CPU). |
+| `[1]` | Chunk element datatype: `0` = unsigned 16-bit; `1` = unsigned 32-bit. |
+| `[2]` | Thread count used by the ADM stage when compressing. Taken from an autotuning table, `32` by default. |
+| `[3]` | Thread count used by the ADM stage when decompressing. Taken from an autotuning table, `32` by default. |
+| `[4]` | Mode, the user-set value from the table above. |
+| `[5]` | Number of mapping dimensions, 1 to 3. |
+| `[6]` to `[8]` | Chunk dimensions `nx`, `ny`, `nz`, one value per dimension given in `[5]`. Unused dimensions are `0`. For chunks with more than three dimensions, the third and later dimensions are multiplied into `nz`. |
+| `[9]` | Number of elements in a chunk. |
+
+The plugin unique name registered with the HDF5 library (the `name` field of its `H5Z_class2_t`) is `h5z-mans`.
+
+Plugin source and documentation: https://github.com/hpdps-group/MANS/tree/main/tools/H5Z-MANS.
+
+License: BSD 3-Clause, https://github.com/hpdps-group/MANS/blob/main/LICENSE.
+
+##### `h5repack` Example
+
+* R-mode:
+
+        h5repack -f UD=32035,0,1,1 in.h5 out.h5
+
+##### Contact
+
+Haoxu Li<br/>
+Email: lihaoxu21 at mails dot ucas dot ac dot cn<br/>
+GitHub: [@LiHaoxu](https://github.com/LiHaoxu)
