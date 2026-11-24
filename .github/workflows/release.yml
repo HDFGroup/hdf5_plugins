@@ -23,7 +23,7 @@ on:
         description: 'HDF5 MacOS release asset suffix (platform, version, compiler)'
         type: string
         required: false
-        default: macos15_clang
+        default: macos26_clang
       ubuntu_asset_suffix:
         description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
         type: string

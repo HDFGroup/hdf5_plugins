@@ -18,7 +18,7 @@ on:
         description: 'HDF5 MacOS release asset suffix (platform, version, compiler)'
         type: string
         required: false
-        default: macos15_clang
+        default: macos26_clang
       ubuntu_asset_suffix:
         description: 'HDF5 Ubuntu release asset suffix (platform, version, compiler)'
         type: string
@@ -47,7 +47,7 @@ jobs:
         INPUT_VAL=${{ inputs.win_asset_suffix }}
         echo "WINASSETSUFFIX=${INPUT_VAL:-"win-vs2026_cl"}" >> "$GITHUB_OUTPUT"
         INPUT_VAL=${{ inputs.mac_asset_suffix }}
-        echo "MACASSETSUFFIX=${INPUT_VAL:-"macos15_clang"}" >> "$GITHUB_OUTPUT"
+        echo "MACASSETSUFFIX=${INPUT_VAL:-"macos26_clang"}" >> "$GITHUB_OUTPUT"
         INPUT_VAL=${{ inputs.ubuntu_asset_suffix }}
         echo "UBUNTUASSETSUFFIX=${INPUT_VAL:-"ubuntu-2404_gcc"}" >> "$GITHUB_OUTPUT"
 

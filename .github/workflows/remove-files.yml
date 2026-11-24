@@ -63,8 +63,6 @@ jobs:
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.tar.gz
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.mac_asset_suffix }}.dmg
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.tar.gz
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.deb
-              ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.ubuntu_asset_suffix }}.rpm
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.win_asset_suffix }}.zip
               ${{ steps.get-file-base.outputs.FILE_BASE }}-${{ inputs.win_asset_suffix }}.msi
               
