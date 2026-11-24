@@ -23,7 +23,7 @@
  *
  * The filter is loaded at run time via HDF5's plugin mechanism, so
  * HDF5_PLUGIN_PATH must point at the built plugin. The verdict is the program
- * exit code (0 = PASS), so no golden-file comparison is needed.
+ * exit code (0 = PASS), so no reference file comparison is needed.
  *
  ************************************************************/
 

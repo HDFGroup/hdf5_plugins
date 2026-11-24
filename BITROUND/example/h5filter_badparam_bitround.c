@@ -23,7 +23,7 @@
  *
  * The filter is loaded dynamically via HDF5_PLUGIN_PATH. The expected errors in
  * steps 2-3 are part of the test, so automatic error-stack printing is disabled.
- * The verdict is the exit code (0 = PASS); no golden-file comparison.
+ * The verdict is the exit code (0 = PASS); no reference file comparison.
  */
 
 #include <stdio.h>
