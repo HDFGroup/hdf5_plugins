@@ -2,235 +2,272 @@
  * Copyright by The HDF Group.                                               *
  * All rights reserved.                                                      *
  *                                                                           *
- * This file is part of the HDF5 BitRound filter plugin source.  The full    *
+ * This file is part of the HDF5 BitRound filter plugin source. The full     *
  * copyright notice, including terms governing use, modification, and        *
- * terms governing use, modification, and redistribution, is contained in    *
- * the file COPYING, which can be found at the root of the BITROUND source code   *
- * distribution tree.  If you do not have access to this file, you may       *
- * request a copy from help@hdfgroup.org.                                    *
+ * redistribution, is contained in the file COPYING, which can be found at   *
+ * the root of the source code distribution tree. If you do not have access  *
+ * to this file, you may request a copy from help@hdfgroup.org.              *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /************************************************************
-
-  This example shows how to write data and read it from a dataset using BitRound
-  quantization. The example uses a new feature available since HDF5 version
-  1.8.11 to discover, load and register filters at run time.
-
+ *
+ * Self-checking example for the BitRound quantization filter.
+ *
+ * Writes a chunked float32 (then float64) dataset through the BitRound filter
+ * paired with deflate, reads it back, and verifies:
+ *   - every non-special value is within the BitRound relative-error bound
+ *     2^-(NSB+1);
+ *   - the user fill value, +/-0.0, and NaN are preserved bit-exact (the filter
+ *     skips them);
+ *   - at least one normal value was actually quantized (the filter ran).
+ *
+ * The filter is loaded at run time via HDF5's plugin mechanism, so
+ * HDF5_PLUGIN_PATH must point at the built plugin. The verdict is the program
+ * exit code (0 = PASS), so no reference file comparison is needed.
+ *
  ************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <stdint.h>
 #include "hdf5.h"
 
 #define FILENAME            "h5ex_d_bitround.h5"
-#define DATASET             "DS1"
-#define DIM0                32
-#define DIM1                64
-#define CHUNK0              4
-#define CHUNK1              8
+#define DSET_F32            "DS_f32"
+#define DSET_F64            "DS_f64"
+#define N                   1024
+#define CHUNK               256
 #define H5Z_FILTER_BITROUND 32032
+
+#define FILL_F32 (-999.0f)
+#define FILL_F64 (-999.0)
+
+/* Indices used for the special values sprinkled into the data. */
+#define IDX_FILL  3
+#define IDX_ZERO  7
+#define IDX_NZERO 11
+#define IDX_NAN   17
+
+static herr_t
+add_filters(hid_t dcpl, unsigned int nsb)
+{
+    /* BitRound takes a single user parameter: NSB. */
+    if (H5Pset_filter(dcpl, H5Z_FILTER_BITROUND, H5Z_FLAG_MANDATORY, (size_t)1, &nsb) < 0)
+        return -1;
+    /* Pair with a lossless compressor, if available. BitRound alone does not
+     * change the byte count; the zeroed low bits compress downstream. */
+    if (H5Zfilter_avail(H5Z_FILTER_DEFLATE) > 0) {
+        if (H5Pset_deflate(dcpl, 6) < 0)
+            return -1;
+    }
+    return 0;
+}
+
+static int
+check_f32(unsigned int nsb)
+{
+    hid_t    file = H5I_INVALID_HID, space = H5I_INVALID_HID, dcpl = H5I_INVALID_HID, dset = H5I_INVALID_HID;
+    hsize_t  dims[1] = {N}, chunk[1] = {CHUNK};
+    float    wdata[N], rdata[N];
+    float    fill = FILL_F32;
+    float    nan_val;
+    uint32_t nan_bits      = 0x7FC00000u; /* quiet NaN */
+    int      ret           = 1;
+    double   bound         = ldexp(1.0, -(int)(nsb + 1)); /* 2^-(NSB+1) */
+    int      any_quantized = 0;
+    hsize_t  i;
+
+    memcpy(&nan_val, &nan_bits, sizeof(nan_val));
+    for (i = 0; i < N; i++)
+        wdata[i] = (float)i * 0.001f - 0.5f;
+    wdata[IDX_FILL]  = fill;
+    wdata[IDX_ZERO]  = 0.0f;
+    wdata[IDX_NZERO] = -0.0f;
+    wdata[IDX_NAN]   = nan_val;
+
+    if ((space = H5Screate_simple(1, dims, NULL)) < 0)
+        goto done;
+    if ((dcpl = H5Pcreate(H5P_DATASET_CREATE)) < 0)
+        goto done;
+    if (H5Pset_chunk(dcpl, 1, chunk) < 0)
+        goto done;
+    if (H5Pset_fill_value(dcpl, H5T_NATIVE_FLOAT, &fill) < 0)
+        goto done;
+    if (add_filters(dcpl, nsb) < 0)
+        goto done;
+    if ((dset = H5Dcreate(file = H5Fcreate(FILENAME, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT), DSET_F32,
+                          H5T_IEEE_F32LE, space, H5P_DEFAULT, dcpl, H5P_DEFAULT)) < 0)
+        goto done;
+    if (H5Dwrite(dset, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata) < 0)
+        goto done;
+    H5Dclose(dset);
+    dset = H5I_INVALID_HID;
+
+    if ((dset = H5Dopen(file, DSET_F32, H5P_DEFAULT)) < 0)
+        goto done;
+    if (H5Dread(dset, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata) < 0)
+        goto done;
+
+    printf("[f32 NSB=%u] error bound 2^-(NSB+1) = %g; first 8 values (in -> out):\n", nsb, bound);
+    for (i = 0; i < 8; i++)
+        printf("    % .6f -> % .6f\n", wdata[i], rdata[i]);
+
+    for (i = 0; i < N; i++) {
+        if (i == IDX_FILL || i == IDX_ZERO || i == IDX_NZERO || i == IDX_NAN) {
+            /* special values must be bit-exact */
+            uint32_t wbits, rbits;
+            memcpy(&wbits, &wdata[i], sizeof(wbits));
+            memcpy(&rbits, &rdata[i], sizeof(rbits));
+            if (wbits != rbits) {
+                fprintf(stderr, "FAIL [f32 idx %lu]: special value changed 0x%08x -> 0x%08x\n",
+                        (unsigned long)i, wbits, rbits);
+                goto done;
+            }
+            continue;
+        }
+        if (wdata[i] != rdata[i])
+            any_quantized = 1;
+        if (wdata[i] != 0.0f) {
+            double rel = fabs((double)rdata[i] - (double)wdata[i]) / fabs((double)wdata[i]);
+            if (rel > bound) {
+                fprintf(stderr, "FAIL [f32 idx %lu]: rel err %g > bound %g (in=%g out=%g)\n",
+                        (unsigned long)i, rel, bound, wdata[i], rdata[i]);
+                goto done;
+            }
+        }
+    }
+    if (!any_quantized) {
+        fprintf(stderr, "FAIL [f32]: no normal value was quantized; filter did not run\n");
+        goto done;
+    }
+
+    printf("[f32 NSB=%u] PASS: within error bound; fill/+-0/NaN preserved.\n\n", nsb);
+    ret = 0;
+
+done:
+    if (dset != H5I_INVALID_HID)
+        H5Dclose(dset);
+    if (dcpl != H5I_INVALID_HID)
+        H5Pclose(dcpl);
+    if (space != H5I_INVALID_HID)
+        H5Sclose(space);
+    if (file != H5I_INVALID_HID)
+        H5Fclose(file);
+    return ret;
+}
+
+static int
+check_f64(unsigned int nsb)
+{
+    hid_t    file = H5I_INVALID_HID, space = H5I_INVALID_HID, dcpl = H5I_INVALID_HID, dset = H5I_INVALID_HID;
+    hsize_t  dims[1] = {N}, chunk[1] = {CHUNK};
+    double   wdata[N], rdata[N];
+    double   fill = FILL_F64;
+    double   nan_val;
+    uint64_t nan_bits      = 0x7FF8000000000000ULL; /* quiet NaN */
+    int      ret           = 1;
+    double   bound         = ldexp(1.0, -(int)(nsb + 1));
+    int      any_quantized = 0;
+    hsize_t  i;
+
+    memcpy(&nan_val, &nan_bits, sizeof(nan_val));
+    for (i = 0; i < N; i++)
+        wdata[i] = (double)i * 0.001 - 0.5;
+    wdata[IDX_FILL]  = fill;
+    wdata[IDX_ZERO]  = 0.0;
+    wdata[IDX_NZERO] = -0.0;
+    wdata[IDX_NAN]   = nan_val;
+
+    if ((space = H5Screate_simple(1, dims, NULL)) < 0)
+        goto done;
+    if ((dcpl = H5Pcreate(H5P_DATASET_CREATE)) < 0)
+        goto done;
+    if (H5Pset_chunk(dcpl, 1, chunk) < 0)
+        goto done;
+    if (H5Pset_fill_value(dcpl, H5T_NATIVE_DOUBLE, &fill) < 0)
+        goto done;
+    if (add_filters(dcpl, nsb) < 0)
+        goto done;
+    /* reuse the file created by check_f32 if present, else create */
+    if ((file = H5Fopen(FILENAME, H5F_ACC_RDWR, H5P_DEFAULT)) < 0)
+        file = H5Fcreate(FILENAME, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+    if (file < 0)
+        goto done;
+    if ((dset = H5Dcreate(file, DSET_F64, H5T_IEEE_F64LE, space, H5P_DEFAULT, dcpl, H5P_DEFAULT)) < 0)
+        goto done;
+    if (H5Dwrite(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata) < 0)
+        goto done;
+    H5Dclose(dset);
+    dset = H5I_INVALID_HID;
+
+    if ((dset = H5Dopen(file, DSET_F64, H5P_DEFAULT)) < 0)
+        goto done;
+    if (H5Dread(dset, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata) < 0)
+        goto done;
+
+    printf("[f64 NSB=%u] error bound 2^-(NSB+1) = %g; first 8 values (in -> out):\n", nsb, bound);
+    for (i = 0; i < 8; i++)
+        printf("    % .9f -> % .9f\n", wdata[i], rdata[i]);
+
+    for (i = 0; i < N; i++) {
+        if (i == IDX_FILL || i == IDX_ZERO || i == IDX_NZERO || i == IDX_NAN) {
+            uint64_t wbits, rbits;
+            memcpy(&wbits, &wdata[i], sizeof(wbits));
+            memcpy(&rbits, &rdata[i], sizeof(rbits));
+            if (wbits != rbits) {
+                fprintf(stderr, "FAIL [f64 idx %lu]: special value changed 0x%016llx -> 0x%016llx\n",
+                        (unsigned long)i, (unsigned long long)wbits, (unsigned long long)rbits);
+                goto done;
+            }
+            continue;
+        }
+        if (wdata[i] != rdata[i])
+            any_quantized = 1;
+        if (wdata[i] != 0.0) {
+            double rel = fabs(rdata[i] - wdata[i]) / fabs(wdata[i]);
+            if (rel > bound) {
+                fprintf(stderr, "FAIL [f64 idx %lu]: rel err %g > bound %g (in=%g out=%g)\n",
+                        (unsigned long)i, rel, bound, wdata[i], rdata[i]);
+                goto done;
+            }
+        }
+    }
+    if (!any_quantized) {
+        fprintf(stderr, "FAIL [f64]: no normal value was quantized; filter did not run\n");
+        goto done;
+    }
+
+    printf("[f64 NSB=%u] PASS: within error bound; fill/+-0/NaN preserved.\n\n", nsb);
+    ret = 0;
+
+done:
+    if (dset != H5I_INVALID_HID)
+        H5Dclose(dset);
+    if (dcpl != H5I_INVALID_HID)
+        H5Pclose(dcpl);
+    if (space != H5I_INVALID_HID)
+        H5Sclose(space);
+    if (file != H5I_INVALID_HID)
+        H5Fclose(file);
+    return ret;
+}
 
 int
 main(void)
 {
-    hid_t              file_id  = H5I_INVALID_HID;
-    hid_t              space_id = H5I_INVALID_HID;
-    hid_t              dset_id  = H5I_INVALID_HID;
-    hid_t              dcpl_id  = H5I_INVALID_HID;
-    herr_t             status;
-    htri_t             avail;
-    H5Z_filter_t       filter_id = 0;
-    char               filter_name[80];
-    hsize_t            dims[2] = {DIM0, DIM1}, chunk[2] = {CHUNK0, CHUNK1};
-    size_t             nelmts = 5; /* number of elements in cd_values */
-    unsigned int       flags;
-    unsigned           filter_config;
-    const unsigned int cd_values[5] = {
-        3, 4, 0, 0, 0}; /* BitRound argument ordering is
-                           NSD,sizeof(data),has_mss_val,mss_val_byt_1to4[,mss_val_byt_5to8] */
-    unsigned int values_out[5] = {99, 99, 99, 99, 99};
-    float        wdata[DIM0][DIM1]; /* Write buffer */
-    float        rdata[DIM0][DIM1]; /* Read buffer */
-    float        max;
-    hsize_t      i, j;
-    int          ret_value = 1;
+    int r32, r64;
 
-    /*
-     * Initialize data.
-     */
-    for (i = 0; i < DIM0; i++)
-        for (j = 0; j < DIM1; j++)
-            wdata[i][j] = (float)(i * j) - (float)(j);
+    if (H5Zfilter_avail(H5Z_FILTER_BITROUND) <= 0)
+        printf("Note: BitRound filter not yet registered; it will load on first use.\n");
 
-    /*
-     * Create a new file using the default properties.
-     */
-    file_id = H5Fcreate(FILENAME, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-    if (file_id < 0)
-        goto done;
+    r32 = check_f32(7);
+    r64 = check_f64(10);
 
-    /*
-     * Create dataspace.  Setting maximum size to NULL sets the maximum
-     * size to be the current size.
-     */
-    space_id = H5Screate_simple(2, dims, NULL);
-    if (space_id < 0)
-        goto done;
-
-    /*
-     * Create the dataset creation property list, add the BitRound
-     * quantization filter and set the chunk size.
-     */
-    dcpl_id = H5Pcreate(H5P_DATASET_CREATE);
-    if (dcpl_id < 0)
-        goto done;
-
-    /* 20200929: csz change this to H5Z_FLAG_OPTIONAL, so that can_apply() can reject filter for
-       integers without causing program to exit()? */
-    status = H5Pset_filter(dcpl_id, H5Z_FILTER_BITROUND, H5Z_FLAG_MANDATORY, nelmts, cd_values);
-    if (status < 0)
-        goto done;
-
-    /*
-     * Check that filter is registered with the library now.
-     * If it is registered, retrieve filter's configuration.
-     */
-    avail = H5Zfilter_avail(H5Z_FILTER_BITROUND);
-    if (avail) {
-        status = H5Zget_filter_info(H5Z_FILTER_BITROUND, &filter_config);
-        if ((filter_config & H5Z_FILTER_CONFIG_ENCODE_ENABLED) &&
-            (filter_config & H5Z_FILTER_CONFIG_DECODE_ENABLED))
-            printf("BitRound filter is available for quantization and decoding.\n");
+    if (r32 == 0 && r64 == 0) {
+        printf("PASS: BitRound round-trip (f32 NSB=7, f64 NSB=10)\n");
+        return 0;
     }
-    else {
-        printf("H5Zfilter_avail - not found.\n");
-        goto done;
-    }
-    status = H5Pset_chunk(dcpl_id, 2, chunk);
-    if (status < 0)
-        printf("failed to set chunk.\n");
-
-    /*
-     * Create the dataset.
-     */
-    printf("....Create dataset ................\n");
-    dset_id = H5Dcreate(file_id, DATASET, H5T_IEEE_F32LE, space_id, H5P_DEFAULT, dcpl_id, H5P_DEFAULT);
-    if (dset_id < 0) {
-        printf("failed to create dataset.\n");
-        goto done;
-    }
-
-    /*
-     * Write the data to the dataset.
-     */
-    printf("....Writing BitRound-quantized data ................\n");
-    status = H5Dwrite(dset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, (void *)wdata);
-    if (status < 0)
-        printf("failed to write data.\n");
-
-    /*
-     * Close and release resources.
-     */
-    H5Dclose(dset_id);
-    dset_id = -1;
-    H5Pclose(dcpl_id);
-    dcpl_id = -1;
-    H5Sclose(space_id);
-    space_id = -1;
-    H5Fclose(file_id);
-    file_id = -1;
-    status  = H5close();
-    if (status < 0) {
-        printf("\nFAILED to close library\n");
-        goto done;
-    }
-
-    printf("....Close the file and reopen for reading ........\n");
-    /*
-     * Now we begin the read section of this example.
-     */
-
-    /*
-     * Open file and dataset using the default properties.
-     */
-    file_id = H5Fopen(FILENAME, H5F_ACC_RDONLY, H5P_DEFAULT);
-    if (file_id < 0)
-        goto done;
-
-    dset_id = H5Dopen(file_id, DATASET, H5P_DEFAULT);
-    if (dset_id < 0)
-        goto done;
-
-    /*
-     * Retrieve dataset creation property list.
-     */
-    dcpl_id = H5Dget_create_plist(dset_id);
-    if (dcpl_id < 0)
-        goto done;
-
-    /*
-     * Retrieve and print the filter id, quantization level and filter's name for BitRound.
-     */
-    filter_id = H5Pget_filter2(dcpl_id, (unsigned)0, &flags, &nelmts, values_out, sizeof(filter_name),
-                               filter_name, NULL);
-    printf("Filter info is available from the dataset creation property\n");
-    printf("   Filter identifier is ");
-    switch (filter_id) {
-        case H5Z_FILTER_BITROUND:
-            printf("%d\n", filter_id);
-            printf("   Number of parameters is %lu with the values %u, %u, %u, %u, %u\n", nelmts,
-                   values_out[0], values_out[1], values_out[2], values_out[3], values_out[4]);
-            printf("   To find more about the filter check %s\n", filter_name);
-            break;
-        default:
-            printf("Not expected filter\n");
-            break;
-    }
-
-    /*
-     * Read the data using the default properties.
-     */
-    printf("....Reading BitRound-quantized data ................\n");
-    status = H5Dread(dset_id, H5T_NATIVE_FLOAT, H5S_ALL, H5S_ALL, H5P_DEFAULT, rdata[0]);
-    if (status < 0)
-        printf("failed to read data.\n");
-
-    /*
-     * Find the maximum value in the dataset, to verify that it was
-     * read correctly.
-     */
-    max = rdata[0][0];
-    for (i = 0; i < DIM0; i++)
-        for (j = 0; j < DIM1; j++) {
-            /*printf("%f \n", rdata[i][j]); */
-            if (max < rdata[i][j])
-                max = rdata[i][j];
-        }
-    /*
-     * Print the maximum value.
-     */
-    printf("Maximum value in %s is %g\n", DATASET, max);
-    /*
-     * Check that filter is registered with the library now.
-     */
-    avail = H5Zfilter_avail(H5Z_FILTER_BITROUND);
-    if (avail)
-        printf("BitRound filter is available now since H5Dread triggered loading of the filter.\n");
-
-    ret_value = 0;
-
-done:
-    /*
-     * Close and release resources.
-     */
-    if (dcpl_id >= 0)
-        H5Pclose(dcpl_id);
-    if (dset_id >= 0)
-        H5Dclose(dset_id);
-    if (space_id >= 0)
-        H5Sclose(space_id);
-    if (file_id >= 0)
-        H5Fclose(file_id);
-
-    return ret_value;
+    return 1;
 }

@@ -69,8 +69,8 @@ if (H5PL_BUILD_TESTING)
   # Register an exit-code-only test: run the program with HDF5_PLUGIN_PATH set
   # to where the freshly built plugin was copied, and require exit code 0.
   # Each test program is self-checking (round-trip + error-bound / bit-exact
-  # special-value assertions in C), so no golden-file (.ddl/.tst) comparison is
-  # needed and cross-platform float formatting cannot affect the result.
+  # special-value assertions in C), so no reference file (.ddl/.tst) comparison
+  # is needed and cross-platform float formatting cannot affect the result.
   macro (ADD_BR_EXIT_TEST testname prog)
     add_test (
         NAME ${testname}-clearall
@@ -98,12 +98,12 @@ if (H5PL_BUILD_TESTING)
     set (last_test "${testname}")
   endmacro ()
 
-  # Golden-file h5repack round-trip test: generate a chunked float dataset,
-  # repack it through the BitRound UD filter, then h5dump the result and
-  # compare against captured references. BitRound is fully deterministic
-  # (integer add-and-shave, no libm), so both the filter metadata (-pH) and
-  # the quantized data dumps are bit-reproducible across platforms and make
-  # safe golden files.
+  # Reference file h5repack round-trip test: generate a chunked float dataset,
+  # repack it through the BitRound UD filter, then h5dump the result and compare
+  # against captured references. BitRound is fully deterministic (integer
+  # add-and-shave, no libm), so both the filter metadata (-pH) and the quantized
+  # data dumps are bit-reproducible across platforms and make safe reference
+  # files.
   macro (ADD_H5_UD_TEST testname resultcode resultfile)
     add_test (
         NAME H5BITROUND_UD-${testname}-clearall-objects
@@ -206,7 +206,7 @@ if (H5PL_BUILD_TESTING)
     endif ()
   endmacro ()
 
-  # Copy the golden reference files into the test directory.
+  # Copy the reference files into the test directory.
   set (LIST_OTHER_TEST_FILES
       h5repack_floats.h5-ud_convert.ddl
       h5repack_floats.h5-ud_convert-data.ddl
@@ -225,7 +225,7 @@ if (H5PL_BUILD_TESTING)
     ADD_BR_EXIT_TEST (H5BITROUND-specials  h5filter_specials_bitround)
     ADD_BR_EXIT_TEST (H5BITROUND-badparam  h5filter_badparam_bitround)
 
-    # Golden-file h5repack round-trip (NSB=7, chunk 4x8).
+    # Reference file h5repack round-trip (NSB=7, chunk 4x8).
     ADD_H5_UD_TEST (ud_convert 0 h5repack_floats.h5 --enable-error-stack -v -f UD=32032,0,5,7,0,0,0,0 -l CHUNK=4x8)
   endif ()
 endif ()
