@@ -1004,7 +1004,7 @@ The user sets the first four `cd_values[]`; the filter's `set_local` callback co
 | `[5]` | Number of chunk dimensions, 1 to 3. **Set by `set_local`.** |
 | `[6]` up to `[8]` | Chunk dimensions, one value per dimension given in `[5]`. **Set by `set_local`.** |
 
-With the filter marked optional, chunks the filter cannot handle, such as those of a non-floating-point datatype and chunks that compression would enlarge, are stored unfiltered. As a mandatory filter, dataset creation or the write fails instead.
+If the filter is optional, chunks are stored unfiltered when the filter does not support the datatype or when compression would enlarge them. If the filter is mandatory, the dataset creation or the write fails instead.
 
 The plugin is distributed in binary form only, under a proprietary license. There is no public source repository. Binaries are available from the maintainer on request. A separate read-only plugin, which decompresses but does not compress, may be freely redistributed in unmodified binary form so that data written with this filter remains readable.
 
